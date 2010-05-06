@@ -34,7 +34,8 @@
 		 */
 		topLayoutTable = [[NSMutableArray alloc] init];
 		
-		NSString *createTLTable = @"create table if not exists toplevel (rank integer primary key, name text);";
+		//NSString *createTLTable = @"create table if not exists toplevel (rank integer primary key, name text);";
+		NSString *createTLTable = @"create table if not exists toplevel (rank integer, name text);";
 		[self toExecSql:createTLTable];
 
 		//[self loadTopLayoutTable];
