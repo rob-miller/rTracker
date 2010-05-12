@@ -15,6 +15,8 @@
 @synthesize tlist;
 @synthesize table;
 
+static int selSegNdx=SegmentEdit;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -101,7 +103,7 @@
 
 - (IBAction) modeChoice:(id)sender {
 
-	switch ([sender selectedSegmentIndex]) {
+	switch (selSegNdx = [sender selectedSegmentIndex]) {
 		case SegmentEdit :
 			NSLog(@"ctlc: set edit mode");
 			[table setEditing:NO animated:YES];
@@ -141,8 +143,14 @@
 		 cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutTable objectAtIndex:[indexPath row]]);
 	
-    static NSString *CellIdentifier = @"Cell";
-    
+    static NSString *CellIdentifier;
+	
+	if (selSegNdx == SegmentMoveDelete) {
+		CellIdentifier = @"DeleteCell";
+	} else {
+		CellIdentifier = @"Cell";
+	}
+		
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
@@ -155,10 +163,12 @@
     return cell;
 }
 
+/*
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableview 
 		   editingStyleForRowAtIndexPath:(NSIndexPath *) indexpath {
 	return UITableViewCellEditingStyleNone;
 }
+*/
 
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
 	return YES;
@@ -169,13 +179,26 @@
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
 	
-	id object = [[self.tlist.topLayoutTable objectAtIndex:fromRow] retain];
-	[self.tlist.topLayoutTable removeObjectAtIndex:fromRow];
-	[self.tlist.topLayoutTable insertObject:object atIndex:toRow];
+	NSLog(@"ctlc: move row from %d to %d",fromRow, toRow);
+	
+	id object = [[tlist.topLayoutTable objectAtIndex:fromRow] retain];
+	[tlist.topLayoutTable removeObjectAtIndex:fromRow];
+	[tlist.topLayoutTable insertObject:object atIndex:toRow];
 	[object release];
 	
-	[self.tlist reorderFromTLT];
+	[tlist reorderFromTLT];
 	
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
+forRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSUInteger row = [indexPath row];
+	NSLog(@"ctlc: delete row %d ",row);
+	[tlist.topLayoutTable removeObjectAtIndex:row];
+	[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+					 withRowAnimation:UITableViewRowAnimationFade];
+	
+	[tlist reloadFromTLT];
 }
 
 @end

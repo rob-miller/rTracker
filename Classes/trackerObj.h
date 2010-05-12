@@ -9,16 +9,23 @@
 #import <Foundation/Foundation.h>
 #import "/usr/include/sqlite3.h"
 
-#define valuesDbFilename @"values.sqlite3"
+#import "tObjBase.h"
 
-@interface trackerObj : NSObject {
+@interface trackerObj : tObjBase {
 
-	//sqlite3	*dbValues;
-
-	NSString *name;
+	NSMutableArray *valObjTable;
+	NSString *trackerName;
 }
 
+@property (nonatomic,retain) NSString *trackerName;
+@property (nonatomic,retain) NSMutableArray *valObjTable;
+
++ (NSString *) makeSafeStr : (NSString *) inStr;
+
 - (id)init;
-- (void)applicationWillTerminate:(NSNotification *)notification;
+- (void) dealloc;
+
+//- (void)applicationWillTerminate:(NSNotification *)notification;
+
 
 @end

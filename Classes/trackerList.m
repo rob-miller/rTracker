@@ -13,6 +13,7 @@
 @implementation trackerList
 
 @synthesize topLayoutTable;
+@synthesize tObj;
 
 #pragma mark -
 #pragma mark Local Utilities
@@ -24,6 +25,8 @@
 - (id) init {
 	NSLog(@"init trackerList");
 	
+	dbName=@"topLevel.sqlite3";
+	
 	if (self = [super init]) {
 		/*
 		UIApplication *app = [UIApplication sharedApplication];
@@ -33,10 +36,11 @@
 												   object:app];
 		 */
 		topLayoutTable = [[NSMutableArray alloc] init];
-		
+
+		[self getTDb];
 		//NSString *createTLTable = @"create table if not exists toplevel (rank integer primary key, name text);";
-		NSString *createTLTable = @"create table if not exists toplevel (rank integer, name text);";
-		[self toExecSql:createTLTable];
+		sql = @"create table if not exists toplevel (rank integer, name text);";
+		[self toExecSql];
 
 		//[self loadTopLayoutTable];
 	} 
@@ -55,8 +59,9 @@
 
 - (void) loadTopLayoutTable {
 	[self.topLayoutTable removeAllObjects];
-	NSString *qry = @"select name from toplevel order by rank;";
-	[self toQry2Ary :qry inAry:self.topLayoutTable];
+	sql = @"select name from toplevel order by rank;";
+	[self toQry2Ary :self.topLayoutTable];
+	sql = nil;
 	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutTable);
 }
 
@@ -69,9 +74,11 @@
 		NSLog(@"addTLE: rank %d greater than %d, limiting", rank, maxc);
 		rank = maxc;
 	}
-	NSString *update = [[NSString alloc]
-						initWithFormat:@"insert or replace into toplevel (rank, name) values (%i, \"%@\");",rank,name];
-	[self toExecSql :update];
+
+	sql = [[NSString alloc] initWithFormat: @"insert or replace into toplevel (rank, name) values (%i, \"%@\");",rank,name ];
+	[self toExecSql];
+	[sql release];
+	sql = nil;
 	
 	// call loadTopLayoutTable before using:  [topLayoutTable insertObject:name atIndex:rank];
 }
@@ -80,13 +87,28 @@
 	int nrank=0;
 	for (NSString *tracker in topLayoutTable) {
 		NSLog(@" %@ to rank %d",tracker,nrank);
-		NSString *sql = [[NSString alloc] 
-						 initWithFormat:@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
+		sql = [[NSString alloc] initWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
+		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+		[sql release];
 		nrank++;
-		[self toExecSql:sql];  // better if used bind vars, but this keeps access in tObjBase
 	}
 }
 
+- (void) reloadFromTLT {
+	int nrank=0;
+	sql = @"delete from toplevel;";
+	[self toExecSql];
+	for (NSString *tracker in topLayoutTable) {
+		NSLog(@" %@ to rank %d",tracker,nrank);
+		sql = [[NSString alloc] initWithFormat: @"insert into toplevel (rank, name) values (%i, \"%@\");",nrank,tracker];
+		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+		[sql release];  // this seems quite gross...
+		nrank++;
+		}
+}
+
+
+/*
 #pragma mark -
 #pragma mark Notifications
 
@@ -95,5 +117,6 @@
 	
 	//[topLayoutTable release];  // do this here or is it too early?
 }
+*/
 
 @end

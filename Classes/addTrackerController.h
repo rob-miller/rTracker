@@ -8,22 +8,27 @@
 
 #import <UIKit/UIKit.h>
 #import "trackerList.h"
+#import "trackerObj.h"
 
-@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 {
 
 	UITextField	*nameField;
 	trackerList *tlist;
+	trackerObj *tempTrackerObj;
+	UITableView *table;
 	
 }
 
-@property (nonatomic, retain) IBOutlet UITextField *nameField;
+@property (nonatomic, retain) UITextField *nameField;
 @property (nonatomic, retain) trackerList *tlist;
+@property (nonatomic, retain) trackerObj *tempTrackerObj;
+@property (nonatomic, retain) IBOutlet UITableView *table;
 
-- (IBAction) textFieldDoneEditing:(id)sender;
+//- (IBAction) textFieldDoneEditing:(id)sender;
 //- (IBAction) backgroundTap:(id)sender;
 
-- (IBAction)btnAddValue;
+//- (IBAction)btnAddValue;
 
 @end

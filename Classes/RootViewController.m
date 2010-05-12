@@ -47,6 +47,9 @@
 	[tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 	
+	//NSString *foo = [[NSString alloc] initWithFormat:@"I am a wasteful string"];
+	//NSLog(@"foo is %@",foo);
+	
     [super viewWillAppear:animated];
 }
 

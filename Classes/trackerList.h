@@ -10,30 +10,25 @@
 #import "/usr/include/sqlite3.h"
 
 #import "tObjBase.h"
-
-#define layoutDbFilename @"layout.sqlite3"
+#import "trackerObj.h"
 
 @interface trackerList : tObjBase {
 	
 	NSMutableArray *topLayoutTable;
+	trackerObj *tObj;
 	
 }
 
 @property (nonatomic,retain) NSMutableArray *topLayoutTable;
+@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;
 - (void) dealloc;
 
-//- (void)applicationWillTerminate:(NSNotification *)notification;
-
-//- (NSString *) docsDir;
-//- (NSString *) layoutDbFilePath;
-//- (NSString *) valuesDbFilePath;
-//- (void) openDatabases;
-
 - (void)loadTopLayoutTable;
 - (void)addTopLayoutEntry:(int)rank name:(NSString *)name;
 - (void)reorderFromTLT;
+- (void)reloadFromTLT;
 
 
 

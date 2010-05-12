@@ -12,10 +12,16 @@
 
 @interface tObjBase : NSObject {
 
+	NSString *dbName;
+	NSString *sql;
+	
 }
 
+@property (nonatomic, retain) NSString *sql;
+@property (nonatomic, retain) NSString *dbName;
+
 - (id) init;
-- (void) toQry2Ary : (NSString *) inQry inAry: (NSMutableArray *) inAry;
-- (void) toExecSql : (NSString *) sql;
+- (void) toQry2Ary : (NSMutableArray *) inAry;
+- (void) toExecSql;
 
 @end

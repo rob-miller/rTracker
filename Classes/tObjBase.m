@@ -11,49 +11,53 @@
 
 @implementation tObjBase
 
-static sqlite3 *tDb;
+@synthesize dbName;
+@synthesize sql;
 
-+ (NSString *) trackerDbFilePath {
+sqlite3 *tDb;
+
+- (NSString *) trackerDbFilePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *docsDir = [paths objectAtIndex:0];
-	return [docsDir stringByAppendingFormat:@"rTracker.sqlite3"];
+	return [docsDir stringByAppendingFormat:dbName];
 }
 
-+ (void) getTDb {
-	if (sqlite3_open([[tObjBase trackerDbFilePath] UTF8String], &tDb) != SQLITE_OK) {
+- (void) getTDb {
+	if (sqlite3_open([[self trackerDbFilePath] UTF8String], &tDb) != SQLITE_OK) {
 		sqlite3_close(tDb);
 		NSAssert(0, @"error opening rTracker database tDb");
 	} else {
-		NSLog(@"opened tDb");
+		NSLog(@"opened tDb %@",dbName);
 	}
 }
 
 - (id) init {
 
-	NSLog(@"tObjBase init");
-	[tObjBase getTDb];
+	NSLog(@"tObjBase init: db %@",dbName);
+
+	//[self getTDb];
 	
 	return self;
 }
 
 - (void) dealloc {
-	NSLog(@"dealloc tObjBase");
+	NSLog(@"dealloc tObjBase: %@",dbName);
 	if (tDb != nil) {
 		sqlite3_close(tDb);
 		tDb = nil;
-		NSLog(@"closed tDb");
+		NSLog(@"closed tDb: %@", dbName);
 	} else {
-		NSLog(@"tDb already closed");
+		NSLog(@"tDb already closed %@", dbName);
 	}
-
+	[sql release];
 	[super dealloc];
 }
 
-- (void) toQry2Ary : (NSString *) inQry inAry: (NSMutableArray *) inAry {
-	NSLog(@"toQry2Ary: %@", inQry);
+- (void) toQry2Ary : (NSMutableArray *) inAry {
+	NSLog(@"toQry2Ary: %@", sql);
 	
 	sqlite3_stmt *stmt;
-	if (sqlite3_prepare_v2(tDb, [inQry UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
 			char *rslt = (char *) sqlite3_column_text(stmt, 0);
@@ -63,17 +67,17 @@ static sqlite3 *tDb;
 			[tlentry release];
 		}
 		if (rslt != SQLITE_DONE) {
-			NSLog(@"tob not SQL_DONE executing . %@ . : %s", inQry, sqlite3_errmsg(tDb));
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", inQry, sqlite3_errmsg(tDb));
+		NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	
 	NSLog(@"toQry2Ary done, rslt= %@",inAry);
 }
 
-- (void) toExecSql : (NSString *) sql {
+- (void) toExecSql {
 	NSLog(@"toExecSql: %@", sql);
 	
 	sqlite3_stmt *stmt;
