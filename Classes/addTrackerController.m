@@ -8,6 +8,7 @@
 
 #import "addTrackerController.h"
 #import "valueObj.h"
+#import "addValObjController.h"
 
 @implementation addTrackerController 
 
@@ -45,6 +46,15 @@
 	//[table allowsSelectionDuringEditing:YES];  // not there hmmmmmm
 	
 	[super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	
+	NSLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
+	
+	[table reloadData];
+	
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -125,7 +135,7 @@ NSLog(@"btnAddValue was pressed!");
 # pragma mark Table View Data Source Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 1) {
+	if (section == 0) {
 		return (NSInteger) 1;
 	} else {
 		return [tempTrackerObj.valObjTable count] +1;
@@ -190,6 +200,7 @@ NSLog(@"btnAddValue was pressed!");
 			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+			cell.detailTextLabel.text = [[valueObj votArray] objectAtIndex:vo.valueType];
 		}
 	}
 	
@@ -244,6 +255,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		NSLog(@"atc: delete row %d ",row);
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		NSLog(@"atc: insert row %d ",row);
+
+		addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+		avc.parentTrackerObj = tempTrackerObj;
+		[self.navigationController pushViewController:avc animated:YES];
+		[avc release];
+		
+		
 	} // else ??
 }
 
