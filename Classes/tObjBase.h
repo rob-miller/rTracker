@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSString *dbName;
 
 - (id) init;
+- (void) getTDb;
 - (void) toQry2Ary : (NSMutableArray *) inAry;
 - (void) toExecSql;
 

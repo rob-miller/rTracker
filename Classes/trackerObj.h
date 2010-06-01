@@ -10,6 +10,7 @@
 #import "/usr/include/sqlite3.h"
 
 #import "tObjBase.h"
+#import "valueObj.h"
 
 @interface trackerObj : tObjBase {
 
@@ -24,6 +25,9 @@
 
 - (id)init;
 - (void) dealloc;
+
+- (void) addValObj:(valueObj *) valObj;
+
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

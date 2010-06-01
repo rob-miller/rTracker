@@ -18,6 +18,8 @@
 		D482D272114FEB5E00CE6BC8 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
 		D482D276114FEB7500CE6BC8 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
 		D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
+		D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
+		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
 		D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A3150C11903F5E00F062AC /* addTrackerController.xib */; };
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
@@ -46,6 +48,9 @@
 		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerObj.m; sourceTree = "<group>"; };
 		D48F9E7D119AA02A00B37C93 /* valueObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = valueObj.h; sourceTree = "<group>"; };
 		D48F9E7E119AA02A00B37C93 /* valueObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = valueObj.m; sourceTree = "<group>"; };
+		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
+		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
+		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Classes/addValObjController.xib; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
 		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = addTrackerController.xib; sourceTree = "<group>"; };
@@ -77,6 +82,8 @@
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
 				D4588ADA1177497200AD2106 /* addTrackerController.h */,
 				D4588ADB1177497200AD2106 /* addTrackerController.m */,
+				D48F9FAF119B4CA600B37C93 /* addValObjController.h */,
+				D48F9FB0119B4CA600B37C93 /* addValObjController.m */,
 				D4A317B11192B7C800F062AC /* configTlistController.h */,
 				D4A317B21192B7C800F062AC /* configTlistController.m */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
@@ -125,6 +132,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
 				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
 				D4A3150C11903F5E00F062AC /* addTrackerController.xib */,
 				D4A316C01191987E00F062AC /* MainWindow.xib */,
@@ -199,6 +207,7 @@
 				D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */,
 				D4A316C11191987E00F062AC /* MainWindow.xib in Resources */,
 				D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */,
+				D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +227,7 @@
 				D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */,
 				D4A317B41192B7C800F062AC /* configTlistController.m in Sources */,
 				D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */,
+				D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

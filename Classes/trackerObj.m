@@ -57,6 +57,7 @@
 	//safeTName = [NSString alloc];
 	NSLog(@"init trackerObj %@",trackerName);
 	//dbName = [[NSString alloc] initWithFormat:@"%@.sqlite3",safeTName];
+	valObjTable = [[NSMutableArray alloc] init];
 	if (self = [super init]) {
 	}
 	return self;
@@ -69,6 +70,11 @@
 	[trackerName release];
 }
 
+- (void) addValObj:(valueObj *) valObj {
+	NSLog(@"addValObj to %@: adding %@, total items now %d",trackerName, valObj.valueName,[self.valObjTable count]);
+	[self.valObjTable addObject:valObj];
+	NSLog(@"addValObj to %@: adding %@, total items now %d",trackerName, valObj.valueName,[self.valObjTable count]);
+}
 
 /*
 - (void)applicationWillTerminate:(NSNotification *)notification {

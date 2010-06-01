@@ -9,12 +9,34 @@
 #import <Foundation/Foundation.h>
 
 
+#define VOT_NUMBER	0
+#define VOT_SLIDER	1
+#define VOT_TEXT	2
+#define VOT_PICK	3
+#define VOT_BOOLEAN	4
+#define VOT_IMAGE	5
+#define VOT_FUNC	6
+
+#define VOT_MAX		6
+
+
 @interface valueObj : NSObject {
 	NSString *valueName;
+	NSInteger valueType;
+	NSDate *valueDate;
+	//id	*value;
+	NSString *value;
 }
 @property (nonatomic,retain) NSString *valueName;
+@property (nonatomic) NSInteger valueType;
+@property (nonatomic,retain) NSDate *valueDate;
+//@property (nonatomic,retain) id *value;
+@property (nonatomic,retain) NSString *value;
+
++ (NSArray *) votArray;
 
 - (id) init;
 - (void) dealloc;
+
 
 @end

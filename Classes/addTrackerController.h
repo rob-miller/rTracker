@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "trackerList.h"
 #import "trackerObj.h"
+#import "valueObj.h"
 
 @interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
