@@ -16,6 +16,8 @@
 @synthesize tempValObj;
 @synthesize parentTrackerObj;
 
+@synthesize toolbar;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -45,6 +47,36 @@
 								action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
 	[saveBtn release];
+
+/*	
+	// create the UIToolbar at the bottom of the view controller
+	//
+	toolbar = [UIToolbar new];
+	toolbar.barStyle = UIBarStyleDefault;
+	
+	// size up the toolbar and set its frame
+	[toolbar sizeToFit];
+	CGFloat toolbarHeight = [toolbar frame].size.height;
+	CGRect mainViewBounds = self.view.bounds;
+	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds),
+								 CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - (toolbarHeight * 2.0) + 2.0,
+								 CGRectGetWidth(mainViewBounds),
+								 toolbarHeight)];
+	
+	[self.view addSubview:toolbar];
+*/	
+	
+	
+	
+	UIBarButtonItem *configBtn = [[UIBarButtonItem alloc]
+								initWithTitle:@"Configure"
+								style:UIBarButtonItemStyleBordered
+								target:self
+								action:@selector(btnConfigure)];
+	//self.toolbarItem.leftBarButtonItem = configBtn;
+
+	self.toolbarItems = [NSArray arrayWithObjects: configBtn, nil];
+	[configBtn release];
 	
 	self.tempValObj = [[valueObj alloc] init];
 	
@@ -124,7 +156,7 @@
 	//[parent.tableView reloadData];
 }
 
-- (IBAction)configVOPressed {
+- (IBAction)btnConfigure {
 	NSLog(@"addVObjC: config was pressed!");
 }
 

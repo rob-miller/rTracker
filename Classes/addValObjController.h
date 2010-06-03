@@ -15,6 +15,7 @@
 	UITextField *labelField;
 	UIPickerView *votPicker;
 	NSArray *votPickerData;
+	UIToolbar *toolbar;
 	
 	valueObj *tempValObj;
 	trackerObj *parentTrackerObj;
@@ -22,11 +23,10 @@
 
 @property (nonatomic, retain) IBOutlet UITextField *labelField;
 @property (nonatomic,retain) IBOutlet UIPickerView *votPicker;
+@property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
+
 @property (nonatomic,retain) NSArray *votPickerData;
 @property (nonatomic,retain) valueObj *tempValObj;
 @property (nonatomic,retain) trackerObj *parentTrackerObj;
-
-- (IBAction) configVOPressed;
-
 
 @end

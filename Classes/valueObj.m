@@ -11,6 +11,7 @@
 
 @implementation valueObj
 
+@synthesize vid;
 @synthesize valueName;
 @synthesize valueType;
 @synthesize valueDate;
@@ -45,13 +46,21 @@
 	return self;
 }
 
+- (id) init :(int)in_vid in_vtype:(int) in_vtype in_vname:(NSString *) in_vname {
+	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	vid = in_vid;
+	valueType = in_vtype;
+	valueName = in_vname;
+	[valueName retain];
+	return [self init];
+}
+
 - (void) dealloc {
 	NSLog(@"dealloc valueObj: %@",valueName);
 	[super dealloc];
 	[valueName release];
-	//[valueType release];
 	[valueDate release];
-	//[value release];
+	[value release];
 }
 
 

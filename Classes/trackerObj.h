@@ -13,21 +13,23 @@
 #import "valueObj.h"
 
 @interface trackerObj : tObjBase {
-
-	NSMutableArray *valObjTable;
+	int tid;
 	NSString *trackerName;
+	NSMutableArray *valObjTable;
 }
 
+@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 
-+ (NSString *) makeSafeStr : (NSString *) inStr;
+//+ (NSString *) makeSafeStr : (NSString *) inStr;
 
-- (id)init;
-- (void) dealloc;
+//- (id)init;
+//- (void) dealloc;
 
 - (void) addValObj:(valueObj *) valObj;
-
+- (void) saveConfig;
+- (void) loadConfig;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

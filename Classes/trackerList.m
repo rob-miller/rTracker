@@ -13,11 +13,29 @@
 @implementation trackerList
 
 @synthesize topLayoutTable;
-@synthesize tObj;
+//@synthesize tObj;
 
 #pragma mark -
 #pragma mark Local Utilities
 
+- (void) initTDb {
+	NSLog(@"Initializing top level dtabase!");
+	dbName=@"topLevel.sqlite3";
+	[self getTDb];
+	
+	sql = @"create table if not exists toplevel (rank integer, id integer unique, name text);";
+	[self toExecSql];
+	sql = @"create table if not exists uniquev (id integer, value integer);";
+	[self toExecSql];
+	sql = @"select count(*) from uniquev where id=0;";
+	int c = [self toQry2Int];
+	
+	if (c == 0) {
+		sql = @"insert into uniquev (id, value) values (0, 1);";
+		[self toExecSql];
+	}
+	sql = nil;	
+}	
 
 #pragma mark -
 #pragma mark object core 
@@ -25,23 +43,14 @@
 - (id) init {
 	NSLog(@"init trackerList");
 	
-	dbName=@"topLevel.sqlite3";
-	
 	if (self = [super init]) {
-		/*
-		UIApplication *app = [UIApplication sharedApplication];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(applicationWillTerminate:) 
-													 name:UIApplicationWillTerminateNotification
-												   object:app];
-		 */
+
 		topLayoutTable = [[NSMutableArray alloc] init];
+		[self initTDb];
+		
 
-		[self getTDb];
-		//NSString *createTLTable = @"create table if not exists toplevel (rank integer primary key, name text);";
-		sql = @"create table if not exists toplevel (rank integer, name text);";
-		[self toExecSql];
-
+		//[self getUnique];
+		//[self getUnique];
 		//[self loadTopLayoutTable];
 	} 
 	return self;
@@ -60,22 +69,16 @@
 - (void) loadTopLayoutTable {
 	[self.topLayoutTable removeAllObjects];
 	sql = @"select name from toplevel order by rank;";
-	[self toQry2Ary :self.topLayoutTable];
+	[self toQry2AryS :self.topLayoutTable];
 	sql = nil;
 	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutTable);
 }
 
-- (void) addTopLayoutEntry:(int)rank name: (NSString *)name {
-	int maxc = [topLayoutTable count];
-	if (rank < 0) {
-		NSLog(@"addTLE: rank is %d, setting to 0",rank);
-		rank = 0;
-	} else if (rank > maxc) {
-		NSLog(@"addTLE: rank %d greater than %d, limiting", rank, maxc);
-		rank = maxc;
-	}
+- (void) confirmTopLayoutEntry:(trackerObj *) tObj {
+	int rank = [topLayoutTable count];
 
-	sql = [[NSString alloc] initWithFormat: @"insert or replace into toplevel (rank, name) values (%i, \"%@\");",rank,name ];
+	sql = [[NSString alloc] initWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
+		   rank, tObj.tid, tObj.trackerName ];
 	[self toExecSql];
 	[sql release];
 	sql = nil;
@@ -103,10 +106,23 @@
 		sql = [[NSString alloc] initWithFormat: @"insert into toplevel (rank, name) values (%i, \"%@\");",nrank,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		[sql release];  // this seems quite gross...
+		sql = nil;
 		nrank++;
 		}
 }
 
+- (int) getUnique {
+	int i;
+	sql= @"select value from uniquev where id=0;";
+	i = [self toQry2Int];
+	NSLog(@"getUnique got %d",i);
+	sql = [[NSString alloc] initWithFormat:@"update uniquev set value = %d where id=0;",i+1];
+	[self toExecSql];
+	[sql release];
+	sql = nil;
+	return i;
+}
+	
 
 /*
 #pragma mark -

@@ -15,21 +15,21 @@
 @interface trackerList : tObjBase {
 	
 	NSMutableArray *topLayoutTable;
-	trackerObj *tObj;
+	//trackerObj *tObj;
 	
 }
 
 @property (nonatomic,retain) NSMutableArray *topLayoutTable;
-@property (nonatomic,retain) trackerObj *tObj;
+//@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;
 - (void) dealloc;
 
 - (void)loadTopLayoutTable;
-- (void)addTopLayoutEntry:(int)rank name:(NSString *)name;
+- (void)confirmTopLayoutEntry:(trackerObj *)tObj;
 - (void)reorderFromTLT;
 - (void)reloadFromTLT;
-
+- (int) getUnique;
 
 
 @end

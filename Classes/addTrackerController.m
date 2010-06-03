@@ -18,10 +18,61 @@
 @synthesize table;
 
 
+# pragma mark -
+# pragma mark toolbar support
+
+static int editMode;
+
+- (void)configureToolbarItems {
+	UIBarButtonItem *flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+												initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+												target:nil action:nil];
+	
+	// Create and configure the segmented control
+	UISegmentedControl *editToggle = [[UISegmentedControl alloc]
+									  initWithItems:[NSArray arrayWithObjects:@"Manage Tracker",
+													 @"Configure Values", nil]];
+	editToggle.segmentedControlStyle = UISegmentedControlStyleBar;
+	editToggle.selectedSegmentIndex = 0;
+	editMode = 0;
+	[editToggle addTarget:self action:@selector(toggleEdit:)
+		 forControlEvents:UIControlEventValueChanged];
+	
+	// Create the bar button item for the segmented control
+	UIBarButtonItem *editToggleButtonItem = [[UIBarButtonItem alloc]
+											 initWithCustomView:editToggle];
+	[editToggle release];
+	
+	// Set our toolbar items
+	self.toolbarItems = [NSArray arrayWithObjects:
+                         flexibleSpaceButtonItem,
+                         editToggleButtonItem,
+                         flexibleSpaceButtonItem,
+                         nil];
+	
+	[editToggleButtonItem release];
+}
+
+- (void) toggleEdit:(id) sender {
+	editMode = [sender selectedSegmentIndex];
+	//[table reloadData];
+	if (editMode == 0) {
+		[table setEditing:YES animated:YES];
+	} else {
+		[table setEditing:NO animated:YES];
+	}
+}
+
+# pragma mark -
+# pragma mark view support
+
+
 - (void) viewDidLoad {
 	self.title = @"add tracker";
-	// here: alloc trackerobj with name? don't have name yet...
+
+	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
 	
+	// cancel / save buttons on top nav bar
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
 							   initWithTitle:@"Cancel"
 							   style:UIBarButtonItemStyleBordered
@@ -38,10 +89,16 @@
 	self.navigationItem.rightBarButtonItem = saveBtn;
 	[saveBtn release];
 
-	tempTrackerObj = [trackerObj alloc];
-	tempTrackerObj.trackerName = @"";
-	[tempTrackerObj init];
+	// list manage / configure segmented control on bottom toolbar
+	[self configureToolbarItems];
 	
+	if (! tempTrackerObj) {
+		// the temporary tracker obj we work with
+		tempTrackerObj = [trackerObj alloc];
+		//tempTrackerObj.trackerName = @"";
+		[tempTrackerObj init];
+		tempTrackerObj.tid = [tlist getUnique];
+	}
 	[table setEditing:YES animated:YES];
 	//[table allowsSelectionDuringEditing:YES];  // not there hmmmmmm
 	
@@ -93,10 +150,6 @@
 }
 */
 
-//- (IBAction) backgroundTap:(id)sender {
-//	[nameField resignFirstResponder];
-//}
-
 # pragma mark -
 # pragma mark button press handlers
 
@@ -110,17 +163,25 @@ NSLog(@"btnAddValue was pressed!");
 }
 
 - (IBAction)btnSave {
-	NSLog(@"btnSave was pressed! temp= %@",tempTrackerObj.trackerName);
+	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ tid= %d",tempTrackerObj.trackerName, tempTrackerObj.tid);
 
-	/*
 	if ([nameField.text length] > 0) {
-		[tlist addTopLayoutEntry:10000 name:tlist.tObj.trackerName];
+		tempTrackerObj.trackerName = nameField.text;
+		if (! tempTrackerObj.tid) {
+			tempTrackerObj.tid = [tlist getUnique];
+		}
+		[tempTrackerObj saveConfig];
+		[tlist confirmTopLayoutEntry:tempTrackerObj];
+		[self.navigationController popViewControllerAnimated:YES];
+	} else {
+		UIAlertView *alert = [[UIAlertView alloc]
+							  initWithTitle:@"save Tracker" message:@"Please set a name for this tracker to save"
+							  delegate:nil 
+							  cancelButtonTitle:@"Ok"
+							  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
 	}
-	*/
-	
-	
-	[self.navigationController popViewControllerAnimated:YES];
-	//[parent.tableView reloadData];
 }
 
 # pragma mark -
@@ -162,7 +223,7 @@ NSLog(@"btnAddValue was pressed!");
 					 reuseIdentifier: nameCellID] 
 					autorelease];
 
-			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,75,25) ];
+			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
 			//nameField = [[[UITextField alloc] init ];
 			nameField.clearsOnBeginEditing = NO;
 			[nameField setDelegate:self];
@@ -176,7 +237,7 @@ NSLog(@"btnAddValue was pressed!");
 		}
 		
 		nameField.text = tempTrackerObj.trackerName;
-		nameField.placeholder = @"Name";
+		nameField.placeholder = @"Tracker Name";
 		
 		/*
 		if (tempTrackerObj.trackerName == @"") {
@@ -272,6 +333,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger section = [indexPath section];
 	
 	NSLog(@"selected section %d row %d ", section, row);
+
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
@@ -290,7 +352,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	}
 	
     // Return NO if you do not want the specified item to be editable.
-    return YES;
+    if (editMode == 0) {
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
 @end

@@ -17,16 +17,18 @@
 #define VOT_IMAGE	5
 #define VOT_FUNC	6
 
-#define VOT_MAX		6
+#define VOT_MAX		7
 
 
 @interface valueObj : NSObject {
+	int vid;
 	NSString *valueName;
 	NSInteger valueType;
 	NSDate *valueDate;
 	//id	*value;
 	NSString *value;
 }
+@property (nonatomic) int vid;
 @property (nonatomic,retain) NSString *valueName;
 @property (nonatomic) NSInteger valueType;
 @property (nonatomic,retain) NSDate *valueDate;
@@ -37,6 +39,7 @@
 
 - (id) init;
 - (void) dealloc;
+- (id) init :(int)in_vid in_vtype:(int) in_vtype in_vname:(NSString *) in_vname;
 
 
 @end
