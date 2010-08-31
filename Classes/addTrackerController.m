@@ -49,7 +49,7 @@ static int editMode;
                          editToggleButtonItem,
                          flexibleSpaceButtonItem,
                          nil];
-	
+	[flexibleSpaceButtonItem release];
 	[editToggleButtonItem release];
 }
 
@@ -117,7 +117,6 @@ static int editMode;
 - (void)viewWillDisappear:(BOOL)animated {
 	//NSLog(@"atc: viewWillDisappear, namefield= %@",nameField.text);
 	NSLog(@"atc: viewWillDisappear, tracker name = %@",tempTrackerObj.trackerName);
-	tlist = nil;
 	
 	[super viewWillDisappear:animated];
 }
@@ -163,7 +162,7 @@ NSLog(@"btnAddValue was pressed!");
 }
 
 - (IBAction)btnSave {
-	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ tid= %d",tempTrackerObj.trackerName, tempTrackerObj.tid);
+	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ tid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.tid, tlist);
 
 	if ([nameField.text length] > 0) {
 		tempTrackerObj.trackerName = nameField.text;
@@ -261,7 +260,7 @@ NSLog(@"btnAddValue was pressed!");
 			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [[valueObj votArray] objectAtIndex:vo.valueType];
+			cell.detailTextLabel.text = [[valueObj votArray] objectAtIndex:vo.vtype];
 		}
 	}
 	

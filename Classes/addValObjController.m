@@ -145,7 +145,7 @@
 	NSLog(@"addVObjC: btnSave was pressed!");
 	
 	NSInteger row = [votPicker selectedRowInComponent:0];
-	tempValObj.valueType = row;
+	tempValObj.vtype = row;
 	
 	NSString *selected = [votPickerData objectAtIndex:row];
 	NSLog(@"label: %@  row: %d = %@",tempValObj.valueName,row,selected);

@@ -31,8 +31,37 @@
 		NSAssert(0, @"error opening rTracker database");
 	} else {
 		NSLog(@"opened tDb %@",dbName);
+		int c;
+		
+		sql = @"create table if not exists uniquev (id integer, value integer);";
+		[self toExecSql];
+		sql = @"select count(*) from uniquev where id=0;";
+		c = [self toQry2Int];
+		
+		if (c == 0) {
+			NSLog(@"init uniquev");
+			sql = @"insert into uniquev (id, value) values (0, 1);";
+			[self toExecSql];
+		} else {
+			sql= @"select value from uniquev where id=0;";
+			c = [self toQry2Int];
+			NSLog(@"uniquev= %d",c);
+		}
 	}
 }
+
+- (int) getUnique {
+	int i;
+	sql= @"select value from uniquev where id=0;";
+	i = [self toQry2Int];
+	NSLog(@"getUnique got %d",i);
+	sql = [[NSString alloc] initWithFormat:@"update uniquev set value = %d where id=0;",i+1];
+	[self toExecSql];
+	[sql release];
+	sql = nil;
+	return i;
+}
+
 
 - (id) init {
 
@@ -92,13 +121,19 @@
 	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			[i1 addObject: (id) sqlite3_column_int(stmt, 0)];
-			[i2 addObject: (id) sqlite3_column_int(stmt, 1)];
-			char *rslts = (char *) sqlite3_column_text(stmt, 2);
-			NSString *tlentry = [[NSString alloc] initWithUTF8String:rslts];
+			NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
+			[i1 addObject: i];
+			[i release];
+			
+			NSNumber *j = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 1)];
+			[i2 addObject:(id) j];
+			[j release];
+			
+			NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 2)];
 			[s1 addObject:(id) tlentry];
-			NSLog(@"  rslt: %d %d %@",[i1 lastObject], [i2 lastObject], tlentry);
 			[tlentry release];
+
+			NSLog(@"  rslt: %@ %@ %@",[i1 lastObject], [i2 lastObject], [s1 lastObject]);
 		}
 		if (rslt != SQLITE_DONE) {
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
@@ -139,15 +174,15 @@
 
 - (NSString *) toQry2Str {
 	NSLog(@"toQry2Str: sql _%@_",sql);
-	NSAssert(tDb,@"toQry2Int called with no tDb");
+	NSAssert(tDb,@"toQry2Str called with no tDb");
 	
 	sqlite3_stmt *stmt;
-	NSString *srslt = [NSString alloc];
+	NSString *srslt;
 	
 	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		if((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			[srslt initWithUTF8String: (char *) sqlite3_column_text(stmt, 0)];
+			srslt = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 0)];
 		} else {
 			NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
 		}

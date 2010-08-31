@@ -19,21 +19,18 @@
 #pragma mark Local Utilities
 
 - (void) initTDb {
+	int c;
+	
 	NSLog(@"Initializing top level dtabase!");
 	dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
 	sql = @"create table if not exists toplevel (rank integer, id integer unique, name text);";
 	[self toExecSql];
-	sql = @"create table if not exists uniquev (id integer, value integer);";
-	[self toExecSql];
-	sql = @"select count(*) from uniquev where id=0;";
-	int c = [self toQry2Int];
+	sql = @"select count(*) from toplevel;";
+	c = [self toQry2Int];
+	NSLog(@"toplevel at open contains %d entries",c);
 	
-	if (c == 0) {
-		sql = @"insert into uniquev (id, value) values (0, 1);";
-		[self toExecSql];
-	}
 	sql = nil;	
 }	
 
@@ -97,6 +94,7 @@
 	}
 }
 
+// TODO: fix -- dangerous - drops id
 - (void) reloadFromTLT {
 	int nrank=0;
 	sql = @"delete from toplevel;";
@@ -111,18 +109,16 @@
 		}
 }
 
-- (int) getUnique {
-	int i;
-	sql= @"select value from uniquev where id=0;";
-	i = [self toQry2Int];
-	NSLog(@"getUnique got %d",i);
-	sql = [[NSString alloc] initWithFormat:@"update uniquev set value = %d where id=0;",i+1];
-	[self toExecSql];
+
+
+- (int) getTIDfromIndex:(NSUInteger)ndx {
+	sql = [[NSString alloc] initWithFormat: @"select id from toplevel where name = \"%@\";",
+		   [topLayoutTable objectAtIndex:ndx]];
+	int tid = [self toQry2Int];
 	[sql release];
 	sql = nil;
-	return i;
+	return tid;
 }
-	
 
 /*
 #pragma mark -

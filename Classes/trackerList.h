@@ -29,7 +29,7 @@
 - (void)confirmTopLayoutEntry:(trackerObj *)tObj;
 - (void)reorderFromTLT;
 - (void)reloadFromTLT;
-- (int) getUnique;
 
+- (int) getTIDfromIndex:(NSUInteger)ndx;
 
 @end

@@ -21,25 +21,24 @@
 
 
 @interface valueObj : NSObject {
-	int vid;
+	NSInteger vid;
+	NSInteger vtype;
 	NSString *valueName;
-	NSInteger valueType;
 	NSDate *valueDate;
-	//id	*value;
 	NSString *value;
 }
-@property (nonatomic) int vid;
+@property (nonatomic) NSInteger vid;
+@property (nonatomic) NSInteger vtype;
 @property (nonatomic,retain) NSString *valueName;
-@property (nonatomic) NSInteger valueType;
 @property (nonatomic,retain) NSDate *valueDate;
-//@property (nonatomic,retain) id *value;
 @property (nonatomic,retain) NSString *value;
 
 + (NSArray *) votArray;
 
 - (id) init;
 - (void) dealloc;
-- (id) init :(int)in_vid in_vtype:(int) in_vtype in_vname:(NSString *) in_vname;
+- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
+
 
 
 @end

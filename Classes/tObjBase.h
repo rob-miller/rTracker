@@ -22,6 +22,8 @@
 
 - (id) init;
 - (void) getTDb;
+- (int) getUnique;
+
 - (void) toQry2AryS : (NSMutableArray *) inAry;
 - (void) toQry2AryIIS : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1;
 

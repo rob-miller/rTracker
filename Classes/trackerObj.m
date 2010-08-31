@@ -67,6 +67,15 @@
 	sql = nil;
 }
 
+- (void) confirmDb {
+	NSAssert(tid,@"tObj saveConfig tid=0");
+	if (! dbName) {
+		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",tid];
+		[self getTDb];
+		[self initTDb];
+	}
+}
+
 - (void) loadConfig {
 	NSLog(@"tObj loadConfig: %d",tid);
 	NSAssert(tid,@"tObj load tid=0");
@@ -83,12 +92,16 @@
 	NSEnumerator *e2 = [i2 objectEnumerator];
 	NSEnumerator *e3 = [s1 objectEnumerator];
 	int vid;
-	while ( vid = (int) [e1 nextObject]) {
-		[valObjTable addObject:(id) [[valueObj alloc] init :vid in_vtype:(int)[e2 nextObject] in_vname: (NSString *) [e3 nextObject]]];
+	while ( vid = (int) [[e1 nextObject] intValue]) {
+		valueObj *vo = [[valueObj alloc] init :vid 
+									  in_vtype:(int)[[e2 nextObject] intValue] 
+									  in_vname: (NSString *) [e3 nextObject] ];
+		[valObjTable addObject:(id) vo];
+		[vo release];
 	}
-	[e1 release];
-	[e2 release];
-	[e3 release];
+	//[e1 release];
+	//[e2 release];
+	//[e3 release];
 	[i1 release];
 	[i2 release];
 	[s1 release];
@@ -96,22 +109,23 @@
 
 - (void) saveConfig {
 	NSLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
-											   
-	NSAssert(tid,@"tObj saveConfig tid=0");
-	if (! dbName) {
-		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",tid];
-		[self getTDb];
-		[self initTDb];
-	}
+	
+	[self confirmDb];
+
 	sql = [[NSString alloc] initWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", trackerName];
 	[self toExecSql];
 	[sql release];
 	
 	int i=0;
 	for (valueObj *vo in valObjTable) {
-		NSLog(@"  vo %@", vo.valueName);
+
+		if (vo.vid == 0) {
+			vo.vid = [self getUnique];
+		}
+		
+		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		sql = [[NSString alloc] initWithFormat:@"insert or replace into voConfig (id, rank, type, name) values (%d, %d, %d, '%@');",
-			   vo.vid, i++, vo.valueType, vo.valueName];
+			   vo.vid, i++, vo.vtype, vo.valueName];
 		[self toExecSql];
 		[sql release];
 	}
@@ -127,6 +141,7 @@
 
 		if (tid) {
 			NSLog(@"init trackerObj id: %d",tid);
+			[self confirmDb];
 			[self loadConfig];
 		} else {
 			NSLog(@"init trackerObj New");
@@ -144,7 +159,7 @@
 }
 
 - (void) addValObj:(valueObj *) valObj {
-	NSLog(@"addValObj to %@: adding _%@_, total items now %d",trackerName, valObj.valueName,[self.valObjTable count]);
+	NSLog(@"addValObj to %@: adding _%@_, total items now %d",trackerName, valObj.valueName, [self.valObjTable count]);
 	[self.valObjTable addObject:valObj];
 }
 

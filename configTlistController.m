@@ -8,6 +8,7 @@
 
 #import "configTlistController.h"
 #import "trackerList.h"
+#import "addTrackerController.h"
 
 
 @implementation configTlistController
@@ -201,4 +202,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tlist reloadFromTLT];
 }
 
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+    // Navigation logic may go here -- for example, create and push another view controller.
+	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
+	// [self.navigationController pushViewController:anotherViewController animated:YES];
+	// [anotherViewController release];
+	
+	NSUInteger row = [indexPath row];
+	NSLog(@"configTList selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
+	
+	if (selSegNdx == SegmentEdit) {
+		int tid = [self.tlist getTIDfromIndex:row];
+		NSLog(@"will config tid %d",tid);
+		
+		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
+		atc.tlist = self.tlist;
+		atc.tempTrackerObj = [trackerObj alloc];
+		atc.tempTrackerObj.tid = tid;
+		[atc.tempTrackerObj init];
+	
+		[self.navigationController pushViewController:atc animated:YES];
+		[atc release];
+	} else if (selSegNdx == SegmentCopy) {
+		NSLog(@"selected for copy tobj");
+	} else if (selSegNdx == SegmentMoveDelete) {
+		NSLog(@"selected for move/delete?");
+	}
+}
 @end
