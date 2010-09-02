@@ -97,7 +97,7 @@ static int editMode;
 		tempTrackerObj = [trackerObj alloc];
 		//tempTrackerObj.trackerName = @"";
 		[tempTrackerObj init];
-		tempTrackerObj.tid = [tlist getUnique];
+		tempTrackerObj.toid = [tlist getUnique];
 	}
 	[table setEditing:YES animated:YES];
 	//[table allowsSelectionDuringEditing:YES];  // not there hmmmmmm
@@ -162,15 +162,16 @@ NSLog(@"btnAddValue was pressed!");
 }
 
 - (IBAction)btnSave {
-	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ tid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.tid, tlist);
+	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, tlist);
 
 	if ([nameField.text length] > 0) {
 		tempTrackerObj.trackerName = nameField.text;
-		if (! tempTrackerObj.tid) {
-			tempTrackerObj.tid = [tlist getUnique];
+		if (! tempTrackerObj.toid) {
+			tempTrackerObj.toid = [tlist getUnique];
 		}
 		[tempTrackerObj saveConfig];
 		[tlist confirmTopLayoutEntry:tempTrackerObj];
+		[tlist loadTopLayoutTable];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc]
@@ -260,7 +261,7 @@ NSLog(@"btnAddValue was pressed!");
 			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [[valueObj votArray] objectAtIndex:vo.vtype];
+			cell.detailTextLabel.text = [vo.votArray objectAtIndex:vo.vtype];
 		}
 	}
 	
@@ -342,6 +343,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger section = [indexPath section];
 	
 	NSLog(@"accessory button tapped for section %d row %d ", section, row);
+
+	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+	avc.parentTrackerObj = tempTrackerObj;
+	avc.tempValObj = [tempTrackerObj.valObjTable objectAtIndex:row];
+	
+	[self.navigationController pushViewController:avc animated:YES];
+	[avc release];
+	
 }
 
 

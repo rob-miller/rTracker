@@ -74,10 +74,10 @@
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
 	int rank = [topLayoutTable count];
 
-	sql = [[NSString alloc] initWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
-		   rank, tObj.tid, tObj.trackerName ];
+	sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
+		   rank, tObj.toid, tObj.trackerName ];
 	[self toExecSql];
-	[sql release];
+	//[sql release];
 	sql = nil;
 	
 	// call loadTopLayoutTable before using:  [topLayoutTable insertObject:name atIndex:rank];
@@ -87,9 +87,9 @@
 	int nrank=0;
 	for (NSString *tracker in topLayoutTable) {
 		NSLog(@" %@ to rank %d",tracker,nrank);
-		sql = [[NSString alloc] initWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
+		sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
-		[sql release];
+		//[sql release];
 		nrank++;
 	}
 }
@@ -101,9 +101,9 @@
 	[self toExecSql];
 	for (NSString *tracker in topLayoutTable) {
 		NSLog(@" %@ to rank %d",tracker,nrank);
-		sql = [[NSString alloc] initWithFormat: @"insert into toplevel (rank, name) values (%i, \"%@\");",nrank,tracker];
+		sql = [NSString stringWithFormat: @"insert into toplevel (rank, name) values (%i, \"%@\");",nrank,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
-		[sql release];  // this seems quite gross...
+		//[sql release];  // this seems quite gross...
 		sql = nil;
 		nrank++;
 		}
@@ -112,14 +112,37 @@
 
 
 - (int) getTIDfromIndex:(NSUInteger)ndx {
-	sql = [[NSString alloc] initWithFormat: @"select id from toplevel where name = \"%@\";",
+	sql = [NSString stringWithFormat: @"select id from toplevel where name = \"%@\";",
 		   [topLayoutTable objectAtIndex:ndx]];
 	int tid = [self toQry2Int];
-	[sql release];
+	//[sql release];
 	sql = nil;
 	return tid;
 }
 
+- (trackerObj *) toDeepCopy : (trackerObj *) srcTO {
+	NSLog(@"toDeepCopy: src id= %d %@",srcTO.toid,srcTO.trackerName);
+	trackerObj *newTO = [trackerObj alloc];
+	newTO.toid = [self getUnique];
+	newTO = [newTO init];
+	
+	NSString *oTN = srcTO.trackerName;
+	NSString *nTN = [[NSString alloc] initWithString:oTN];
+	newTO.trackerName = nTN;
+
+	NSEnumerator *enumer = [srcTO.valObjTable objectEnumerator];
+	valueObj *vo;
+	while (vo = (valueObj *) [enumer nextObject]) {
+		valueObj *newVO = [newTO voDeepCopy:vo];
+		[newTO addValObj:newVO];
+		[newVO release];
+	}
+	
+	[newTO saveConfig];
+	
+	return newTO;
+}
+							
 /*
 #pragma mark -
 #pragma mark Notifications

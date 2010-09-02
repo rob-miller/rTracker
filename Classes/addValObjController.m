@@ -78,10 +78,15 @@
 	self.toolbarItems = [NSArray arrayWithObjects: configBtn, nil];
 	[configBtn release];
 	
-	self.tempValObj = [[valueObj alloc] init];
+	if (self.tempValObj == nil) {
+		self.tempValObj = [[valueObj alloc] init];
+	} else {
+		self.labelField.text = self.tempValObj.valueName;
+		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:YES];
+	}
 	
-	self.votPickerData = [valueObj votArray];
-
+	self.votPickerData = tempValObj.votArray;
+	
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
@@ -92,6 +97,7 @@
 	[super viewDidLoad];
 
 }
+
 
 
 /*
@@ -146,9 +152,12 @@
 	
 	NSInteger row = [votPicker selectedRowInComponent:0];
 	tempValObj.vtype = row;
+	if (tempValObj.vid == 0) {
+		tempValObj.vid = [parentTrackerObj getUnique];
+	}
 	
 	NSString *selected = [votPickerData objectAtIndex:row];
-	NSLog(@"label: %@  row: %d = %@",tempValObj.valueName,row,selected);
+	NSLog(@"label: %@ id: %d row: %d = %@",tempValObj.valueName,tempValObj.vid, row,selected);
 	
 	[parentTrackerObj addValObj:tempValObj];
 	

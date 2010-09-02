@@ -191,6 +191,13 @@
 
 	NSUInteger row = [indexPath row];
 	NSLog(@"selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
+	
+	trackerObj *to = [trackerObj alloc];
+	to.toid = [tlist getTIDfromIndex:row];
+	to = [to init];
+	[to describe];
+	[to release];
+	
 }
 
 

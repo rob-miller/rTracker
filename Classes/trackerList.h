@@ -31,5 +31,6 @@
 - (void)reloadFromTLT;
 
 - (int) getTIDfromIndex:(NSUInteger)ndx;
+- (trackerObj *) toDeepCopy : (trackerObj *) srcTO;
 
 @end

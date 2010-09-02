@@ -77,10 +77,19 @@ static int selSegNdx=SegmentEdit;
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+	
+	NSLog(@"ctlc: viewWillAppear");
+	
+	[table reloadData];
+	
+    [super viewWillAppear:animated];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
 	NSLog(@"ctlc: viewWillDisappear");
 
-	self.tlist = nil;
+	//self.tlist = nil;
 	
 	[super viewWillDisappear:animated];
 }
@@ -214,19 +223,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSLog(@"configTList selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
-		int tid = [self.tlist getTIDfromIndex:row];
-		NSLog(@"will config tid %d",tid);
+		int toid = [self.tlist getTIDfromIndex:row];
+		NSLog(@"will config toid %d",toid);
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
 		atc.tempTrackerObj = [trackerObj alloc];
-		atc.tempTrackerObj.tid = tid;
+		atc.tempTrackerObj.toid = toid;
 		[atc.tempTrackerObj init];
 	
 		[self.navigationController pushViewController:atc animated:YES];
 		[atc release];
 	} else if (selSegNdx == SegmentCopy) {
-		NSLog(@"selected for copy tobj");
+		int toid = [self.tlist getTIDfromIndex:row];
+		NSLog(@"will copy toid %d",toid);
+
+		trackerObj *oTO = [trackerObj alloc];
+		oTO.toid = toid;
+		oTO = [oTO init];
+		
+		trackerObj *nTO = [self.tlist toDeepCopy:oTO];
+		[oTO release];
+		[self.tlist confirmTopLayoutEntry:nTO];
+		[nTO release];
+		//[self.tlist confirmTopLayoutEntry:[self.tlist toDeepCopy:[self.tlist.topLayoutTable objectAtIndex:row]]];
+		[tlist loadTopLayoutTable];
+		[table reloadData];
+		//[self.navigationController popViewControllerAnimated:YES];
 	} else if (selSegNdx == SegmentMoveDelete) {
 		NSLog(@"selected for move/delete?");
 	}

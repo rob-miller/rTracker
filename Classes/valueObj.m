@@ -16,8 +16,9 @@
 @synthesize valueName;
 @synthesize valueDate;
 @synthesize value;
+@synthesize votArray;
 
-
+/*
 + (NSArray *) votArray {
 	NSString *votS[VOT_MAX];
 	votS[VOT_NUMBER] = @"number";
@@ -36,12 +37,17 @@
 	
 	return votA;
 }
-
+*/
 
 - (id) init {
 	NSLog(@"init valueObj: %@", valueName);
 	if (self = [super init]) {
 		valueDate = [[NSDate alloc] init];
+		
+		NSBundle *bundle = [NSBundle mainBundle];
+		NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
+		votArray = [[NSArray alloc] initWithContentsOfFile:plistPath]; //
+		
 	}
 	return self;
 }
@@ -61,6 +67,11 @@
 	[valueName release];
 	[valueDate release];
 	[value release];
+}
+
+- (void) describe {
+	
+	NSLog(@" value id %d name %@ type %@ date %@ value .%@.",vid,valueName, [votArray objectAtIndex:vtype], valueDate, value);
 }
 
 

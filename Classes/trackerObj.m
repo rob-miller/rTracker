@@ -15,7 +15,7 @@
 
 @implementation trackerObj
 
-@synthesize tid;
+//@synthesize tid;
 @synthesize trackerName;
 @synthesize valObjTable;
 
@@ -40,7 +40,7 @@
 	
 	//NSLog(@" processed: %s",outp);
 	
-	outStr = [[ NSString alloc] initWithUTF8String :outp];
+	outStr = [ NSString stringWithUTF8String :outp];
 	
 	NSLog(@"makeSafeStr finished: .%@. -> .%@.",inStr,outStr);
 	free( outp );
@@ -68,20 +68,20 @@
 }
 
 - (void) confirmDb {
-	NSAssert(tid,@"tObj saveConfig tid=0");
+	NSAssert(toid,@"tObj saveConfig toid=0");
 	if (! dbName) {
-		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",tid];
+		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		[self getTDb];
 		[self initTDb];
 	}
 }
 
 - (void) loadConfig {
-	NSLog(@"tObj loadConfig: %d",tid);
-	NSAssert(tid,@"tObj load tid=0");
+	NSLog(@"tObj loadConfig: %d",toid);
+	NSAssert(toid,@"tObj load toid=0");
 	[trackerName release];
 	sql = @"select val from trkrInfo where field='name';";
-	trackerName = [self toQry2Str];
+	trackerName = [self toQry2StrCopy];
 	NSMutableArray *i1 = [[NSMutableArray alloc] init];
 	NSMutableArray *i2 = [[NSMutableArray alloc] init];
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
@@ -112,22 +112,22 @@
 	
 	[self confirmDb];
 
-	sql = [[NSString alloc] initWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", trackerName];
+	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", trackerName];
 	[self toExecSql];
-	[sql release];
+	//[sql release];
 	
 	int i=0;
 	for (valueObj *vo in valObjTable) {
 
-		if (vo.vid == 0) {
+		if (vo.vid <= 0) {
 			vo.vid = [self getUnique];
 		}
 		
 		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
-		sql = [[NSString alloc] initWithFormat:@"insert or replace into voConfig (id, rank, type, name) values (%d, %d, %d, '%@');",
+		sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name) values (%d, %d, %d, '%@');",
 			   vo.vid, i++, vo.vtype, vo.valueName];
 		[self toExecSql];
-		[sql release];
+		//[sql release];
 	}
 	
 	sql = nil;
@@ -139,8 +139,8 @@
 	if (self = [super init]) {
 		valObjTable = [[NSMutableArray alloc] init];
 
-		if (tid) {
-			NSLog(@"init trackerObj id: %d",tid);
+		if (toid) {
+			NSLog(@"init trackerObj id: %d",toid);
 			[self confirmDb];
 			[self loadConfig];
 		} else {
@@ -158,9 +158,47 @@
 	[super dealloc];
 }
 
+- (bool) updateValObj:(valueObj *) valObj {
+
+	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
+	valueObj *vo;
+	while ( vo = (valueObj *) [enumer nextObject]) {
+		if (vo.vid == valObj.vid) {
+			*vo = *valObj;
+			return YES;
+		}
+	}
+	return NO;
+}
+
 - (void) addValObj:(valueObj *) valObj {
-	NSLog(@"addValObj to %@: adding _%@_, total items now %d",trackerName, valObj.valueName, [self.valObjTable count]);
-	[self.valObjTable addObject:valObj];
+	NSLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+
+	// check if toid already exists, then update
+	if (! [self updateValObj: valObj]) {
+		[self.valObjTable addObject:valObj];
+	}
+}
+
+- (valueObj *) voDeepCopy: (valueObj *) srcVO {
+	NSLog(@"voDeepCopy: to= id %d %@ input vid=%d %@", toid, trackerName, srcVO.vid,srcVO.valueName);
+	
+	valueObj *newVO = [[valueObj alloc] init];
+	newVO.vid = [self getUnique];
+	newVO.vtype = srcVO.vtype;
+	newVO.valueName = [[NSString alloc] initWithString:srcVO.valueName];  
+	
+	return newVO;
+}
+
+- (void) describe {
+	NSLog(@"tracker id %d name %@ dbName %@", toid, trackerName, dbName);
+
+	NSEnumerator *enumer = [valObjTable objectEnumerator];
+	valueObj *vo;
+	while ( vo = (valueObj *) [enumer nextObject]) {
+		[vo describe];
+	}
 }
 
 /*

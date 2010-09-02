@@ -26,19 +26,25 @@
 	NSString *valueName;
 	NSDate *valueDate;
 	NSString *value;
+	NSArray *votArray;
 }
+
+//+ (NSArray *) votArray;
+
 @property (nonatomic) NSInteger vid;
 @property (nonatomic) NSInteger vtype;
 @property (nonatomic,retain) NSString *valueName;
 @property (nonatomic,retain) NSDate *valueDate;
 @property (nonatomic,retain) NSString *value;
 
-+ (NSArray *) votArray;
+
+@property (nonatomic, retain) NSArray *votArray;
 
 - (id) init;
 - (void) dealloc;
 - (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
 
+- (void) describe;
 
 
 @end

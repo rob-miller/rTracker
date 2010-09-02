@@ -12,11 +12,14 @@
 
 @interface tObjBase : NSObject {
 
+	NSInteger toid;
 	NSString *dbName;
 	NSString *sql;
 	sqlite3 *tDb;
+	int tuniq;
 }
 
+@property (nonatomic) NSInteger toid;
 @property (nonatomic, retain) NSString *sql;
 @property (nonatomic, retain) NSString *dbName;
 
@@ -29,6 +32,6 @@
 
 - (void) toExecSql;
 - (int) toQry2Int;
-- (NSString *) toQry2Str;
+- (NSString *) toQry2StrCopy;
 
 @end
