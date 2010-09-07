@@ -10,6 +10,7 @@
 #import "rTrackerAppDelegate.h"
 #import "addTrackerController.h"
 #import "configTlistController.h"
+#import "useTrackerController.h"
 
 @implementation RootViewController
 
@@ -192,10 +193,14 @@
 	NSUInteger row = [indexPath row];
 	NSLog(@"selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
 	
-	trackerObj *to = [trackerObj alloc];
-	to.toid = [tlist getTIDfromIndex:row];
-	to = [to init];
+	trackerObj *to = [[trackerObj alloc] init:[tlist getTIDfromIndex:row]];
 	[to describe];
+
+	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
+	utc.tracker = to;
+	[self.navigationController pushViewController:utc animated:YES];
+	[utc release];
+	
 	[to release];
 	
 }

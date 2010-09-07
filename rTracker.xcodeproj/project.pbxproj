@@ -20,6 +20,8 @@
 		D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
 		D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
+		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
+		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
 		D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A3150C11903F5E00F062AC /* addTrackerController.xib */; };
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
@@ -52,6 +54,9 @@
 		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
 		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
 		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Classes/addValObjController.xib; sourceTree = "<group>"; };
+		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
+		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
+		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Classes/useTrackerController.xib; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
 		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = addTrackerController.xib; sourceTree = "<group>"; };
@@ -90,6 +95,8 @@
 				D4A317B21192B7C800F062AC /* configTlistController.m */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
+				D49854AD12312A400009E458 /* useTrackerController.h */,
+				D49854AE12312A400009E458 /* useTrackerController.m */,
 				D4A314A81189BB6A00F062AC /* tObjBase.h */,
 				D4A314A91189BB6A00F062AC /* tObjBase.m */,
 				D482D270114FEB5E00CE6BC8 /* trackerList.h */,
@@ -134,6 +141,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D49854AF12312A400009E458 /* useTrackerController.xib */,
 				D4FF224712304E050047518A /* rt-types.plist */,
 				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
 				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
@@ -212,6 +220,7 @@
 				D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */,
 				D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */,
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
+				D49854B112312A400009E458 /* useTrackerController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +241,7 @@
 				D4A317B41192B7C800F062AC /* configTlistController.m in Sources */,
 				D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */,
 				D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */,
+				D49854B012312A400009E458 /* useTrackerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

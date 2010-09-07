@@ -17,6 +17,7 @@
 
 //@synthesize tid;
 @synthesize trackerName;
+//@synthesize trackerDate;
 @synthesize valObjTable;
 
 /*
@@ -58,13 +59,19 @@
 */
 
 - (void) initTDb {
+	int c;
 	sql = @"create table if not exists trkrInfo (field text unique, val text);";
 	[self toExecSql];
-	sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text);";
-	[self toExecSql];
-	sql = @"create table if not exists voData (id int, date int, val text);";
-	[self toExecSql];
-	sql = nil;
+	sql = @"select count(*) from trkrInfo;";
+	c = [self toQry2Int];
+	if (c == 0) {
+		// init clean db
+		sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text);";
+		[self toExecSql];
+		sql = @"create table if not exists voData (id int, date int, val text);";
+		[self toExecSql];
+		sql = nil;
+	}
 }
 
 - (void) confirmDb {
@@ -111,7 +118,7 @@
 	NSLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
 	
 	[self confirmDb];
-
+	
 	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", trackerName];
 	[self toExecSql];
 	//[sql release];
@@ -138,16 +145,19 @@
 
 	if (self = [super init]) {
 		valObjTable = [[NSMutableArray alloc] init];
-
-		if (toid) {
-			NSLog(@"init trackerObj id: %d",toid);
-			[self confirmDb];
-			[self loadConfig];
-		} else {
-			NSLog(@"init trackerObj New");
-		}
+		NSLog(@"init trackerObj New");
 	}
 	
+	return self;
+}
+
+- (id)init:(int) tid {
+	if (self = [self init]) {
+		NSLog(@"configure trackerObj id: %d",tid);
+		self.toid = tid;
+		[self confirmDb];
+		[self loadConfig];
+	}
 	return self;
 }
 
@@ -155,6 +165,7 @@
 	NSLog(@"dealloc tObj: %@",trackerName);
 
 	[trackerName release];
+	[valObjTable release];
 	[super dealloc];
 }
 

@@ -78,15 +78,19 @@
 	self.toolbarItems = [NSArray arrayWithObjects: configBtn, nil];
 	[configBtn release];
 	
+	
 	if (self.tempValObj == nil) {
 		self.tempValObj = [[valueObj alloc] init];
+		self.votPickerData = tempValObj.votArray;
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
+		self.votPickerData = tempValObj.votArray;
 		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:YES];
 	}
 	
-	self.votPickerData = tempValObj.votArray;
+	self.title = @"value";
 	
+
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;

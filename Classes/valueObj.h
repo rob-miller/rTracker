@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 
 #define VOT_NUMBER	0
@@ -45,6 +46,7 @@
 - (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
 
 - (void) describe;
+- (void) display;
 
 
 @end

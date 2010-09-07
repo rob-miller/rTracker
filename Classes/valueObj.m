@@ -74,5 +74,15 @@
 	NSLog(@" value id %d name %@ type %@ date %@ value .%@.",vid,valueName, [votArray objectAtIndex:vtype], valueDate, value);
 }
 
+- (void) display {
+	switch (vtype) {
+		case VOT_NUMBER:
+			
+			break;
+		default:
+			break;
+	}
+}
+
 
 @end

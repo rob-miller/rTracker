@@ -68,7 +68,6 @@ static int editMode;
 
 
 - (void) viewDidLoad {
-	self.title = @"add tracker";
 
 	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
 	
@@ -98,7 +97,11 @@ static int editMode;
 		//tempTrackerObj.trackerName = @"";
 		[tempTrackerObj init];
 		tempTrackerObj.toid = [tlist getUnique];
+		self.title = @"add tracker";
+	} else {
+			self.title = @"modify tracker";
 	}
+	
 	[table setEditing:YES animated:YES];
 	//[table allowsSelectionDuringEditing:YES];  // not there hmmmmmm
 	

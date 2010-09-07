@@ -15,16 +15,19 @@
 @interface trackerObj : tObjBase {
 	//int tid;
 	NSString *trackerName;
+	//NSDate *trackerDate;
 	NSMutableArray *valObjTable;
 }
 
 //@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
+//@property (nonatomic,retain) NSDate *trackerDate;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 
 //+ (NSString *) makeSafeStr : (NSString *) inStr;
 
 //- (id)init;
+- (id) init:(int) tid;
 //- (void) dealloc;
 
 - (bool) updateValObj:(valueObj *) valObj;

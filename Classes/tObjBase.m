@@ -153,7 +153,7 @@
 		NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
-	NSLog(@"  returns %@ : %@ : %@", i1, i2, s1);
+	//NSLog(@"  returns %@ : %@ : %@", i1, i2, s1);
 	
 
 }

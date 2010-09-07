@@ -228,9 +228,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
-		atc.tempTrackerObj = [trackerObj alloc];
-		atc.tempTrackerObj.toid = toid;
-		[atc.tempTrackerObj init];
+		atc.tempTrackerObj = [[trackerObj alloc] init:toid];
 	
 		[self.navigationController pushViewController:atc animated:YES];
 		[atc release];
