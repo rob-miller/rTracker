@@ -13,6 +13,9 @@
 
 @synthesize tracker, table;
 
+const NSInteger kViewTag = 1;
+
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -33,6 +36,23 @@
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		[vo display];
 	}
+	
+	// cancel / save buttons on top nav bar
+	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
+								  initWithTitle:@"Cancel"
+								  style:UIBarButtonItemStyleBordered
+								  target:self
+								  action:@selector(btnCancel)];
+	self.navigationItem.leftBarButtonItem = cancelBtn;
+	[cancelBtn release];
+	
+	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
+								initWithTitle:@"Save"
+								style:UIBarButtonItemStyleBordered
+								target:self
+								action:@selector(btnSave)];
+	self.navigationItem.rightBarButtonItem = saveBtn;
+	[saveBtn release];
 	
     [super viewDidLoad];
 }
@@ -63,6 +83,17 @@
 }
 
 
+
+- (IBAction)btnCancel {
+	NSLog(@"btnCancel was pressed!");
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)btnSave {
+	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",tracker.trackerName, tracker.toid);
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -88,12 +119,20 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    } else {
+		// the cell is being recycled, remove old embedded controls
+		UIView *viewToRemove = nil;
+		viewToRemove = [cell.contentView viewWithTag:kViewTag];
+		if (viewToRemove)
+			[viewToRemove removeFromSuperview];
+	}
+	
     
 	// Configure the cell.
 
 	cell.textLabel.text = vo.valueName;
-	
+	[cell.contentView addSubview:[vo display]];
     return cell;
 }
 

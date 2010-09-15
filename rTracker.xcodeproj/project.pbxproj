@@ -27,6 +27,10 @@
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
 		D4A317B41192B7C800F062AC /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
 		D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A317B31192B7C800F062AC /* configTlistController.xib */; };
+		D4C520EE123F9BF400554627 /* chkbox_off.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C520ED123F9BF400554627 /* chkbox_off.png */; };
+		D4C520F2123F9C2D00554627 /* chkbox_on.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C520F1123F9C2D00554627 /* chkbox_on.png */; };
+		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D4C5210E123F9E1400554627 /* whiteButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C5210D123F9E1400554627 /* whiteButton.png */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +68,10 @@
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = configTlistController.h; path = ../configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = configTlistController.m; path = ../configTlistController.m; sourceTree = "<group>"; };
 		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = configTlistController.xib; sourceTree = "<group>"; };
+		D4C520ED123F9BF400554627 /* chkbox_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chkbox_off.png; path = ../rTracker/chkbox_off.png; sourceTree = SOURCE_ROOT; };
+		D4C520F1123F9C2D00554627 /* chkbox_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chkbox_on.png; path = ../rTracker/chkbox_on.png; sourceTree = SOURCE_ROOT; };
+		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = ../UICatalog/images/blueButton.png; sourceTree = SOURCE_ROOT; };
+		D4C5210D123F9E1400554627 /* whiteButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteButton.png; path = ../UICatalog/images/whiteButton.png; sourceTree = SOURCE_ROOT; };
 		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,6 +113,10 @@
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
 				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
 				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
+				D4C5210D123F9E1400554627 /* whiteButton.png */,
+				D4C520ED123F9BF400554627 /* chkbox_off.png */,
+				D4C52109123F9DF700554627 /* blueButton.png */,
+				D4C520F1123F9C2D00554627 /* chkbox_on.png */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -221,6 +233,10 @@
 				D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */,
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
 				D49854B112312A400009E458 /* useTrackerController.xib in Resources */,
+				D4C520EE123F9BF400554627 /* chkbox_off.png in Resources */,
+				D4C520F2123F9C2D00554627 /* chkbox_on.png in Resources */,
+				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
+				D4C5210E123F9E1400554627 /* whiteButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
