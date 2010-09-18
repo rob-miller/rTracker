@@ -18,7 +18,7 @@
 
 //@synthesize tid;
 @synthesize trackerName;
-//@synthesize trackerDate;
+@synthesize trackerDate;
 @synthesize valObjTable;
 
 /*
@@ -71,12 +71,14 @@
 		[self toExecSql];
 		sql = @"create table if not exists voData (id int, date int, val text);";
 		[self toExecSql];
+		sql = @"create table if not exists trkrData (date int unique);";
+		[self toExecSql];
 		sql = nil;
 	}
 }
 
 - (void) confirmDb {
-	NSAssert(toid,@"tObj saveConfig toid=0");
+	NSAssert(toid,@"tObj confirmDb toid=0");
 	if (! dbName) {
 		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		[self getTDb];
@@ -107,12 +109,12 @@
 		[valObjTable addObject:(id) vo];
 		[vo release];
 	}
-	//[e1 release];
-	//[e2 release];
-	//[e3 release];
+
 	[i1 release];
 	[i2 release];
 	[s1 release];
+	
+	trackerDate = [[NSDate alloc] init];
 }
 
 - (void) saveConfig {
@@ -141,10 +143,130 @@
 	sql = nil;
 }
 
+- (valueObj *) getValObj:(NSInteger) qVid {
+	valueObj *rvo=nil;
+	
+	NSEnumerator *e = [self.valObjTable objectEnumerator];
+	valueObj *vo;
+	while (vo = (valueObj *) [e nextObject]) {
+		if (vo.vid == qVid) {
+			rvo = vo;
+			break;
+		}
+	}
+
+	if (vo == nil) {
+		NSLog(@"tObj getValObj failed to find vid %d",qVid);
+	}
+	return rvo;
+}
+
+- (BOOL) loadData: (int) iDate {
+	
+	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
+	[self resetData];
+	sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d;",iDate];
+	int c = [self toQry2Int];
+	if (c) {
+		//[self.trackerDate release];
+		//self.trackerDate = nil;
+		self.trackerDate = qDate;
+		NSMutableArray *i1 = [[NSMutableArray alloc] init];
+		NSMutableArray *s1 = [[NSMutableArray alloc] init];
+		sql = [NSString stringWithFormat:@"select id, val from voData where date = %d;", iDate];
+		[self toQry2AryIS :i1 s1:s1];
+		
+		NSEnumerator *e1 = [i1 objectEnumerator];
+		NSEnumerator *e3 = [s1 objectEnumerator];
+		NSInteger vid;
+		while ( vid = (NSInteger) [[e1 nextObject] intValue]) {			
+			valueObj *vo = [self getValObj:vid];
+			NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
+			[vo.value setString:(NSString *) [e3 nextObject]];
+		}
+		
+		[i1 release];
+		[s1 release];
+		
+		return YES;
+		
+	} else {
+		NSLog(@"tObj loadData: nothing for date %d %@", iDate, qDate);
+		return NO;
+	}
+}
+
+- (void) saveData {
+
+	if (self.trackerDate == nil) {
+		self.trackerDate = [[NSDate alloc] init];
+	}
+	
+	sql = [NSString stringWithFormat:@"insert or replace into trkrData (date) values (%d);", 
+		   (int) [self.trackerDate timeIntervalSince1970] ];
+	[self toExecSql];
+
+	NSLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
+	
+	for (valueObj *vo in valObjTable) {
+		
+		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
+		
+		NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+		sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+			   vo.vid, (int) [self.trackerDate timeIntervalSince1970], vo.value];
+		[self toExecSql];
+	}
+	
+	sql = nil;
+	
+}
+
+- (void) resetData {
+
+	//[self.trackerDate release];
+	self.trackerDate = [[NSDate alloc] init];
+
+	NSEnumerator *e = [self.valObjTable objectEnumerator];
+	valueObj *vo;
+	while (vo = (valueObj *) [e nextObject]) {
+		[vo.value setString:@""];  // TODO: default values go here
+	}
+
+}
+
+- (void) deleteAllData {
+	[self deleteTDb];
+}
+
+- (void) deleteCurrEntry {
+	sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;",(int) [trackerDate timeIntervalSince1970]];
+	[self toExecSql];
+	sql = [NSString stringWithFormat:@"delete from voData where date = %d;",(int) [trackerDate timeIntervalSince1970]];
+	[self toExecSql];
+	sql = nil;
+}
+
+- (int) prevDate {
+	sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;", 
+		   (int) [trackerDate timeIntervalSince1970] ];
+	int rslt= [self toQry2Int];
+	sql = nil;
+	return rslt;
+}
+
+- (int) postDate {
+	sql = [NSString stringWithFormat:@"select date from trkrData where date > %d order by date asc limit 1;", 
+		   (int) [trackerDate timeIntervalSince1970] ];
+	int rslt= (NSInteger) [self toQry2Int];
+	sql = nil;
+	return rslt;
+}
 
 - (id)init {
 
 	if (self = [super init]) {
+		trackerDate = nil;
 		valObjTable = [[NSMutableArray alloc] init];
 		NSLog(@"init trackerObj New");
 	}
@@ -166,6 +288,7 @@
 	NSLog(@"dealloc tObj: %@",trackerName);
 
 	[trackerName release];
+	[trackerDate release];
 	[valObjTable release];
 	[super dealloc];
 }
@@ -176,7 +299,13 @@
 	valueObj *vo;
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		if (vo.vid == valObj.vid) {
-			*vo = *valObj;
+			//*vo = *valObj; // indirection cannot be to an interface in non-fragile ABI
+			vo.vtype = valObj.vtype;
+			[vo.valueName release];
+			vo.valueName = valObj.valueName;
+			[vo.value setString:valObj.value];
+			[vo.display release];
+			vo.display = valObj.display;
 			return YES;
 		}
 	}

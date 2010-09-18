@@ -17,6 +17,7 @@
 @synthesize tempTrackerObj;
 @synthesize table;
 
+extern const NSArray  *votPickerData;
 
 # pragma mark -
 # pragma mark toolbar support
@@ -73,16 +74,14 @@ static int editMode;
 	
 	// cancel / save buttons on top nav bar
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
-							   initWithTitle:@"Cancel"
-							   style:UIBarButtonItemStyleBordered
+							   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 							   target:self
 							   action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
 	[cancelBtn release];
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-							   initWithTitle:@"Save"
-							   style:UIBarButtonItemStyleBordered
+							   initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 							   target:self
 							   action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
@@ -264,7 +263,7 @@ NSLog(@"btnAddValue was pressed!");
 			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [vo.votArray objectAtIndex:vo.vtype];
+			cell.detailTextLabel.text = [votPickerData objectAtIndex:vo.vtype];
 		}
 	}
 	

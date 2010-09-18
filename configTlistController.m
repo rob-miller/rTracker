@@ -18,6 +18,9 @@
 
 static int selSegNdx=SegmentEdit;
 
+NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
+UITableView *deleteTableView;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -134,6 +137,31 @@ static int selSegNdx=SegmentEdit;
 			
 }
 
+#pragma mark UIActionSheet methods
+
+- (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
+	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+	
+	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
+		NSUInteger row = [deleteIndexPath row];
+		NSLog(@"checkTrackerDelete: will delete row %d ",row);
+		int toid = [self.tlist getTIDfromIndex:row];
+		[tlist.topLayoutTable removeObjectAtIndex:row];
+		[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
+						 withRowAnimation:UITableViewRowAnimationFade];		
+		trackerObj *to = [[trackerObj alloc] init:toid];
+		[to deleteAllData];
+		[to release];
+		[tlist reloadFromTLT];
+	} else {
+		NSLog(@"cancelled");
+	}
+	
+}
+					 
+					 
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -199,16 +227,23 @@ static int selSegNdx=SegmentEdit;
 	[tlist reorderFromTLT];
 	
 }
-
+					 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
 forRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSUInteger row = [indexPath row];
-	NSLog(@"ctlc: delete row %d ",row);
-	[tlist.topLayoutTable removeObjectAtIndex:row];
-	[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-					 withRowAnimation:UITableViewRowAnimationFade];
+	deleteIndexPath = indexPath;
+	deleteTableView = tableView;
 	
-	[tlist reloadFromTLT];
+
+	UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
+										 initWithTitle:[NSString stringWithFormat:
+														@"Really delete all data for %@?",
+														[tlist.topLayoutTable objectAtIndex:[indexPath row]]]
+							delegate:self 
+							cancelButtonTitle:@"Cancel"
+							destructiveButtonTitle:@"Yes, delete"
+							otherButtonTitles:nil];
+	[checkTrackerDelete showInView:self.view];
+	[checkTrackerDelete release];
 }
 
 // Override to support row selection in the table view.
@@ -236,9 +271,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		int toid = [self.tlist getTIDfromIndex:row];
 		NSLog(@"will copy toid %d",toid);
 
-		trackerObj *oTO = [trackerObj alloc];
-		oTO.toid = toid;
-		oTO = [oTO init];
+		trackerObj *oTO = [[trackerObj alloc] init:toid];
+		//oTO.toid = toid;
+		//oTO = [oTO init:toid];
 		
 		trackerObj *nTO = [self.tlist toDeepCopy:oTO];
 		[oTO release];

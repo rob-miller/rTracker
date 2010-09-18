@@ -10,17 +10,19 @@
 
 @interface RootViewController : UITableViewController {
 
-	trackerList *tlist;
+	//trackerList *tlist;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
 
-- (IBAction)btnAddTrackerPressed:(id)sender;
-- (IBAction)btnConfigPressed:(id)sender;
-- (IBAction)btnMultiGraphPressed:(id)sender;
-- (IBAction)btnPrivatePressed:(id)sender;
+//- (IBAction)btnAddTrackerPressed:(id)sender;
+//- (IBAction)btnConfigPressed:(id)sender;
+//- (IBAction)btnMultiGraphPressed:(id)sender;
+//- (IBAction)btnPrivatePressed:(id)sender;
 
+@property (nonatomic, retain) UIBarButtonItem *privateBtn;
+@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 
 @end

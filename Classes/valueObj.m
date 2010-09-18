@@ -14,19 +14,20 @@
 @synthesize vid;
 @synthesize vtype;
 @synthesize valueName;
-@synthesize valueDate;
+//@synthesize valueDate;
 @synthesize value;
-@synthesize votArray;
+//@synthesize votArray;
 @synthesize display;
 
 extern const NSInteger kViewTag;
+extern const NSArray *votPickerData;
 
 /*
 + (NSArray *) votArray {
 	NSString *votS[VOT_MAX];
 	votS[VOT_NUMBER] = @"number";
-	votS[VOT_SLIDER] = @"slider";
 	votS[VOT_TEXT] = @"text";
+    votS[VOT_SLIDER] = @"slider";
 	votS[VOT_PICK] = @"multiple choice";
 	votS[VOT_BOOLEAN] = @"yes/no";
 	votS[VOT_IMAGE] = @"image";
@@ -45,11 +46,7 @@ extern const NSInteger kViewTag;
 - (id) init {
 	NSLog(@"init valueObj: %@", valueName);
 	if (self = [super init]) {
-		valueDate = [[NSDate alloc] init];
-		
-		NSBundle *bundle = [NSBundle mainBundle];
-		NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
-		votArray = [[NSArray alloc] initWithContentsOfFile:plistPath]; //
+		//valueDate = [[NSDate alloc] init];
 		
 	}
 	return self;
@@ -59,6 +56,27 @@ extern const NSInteger kViewTag;
 	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	vid = in_vid;
 	vtype = in_vtype;
+	switch (in_vtype) {
+		case VOT_NUMBER:
+		case VOT_SLIDER:
+			value = [[NSMutableString alloc] initWithCapacity:10];
+			break;
+		case VOT_BOOLEAN:
+		case VOT_PICK:
+			value = [[NSMutableString alloc] initWithCapacity:1];
+			break;
+		case VOT_TEXT:
+		case VOT_FUNC:
+			value = [[NSMutableString alloc] initWithCapacity:32];
+			break;
+		case VOT_IMAGE:
+			value = [[NSMutableString alloc] initWithCapacity:64];
+			break;
+		default:
+			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
+			break;
+	}
+			
 	valueName = in_vname;
 	[valueName retain];
 	return [self init];
@@ -68,15 +86,15 @@ extern const NSInteger kViewTag;
 	NSLog(@"dealloc valueObj: %@",valueName);
 	[super dealloc];
 	[valueName release];
-	[valueDate release];
+	//[valueDate release];
 	[value release];
-	[votArray release];
+	//[votArray release];
 	[display release];
 }
 
 - (void) describe {
 	
-	NSLog(@" value id %d name %@ type %@ date %@ value .%@.",vid,valueName, [votArray objectAtIndex:vtype], valueDate, value);
+	NSLog(@" value id %d name %@ type %@ value .%@.",vid,valueName, [votPickerData objectAtIndex:vtype], value);
 }
 
 
@@ -87,7 +105,8 @@ extern const NSInteger kViewTag;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	NSLog(@"textField done");
+	NSLog(@"textField done: %@", textField.text);
+	[self.value setString:textField.text];
 	[textField resignFirstResponder];
 	return YES;
 }
@@ -132,6 +151,11 @@ extern const NSInteger kViewTag;
 	
 	// Add an accessibility label that describes what the text field is for.
 	[dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
+	
+	NSLog(@"dtf: vo val= %@", self.value);
+	if (![value isEqualToString:@""]) {
+		dtf.text = self.value;
+	}
 	
 	self.display = dtf;
 }
@@ -211,18 +235,18 @@ extern const NSInteger kViewTag;
 
 - (BOOL) toggleBoolBtn 
 {
-	if (value == nil ) {
-		value = @"";
+	if (value == nil || [value isEqualToString:@""] ||[value isEqualToString:@"0"]) {
+		[value setString:@"1"];
 		return YES;
 	} else {
-		value = nil;
+		[value setString:@"0"];
 		return NO;
 	}
 }
 
 - (UIImage *) boolBtnImage {
 	UIImage *chkBox;
-	if (value == nil) {
+	if (value == nil || [value isEqualToString:@""] || [value isEqualToString:@"0"]) {
 		chkBox = [UIImage imageNamed:@"chkbox_off.png"];
 	} else {
 		chkBox = [UIImage imageNamed:@"chkbox_on.png"];
@@ -256,6 +280,8 @@ extern const NSInteger kViewTag;
 										   darkTextColor:YES];
 	
 	//[imageButton setImage:[UIImage imageNamed:@"UIButtonfile://localhost/Users/rob/code/UICatalog/ButtonsViewController.m_custom.png"] forState:UIControlStateNormal];
+	NSLog(@"booBtn: vo val= %@", self.value);
+	
 	[imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
 	//[imageButton setImage:chkBoxOn forState: UIControlStateHighlighted];
 		 
@@ -273,9 +299,10 @@ extern const NSInteger kViewTag;
 
 #define kSliderHeight			7.0
 
-- (void)sliderAction:(id)sender
+- (void)sliderAction:(UISlider *)sender
 { 
-	NSLog(@"slider action");
+	//NSLog(@"slider action value = %f", ((UISlider *)sender).value);
+	[self.value setString:[NSString stringWithFormat:@"%f",sender.value]];
 }
 
 
@@ -291,8 +318,11 @@ extern const NSInteger kViewTag;
 	sliderCtl.minimumValue = 0.0;
 	sliderCtl.maximumValue = 100.0;
 	sliderCtl.continuous = YES;
-	sliderCtl.value = 50.0;
-	
+	if ([value isEqualToString:@""]) {
+		sliderCtl.value = 50.0;  // TODO: default value here
+	} else {
+		sliderCtl.value = [value floatValue];
+	}
 	// Add an accessibility label that describes the slider.
 	[sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
 	

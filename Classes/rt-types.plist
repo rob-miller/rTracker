@@ -3,8 +3,8 @@
 <plist version="1.0">
 <array>
 	<string>number</string>
-	<string>slider</string>
 	<string>text</string>
+	<string>slider</string>
 	<string>multiple choice</string>
 	<string>yes/no</string>
 	<string>image</string>

@@ -13,6 +13,8 @@
 
 @synthesize tracker, table;
 
+@synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
+
 const NSInteger kViewTag = 1;
 
 
@@ -39,20 +41,27 @@ const NSInteger kViewTag = 1;
 	
 	// cancel / save buttons on top nav bar
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
-								  initWithTitle:@"Cancel"
-								  style:UIBarButtonItemStyleBordered
+								  initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 								  target:self
 								  action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
 	[cancelBtn release];
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-								initWithTitle:@"Save"
-								style:UIBarButtonItemStyleBordered
+								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 								target:self
 								action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
 	[saveBtn release];
+			
+	//self.toolbarItems = [NSArray arrayWithObjects: self.prevDateBtn, self.currDateBtn,nil];
+
+	[self setToolbarItems:[NSArray arrayWithObjects: 
+						   //self.flexibleSpaceButtonItem,
+						   self.prevDateBtn, self.currDateBtn, 
+						   //self.flexibleSpaceButtonItem, 
+						   nil] 
+				 animated:NO];
 	
     [super viewDidLoad];
 }
@@ -75,14 +84,97 @@ const NSInteger kViewTag = 1;
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-}
 
+	[self.prevDateBtn release];
+	[self.currDateBtn release];
+	[self.postDateBtn release];
+	[self.delBtn release];
+	
+	[self.fixed1SpaceButtonItem release];
+	[self.flexibleSpaceButtonItem release];
+}
 
 - (void)dealloc {
-    [super dealloc];
+
+	[super dealloc];
 }
 
 
+#pragma mark buttons
+
+- (UIBarButtonItem *) prevDateBtn {
+	if (prevDateBtn == nil) {
+		prevDateBtn = [[UIBarButtonItem alloc]
+					   initWithTitle:@"<"
+					   style:UIBarButtonItemStyleBordered
+					   target:self
+					   action:@selector(btnPrevDate)];
+	}
+	return prevDateBtn;
+}
+
+- (UIBarButtonItem *) postDateBtn {
+	if (postDateBtn == nil) {
+		postDateBtn = [[UIBarButtonItem alloc]
+					   initWithTitle:@">"
+					   style:UIBarButtonItemStyleBordered
+					   target:self
+					   action:@selector(btnPostDate)];
+	}
+	
+	return postDateBtn;
+}
+
+- (UIBarButtonItem *) currDateBtn {
+	NSLog(@"currDateBtn called");
+	if (currDateBtn == nil) {
+		NSLog(@"creating button");
+		currDateBtn = [[UIBarButtonItem alloc]
+					   initWithTitle:[tracker.trackerDate description]
+					   style:UIBarButtonItemStyleBordered
+					   target:self
+					   action:@selector(btnCurrDate)];
+	}
+	
+	return currDateBtn;
+}
+
+- (UIBarButtonItem *) flexibleSpaceButtonItem {
+	if (flexibleSpaceButtonItem == nil) {
+		flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+								   initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+								   target:nil action:nil];
+	}
+	return flexibleSpaceButtonItem;
+}
+
+- (UIBarButtonItem *) fixed1SpaceButtonItem {
+	if (fixed1SpaceButtonItem == nil) {
+		fixed1SpaceButtonItem = [[UIBarButtonItem alloc]
+								 initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+								 target:nil action:nil];
+		fixed1SpaceButtonItem.width = (CGFloat) 32.0;
+	}
+	
+	return fixed1SpaceButtonItem;
+}
+
+
+- (UIBarButtonItem *) delBtn {
+	if (delBtn == nil) {
+		delBtn = [[UIBarButtonItem alloc]
+				  initWithTitle:@"del"
+				  style:UIBarButtonItemStyleBordered
+				  target:self
+				  action:@selector(btnDel)];
+	}
+	
+	return delBtn;
+}
+
+
+
+#pragma mark button methods
 
 - (IBAction)btnCancel {
 	NSLog(@"btnCancel was pressed!");
@@ -91,8 +183,135 @@ const NSInteger kViewTag = 1;
 
 - (IBAction)btnSave {
 	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",tracker.trackerName, tracker.toid);
+	[tracker saveData];
 	[self.navigationController popViewControllerAnimated:YES];
 }
+
+- (void) updateTrackerTableView {
+	NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
+	valueObj *vo;
+	while ( vo = (valueObj *) [enumer nextObject]) {
+		//[vo.display release];
+		vo.display = nil;
+		[vo display];
+	}
+	[table reloadData];
+}
+
+- (void) setTrackerDate:(int) targD {
+	NSArray *tbi=nil;
+	
+	if (targD == 0) {
+		NSLog(@" setTrackerDate: %d = reset to today",targD);
+		[tracker resetData];
+		int pDate = [tracker prevDate];
+		[self updateTrackerTableView];
+		if (pDate != 0) {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem, 
+				   self.prevDateBtn, self.currDateBtn,
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		} else {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem, 
+				   self.fixed1SpaceButtonItem, 
+				   self.currDateBtn,
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		}
+	} else if (targD < 0) {
+		NSLog(@"setTrackerDate: %d = no earlier date", targD);
+		tbi = [NSArray arrayWithObjects: 
+			   //self.flexibleSpaceButtonItem,
+			   self.fixed1SpaceButtonItem, 
+			   self.currDateBtn, self.postDateBtn, 
+				self.flexibleSpaceButtonItem, 
+			   self.delBtn, 
+			   //self.flexibleSpaceButtonItem, 
+			   nil];
+	} else {
+		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:targD]);
+		[tracker loadData:targD];
+		int pDate = [tracker prevDate];
+		[self updateTrackerTableView];
+		if (pDate != 0) {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem,
+				   self.prevDateBtn, self.currDateBtn, self.postDateBtn, 
+				   self.flexibleSpaceButtonItem, 
+				   self.delBtn, 
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		} else {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem,
+				   self.fixed1SpaceButtonItem, 
+				   self.currDateBtn, self.postDateBtn, 
+				   self.flexibleSpaceButtonItem, 
+				   self.delBtn, 
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		}
+	}
+	
+	//[self.currDateBtn release];
+	self.currDateBtn = nil;
+	[self setToolbarItems:tbi animated:YES];
+}
+
+- (void) btnPrevDate {
+	int targD = [tracker prevDate];
+	if (targD == 0) {
+		targD = -1;
+	} 
+	[self setTrackerDate: targD];
+}
+
+- (void) btnPostDate {
+	[self setTrackerDate:[tracker postDate]];
+}
+
+- (void) btnCurrDate {
+	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
+}
+
+- (void) btnNull {
+}
+
+- (void) btnDel {
+	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
+										 initWithTitle:[NSString stringWithFormat:
+														@"Really delete %@ entry %@?", 
+														tracker.trackerName, tracker.trackerDate]
+										 delegate:self 
+										 cancelButtonTitle:@"Cancel"
+										 destructiveButtonTitle:@"Yes, delete"
+										 otherButtonTitles:nil];
+	[checkTrackerEntryDelete showInView:self.view];
+	[checkTrackerEntryDelete release];
+}
+
+#pragma mark UIActionSheet methods
+
+- (void)actionSheet:(UIActionSheet *)checkTrackerEntryDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
+	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+	
+	if (buttonIndex == checkTrackerEntryDelete.destructiveButtonIndex) {
+		int targD = [tracker prevDate];
+		if (!targD) {
+			targD = [tracker postDate];
+		}
+		[tracker deleteCurrEntry];
+		[self setTrackerDate: targD];
+	} else {
+		NSLog(@"cancelled");
+	}
+	
+}
+
+
 
 #pragma mark Table view methods
 

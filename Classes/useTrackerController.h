@@ -11,14 +11,27 @@
 #import "valueObj.h"
 
 
-@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 //UITableViewController 
 {
 	trackerObj *tracker;
 	UITableView *table;
+
+	//UIBarButtonItem *prevDateBtn;
+	//UIBarButtonItem *postDateBtn;
+	//UIBarButtonItem *currDateBtn;
+	
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property (nonatomic, retain) IBOutlet UITableView *table;
+
+@property (nonatomic, retain) UIBarButtonItem *prevDateBtn;
+@property (nonatomic, retain) UIBarButtonItem *postDateBtn;
+@property (nonatomic, retain) UIBarButtonItem *currDateBtn;
+@property (nonatomic, retain) UIBarButtonItem *delBtn;
+@property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
+@property (nonatomic, retain) UIBarButtonItem *fixed1SpaceButtonItem;
+
 
 @end

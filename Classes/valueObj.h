@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 
+// supported valueObj types ; note these defns tied to Resource: rt-types.plist
 #define VOT_NUMBER	0
 #define VOT_TEXT	1
 #define VOT_SLIDER	2
@@ -25,9 +26,8 @@
 	NSInteger vid;
 	NSInteger vtype;
 	NSString *valueName;
-	NSDate *valueDate;
-	NSString *value;
-	NSArray *votArray;
+	//NSDate *valueDate;
+	NSMutableString *value;
 	UIView *display;
 }
 
@@ -36,9 +36,9 @@
 @property (nonatomic) NSInteger vid;
 @property (nonatomic) NSInteger vtype;
 @property (nonatomic,retain) NSString *valueName;
-@property (nonatomic,retain) NSDate *valueDate;
-@property (nonatomic,retain) NSString *value;
-@property (nonatomic, retain) NSArray *votArray;
+//@property (nonatomic,retain) NSDate *valueDate;
+@property (nonatomic,retain) NSMutableString *value;
+//@property (nonatomic, retain) NSArray *votArray;
 @property (nonatomic, retain) UIView *display;
 
 - (id) init;

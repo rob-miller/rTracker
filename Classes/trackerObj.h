@@ -15,13 +15,13 @@
 @interface trackerObj : tObjBase {
 	//int tid;
 	NSString *trackerName;
-	//NSDate *trackerDate;
+	NSDate *trackerDate;
 	NSMutableArray *valObjTable;
 }
 
 //@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
-//@property (nonatomic,retain) NSDate *trackerDate;
+@property (nonatomic,retain) NSDate *trackerDate;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 
 //+ (NSString *) makeSafeStr : (NSString *) inStr;
@@ -30,11 +30,21 @@
 - (id) init:(int) tid;
 //- (void) dealloc;
 
-- (bool) updateValObj:(valueObj *) valObj;
+//- (bool) updateValObj:(valueObj *) valObj;
 - (void) addValObj:(valueObj *) valObj;
 - (void) saveConfig;
 - (void) loadConfig;
+- (BOOL) loadData: (NSInteger) iDate;
+- (void) saveData;
+- (void) resetData;
+- (void) deleteAllData;
+- (void) deleteCurrEntry;
+
+- (NSInteger) prevDate;
+- (NSInteger) postDate;
+
 - (valueObj *) voDeepCopy: (valueObj *) srcVO;
+- (valueObj *) getValObj: (NSInteger) vid;
 - (void) describe;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;

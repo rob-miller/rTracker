@@ -14,7 +14,8 @@
 @interface addValObjController : UIViewController <UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource> {
 	UITextField *labelField;
 	UIPickerView *votPicker;
-	NSArray *votPickerData;
+	//NSArray *votArray;
+	//NSArray *votPickerData;
 	UIToolbar *toolbar;
 	
 	valueObj *tempValObj;
@@ -25,7 +26,7 @@
 @property (nonatomic,retain) IBOutlet UIPickerView *votPicker;
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 
-@property (nonatomic,retain) NSArray *votPickerData;
+//@property (nonatomic,retain) NSArray *votPickerData;
 @property (nonatomic,retain) valueObj *tempValObj;
 @property (nonatomic,retain) trackerObj *parentTrackerObj;
 

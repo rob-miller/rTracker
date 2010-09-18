@@ -12,11 +12,13 @@
 
 @synthesize labelField;
 @synthesize votPicker;
-@synthesize votPickerData;
+//@synthesize votPickerData;
 @synthesize tempValObj;
 @synthesize parentTrackerObj;
 
 @synthesize toolbar;
+
+extern const NSArray *votPickerData;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -33,40 +35,19 @@
 - (void)viewDidLoad {
 
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
-								  initWithTitle:@"Cancel"
-								  style:UIBarButtonItemStyleBordered
+								  initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 								  target:self
 								  action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
 	[cancelBtn release];
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-								initWithTitle:@"Save"
-								style:UIBarButtonItemStyleBordered
+								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 								target:self
 								action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
 	[saveBtn release];
 
-/*	
-	// create the UIToolbar at the bottom of the view controller
-	//
-	toolbar = [UIToolbar new];
-	toolbar.barStyle = UIBarStyleDefault;
-	
-	// size up the toolbar and set its frame
-	[toolbar sizeToFit];
-	CGFloat toolbarHeight = [toolbar frame].size.height;
-	CGRect mainViewBounds = self.view.bounds;
-	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds),
-								 CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - (toolbarHeight * 2.0) + 2.0,
-								 CGRectGetWidth(mainViewBounds),
-								 toolbarHeight)];
-	
-	[self.view addSubview:toolbar];
-*/	
-	
-	
 	
 	UIBarButtonItem *configBtn = [[UIBarButtonItem alloc]
 								initWithTitle:@"Configure"
@@ -77,15 +58,15 @@
 
 	self.toolbarItems = [NSArray arrayWithObjects: configBtn, nil];
 	[configBtn release];
-	
+		
 	
 	if (self.tempValObj == nil) {
 		self.tempValObj = [[valueObj alloc] init];
-		self.votPickerData = tempValObj.votArray;
+		//self.votPickerData = self.votArray;
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
-		self.votPickerData = tempValObj.votArray;
-		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:YES];
+		//self.votPickerData = self.votArray;
+		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:NO];
 	}
 	
 	self.title = @"value";
@@ -126,7 +107,7 @@
 	NSLog(@"avoc didUnload");
 	
 	self.votPicker = nil;
-	self.votPickerData = nil;
+	//self.votPickerData = nil;
 	self.labelField = nil;
 	self.tempValObj = nil;
 	
@@ -137,7 +118,7 @@
 - (void)dealloc {
 	NSLog(@"avoc dealloc");
 	[votPicker release];
-	[votPickerData release];
+	//[votPickerData release];
 	[labelField release];
 	[tempValObj release];
 	

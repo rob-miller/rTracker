@@ -20,7 +20,7 @@
 - (NSString *) trackerDbFilePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *docsDir = [paths objectAtIndex:0];
-	return [docsDir stringByAppendingFormat:dbName];
+	return [docsDir stringByAppendingPathComponent:dbName];
 }
 
 - (void) getTDb {
@@ -49,6 +49,24 @@
 			NSLog(@"uniquev= %d",c);
 		}
 	}
+}
+
+- (void) deleteTDb {
+	NSLog(@"deleteTDb dbName= %@ id=%d",dbName,toid);
+	NSAssert(dbName, @"deleteTDb called with no dbName set");
+	sqlite3_close(tDb);
+	//[tDb release];
+	tDb = nil;
+	NSFileManager *fm = [[NSFileManager alloc] init];
+	BOOL didRemove = [fm removeItemAtPath:[self trackerDbFilePath] error:NULL];
+	[fm release];
+	if (! didRemove) {
+		NSLog(@"error removing tDb named %@",dbName);
+	} else {
+		[dbName release];
+		dbName = nil;
+	}
+		
 }
 
 - (int) getUnique {
@@ -83,6 +101,7 @@
 	NSLog(@"dealloc tObjBase: %@  id=%d",dbName,toid);
 	if (tDb != nil) {
 		sqlite3_close(tDb);
+		//[tDb release];
 		tDb = nil;
 		NSLog(@"closed tDb: %@", dbName);
 	} else {
@@ -118,6 +137,37 @@
 	sqlite3_finalize(stmt);
 	NSLog(@"  returns %@", inAry);
 }
+
+- (void) toQry2AryIS : (NSMutableArray *) i1 s1: (NSMutableArray *) s1 {
+	
+	
+	NSLog(@"toQry2AryIS: %@ => _%@_",dbName,sql);
+	NSAssert(tDb,@"toQry2AryIS called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
+			//NSNumber *i = [NSNumber numberWithInt: sqlite3_column_int(stmt, 0)];
+			[i1 addObject: i];
+			[i release];
+			
+			NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 1)];
+			[s1 addObject:(id) tlentry];
+			[tlentry release];
+			
+			NSLog(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+}
+
 
 - (void) toQry2AryIIS : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1 {
 

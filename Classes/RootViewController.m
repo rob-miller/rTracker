@@ -15,6 +15,9 @@
 @implementation RootViewController
 
 @synthesize tlist;
+@synthesize privateBtn, multiGraphBtn;
+
+NSArray *votPickerData;
 
 - (void)viewDidLoad {
 
@@ -22,8 +25,29 @@
 
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
+	UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
+								  initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+								  target:self
+								  action:@selector(btnEdit)];
+	self.navigationItem.leftBarButtonItem = editBtn;
+	[editBtn release];
+	
+	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
+								initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+								target:self
+								action:@selector(btnAddTracker)];
+	self.navigationItem.rightBarButtonItem = addBtn;
+	[addBtn release];
+	
+	[self setToolbarItems:[NSArray arrayWithObjects: 
+						   //self.flexibleSpaceButtonItem,
+						   self.privateBtn, self.multiGraphBtn, 
+						   //self.flexibleSpaceButtonItem, 
+						   nil] 
+				 animated:NO];
+	
 	NSLog(@"rvc viewDidLoad");
 	
 	tlist = [[trackerList alloc] init];
@@ -35,6 +59,12 @@
 												 name:UIApplicationWillTerminateNotification
 											   object:app];
 	
+
+	NSBundle *bundle = [NSBundle mainBundle];
+	NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
+	votPickerData = [[NSArray alloc] initWithContentsOfFile:plistPath]; //
+	
+	
 	[super viewDidLoad];
 											
 }
@@ -43,8 +73,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	NSLog(@"rvc: viewWillAppear");
-		  
+	NSLog(@"rvc: viewWillAppear");	
+	
 	[tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 	
@@ -104,21 +134,40 @@
 - (void)dealloc {
 	
 	NSLog(@"rvc dealloc");
-	//[tlist release];
+	[tlist release];
 	
     [super dealloc];
+}
+
+#pragma mark buttons
+
+- (UIBarButtonItem *) privateBtn {
+	if (privateBtn == nil) {
+		privateBtn = [[UIBarButtonItem alloc]
+					   initWithTitle:@"private"
+					   style:UIBarButtonItemStyleBordered
+					   target:self
+					   action:@selector(btnPrivate)];
+	}
+	return privateBtn;
+}
+
+- (UIBarButtonItem *) multiGraphBtn {
+	if (multiGraphBtn == nil) {
+		multiGraphBtn = [[UIBarButtonItem alloc]
+					  initWithTitle:@"Multi-Graph"
+					  style:UIBarButtonItemStyleBordered
+					  target:self
+					  action:@selector(btnMultiGraph)];
+	}
+	return multiGraphBtn;
 }
 
 
 #pragma mark button action methods
 
-- (IBAction)btnAddTrackerPressed:(id)sender {
-	NSLog(@"btnAddTracker was pressed!");
-	
-	// Navigation logic may go here -- for example, create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController animated:YES];
-	// [anotherViewController release];
+- (void) btnAddTracker {
+	//NSLog(@"btnAddTracker was pressed!");
 	
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 	atc.tlist = self.tlist;
@@ -127,8 +176,8 @@
 	
 }
 
-- (IBAction)btnConfigPressed:(id)sender {
-	NSLog(@"btnConfig was pressed!");
+- (IBAction)btnEdit {
+	//NSLog(@"btnConfig was pressed!");
 	
 	configTlistController *ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
 	ctlc.tlist = self.tlist;
@@ -137,11 +186,11 @@
 	
 }
 	
-- (IBAction)btnMultiGraphPressed:(id)sender {
+- (void)btnMultiGraph {
 	NSLog(@"btnMultiGraph was pressed!");
 }
 
-- (IBAction)btnPrivatePressed:(id)sender {
+- (void)btnPrivate {
 	NSLog(@"btnPrivate was pressed!");
 }
 
@@ -250,6 +299,7 @@
  - (void)applicationWillTerminate:(NSNotification *)notification {
 	 NSLog(@"rvc: app will terminate");
 	// close trackerList
+	 // TODO: close all tracker Dbs -- or sooner?
 	 [self.tlist release];
 	 //self.tlist = nil;
 
