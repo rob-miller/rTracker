@@ -12,7 +12,7 @@
 
 @implementation trackerList
 
-@synthesize topLayoutTable;
+@synthesize topLayoutNames, topLayoutIDs;
 //@synthesize tObj;
 
 #pragma mark -
@@ -22,16 +22,16 @@
 	int c;
 	
 	NSLog(@"Initializing top level dtabase!");
-	dbName=@"topLevel.sqlite3";
+	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
-	sql = @"create table if not exists toplevel (rank integer, id integer unique, name text);";
+	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text);";
 	[self toExecSql];
-	sql = @"select count(*) from toplevel;";
+	self.sql = @"select count(*) from toplevel;";
 	c = [self toQry2Int];
 	NSLog(@"toplevel at open contains %d entries",c);
 	
-	sql = nil;	
+	self.sql = nil;	
 }	
 
 #pragma mark -
@@ -42,7 +42,8 @@
 	
 	if (self = [super init]) {
 
-		topLayoutTable = [[NSMutableArray alloc] init];
+		topLayoutNames = [[NSMutableArray alloc] init];
+		topLayoutIDs = [[NSMutableArray alloc] init];
 		[self initTDb];
 		
 
@@ -56,7 +57,8 @@
 - (void) dealloc {
 	NSLog(@"trackerlist dealloc");
 	
-	[topLayoutTable release];
+	[topLayoutNames release];
+	[topLayoutIDs release];
 	[super dealloc];
 }
 
@@ -64,64 +66,62 @@
 #pragma mark External DB Access 
 
 - (void) loadTopLayoutTable {
-	[self.topLayoutTable removeAllObjects];
-	sql = @"select name from toplevel order by rank;";
-	[self toQry2AryS :self.topLayoutTable];
-	sql = nil;
-	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutTable);
+	[self.topLayoutNames removeAllObjects];
+	[self.topLayoutIDs removeAllObjects];
+	self.sql = @"select id, name from toplevel order by rank;";
+	[self toQry2AryIS :(NSMutableArray *)topLayoutIDs s1: topLayoutNames];
+	self.sql = nil;
+	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutNames);
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
-	int rank = [topLayoutTable count];
-
-	sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
+	int rank = [topLayoutNames count];
+	NSAssert(tObj.toid,@"confirmTLE: toid=0");
+	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
 		   rank, tObj.toid, tObj.trackerName ];
 	[self toExecSql];
 	//[sql release];
-	sql = nil;
+	self.sql = nil;
 	
 	// call loadTopLayoutTable before using:  [topLayoutTable insertObject:name atIndex:rank];
 }
 
 - (void) reorderFromTLT {
 	int nrank=0;
-	for (NSString *tracker in topLayoutTable) {
+	for (NSString *tracker in topLayoutNames) {
 		NSLog(@" %@ to rank %d",tracker,nrank);
-		sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
+		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		//[sql release];
 		nrank++;
 	}
+	self.sql = nil;
 }
 
 // TODO: fix -- dangerous - drops id
 - (void) reloadFromTLT {
 	int nrank=0;
-	sql = @"delete from toplevel;";
+	self.sql = @"delete from toplevel;";
 	[self toExecSql];
-	for (NSString *tracker in topLayoutTable) {
-		NSLog(@" %@ to rank %d",tracker,nrank);
-		sql = [NSString stringWithFormat: @"insert into toplevel (rank, name) values (%i, \"%@\");",nrank,tracker];
+	for (NSString *tracker in topLayoutNames) {
+		NSInteger tid = [[topLayoutIDs objectAtIndex:nrank] intValue];
+
+		NSLog(@" %@ id %d to rank %d",tracker,tid,nrank);
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name) values (%i, %d, \"%@\");",nrank,tid,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
-		//[sql release];  // this seems quite gross...
-		sql = nil;
+		self.sql = nil;
 		nrank++;
-		}
+	}
 }
 
 
 
 - (int) getTIDfromIndex:(NSUInteger)ndx {
-	sql = [NSString stringWithFormat: @"select id from toplevel where name = \"%@\";",
-		   [topLayoutTable objectAtIndex:ndx]];
-	int tid = [self toQry2Int];
-	//[sql release];
-	sql = nil;
-	return tid;
+	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
 }
 
-- (trackerObj *) toDeepCopy : (trackerObj *) srcTO {
-	NSLog(@"toDeepCopy: src id= %d %@",srcTO.toid,srcTO.trackerName);
+- (trackerObj *) toConfigCopy : (trackerObj *) srcTO {
+	NSLog(@"toConfigCopy: src id= %d %@",srcTO.toid,srcTO.trackerName);
 	trackerObj *newTO = [trackerObj alloc];
 	newTO.toid = [self getUnique];
 	newTO = [newTO init];
@@ -133,16 +133,45 @@
 	NSEnumerator *enumer = [srcTO.valObjTable objectEnumerator];
 	valueObj *vo;
 	while (vo = (valueObj *) [enumer nextObject]) {
-		valueObj *newVO = [newTO voDeepCopy:vo];
+		valueObj *newVO = [newTO voConfigCopy:vo];
 		[newTO addValObj:newVO];
 		[newVO release];
 	}
 	
 	[newTO saveConfig];
+	NSLog(@"toDeepCopy: copy id= %d %@",newTO.toid,newTO.trackerName);
 	
 	return newTO;
 }
-							
+
+- (void) deleteTrackerAllRow:(NSUInteger)row
+{
+	int toid = [[self.topLayoutIDs objectAtIndex:row] intValue];
+	trackerObj *to = [[trackerObj alloc] init:toid];
+	[to deleteAllData];
+	[to release];
+	[self.topLayoutNames removeObjectAtIndex:row];
+	[self.topLayoutIDs removeObjectAtIndex:row];
+}
+
+- (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow
+{
+
+	id tName = [[topLayoutNames objectAtIndex:fromRow] retain];
+	id tID = [[topLayoutIDs objectAtIndex:fromRow] retain];
+	
+	[topLayoutNames removeObjectAtIndex:fromRow];
+	[topLayoutIDs removeObjectAtIndex:fromRow];
+	
+	[topLayoutNames insertObject:tName atIndex:toRow];
+	[topLayoutIDs insertObject:tID atIndex:toRow];
+	
+	[tName release];
+	[tID release];
+	
+	
+}
+
 /*
 #pragma mark -
 #pragma mark Notifications

@@ -11,7 +11,7 @@
 
 @implementation useTrackerController
 
-@synthesize tracker, table;
+@synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
 
@@ -56,13 +56,22 @@ const NSInteger kViewTag = 1;
 			
 	//self.toolbarItems = [NSArray arrayWithObjects: self.prevDateBtn, self.currDateBtn,nil];
 
-	[self setToolbarItems:[NSArray arrayWithObjects: 
-						   //self.flexibleSpaceButtonItem,
-						   self.prevDateBtn, self.currDateBtn, 
-						   //self.flexibleSpaceButtonItem, 
-						   nil] 
-				 animated:NO];
-	
+	int pDate = [tracker prevDate];
+	if (pDate == 0) {
+		[self setToolbarItems:[NSArray arrayWithObjects: 
+							   //self.flexibleSpaceButtonItem,
+							   self.fixed1SpaceButtonItem, self.currDateBtn, 
+							   //self.flexibleSpaceButtonItem, 
+							   nil] 
+					 animated:NO];
+	} else { 
+		[self setToolbarItems:[NSArray arrayWithObjects: 
+							   //self.flexibleSpaceButtonItem,
+							   self.prevDateBtn, self.currDateBtn, 
+							   //self.flexibleSpaceButtonItem, 
+							   nil] 
+					 animated:NO];
+	} 
     [super viewDidLoad];
 }
 
@@ -188,19 +197,23 @@ const NSInteger kViewTag = 1;
 }
 
 - (void) updateTrackerTableView {
+	NSLog(@"utc: updateTrackerTableView");
 	NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
 	valueObj *vo;
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		//[vo.display release];
 		vo.display = nil;
-		[vo display];
+		//[vo display]; // happens with table reloadData
 	}
-	[table reloadData];
+	
+//	[table reloadData];
+	[(UITableView *) self.view reloadData];
+//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
 }
 
 - (void) setTrackerDate:(int) targD {
 	NSArray *tbi=nil;
-	
+	 
 	if (targD == 0) {
 		NSLog(@" setTrackerDate: %d = reset to today",targD);
 		[tracker resetData];
@@ -276,8 +289,6 @@ const NSInteger kViewTag = 1;
 	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
 }
 
-- (void) btnNull {
-}
 
 - (void) btnDel {
 	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
@@ -288,7 +299,7 @@ const NSInteger kViewTag = 1;
 										 cancelButtonTitle:@"Cancel"
 										 destructiveButtonTitle:@"Yes, delete"
 										 otherButtonTitles:nil];
-	[checkTrackerEntryDelete showInView:self.view];
+	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
 	[checkTrackerEntryDelete release];
 }
 

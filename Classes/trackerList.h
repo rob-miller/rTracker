@@ -14,12 +14,14 @@
 
 @interface trackerList : tObjBase {
 	
-	NSMutableArray *topLayoutTable;
+	NSMutableArray *topLayoutNames;
+	//NSMutableArray *topLayoutIDs;
 	//trackerObj *tObj;
 	
 }
 
-@property (nonatomic,retain) NSMutableArray *topLayoutTable;
+@property (nonatomic,retain) NSMutableArray *topLayoutNames;
+@property (nonatomic,retain) NSMutableArray *topLayoutIDs;
 //@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;
@@ -31,6 +33,10 @@
 - (void)reloadFromTLT;
 
 - (int) getTIDfromIndex:(NSUInteger)ndx;
-- (trackerObj *) toDeepCopy : (trackerObj *) srcTO;
+- (trackerObj *) toConfigCopy : (trackerObj *) srcTO;
+
+- (void) deleteTrackerAllRow : (NSUInteger) row;
+- (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow;
+
 
 @end

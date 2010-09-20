@@ -336,6 +336,7 @@ extern const NSArray *votPickerData;
 #pragma mark display fn dispatch
 
 - (UIView *) display {
+	NSLog(@"vo display %@",valueName);
 	BOOL num=NO;
 	if (display == nil) {
 		switch (vtype) {

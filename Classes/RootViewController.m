@@ -206,14 +206,13 @@ NSArray *votPickerData;
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	//return 0;  //[rTrackerAppDelegate.topLayoutTable count];
-	return [tlist.topLayoutTable count];
+	return [tlist.topLayoutNames count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutTable objectAtIndex:[indexPath row]]);
+    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier = @"Cell";
     
@@ -224,7 +223,7 @@ NSArray *votPickerData;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [tlist.topLayoutTable objectAtIndex:row];
+	cell.textLabel.text = [tlist.topLayoutNames objectAtIndex:row];
 
     return cell;
 }
@@ -240,7 +239,7 @@ NSArray *votPickerData;
 	// [anotherViewController release];
 
 	NSUInteger row = [indexPath row];
-	NSLog(@"selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
+	NSLog(@"selected row %d : %@", row, [tlist.topLayoutNames objectAtIndex:row]);
 	
 	trackerObj *to = [[trackerObj alloc] init:[tlist getTIDfromIndex:row]];
 	[to describe];

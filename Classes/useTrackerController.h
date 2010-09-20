@@ -15,7 +15,7 @@
 //UITableViewController 
 {
 	trackerObj *tracker;
-	UITableView *table;
+	//UITableView *table;
 
 	//UIBarButtonItem *prevDateBtn;
 	//UIBarButtonItem *postDateBtn;
@@ -24,7 +24,7 @@
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
-@property (nonatomic, retain) IBOutlet UITableView *table;
+//@property (nonatomic, retain) IBOutlet UITableView *table;
 
 @property (nonatomic, retain) UIBarButtonItem *prevDateBtn;
 @property (nonatomic, retain) UIBarButtonItem *postDateBtn;

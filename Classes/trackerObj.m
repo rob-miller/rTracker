@@ -321,7 +321,7 @@
 	}
 }
 
-- (valueObj *) voDeepCopy: (valueObj *) srcVO {
+- (valueObj *) voConfigCopy: (valueObj *) srcVO {
 	NSLog(@"voDeepCopy: to= id %d %@ input vid=%d %@", toid, trackerName, srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];

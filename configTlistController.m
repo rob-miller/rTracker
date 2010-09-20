@@ -146,13 +146,9 @@ UITableView *deleteTableView;
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
 		NSUInteger row = [deleteIndexPath row];
 		NSLog(@"checkTrackerDelete: will delete row %d ",row);
-		int toid = [self.tlist getTIDfromIndex:row];
-		[tlist.topLayoutTable removeObjectAtIndex:row];
+		[tlist deleteTrackerAllRow:row];
 		[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
 						 withRowAnimation:UITableViewRowAnimationFade];		
-		trackerObj *to = [[trackerObj alloc] init:toid];
-		[to deleteAllData];
-		[to release];
 		[tlist reloadFromTLT];
 	} else {
 		NSLog(@"cancelled");
@@ -172,14 +168,14 @@ UITableView *deleteTableView;
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	//return 0;  //[rTrackerAppDelegate.topLayoutTable count];
-	return [tlist.topLayoutTable count];
+	return [tlist.topLayoutNames count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView 
 		 cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutTable objectAtIndex:[indexPath row]]);
+    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier;
 	
@@ -196,7 +192,7 @@ UITableView *deleteTableView;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [tlist.topLayoutTable objectAtIndex:row];
+	cell.textLabel.text = [tlist.topLayoutNames objectAtIndex:row];
 	
     return cell;
 }
@@ -218,12 +214,7 @@ UITableView *deleteTableView;
 	NSUInteger toRow = [toIndexPath row];
 	
 	NSLog(@"ctlc: move row from %d to %d",fromRow, toRow);
-	
-	id object = [[tlist.topLayoutTable objectAtIndex:fromRow] retain];
-	[tlist.topLayoutTable removeObjectAtIndex:fromRow];
-	[tlist.topLayoutTable insertObject:object atIndex:toRow];
-	[object release];
-	
+	[tlist reorderTLT :fromRow toRow:toRow];
 	[tlist reorderFromTLT];
 	
 }
@@ -237,12 +228,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
 										 initWithTitle:[NSString stringWithFormat:
 														@"Really delete all data for %@?",
-														[tlist.topLayoutTable objectAtIndex:[indexPath row]]]
+														[tlist.topLayoutNames objectAtIndex:[indexPath row]]]
 							delegate:self 
 							cancelButtonTitle:@"Cancel"
 							destructiveButtonTitle:@"Yes, delete"
 							otherButtonTitles:nil];
-	[checkTrackerDelete showInView:self.view];
+	//[checkTrackerDelete showInView:self.view];
+	[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
 	[checkTrackerDelete release];
 }
 
@@ -255,7 +247,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// [anotherViewController release];
 	
 	NSUInteger row = [indexPath row];
-	NSLog(@"configTList selected row %d : %@", row, [tlist.topLayoutTable objectAtIndex:row]);
+	NSLog(@"configTList selected row %d : %@", row, [tlist.topLayoutNames objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
 		int toid = [self.tlist getTIDfromIndex:row];
@@ -272,17 +264,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		NSLog(@"will copy toid %d",toid);
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
-		//oTO.toid = toid;
-		//oTO = [oTO init:toid];
-		
-		trackerObj *nTO = [self.tlist toDeepCopy:oTO];
-		[oTO release];
+		trackerObj *nTO = [self.tlist toConfigCopy:oTO];
 		[self.tlist confirmTopLayoutEntry:nTO];
+		[oTO release];
 		[nTO release];
-		//[self.tlist confirmTopLayoutEntry:[self.tlist toDeepCopy:[self.tlist.topLayoutTable objectAtIndex:row]]];
 		[tlist loadTopLayoutTable];
 		[table reloadData];
-		//[self.navigationController popViewControllerAnimated:YES];
+
 	} else if (selSegNdx == SegmentMoveDelete) {
 		NSLog(@"selected for move/delete?");
 	}

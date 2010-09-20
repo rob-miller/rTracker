@@ -43,7 +43,7 @@
 - (NSInteger) prevDate;
 - (NSInteger) postDate;
 
-- (valueObj *) voDeepCopy: (valueObj *) srcVO;
+- (valueObj *) voConfigCopy: (valueObj *) srcVO;
 - (valueObj *) getValObj: (NSInteger) vid;
 - (void) describe;
 
