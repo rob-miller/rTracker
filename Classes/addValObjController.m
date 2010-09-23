@@ -23,13 +23,16 @@
 CGSize sizeVOTLabel;
 CGSize sizeGTLabel;
 
+#define FONTSIZE 20.0f
+//#define FONTSIZE [UIFont labelFontSize]
+
 +(CGSize) maxLabelFromArray:(const NSArray *)arr 
 {
 	CGSize rsize = {0.0f, 0.0f};
 	NSEnumerator *e = [arr objectEnumerator];
 	NSString *s;
 	while ( s = (NSString *) [e nextObject]) {
-		CGSize tsize = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+		CGSize tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
 		}
@@ -71,16 +74,19 @@ CGSize sizeGTLabel;
 								style:UIBarButtonItemStyleBordered
 								target:self
 								action:@selector(btnConfigure)];
-	//self.toolbarItem.leftBarButtonItem = configBtn;
 
 	self.toolbarItems = [NSArray arrayWithObjects: configBtn, nil];
 	[configBtn release];
 		
+	sizeVOTLabel = [addValObjController maxLabelFromArray:parentTrackerObj.votArray];
+	NSArray *allGraphs = [valueObj graphsForVOTCopy:-1];
+	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
+	[allGraphs release];
+	
 	
 	if (tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
 		graphTypes = [valueObj graphsForVOTCopy:VOT_NUMBER];
-		//[graphTypes retain];
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
 		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:NO];
@@ -89,10 +95,8 @@ CGSize sizeGTLabel;
 		[graphTypes release];
 		graphTypes = [valueObj graphsForVOTCopy:-1];
 		NSString *g = [graphTypes objectAtIndex:self.tempValObj.vGraphType];
-		//[g retain];
 		[graphTypes release];
 		graphTypes = [valueObj graphsForVOTCopy:tempValObj.vtype];
-		//[graphTypes retain];
 		
 		NSEnumerator *e = [graphTypes objectEnumerator];
 		NSString *s;
@@ -102,7 +106,7 @@ CGSize sizeGTLabel;
 				break;
 			row++;
 		}
-		//[g release];
+
 		[self.votPicker reloadComponent:2];
 		
 		[self.votPicker selectRow:row inComponent:2 animated:NO];
@@ -111,15 +115,9 @@ CGSize sizeGTLabel;
 	}
 
 	
-	sizeVOTLabel = [addValObjController maxLabelFromArray:parentTrackerObj.votArray];
-	NSArray *allGraphs = [valueObj graphsForVOTCopy:-1];
-	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
-	[allGraphs release];
-	
-	
 	self.title = @"value";
 	
-
+	self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
@@ -241,7 +239,10 @@ CGSize sizeGTLabel;
 }
 
 #pragma mark Picker Delegate Methods
-/*
+
+#define TEXTPICKER 0
+#if TEXTPICKER
+
 - (NSString *) pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row
 			 forComponent:(NSInteger)component {
 	switch (component) {
@@ -261,9 +262,10 @@ CGSize sizeGTLabel;
 			break;
 	}
 }
-*/
-#define COLORSIDE 18.0f
-///*
+
+#else 
+
+#define COLORSIDE FONTSIZE
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
@@ -274,31 +276,35 @@ CGSize sizeGTLabel;
 	switch (component) {
 		case 0:
 			frame.size = sizeVOTLabel;
-			frame.size.width += 2*[UIFont systemFontSize];
+			frame.size.width += FONTSIZE;
+			//CGFloat lfs = [UIFont labelFontSize]; // 17
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
-			label.backgroundColor = [UIColor clearColor];
+			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
 			label.text = [parentTrackerObj.votArray objectAtIndex:row];
-			label.font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		case 1:
-			frame.size.height = COLORSIDE;
-			frame.size.width = COLORSIDE;
+			frame.size.height = 1.2*COLORSIDE;
+			frame.size.width = 2.0*COLORSIDE;
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
-			label = [[UIView alloc] initWithFrame:frame];
+			label = [[UILabel alloc] initWithFrame:frame];
+			//label = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+			//[label retain];
+			//label.frame = frame;
 			label.backgroundColor = [parentTrackerObj.colorSet objectAtIndex:row];
 			break;
 		case 2:
 			frame.size = sizeGTLabel;
-			frame.size.width += 2*[UIFont systemFontSize];
+			frame.size.width += FONTSIZE;
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
-			label.backgroundColor = [UIColor clearColor];
+									  label.backgroundColor = [UIColor clearColor]; //greenColor];
 			label.text = [graphTypes objectAtIndex:row];
-			label.font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		default:
 			NSAssert(0,@"bad component for avo picker");
@@ -309,28 +315,19 @@ CGSize sizeGTLabel;
 	return label;
 	
 }
-//*/
-
-/*
-- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
-{
-	return COLORSIDE;
-}
- */
-
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
 	//CGSize siz;
 	switch (component) {
 		case 0:
-			return sizeVOTLabel.width + (4.0f * [UIFont systemFontSize]);
+			return sizeVOTLabel.width + (2.0f * FONTSIZE);
 			break;
 		case 1:
-			return 2.0f * COLORSIDE;
+			return 3.0f * COLORSIDE;
 			break;
 		case 2:
-			return sizeGTLabel.width + (4.0f * [UIFont systemFontSize]);
+			return sizeGTLabel.width + (2.0f * FONTSIZE);
 			break;
 		default:
 			NSAssert(0,@"bad component for avo picker");
@@ -339,6 +336,7 @@ CGSize sizeGTLabel;
 	}
 }
 
+#endif
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {

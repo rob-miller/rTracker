@@ -392,57 +392,33 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 + (const NSArray *) graphsForVOTCopy:(NSInteger)vot 
 {
-	//NSString *line = @"line";
-	//NSString *dotsline = @"dotsline";
-	//NSString *dots = @"dots";
-	//NSString *bar = @"bar";
-	//NSString *pie = @"pie";
-	
-	NSArray *ret ; //= [NSArray alloc];
+	NSArray *ret; 
 	switch (vot) {
 		case VOT_FUNC:
 			//break;
 		case VOT_SLIDER: 
 			//break;
 		case VOT_NUMBER: 
-			//[ret initWithObjects:@"dots",@"bar",@"line", @"dotsline", nil];
-			ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"dotsline", nil];
-			/* [ret initWithObjects:[[NSString alloc] initWithString:@"dots"],
-			 [[NSString alloc] initWithString:@"bar"],
-			 [[NSString alloc] initWithString:@"line"],
-			 [[NSString alloc] initWithString:@"dotsline"], nil]; */
+			ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
 			break;
 		case VOT_IMAGE:
 			//break;
 		case VOT_TEXT:
 			//break;
 		case VOT_TEXTB:
-			//[ret initWithObjects:@"dots", nil];
 			ret = [NSArray arrayWithObjects:@"dots", nil];
 			break;
 		case VOT_PICK:
-			//[ret initWithObjects:@"dots",@"pie", nil];
 			ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
 			break;
 		case VOT_BOOLEAN:
-			//[ret initWithObjects:@"dots", @"bar", nil];
 			ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
 			break;
 		default:
-			//NSLog(@"graphsForVOT: vtype %d not identified!", vot);
-			//return [NSArray arrayWithObjects:nil];
-			//[ret initWithObjects:@"dots", @"bar",@"line", @"dotsline", @"pie", nil];
-			ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"dotsline", @"pie", nil];
-			/*[ret initWithObjects:[[NSString alloc] initWithString:@"dots"],
-			 [[NSString alloc] initWithString:@"bar"],
-			 [[NSString alloc] initWithString:@"line"],
-			 [[NSString alloc] initWithString:@"dotsline"], 
-			 [[NSString alloc] initWithString:@"pie"], nil];
-			 */
+			ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
 			break;
 	}
 	
-	//[ret autorelease];
 	[ret retain];
 	return ret;
 }
@@ -454,9 +430,9 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		return VOG_BAR;
 	if ([gts isEqual:@"line"])
 		return VOG_LINE;
-	if ([gts isEqual:@"dotsline"])
+	if ([gts isEqual:@"line+dots"])
 		return VOG_DOTSLINE;
-	if ([gts isEqual:@"PIE"])
+	if ([gts isEqual:@"pie"])
 		return VOG_PIE;
 	
 	NSAssert1(0,@"mapGraphTypes: no match for %@",gts);

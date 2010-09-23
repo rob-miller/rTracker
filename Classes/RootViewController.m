@@ -18,20 +18,19 @@
 @synthesize privateBtn, multiGraphBtn;
 
 - (void)viewDidLoad {
-
+	NSLog(@"rvc: viewDidLoad");
     self.title = @"rTracker";
-
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
+/*
 	UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
 								  initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
 								  target:self
 								  action:@selector(btnEdit)];
 	self.navigationItem.leftBarButtonItem = editBtn;
 	[editBtn release];
-	
+ */	
 	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
 								target:self
@@ -46,8 +45,7 @@
 						   nil] 
 				 animated:NO];
 	
-	NSLog(@"rvc viewDidLoad");
-	
+
 	tlist = [[trackerList alloc] init];
 	//[tlist loadTopLayoutTable];
 
@@ -70,7 +68,24 @@
 	
 	[tlist loadTopLayoutTable];
 	[self.tableView reloadData];
-	
+
+	if ([tlist.topLayoutNames count] == 0) {
+		if (self.navigationItem.leftBarButtonItem != nil) {
+			//[self.navigationItem.leftBarButtonItem release];  // why is this not needed?
+			self.navigationItem.leftBarButtonItem = nil;
+		}
+	} else {
+		if (self.navigationItem.leftBarButtonItem == nil) {
+			
+			UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
+										initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+										target:self
+										action:@selector(btnEdit)];
+			self.navigationItem.leftBarButtonItem = editBtn;
+			[editBtn release];
+		}
+	}
+
 	//NSString *foo = [[NSString alloc] initWithFormat:@"I am a wasteful string"];
 	//NSLog(@"foo is %@",foo);
 	
