@@ -337,6 +337,9 @@ const NSInteger kViewTag = 1;
 	return [tracker.valObjTable count];
 }
 
+#define LMARGIN 60.0f
+#define RMARGIN 10.0f
+#define BMARGIN  7.0f
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -362,7 +365,17 @@ const NSInteger kViewTag = 1;
 	// Configure the cell.
 
 	cell.textLabel.text = vo.valueName;
-	[cell.contentView addSubview:[vo display]];
+	
+	CGRect bounds = cell.frame;
+	NSLog(@"maxLabel: % f %f",tracker.maxLabel.width, tracker.maxLabel.height);
+	//bounds.origin.y = bounds.size.height;// - BMARGIN;
+	bounds.origin.y = tracker.maxLabel.height - BMARGIN;
+	bounds.size.height = tracker.maxLabel.height + BMARGIN;
+	bounds.size.width = bounds.size.width - tracker.maxLabel.width - LMARGIN - RMARGIN;
+	bounds.origin.x = bounds.origin.x + tracker.maxLabel.width + LMARGIN;
+
+	NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
+	[cell.contentView addSubview:[vo display:bounds]];
     return cell;
 }
 

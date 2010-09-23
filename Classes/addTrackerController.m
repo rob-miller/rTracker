@@ -17,8 +17,6 @@
 @synthesize tempTrackerObj;
 @synthesize table;
 
-extern const NSArray  *votPickerData;
-
 # pragma mark -
 # pragma mark toolbar support
 
@@ -62,6 +60,11 @@ static int editMode;
 	} else {
 		[table setEditing:NO animated:YES];
 	}
+
+	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
+	
+	[table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+	
 }
 
 # pragma mark -
@@ -102,7 +105,7 @@ static int editMode;
 	}
 	
 	[table setEditing:YES animated:YES];
-	//[table allowsSelectionDuringEditing:YES];  // not there hmmmmmm
+	table.allowsSelection = NO;  
 	
 	[super viewDidLoad];
 }
@@ -201,7 +204,11 @@ NSLog(@"btnAddValue was pressed!");
 	if (section == 0) {
 		return (NSInteger) 1;
 	} else {
-		return [tempTrackerObj.valObjTable count] +1;
+		int rval = [tempTrackerObj.valObjTable count];
+		if (editMode == 0) {
+			rval++;
+		}
+		return rval;
 	}
 
 }
@@ -263,7 +270,7 @@ NSLog(@"btnAddValue was pressed!");
 			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [votPickerData objectAtIndex:vo.vtype];
+			cell.detailTextLabel.text = [tempTrackerObj.votArray objectAtIndex:vo.vtype];
 		}
 	}
 	

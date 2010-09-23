@@ -98,7 +98,6 @@
 	self.sql = nil;
 }
 
-// TODO: fix -- dangerous - drops id
 - (void) reloadFromTLT {
 	int nrank=0;
 	self.sql = @"delete from toplevel;";

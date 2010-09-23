@@ -17,8 +17,6 @@
 @synthesize tlist;
 @synthesize privateBtn, multiGraphBtn;
 
-NSArray *votPickerData;
-
 - (void)viewDidLoad {
 
     self.title = @"rTracker";
@@ -60,11 +58,6 @@ NSArray *votPickerData;
 											   object:app];
 	
 
-	NSBundle *bundle = [NSBundle mainBundle];
-	NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
-	votPickerData = [[NSArray alloc] initWithContentsOfFile:plistPath]; //
-	
-	
 	[super viewDidLoad];
 											
 }

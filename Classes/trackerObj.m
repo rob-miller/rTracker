@@ -16,48 +16,9 @@
 @implementation trackerObj
 
 
-//@synthesize tid;
-@synthesize trackerName;
-@synthesize trackerDate;
-@synthesize valObjTable;
-
-/*
-+ (NSString *) makeSafeStr : (NSString *) inStr {
-	NSString *outStr;
-	
-	//NSLog(@"enter makeSafeStr: %@",inStr);
-	
-	char *newp = strdup([inStr UTF8String]);
-	char *outp = newp;
-	
-	while (*newp) {
-		if ((*newp >= 'a' && *newp <= 'z') ||
-			(*newp >= 'A' && *newp <= 'Z') ||
-			(*newp >= '0' && *newp <= '1')) {
-		} else {
-			*newp = '_';
-		}
-		newp++;
-	}
-	
-	//NSLog(@" processed: %s",outp);
-	
-	outStr = [ NSString stringWithUTF8String :outp];
-	
-	NSLog(@"makeSafeStr finished: .%@. -> .%@.",inStr,outStr);
-	free( outp );
-	
-	return outStr;
-}
-
-
-- (void) setTrackerName:(NSString *) newValue {
-	if (newValue != trackerName) {
-		[trackerName release];
-		trackerName = [trackerObj makeSafeStr :newValue];
-	}
-}
-*/
+@synthesize trackerName, trackerDate, valObjTable;
+@synthesize colorSet, votArray;
+@synthesize maxLabel;
 
 - (void) initTDb {
 	int c;
@@ -67,7 +28,7 @@
 	c = [self toQry2Int];
 	if (c == 0) {
 		// init clean db
-		sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text);";
+		sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text, color int, graphtype int);";
 		[self toExecSql];
 		sql = @"create table if not exists voData (id int, date int, val text);";
 		[self toExecSql];
@@ -92,20 +53,32 @@
 	[trackerName release];
 	sql = @"select val from trkrInfo where field='name';";
 	trackerName = [self toQry2StrCopy];
+	sql = @"select val from trkrInfo where field='width';";
+	maxLabel.width = [self toQry2Float];
+	sql = @"select val from trkrInfo where field='height';";
+	maxLabel.height = [self toQry2Float];
+	
 	NSMutableArray *i1 = [[NSMutableArray alloc] init];
 	NSMutableArray *i2 = [[NSMutableArray alloc] init];
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
-	sql = @"select id, type, name from voConfig order by rank;";
-	[self toQry2AryIIS :i1 i2:i2 s1:s1];
+	NSMutableArray *i3 = [[NSMutableArray alloc] init];
+	NSMutableArray *i4 = [[NSMutableArray alloc] init];
+	sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
+	[self toQry2AryIISII :i1 i2:i2 s1:s1 i3:i3 i4:i4];
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
 	NSEnumerator *e2 = [i2 objectEnumerator];
 	NSEnumerator *e3 = [s1 objectEnumerator];
+	NSEnumerator *e4 = [i3 objectEnumerator];
+	NSEnumerator *e5 = [i4 objectEnumerator];
 	int vid;
 	while ( vid = (int) [[e1 nextObject] intValue]) {
 		valueObj *vo = [[valueObj alloc] init :vid 
 									  in_vtype:(int)[[e2 nextObject] intValue] 
-									  in_vname: (NSString *) [e3 nextObject] ];
+									  in_vname: (NSString *) [e3 nextObject] 
+									 in_vcolor:(int)[[e4 nextObject] intValue] 
+								 in_vgraphtype:(int)[[e5 nextObject] intValue] 
+						];
 		[valObjTable addObject:(id) vo];
 		[vo release];
 	}
@@ -114,6 +87,7 @@
 	[i2 release];
 	[s1 release];
 	
+	[trackerDate release];
 	trackerDate = [[NSDate alloc] init];
 }
 
@@ -126,6 +100,13 @@
 	[self toExecSql];
 	//[sql release];
 	
+	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('width',%f);",
+		self.maxLabel.width];
+	[self toExecSql];
+	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('height',%f);",
+		self.maxLabel.height];
+	[self toExecSql];
+	
 	int i=0;
 	for (valueObj *vo in valObjTable) {
 
@@ -134,8 +115,8 @@
 		}
 		
 		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
-		sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name) values (%d, %d, %d, '%@');",
-			   vo.vid, i++, vo.vtype, vo.valueName];
+		sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
+			   vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];
 		[self toExecSql];
 		//[sql release];
 	}
@@ -290,6 +271,10 @@
 	[trackerName release];
 	[trackerDate release];
 	[valObjTable release];
+	
+	[colorSet release];
+	[votArray release];
+	
 	[super dealloc];
 }
 
@@ -312,6 +297,25 @@
 	return NO;
 }
 
+- (void) setMaxLabel 
+{
+
+	CGSize lsize = { 0.0f, 0.0f };
+	
+	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
+	valueObj *vo;
+	while ( vo = (valueObj *) [enumer nextObject]) {
+		CGSize tsize = [vo.valueName sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+		if (tsize.width > lsize.width) {
+			lsize = tsize;
+		}
+	}
+	
+	NSLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
+	self.maxLabel = lsize;
+}
+
+
 - (void) addValObj:(valueObj *) valObj {
 	NSLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
 
@@ -319,6 +323,8 @@
 	if (! [self updateValObj: valObj]) {
 		[self.valObjTable addObject:valObj];
 	}
+	
+	[self setMaxLabel];
 }
 
 - (valueObj *) voConfigCopy: (valueObj *) srcVO {
@@ -340,6 +346,29 @@
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		[vo describe];
 	}
+}
+
+- (NSArray *) colorSet {
+	if (colorSet == nil) {
+		colorSet = [[NSArray alloc] initWithObjects:
+					[UIColor redColor], [UIColor greenColor], [UIColor blueColor],
+					[UIColor cyanColor], [UIColor yellowColor], [UIColor magentaColor],
+					[UIColor orangeColor], [UIColor purpleColor], [UIColor brownColor], 
+					[UIColor whiteColor], [UIColor lightGrayColor], [UIColor darkGrayColor], nil];
+		
+	}
+	return colorSet;
+}
+
+- (NSArray *) votArray {
+	if (votArray == nil) {
+		NSBundle *bundle = [NSBundle mainBundle];
+		NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
+		votArray = [[NSArray alloc] initWithContentsOfFile:plistPath]; 
+
+	}
+	
+	return votArray;
 }
 
 /*

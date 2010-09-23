@@ -300,7 +300,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphonesimulator3.2;
 			};
 			name = Debug;
 		};

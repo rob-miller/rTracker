@@ -4,8 +4,9 @@
 <array>
 	<string>number</string>
 	<string>text</string>
+	<string>textbox</string>
 	<string>slider</string>
-	<string>multiple choice</string>
+	<string>choice</string>
 	<string>yes/no</string>
 	<string>image</string>
 	<string>function</string>

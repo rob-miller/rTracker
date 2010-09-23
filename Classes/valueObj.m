@@ -11,37 +11,10 @@
 
 @implementation valueObj
 
-@synthesize vid;
-@synthesize vtype;
-@synthesize valueName;
-//@synthesize valueDate;
-@synthesize value;
-//@synthesize votArray;
-@synthesize display;
+@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display;
 
 extern const NSInteger kViewTag;
-extern const NSArray *votPickerData;
-
-/*
-+ (NSArray *) votArray {
-	NSString *votS[VOT_MAX];
-	votS[VOT_NUMBER] = @"number";
-	votS[VOT_TEXT] = @"text";
-    votS[VOT_SLIDER] = @"slider";
-	votS[VOT_PICK] = @"multiple choice";
-	votS[VOT_BOOLEAN] = @"yes/no";
-	votS[VOT_IMAGE] = @"image";
-	votS[VOT_FUNC] = @"function";
-	
-	static NSArray *votA = nil;
-	
-	if (votA == nil) {
-		votA = [[NSArray arrayWithObjects:votS count:VOT_MAX] retain];
-	}
-	
-	return votA;
-}
-*/
+extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 - (id) init {
 	NSLog(@"init valueObj: %@", valueName);
@@ -52,6 +25,7 @@ extern const NSArray *votPickerData;
 	return self;
 }
 
+/*
 - (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname {
 	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	vid = in_vid;
@@ -68,9 +42,12 @@ extern const NSArray *votPickerData;
 		case VOT_TEXT:
 		case VOT_FUNC:
 			value = [[NSMutableString alloc] initWithCapacity:32];
-			break;
+			break;	
 		case VOT_IMAGE:
 			value = [[NSMutableString alloc] initWithCapacity:64];
+			break;
+		case VOT_TEXTB:
+			value = [[NSMutableString alloc] initWithCapacity:96];
 			break;
 		default:
 			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
@@ -81,20 +58,56 @@ extern const NSArray *votPickerData;
 	[valueName retain];
 	return [self init];
 }
+*/
+
+- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname in_vcolor:(NSInteger) in_vcolor in_vgraphtype:(NSInteger) in_vgraphtype
+{
+	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	vid = in_vid;
+	vtype = in_vtype;
+	switch (in_vtype) {
+		case VOT_NUMBER:
+		case VOT_SLIDER:
+			value = [[NSMutableString alloc] initWithCapacity:10];
+			break;
+		case VOT_BOOLEAN:
+		case VOT_PICK:
+			value = [[NSMutableString alloc] initWithCapacity:1];
+			break;
+		case VOT_TEXT:
+		case VOT_FUNC:
+			value = [[NSMutableString alloc] initWithCapacity:32];
+			break;	
+		case VOT_IMAGE:
+			value = [[NSMutableString alloc] initWithCapacity:64];
+			break;
+		case VOT_TEXTB:
+			value = [[NSMutableString alloc] initWithCapacity:96];
+			break;
+		default:
+			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
+			break;
+	}
+			
+	valueName = in_vname;
+	[valueName retain];
+	vcolor = in_vcolor;
+	vGraphType = in_vgraphtype;
+	
+	return [self init];
+}
 
 - (void) dealloc {
 	NSLog(@"dealloc valueObj: %@",valueName);
 	[super dealloc];
 	[valueName release];
-	//[valueDate release];
 	[value release];
-	//[votArray release];
 	[display release];
 }
 
 - (void) describe {
 	
-	NSLog(@" value id %d name %@ type %@ value .%@.",vid,valueName, [votPickerData objectAtIndex:vtype], value);
+	NSLog(@" value id %d name %@ type %d value .%@.",vid,valueName, vtype, value);
 }
 
 
@@ -111,18 +124,12 @@ extern const NSArray *votPickerData;
 	return YES;
 }
 
-#define kLeftMargin				20.0
-#define kTopMargin				20.0
-#define kRightMargin			20.0
-#define kTweenMargin			10.0
+#pragma mark -
+#pragma mark valueObj display routines
 
-#define kTextFieldHeight		30.0
-#define kTextFieldWidth	260.0
-
-
-- (void)displayTextfield:(BOOL)num 
+- (void)displayTextfield:(BOOL)num bounds:(CGRect) bounds
 {
-	CGRect frame = CGRectMake(kLeftMargin, 8.0, kTextFieldWidth, kTextFieldHeight);
+	CGRect frame = bounds;
 	UITextField * dtf = [[UITextField alloc] initWithFrame:frame];
 	
 	dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
@@ -189,8 +196,8 @@ extern const NSArray *votPickerData;
 #pragma mark -
 #pragma mark UIButton 
 
-#define kStdButtonWidth		106.0
-#define kStdButtonHeight	40.0
+//#define kStdButtonWidth		106.0
+//#define kStdButtonHeight	40.0
 
 
 + (UIButton *)buttonWithTitle:	(NSString *)title
@@ -262,14 +269,20 @@ extern const NSArray *votPickerData;
 }
 
 
-- (void) displayBoolBtn 
+- (void) displayBoolBtn :(CGRect) bounds
 {
 	// create a UIButton with just an image instead of a title
 	
 	UIImage *buttonBackground = [UIImage imageNamed:@"whiteButton.png"];
 	UIImage *buttonBackgroundPressed = [UIImage imageNamed:@"blueButton.png"];
 	
-	CGRect frame = CGRectMake(182.0, 5.0, kStdButtonWidth, kStdButtonHeight);
+	//CGRect frame = CGRectMake(182.0, 5.0, kStdButtonWidth, kStdButtonHeight);
+	CGRect frame = bounds;
+
+	UIImage *bbi = [self boolBtnImage];
+	frame.origin.x += (frame.size.width - bbi.size.width) / 2.0f;
+	frame.size.width = bbi.size.width;
+	frame.size.height = bbi.size.height;
 	
 	UIButton *imageButton = [valueObj buttonWithTitle:@""
 												  target:self
@@ -279,10 +292,9 @@ extern const NSArray *votPickerData;
 											imagePressed:buttonBackgroundPressed
 										   darkTextColor:YES];
 	
-	//[imageButton setImage:[UIImage imageNamed:@"UIButtonfile://localhost/Users/rob/code/UICatalog/ButtonsViewController.m_custom.png"] forState:UIControlStateNormal];
 	NSLog(@"booBtn: vo val= %@", self.value);
 	
-	[imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
+	[imageButton setImage:bbi forState: UIControlStateNormal];
 	//[imageButton setImage:chkBoxOn forState: UIControlStateHighlighted];
 		 
 	// Add an accessibility label to the image.
@@ -306,9 +318,10 @@ extern const NSArray *votPickerData;
 }
 
 
-- (void) displaySlider 
+- (void) displaySlider :(CGRect) bounds
 {
-	CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
+	//CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
+	CGRect frame = bounds;
 	UISlider * sliderCtl = [[UISlider alloc] initWithFrame:frame];
 	[sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
 	
@@ -335,7 +348,8 @@ extern const NSArray *votPickerData;
 #pragma mark -
 #pragma mark display fn dispatch
 
-- (UIView *) display {
+- (UIView *) display :(CGRect) bounds
+{
 	NSLog(@"vo display %@",valueName);
 	BOOL num=NO;
 	if (display == nil) {
@@ -344,11 +358,14 @@ extern const NSArray *votPickerData;
 				num=YES;
 				//break;
 			case VOT_TEXT:
-				[self displayTextfield:num];
+				[self displayTextfield:num bounds:bounds];
+				break;
+			case VOT_TEXTB:
+				NSLog(@"text box not implemented");
 				break;
 			case VOT_SLIDER: 
 				//NSLog(@"slider not implemented");
-				[self displaySlider];
+				[self displaySlider:bounds];
 				break;
 			case VOT_PICK:
 				NSLog(@"pick not implemented");
@@ -356,7 +373,7 @@ extern const NSArray *votPickerData;
 			case VOT_BOOLEAN:
 				//NSLog(@"bool not implemented");
 				//[self displaySwitch];
-				[self displayBoolBtn];
+				[self displayBoolBtn:bounds];
 				break;
 			case VOT_IMAGE:
 				NSLog(@"image not implemented");
@@ -373,5 +390,78 @@ extern const NSArray *votPickerData;
 	return display;
 }
 
++ (const NSArray *) graphsForVOTCopy:(NSInteger)vot 
+{
+	//NSString *line = @"line";
+	//NSString *dotsline = @"dotsline";
+	//NSString *dots = @"dots";
+	//NSString *bar = @"bar";
+	//NSString *pie = @"pie";
+	
+	NSArray *ret ; //= [NSArray alloc];
+	switch (vot) {
+		case VOT_FUNC:
+			//break;
+		case VOT_SLIDER: 
+			//break;
+		case VOT_NUMBER: 
+			//[ret initWithObjects:@"dots",@"bar",@"line", @"dotsline", nil];
+			ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"dotsline", nil];
+			/* [ret initWithObjects:[[NSString alloc] initWithString:@"dots"],
+			 [[NSString alloc] initWithString:@"bar"],
+			 [[NSString alloc] initWithString:@"line"],
+			 [[NSString alloc] initWithString:@"dotsline"], nil]; */
+			break;
+		case VOT_IMAGE:
+			//break;
+		case VOT_TEXT:
+			//break;
+		case VOT_TEXTB:
+			//[ret initWithObjects:@"dots", nil];
+			ret = [NSArray arrayWithObjects:@"dots", nil];
+			break;
+		case VOT_PICK:
+			//[ret initWithObjects:@"dots",@"pie", nil];
+			ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
+			break;
+		case VOT_BOOLEAN:
+			//[ret initWithObjects:@"dots", @"bar", nil];
+			ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
+			break;
+		default:
+			//NSLog(@"graphsForVOT: vtype %d not identified!", vot);
+			//return [NSArray arrayWithObjects:nil];
+			//[ret initWithObjects:@"dots", @"bar",@"line", @"dotsline", @"pie", nil];
+			ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"dotsline", @"pie", nil];
+			/*[ret initWithObjects:[[NSString alloc] initWithString:@"dots"],
+			 [[NSString alloc] initWithString:@"bar"],
+			 [[NSString alloc] initWithString:@"line"],
+			 [[NSString alloc] initWithString:@"dotsline"], 
+			 [[NSString alloc] initWithString:@"pie"], nil];
+			 */
+			break;
+	}
+	
+	//[ret autorelease];
+	[ret retain];
+	return ret;
+}
+
++ (NSInteger) mapGraphType:(NSString *)gts {
+	if ([gts isEqual:@"dots"])
+		return VOG_DOTS;
+	if ([gts isEqual:@"bar"])
+		return VOG_BAR;
+	if ([gts isEqual:@"line"])
+		return VOG_LINE;
+	if ([gts isEqual:@"dotsline"])
+		return VOG_DOTSLINE;
+	if ([gts isEqual:@"PIE"])
+		return VOG_PIE;
+	
+	NSAssert1(0,@"mapGraphTypes: no match for %@",gts);
+	
+	return 0;
+}
 
 @end

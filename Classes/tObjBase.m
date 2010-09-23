@@ -208,6 +208,54 @@
 
 }
 
+
+- (void) toQry2AryIISII : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1 i3:(NSMutableArray *)i3 i4:(NSMutableArray *)i4
+{
+	
+	
+	NSLog(@"toQry2AryIISII: %@ => _%@_",dbName,sql);
+	NSAssert(tDb,@"toQry2AryIISII called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
+			[i1 addObject: i];
+			[i release];
+			
+			NSNumber *j = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 1)];
+			[i2 addObject:(id) j];
+			[j release];
+			
+			NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 2)];
+			[s1 addObject:(id) tlentry];
+			[tlentry release];
+
+			NSNumber *k = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 3)];
+			[i3 addObject: k];
+			[k release];
+			
+			NSNumber *l = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 4)];
+			[i4 addObject:(id) l];
+			[l release];
+			
+			NSLog(@"  rslt: %@ %@ %@ %@ %@",
+				  [i1 lastObject], [i2 lastObject], [s1 lastObject], [i4 lastObject], [i4 lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	//NSLog(@"  returns %@ : %@ : %@", i1, i2, s1);
+	
+	
+}
+
+
 - (int) toQry2Int {
 	NSLog(@"toQry2Int: %@ => _%@_",dbName,sql);
 	NSAssert(tDb,@"toQry2Int called with no tDb");
@@ -261,6 +309,32 @@
 	
 	return srslt;
 }
+
+- (float) toQry2Float {
+	NSLog(@"toQry2Float: %@ => _%@_",dbName,sql);
+	NSAssert(tDb,@"toQry2Float called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	float frslt=0.0f;
+	
+	if (sqlite3_prepare_v2(tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			frslt = (float) sqlite3_column_double(stmt, 0);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	
+	NSLog(@"  returns %f",frslt);
+	
+	return frslt;
+}
+
 
 - (void) toExecSql {
 	NSLog(@"toExecSql: %@ => _%@_", dbName, sql);

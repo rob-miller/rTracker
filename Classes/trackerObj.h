@@ -17,12 +17,19 @@
 	NSString *trackerName;
 	NSDate *trackerDate;
 	NSMutableArray *valObjTable;
+	CGSize maxLabel;
+
+	NSArray *colorSet;
+	NSArray *votArray;
 }
 
 //@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
 @property (nonatomic,retain) NSDate *trackerDate;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
+@property (nonatomic) CGSize maxLabel;
+@property (nonatomic,retain) NSArray *colorSet;
+@property (nonatomic,retain) NSArray *votArray;
 
 //+ (NSString *) makeSafeStr : (NSString *) inStr;
 
