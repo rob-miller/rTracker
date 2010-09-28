@@ -16,8 +16,12 @@
 extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
+#pragma mark -
+#pragma mark core object methods and support
+
+
 - (id) init {
-	NSLog(@"init valueObj: %@", valueName);
+	NSLog(@"init valueObj: %@", self.valueName);
 	if (self = [super init]) {
 		//valueDate = [[NSDate alloc] init];
 		
@@ -25,95 +29,60 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	return self;
 }
 
-/*
-- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname {
-	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
-	vid = in_vid;
-	vtype = in_vtype;
-	switch (in_vtype) {
-		case VOT_NUMBER:
-		case VOT_SLIDER:
-			value = [[NSMutableString alloc] initWithCapacity:10];
-			break;
-		case VOT_BOOLEAN:
-		case VOT_PICK:
-			value = [[NSMutableString alloc] initWithCapacity:1];
-			break;
-		case VOT_TEXT:
-		case VOT_FUNC:
-			value = [[NSMutableString alloc] initWithCapacity:32];
-			break;	
-		case VOT_IMAGE:
-			value = [[NSMutableString alloc] initWithCapacity:64];
-			break;
-		case VOT_TEXTB:
-			value = [[NSMutableString alloc] initWithCapacity:96];
-			break;
-		default:
-			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
-			break;
-	}
-			
-	valueName = in_vname;
-	[valueName retain];
-	return [self init];
-}
-*/
-
 - (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname in_vcolor:(NSInteger) in_vcolor in_vgraphtype:(NSInteger) in_vgraphtype
 {
 	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
-	vid = in_vid;
-	vtype = in_vtype;
+	self.vid = in_vid;
+	self.vtype = in_vtype;
 	switch (in_vtype) {
 		case VOT_NUMBER:
 		case VOT_SLIDER:
-			value = [[NSMutableString alloc] initWithCapacity:10];
+			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:10];
 			break;
 		case VOT_BOOLEAN:
 		case VOT_PICK:
-			value = [[NSMutableString alloc] initWithCapacity:1];
+			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:1];
 			break;
 		case VOT_TEXT:
 		case VOT_FUNC:
-			value = [[NSMutableString alloc] initWithCapacity:32];
+			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:32];
 			break;	
 		case VOT_IMAGE:
-			value = [[NSMutableString alloc] initWithCapacity:64];
+			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:64];
 			break;
 		case VOT_TEXTB:
-			value = [[NSMutableString alloc] initWithCapacity:96];
+			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:96];
 			break;
 		default:
 			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
 			break;
 	}
-			
-	valueName = in_vname;
-	[valueName retain];
-	vcolor = in_vcolor;
-	vGraphType = in_vgraphtype;
+		
+	self.valueName = in_vname;
+	self.vcolor = in_vcolor;
+	self.vGraphType = in_vgraphtype;
 	
 	return [self init];
 }
 
-- (void) dealloc {
+- (void) dealloc 
+{
 	NSLog(@"dealloc valueObj: %@",valueName);
-	[super dealloc];
+	self.valueName = nil;
 	[valueName release];
+	self.value = nil;
 	[value release];
+	self.display = nil;
 	[display release];
-}
-
-- (void) describe {
 	
-	NSLog(@" value id %d name %@ type %d value .%@.",vid,valueName, vtype, value);
+	[super dealloc];
 }
-
-
 
 #pragma mark -
-#pragma mark UITextFieldDelegate
+#pragma mark valueObj display routines
+#pragma mark -
+
+#pragma mark textfield
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -123,9 +92,6 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	[textField resignFirstResponder];
 	return YES;
 }
-
-#pragma mark -
-#pragma mark valueObj display routines
 
 - (void)displayTextfield:(BOOL)num bounds:(CGRect) bounds
 {
@@ -164,12 +130,11 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		dtf.text = self.value;
 	}
 	
-	self.display = dtf;
+	/*self.*/ display = dtf;
 }
 
 
-#pragma mark -
-#pragma mark UISwitch
+#pragma mark switch
 
 - (void)switchAction:(id)sender
 {
@@ -189,18 +154,17 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	
 	switchCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 	
-	self.display = switchCtl;
+	/*self.*/ display = switchCtl;
 	
 }
 
-#pragma mark -
-#pragma mark UIButton 
+#pragma mark bool button 
 
 //#define kStdButtonWidth		106.0
 //#define kStdButtonHeight	40.0
 
 
-+ (UIButton *)buttonWithTitle:	(NSString *)title
++ (UIButton *)buttonWithTitleCopy:	(NSString *)title
 					   target:(id)target
 					 selector:(SEL)selector
 						frame:(CGRect)frame
@@ -236,31 +200,30 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	
     // in case the parent view draws with a custom color or gradient, use a transparent color
 	button.backgroundColor = [UIColor clearColor];
-	[button autorelease];
+	//[button autorelease];  // let property retain handle this
 	return button;
 }
 
 - (BOOL) toggleBoolBtn 
 {
-	if (value == nil || [value isEqualToString:@""] ||[value isEqualToString:@"0"]) {
-		[value setString:@"1"];
+	if (self.value == nil || [value isEqualToString:@""] ||[self.value isEqualToString:@"0"]) {
+		[self.value setString:@"1"];
 		return YES;
 	} else {
-		[value setString:@"0"];
+		[self.value setString:@"0"];
 		return NO;
 	}
 }
 
 - (UIImage *) boolBtnImage {
 	UIImage *chkBox;
-	if (value == nil || [value isEqualToString:@""] || [value isEqualToString:@"0"]) {
+	if (self.value == nil || [self.value isEqualToString:@""] || [self.value isEqualToString:@"0"]) {
 		chkBox = [UIImage imageNamed:@"chkbox_off.png"];
 	} else {
 		chkBox = [UIImage imageNamed:@"chkbox_on.png"];
 	}
 	return chkBox;
 }
-
 - (void)boolBtnAction:(UIButton *)imageButton
 {
 	//NSLog(@"boolBtnAction");
@@ -284,7 +247,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	frame.size.width = bbi.size.width;
 	frame.size.height = bbi.size.height;
 	
-	UIButton *imageButton = [valueObj buttonWithTitle:@""
+	UIButton *imageButton = [valueObj buttonWithTitleCopy:@""
 												  target:self
 											 selector:@selector(boolBtnAction:)
 												   frame:frame
@@ -303,13 +266,14 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 	
 
-	self.display = imageButton;
+	/*self.*/ display = imageButton;
+	//[buttonBackground release];  // seems like these are convenience methods
+	//[buttonBackgroundPressed release];
 }
 
-#pragma mark -
-#pragma mark UISlider
+#pragma mark slider
 
-#define kSliderHeight			7.0
+//#define kSliderHeight			7.0
 
 - (void)sliderAction:(UISlider *)sender
 { 
@@ -331,29 +295,28 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	sliderCtl.minimumValue = 0.0;
 	sliderCtl.maximumValue = 100.0;
 	sliderCtl.continuous = YES;
-	if ([value isEqualToString:@""]) {
+	if ([self.value isEqualToString:@""]) {
 		sliderCtl.value = 50.0;  // TODO: default value here
 	} else {
-		sliderCtl.value = [value floatValue];
+		sliderCtl.value = [self.value floatValue];
 	}
 	// Add an accessibility label that describes the slider.
 	[sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
 	
 	sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 	
-	self.display = sliderCtl;
-	
+	/* self. */ display = sliderCtl;
 }
 
-#pragma mark -
+//#pragma mark -
 #pragma mark display fn dispatch
 
 - (UIView *) display :(CGRect) bounds
 {
-	NSLog(@"vo display %@",valueName);
+	NSLog(@"vo display %@",self.valueName);
 	BOOL num=NO;
-	if (display == nil) {
-		switch (vtype) {
+	if (self.display == nil) {
+		switch (self.vtype) {
 			case VOT_NUMBER: 
 				num=YES;
 				//break;
@@ -382,13 +345,22 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 				NSLog(@"func not implemented");
 				break;
 			default:
-				NSLog(@"vtype %d not identified!", vtype);
+				NSLog(@"vtype %d not identified!", self.vtype);
 				break;
 		}
 	} 
 	
 	return display;
 }
+
+#pragma mark -
+#pragma mark utility methods
+
+- (void) describe 
+{
+	NSLog(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
+}
+
 
 + (const NSArray *) graphsForVOTCopy:(NSInteger)vot 
 {
@@ -399,27 +371,33 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		case VOT_SLIDER: 
 			//break;
 		case VOT_NUMBER: 
-			ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
+			//ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
 			break;
 		case VOT_IMAGE:
 			//break;
 		case VOT_TEXT:
 			//break;
 		case VOT_TEXTB:
-			ret = [NSArray arrayWithObjects:@"dots", nil];
+			//ret = [NSArray arrayWithObjects:@"dots", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", nil];
 			break;
 		case VOT_PICK:
-			ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
+			//ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
+			ret =  [[NSArray alloc] initWithObjects:@"dots",@"pie", nil];
 			break;
 		case VOT_BOOLEAN:
-			ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
+			//ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar", nil];
 			break;
 		default:
-			ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
+			//ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
 			break;
 	}
 	
-	[ret retain];
+	//[ret retain ];  //]autorelease]; //retain?
+	//[ret autorelease];
 	return ret;
 }
 

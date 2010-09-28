@@ -16,7 +16,7 @@
 @synthesize tempValObj;
 @synthesize parentTrackerObj;
 
-@synthesize toolbar;
+//@synthesize toolbar;
 
 @synthesize graphTypes;
 
@@ -25,6 +25,30 @@ CGSize sizeGTLabel;
 
 #define FONTSIZE 20.0f
 //#define FONTSIZE [UIFont labelFontSize]
+
+
+#pragma mark -
+#pragma mark core object methods and support
+
+- (void)dealloc {
+	NSLog(@"avoc dealloc");
+	self.votPicker = nil;
+	[votPicker release];
+	self.labelField = nil;
+	[labelField release];
+	self.tempValObj = nil;
+	[tempValObj release];
+	self.graphTypes = nil;
+	[graphTypes release];
+	self.parentTrackerObj = nil;
+	[parentTrackerObj release];
+	
+    [super dealloc];
+}
+
+
+# pragma mark -
+# pragma mark utility routines
 
 +(CGSize) maxLabelFromArray:(const NSArray *)arr 
 {
@@ -40,18 +64,10 @@ CGSize sizeGTLabel;
 	
 	return rsize;
 }
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
 
+# pragma mark -
+# pragma mark view support
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
@@ -81,24 +97,28 @@ CGSize sizeGTLabel;
 	sizeVOTLabel = [addValObjController maxLabelFromArray:parentTrackerObj.votArray];
 	NSArray *allGraphs = [valueObj graphsForVOTCopy:-1];
 	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
-	[allGraphs release];
 	
 	
-	if (tempValObj == nil) {
+	if (self.tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
+		//self.tempValObj = [[valueObj alloc] init];
+		self.graphTypes = nil;
 		graphTypes = [valueObj graphsForVOTCopy:VOT_NUMBER];
+		//self.graphTypes = [valueObj graphsForVOTCopy:VOT_NUMBER];
+		//[tempValObj release];
+		//[graphTypes release];
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
 		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:NO];
 		[self.votPicker selectRow:self.tempValObj.vcolor inComponent:1 animated:NO];
 		
-		[graphTypes release];
-		graphTypes = [valueObj graphsForVOTCopy:-1];
-		NSString *g = [graphTypes objectAtIndex:self.tempValObj.vGraphType];
-		[graphTypes release];
+		NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
+		self.graphTypes = nil;
 		graphTypes = [valueObj graphsForVOTCopy:tempValObj.vtype];
+		//self.graphTypes = [valueObj graphsForVOTCopy:tempValObj.vtype];
+		//[graphTypes release];
 		
-		NSEnumerator *e = [graphTypes objectEnumerator];
+		NSEnumerator *e = [self.graphTypes objectEnumerator];
 		NSString *s;
 		NSInteger row=0;
 		while ( s = (NSString *) [e nextObject]) {
@@ -108,12 +128,11 @@ CGSize sizeGTLabel;
 		}
 
 		[self.votPicker reloadComponent:2];
-		
 		[self.votPicker selectRow:row inComponent:2 animated:NO];
-		
-		
 	}
 
+	[allGraphs release];
+	
 	
 	self.title = @"value";
 	
@@ -126,18 +145,7 @@ CGSize sizeGTLabel;
 		forControlEvents:UIControlEventEditingDidEndOnExit];
 	
 	[super viewDidLoad];
-
 }
-
-
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -155,21 +163,21 @@ CGSize sizeGTLabel;
 	self.votPicker = nil;
 	self.labelField = nil;
 	self.tempValObj = nil;
+	self.graphTypes = nil;
+	self.parentTrackerObj = nil;
+
+	self.navigationItem.rightBarButtonItem = nil;
+	self.navigationItem.leftBarButtonItem = nil;
+	[self setToolbarItems:nil
+				 animated:NO];
+	self.title = nil;
 	
 	[super viewDidUnload];
 }
 
 
-- (void)dealloc {
-	NSLog(@"avoc dealloc");
-	[votPicker release];
-	[labelField release];
-	[tempValObj release];
-	[graphTypes release];
-    [super dealloc];
-}
-
-
+#pragma mark -
+#pragma mark button press action methods
 
 - (IBAction)btnCancel {
 	NSLog(@"addVObjC: btnCancel was pressed!");
@@ -178,23 +186,23 @@ CGSize sizeGTLabel;
 
 - (IBAction)btnSave {
 	NSLog(@"addVObjC: btnSave was pressed!");
-	tempValObj.valueName = labelField.text;  // in case neglected to 'done' keyboard
+	self.tempValObj.valueName = self.labelField.text;  // in case neglected to 'done' keyboard
 	
-	NSUInteger row = [votPicker selectedRowInComponent:0];
-	tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
-	row = [votPicker selectedRowInComponent:1];
-	tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
-	row = [votPicker selectedRowInComponent:2];
-	tempValObj.vGraphType = [valueObj mapGraphType:[graphTypes objectAtIndex:row]];
+	NSUInteger row = [self.votPicker selectedRowInComponent:0];
+	self.tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
+	row = [self.votPicker selectedRowInComponent:1];
+	self.tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
+	row = [self.votPicker selectedRowInComponent:2];
+	self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
 	
-	if (tempValObj.vid == 0) {
-		tempValObj.vid = [parentTrackerObj getUnique];
+	if (self.tempValObj.vid == 0) {
+		self.tempValObj.vid = [self.parentTrackerObj getUnique];
 	}
 	
-	NSString *selected = [parentTrackerObj.votArray objectAtIndex:row];
-	NSLog(@"label: %@ id: %d row: %d = %@",tempValObj.valueName,tempValObj.vid, row,selected);
+	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
+	NSLog(@"label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
 	
-	[parentTrackerObj addValObj:tempValObj];
+	[self.parentTrackerObj addValObj:tempValObj];
 	
 	[self.navigationController popViewControllerAnimated:YES];
 	//[parent.tableView reloadData];
@@ -209,7 +217,7 @@ CGSize sizeGTLabel;
 
 - (IBAction) labelFieldDone:(id)sender {
 	[sender resignFirstResponder];
-	tempValObj.valueName = labelField.text;
+	self.tempValObj.valueName = self.labelField.text;
 }
 
 
@@ -223,13 +231,13 @@ CGSize sizeGTLabel;
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger) component {
 	switch (component) {
 		case 0:
-			return [parentTrackerObj.votArray count];
+			return [self.parentTrackerObj.votArray count];
 			break;
 		case 1:
-			return [parentTrackerObj.colorSet count];
+			return [self.parentTrackerObj.colorSet count];
 			break;
 		case 2:
-			return [graphTypes count];
+			return [self.graphTypes count];
 			break;
 		default:
 			NSAssert(0,@"bad component for avo picker");
@@ -247,14 +255,14 @@ CGSize sizeGTLabel;
 			 forComponent:(NSInteger)component {
 	switch (component) {
 		case 0:
-			return [parentTrackerObj.votArray objectAtIndex:row];
+			return [self.parentTrackerObj.votArray objectAtIndex:row];
 			break;
 		case 1:
-			//return [paretntTrackerObj.colorSet objectAtIndex:row];
+			//return [self.paretntTrackerObj.colorSet objectAtIndex:row];
 			return @"color";
 			break;
 		case 2:
-			return [graphTypes objectAtIndex:row];
+			return [self.graphTypes objectAtIndex:row];
 			break;
 		default:
 			NSAssert(0,@"bad component for avo picker");
@@ -282,7 +290,7 @@ CGSize sizeGTLabel;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
-			label.text = [parentTrackerObj.votArray objectAtIndex:row];
+			label.text = [self.parentTrackerObj.votArray objectAtIndex:row];
 			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		case 1:
@@ -294,7 +302,7 @@ CGSize sizeGTLabel;
 			//label = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 			//[label retain];
 			//label.frame = frame;
-			label.backgroundColor = [parentTrackerObj.colorSet objectAtIndex:row];
+			label.backgroundColor = [self.parentTrackerObj.colorSet objectAtIndex:row];
 			break;
 		case 2:
 			frame.size = sizeGTLabel;
@@ -303,12 +311,11 @@ CGSize sizeGTLabel;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 									  label.backgroundColor = [UIColor clearColor]; //greenColor];
-			label.text = [graphTypes objectAtIndex:row];
+			label.text = [self.graphTypes objectAtIndex:row];
 			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		default:
 			NSAssert(0,@"bad component for avo picker");
-			label.text = @"boo!";
 			break;
 	}
 	[label autorelease];
@@ -341,10 +348,11 @@ CGSize sizeGTLabel;
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
 	if (component == 0) {
-		[graphTypes release];
-		//graphTypes = nil;
+		self.graphTypes = nil;
 		graphTypes = [valueObj graphsForVOTCopy:row];
-		//[graphTypes retain];
+		//self.graphTypes = [valueObj graphsForVOTCopy:row];
+		//[graphTypes release];
+		
 		[self.votPicker reloadComponent:2];
 	}
 }

@@ -17,6 +17,102 @@
 @synthesize tempTrackerObj;
 @synthesize table;
 
+#pragma mark -
+#pragma mark core object methods and support
+
+- (void) dealloc {
+	NSLog(@"atc: dealloc");
+	self.nameField = nil;
+	[nameField release];
+	self.tempTrackerObj = nil;
+	[tempTrackerObj release];
+	self.tlist = nil;
+	[tlist release];
+	self.table = nil;
+	[table release];
+	
+	[super dealloc];
+}
+
+# pragma mark -
+# pragma mark view support
+
+
+- (void) viewDidLoad {
+
+	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
+	
+	// cancel / save buttons on top nav bar
+	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
+							   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+							   target:self
+							   action:@selector(btnCancel)];
+	self.navigationItem.leftBarButtonItem = cancelBtn;
+	[cancelBtn release];
+	
+	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
+							   initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+							   target:self
+							   action:@selector(btnSave)];
+	self.navigationItem.rightBarButtonItem = saveBtn;
+	[saveBtn release];
+
+	// list manage / configure segmented control on bottom toolbar
+	[self configureToolbarItems];
+	
+	if (! self.tempTrackerObj) {
+		// the temporary tracker obj we work with
+		self.tempTrackerObj = [trackerObj alloc];
+		//tempTrackerObj.trackerName = @"";
+		[self.tempTrackerObj init];
+		self.tempTrackerObj.toid = [tlist getUnique];
+		[tempTrackerObj release];
+		self.title = @"add tracker";
+	} else {
+			self.title = @"modify tracker";
+	}
+	
+	[self.table setEditing:YES animated:YES];
+	self.table.allowsSelection = NO;  
+	
+	[super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	
+	NSLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
+	
+	[self.table reloadData];
+	
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	//NSLog(@"atc: viewWillDisappear, namefield= %@",nameField.text);
+	NSLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
+	
+	[super viewWillDisappear:animated];
+}
+
+
+
+- (void) viewDidUnload {
+	NSLog(@"atc: viewdidunload");
+	self.nameField = nil;
+	self.tlist = nil;
+	self.tempTrackerObj = nil;
+	self.table = nil;
+	
+	self.title = nil;
+	
+	self.navigationItem.rightBarButtonItem = nil;
+	self.navigationItem.leftBarButtonItem = nil;
+	[self setToolbarItems:nil
+				 animated:NO];
+		
+	[super viewDidUnload];
+}
+
 # pragma mark -
 # pragma mark toolbar support
 
@@ -56,103 +152,17 @@ static int editMode;
 	editMode = [sender selectedSegmentIndex];
 	//[table reloadData];
 	if (editMode == 0) {
-		[table setEditing:YES animated:YES];
+		[self.table setEditing:YES animated:YES];
 	} else {
-		[table setEditing:NO animated:YES];
+		[self.table setEditing:NO animated:YES];
 	}
-
+	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
 	
-	[table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+	[self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
 	
 }
 
-# pragma mark -
-# pragma mark view support
-
-
-- (void) viewDidLoad {
-
-	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
-	
-	// cancel / save buttons on top nav bar
-	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
-							   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-							   target:self
-							   action:@selector(btnCancel)];
-	self.navigationItem.leftBarButtonItem = cancelBtn;
-	[cancelBtn release];
-	
-	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-							   initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-							   target:self
-							   action:@selector(btnSave)];
-	self.navigationItem.rightBarButtonItem = saveBtn;
-	[saveBtn release];
-
-	// list manage / configure segmented control on bottom toolbar
-	[self configureToolbarItems];
-	
-	if (! tempTrackerObj) {
-		// the temporary tracker obj we work with
-		tempTrackerObj = [trackerObj alloc];
-		//tempTrackerObj.trackerName = @"";
-		[tempTrackerObj init];
-		tempTrackerObj.toid = [tlist getUnique];
-		self.title = @"add tracker";
-	} else {
-			self.title = @"modify tracker";
-	}
-	
-	[table setEditing:YES animated:YES];
-	table.allowsSelection = NO;  
-	
-	[super viewDidLoad];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-	
-	NSLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
-	
-	[table reloadData];
-	
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-	//NSLog(@"atc: viewWillDisappear, namefield= %@",nameField.text);
-	NSLog(@"atc: viewWillDisappear, tracker name = %@",tempTrackerObj.trackerName);
-	
-	[super viewWillDisappear:animated];
-}
-
-
-
-- (void) viewDidUnload {
-	NSLog(@"atc: viewdidunload");
-	nameField = nil;
-	tlist = nil;
-	[super viewDidUnload];
-}
-
-- (void) dealloc {
-	NSLog(@"atc: dealloc");
-	[tempTrackerObj release];
-	[tlist release];
-	
-	//tlist = nil;
-
-	[super dealloc];
-}
-
-/*
-- (IBAction) textFieldDoneEditing:(id)sender {
-	[sender resignFirstResponder];
-	tlist.tObj = [trackerObj alloc];
-	tlist.tObj.trackerName = nameField.text;
-	[tlist.tObj init];
-}
-*/
 
 # pragma mark -
 # pragma mark button press handlers
@@ -169,14 +179,14 @@ NSLog(@"btnAddValue was pressed!");
 - (IBAction)btnSave {
 	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, tlist);
 
-	if ([nameField.text length] > 0) {
-		tempTrackerObj.trackerName = nameField.text;
-		if (! tempTrackerObj.toid) {
-			tempTrackerObj.toid = [tlist getUnique];
+	if ([self.nameField.text length] > 0) {
+		self.tempTrackerObj.trackerName = self.nameField.text;
+		if (! self.tempTrackerObj.toid) {
+			self.tempTrackerObj.toid = [self.tlist getUnique];
 		}
-		[tempTrackerObj saveConfig];
-		[tlist confirmTopLayoutEntry:tempTrackerObj];
-		[tlist loadTopLayoutTable];
+		[self.tempTrackerObj saveConfig];
+		[self.tlist confirmTopLayoutEntry:tempTrackerObj];
+		[self.tlist loadTopLayoutTable];
 		[self.navigationController popViewControllerAnimated:YES];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc]
@@ -194,7 +204,7 @@ NSLog(@"btnAddValue was pressed!");
 
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
-	tempTrackerObj.trackerName = nameField.text;
+	self.tempTrackerObj.trackerName = nameField.text;
 }
 
 # pragma mark -
@@ -204,7 +214,7 @@ NSLog(@"btnAddValue was pressed!");
 	if (section == 0) {
 		return (NSInteger) 1;
 	} else {
-		int rval = [tempTrackerObj.valObjTable count];
+		int rval = [self.tempTrackerObj.valObjTable count];
 		if (editMode == 0) {
 			rval++;
 		}
@@ -232,12 +242,14 @@ NSLog(@"btnAddValue was pressed!");
 					 reuseIdentifier: nameCellID] 
 					autorelease];
 
+			self.nameField = nil;
 			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
-			//nameField = [[[UITextField alloc] init ];
-			nameField.clearsOnBeginEditing = NO;
-			[nameField setDelegate:self];
-			nameField.returnKeyType = UIReturnKeyDone;
-			[nameField addTarget:self
+			//self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
+			//[self.nameField release];
+			self.nameField.clearsOnBeginEditing = NO;
+			[self.nameField setDelegate:self];
+			self.nameField.returnKeyType = UIReturnKeyDone;
+			[self.nameField addTarget:self
 						  action:@selector(nameFieldDone:)
 				forControlEvents:UIControlEventEditingDidEndOnExit];
 			[cell.contentView addSubview:nameField];
@@ -245,8 +257,9 @@ NSLog(@"btnAddValue was pressed!");
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		}
 		
-		nameField.text = tempTrackerObj.trackerName;
-		nameField.placeholder = @"Tracker Name";
+		self.nameField.text = self.tempTrackerObj.trackerName;
+
+		self.nameField.placeholder = @"Tracker Name";
 		
 		/*
 		if (tempTrackerObj.trackerName == @"") {
@@ -264,13 +277,13 @@ NSLog(@"btnAddValue was pressed!");
 					autorelease];
 		}
 		NSInteger row = [indexPath row];
-		if (row == [tempTrackerObj.valObjTable count] ) {
+		if (row == [self.tempTrackerObj.valObjTable count] ) {
 			cell.detailTextLabel.text = @"add value";
 		} else {
-			valueObj *vo = [tempTrackerObj.valObjTable objectAtIndex:row];
+			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [tempTrackerObj.votArray objectAtIndex:vo.vtype];
+			cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
 		}
 	}
 	
@@ -283,7 +296,7 @@ NSLog(@"btnAddValue was pressed!");
 		return NO;
 	} 
 	NSInteger row = [indexPath row];
-	if (row >= [tempTrackerObj.valObjTable count]) {
+	if (row >= [self.tempTrackerObj.valObjTable count]) {
 		return NO;
 	}
 	
@@ -309,7 +322,7 @@ NSLog(@"btnAddValue was pressed!");
 		return UITableViewCellEditingStyleNone;
 	} else {
 		NSInteger row = [indexPath row];
-		if (row >= [tempTrackerObj.valObjTable count]) {
+		if (row >= [self.tempTrackerObj.valObjTable count]) {
 			return UITableViewCellEditingStyleInsert;
 		} else {
 			return UITableViewCellEditingStyleDelete;
@@ -327,7 +340,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		NSLog(@"atc: insert row %d ",row);
 
 		addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
-		avc.parentTrackerObj = tempTrackerObj;
+		avc.parentTrackerObj = self.tempTrackerObj;
 		[self.navigationController pushViewController:avc animated:YES];
 		[avc release];
 		
@@ -354,8 +367,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSLog(@"accessory button tapped for section %d row %d ", section, row);
 
 	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
-	avc.parentTrackerObj = tempTrackerObj;
-	avc.tempValObj = [tempTrackerObj.valObjTable objectAtIndex:row];
+	avc.parentTrackerObj = self.tempTrackerObj;
+	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 	
 	[self.navigationController pushViewController:avc animated:YES];
 	[avc release];

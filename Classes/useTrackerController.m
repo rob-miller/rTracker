@@ -17,17 +17,32 @@
 
 const NSInteger kViewTag = 1;
 
+#pragma mark -
+#pragma mark core object methods and support
 
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        // Custom initialization
-    }
-    return self;
+- (void)dealloc {
+	self.prevDateBtn = nil;
+	[prevDateBtn release];
+	self.currDateBtn = nil;
+	[currDateBtn release];
+	self.postDateBtn = nil;
+	[postDateBtn release];
+	self.delBtn = nil;
+	[delBtn release];
+	
+	self.fixed1SpaceButtonItem = nil;
+	[fixed1SpaceButtonItem release];
+	self.flexibleSpaceButtonItem = nil;
+	[flexibleSpaceButtonItem release];
+	
+	self.tracker = nil;
+	[tracker release];
+	[super dealloc];
 }
-*/
 
+
+# pragma mark -
+# pragma mark view support
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -40,12 +55,14 @@ const NSInteger kViewTag = 1;
 	}
 	
 	// cancel / save buttons on top nav bar
+	/*
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
 								  initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 								  target:self
 								  action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
 	[cancelBtn release];
+	*/
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
@@ -75,13 +92,6 @@ const NSInteger kViewTag = 1;
     [super viewDidLoad];
 }
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -93,23 +103,248 @@ const NSInteger kViewTag = 1;
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-
-	[self.prevDateBtn release];
-	[self.currDateBtn release];
-	[self.postDateBtn release];
-	[self.delBtn release];
+	self.title = nil;
+	self.prevDateBtn = nil;
+	self.currDateBtn = nil;
+	self.postDateBtn = nil;
+	self.delBtn = nil;
 	
-	[self.fixed1SpaceButtonItem release];
-	[self.flexibleSpaceButtonItem release];
+	self.fixed1SpaceButtonItem = nil;
+	self.flexibleSpaceButtonItem = nil;
+	
+	self.toolbarItems = nil;
+	self.navigationItem.rightBarButtonItem = nil;	
+	self.navigationItem.leftBarButtonItem = nil;	
+	
 }
 
-- (void)dealloc {
+# pragma mark view rotation methods
 
-	[super dealloc];
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations
+	switch (interfaceOrientation) {
+		case UIInterfaceOrientationPortrait:
+			NSLog(@"should rotate to interface orientation portrait?");
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			NSLog(@"should rotate to interface orientation portrait upside down?");
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			NSLog(@"should rotate to interface orientation landscape left?");
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			NSLog(@"should rotate to interface orientation landscape left?");
+			break;
+		default:
+			NSLog(@"rotation query but can't tell to where?");
+			break;			
+	}
+	
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation 
+{
+	switch (fromInterfaceOrientation) {
+		case UIInterfaceOrientationPortrait:
+			NSLog(@"did rotate from interface orientation portrait");
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			NSLog(@"did rotate from interface orientation portrait upside down");
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			NSLog(@"did rotate from interface orientation landscape left");
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			NSLog(@"did rotate from interface orientation landscape left");
+			break;
+		default:
+			NSLog(@"did rotate but can't tell from where");
+			break;			
+	}
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	switch (toInterfaceOrientation) {
+		case UIInterfaceOrientationPortrait:
+			NSLog(@"will rotate to interface orientation portrait duration: %f sec",duration);
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			NSLog(@"will rotate to interface orientation portrait upside down duration: %f sec", duration);
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			NSLog(@"will rotate to interface orientation landscape left duration: %f sec", duration);
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			NSLog(@"will rotate to interface orientation landscape left duration: %f sec", duration);
+			break;
+		default:
+			NSLog(@"will rotate but can't tell to where duration: %f sec", duration);
+			break;			
+	}
+}
+
+#if (1) 
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+	switch (interfaceOrientation) {
+		case UIInterfaceOrientationPortrait:
+			NSLog(@"will animate rotation to interface orientation portrait duration: %f sec",duration);
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			NSLog(@"will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			NSLog(@"will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			NSLog(@"will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			break;
+		default:
+			NSLog(@"will animate rotation but can't tell to where duration: %f sec", duration);
+			break;			
+	}
+}
+
+#else 
+
+- (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	NSLog(@"will animate first half rotation to interface orientation duration: %@",duration);
+}
+
+- (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	NSLog(@"will animate second half rotation to interface orientation duration: %@",duration);
+}
+#endif
+
+
+#pragma mark -
+#pragma mark button press action methods
+
+- (IBAction)btnCancel {
+	NSLog(@"btnCancel was pressed!");
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)btnSave {
+	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
+	[self.tracker saveData];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) updateTrackerTableView {
+	NSLog(@"utc: updateTrackerTableView");
+	NSEnumerator *enumer = [self.tracker.valObjTable objectEnumerator];
+	valueObj *vo;
+	while ( vo = (valueObj *) [enumer nextObject]) {
+		//[vo.display release];
+		vo.display = nil;
+		//[vo display]; // happens with table reloadData
+	}
+	
+//	[self.table reloadData];
+	[(UITableView *) self.view reloadData];
+//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
+}
+
+- (void) setTrackerDate:(int) targD {
+	NSArray *tbi=nil;
+	self.currDateBtn = nil;
+	
+	if (targD == 0) {
+		NSLog(@" setTrackerDate: %d = reset to today",targD);
+		[self.tracker resetData];
+		int pDate = [self.tracker prevDate];
+		[self updateTrackerTableView];
+		if (pDate != 0) {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem, 
+				   self.prevDateBtn, self.currDateBtn,
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		} else {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem, 
+				   self.fixed1SpaceButtonItem, 
+				   self.currDateBtn,
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		}
+	} else if (targD < 0) {
+		NSLog(@"setTrackerDate: %d = no earlier date", targD);
+		tbi = [NSArray arrayWithObjects: 
+			   //self.flexibleSpaceButtonItem,
+			   self.fixed1SpaceButtonItem, 
+			   self.currDateBtn, self.postDateBtn, 
+			   self.flexibleSpaceButtonItem, 
+			   self.delBtn, 
+			   //self.flexibleSpaceButtonItem, 
+			   nil];
+	} else {
+		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:targD]);
+		[self.tracker loadData:targD];
+		int pDate = [self.tracker prevDate];
+		[self updateTrackerTableView];
+		if (pDate != 0) {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem,
+				   self.prevDateBtn, self.currDateBtn, self.postDateBtn, 
+				   self.flexibleSpaceButtonItem, 
+				   self.delBtn, 
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		} else {
+			tbi = [NSArray arrayWithObjects: 
+				   //self.flexibleSpaceButtonItem,
+				   self.fixed1SpaceButtonItem, 
+				   self.currDateBtn, self.postDateBtn, 
+				   self.flexibleSpaceButtonItem, 
+				   self.delBtn, 
+				   //self.flexibleSpaceButtonItem, 
+				   nil];
+		}
+	}
+	
+	[self setToolbarItems:tbi animated:YES];
+}
+
+- (void) btnPrevDate {
+	int targD = [tracker prevDate];
+	if (targD == 0) {
+		targD = -1;
+	} 
+	[self setTrackerDate: targD];
+}
+
+- (void) btnPostDate {
+	[self setTrackerDate:[self.tracker postDate]];
+}
+
+- (void) btnCurrDate {
+	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
 }
 
 
-#pragma mark buttons
+- (void) btnDel {
+	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
+										 initWithTitle:[NSString stringWithFormat:
+														@"Really delete %@ entry %@?", 
+														self.tracker.trackerName, self.tracker.trackerDate]
+										 delegate:self 
+										 cancelButtonTitle:@"Cancel"
+										 destructiveButtonTitle:@"Yes, delete"
+										 otherButtonTitles:nil];
+	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
+	[checkTrackerEntryDelete release];
+}
+
+
+#pragma mark -
+#pragma mark button accessor getters
 
 - (UIBarButtonItem *) prevDateBtn {
 	if (prevDateBtn == nil) {
@@ -182,127 +417,7 @@ const NSInteger kViewTag = 1;
 }
 
 
-
-#pragma mark button methods
-
-- (IBAction)btnCancel {
-	NSLog(@"btnCancel was pressed!");
-	[self.navigationController popViewControllerAnimated:YES];
-}
-
-- (IBAction)btnSave {
-	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",tracker.trackerName, tracker.toid);
-	[tracker saveData];
-	[self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void) updateTrackerTableView {
-	NSLog(@"utc: updateTrackerTableView");
-	NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
-		//[vo.display release];
-		vo.display = nil;
-		//[vo display]; // happens with table reloadData
-	}
-	
-//	[table reloadData];
-	[(UITableView *) self.view reloadData];
-//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
-}
-
-- (void) setTrackerDate:(int) targD {
-	NSArray *tbi=nil;
-	 
-	if (targD == 0) {
-		NSLog(@" setTrackerDate: %d = reset to today",targD);
-		[tracker resetData];
-		int pDate = [tracker prevDate];
-		[self updateTrackerTableView];
-		if (pDate != 0) {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem, 
-				   self.prevDateBtn, self.currDateBtn,
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		} else {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem, 
-				   self.fixed1SpaceButtonItem, 
-				   self.currDateBtn,
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		}
-	} else if (targD < 0) {
-		NSLog(@"setTrackerDate: %d = no earlier date", targD);
-		tbi = [NSArray arrayWithObjects: 
-			   //self.flexibleSpaceButtonItem,
-			   self.fixed1SpaceButtonItem, 
-			   self.currDateBtn, self.postDateBtn, 
-				self.flexibleSpaceButtonItem, 
-			   self.delBtn, 
-			   //self.flexibleSpaceButtonItem, 
-			   nil];
-	} else {
-		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:targD]);
-		[tracker loadData:targD];
-		int pDate = [tracker prevDate];
-		[self updateTrackerTableView];
-		if (pDate != 0) {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem,
-				   self.prevDateBtn, self.currDateBtn, self.postDateBtn, 
-				   self.flexibleSpaceButtonItem, 
-				   self.delBtn, 
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		} else {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem,
-				   self.fixed1SpaceButtonItem, 
-				   self.currDateBtn, self.postDateBtn, 
-				   self.flexibleSpaceButtonItem, 
-				   self.delBtn, 
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		}
-	}
-	
-	//[self.currDateBtn release];
-	self.currDateBtn = nil;
-	[self setToolbarItems:tbi animated:YES];
-}
-
-- (void) btnPrevDate {
-	int targD = [tracker prevDate];
-	if (targD == 0) {
-		targD = -1;
-	} 
-	[self setTrackerDate: targD];
-}
-
-- (void) btnPostDate {
-	[self setTrackerDate:[tracker postDate]];
-}
-
-- (void) btnCurrDate {
-	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
-}
-
-
-- (void) btnDel {
-	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
-										 initWithTitle:[NSString stringWithFormat:
-														@"Really delete %@ entry %@?", 
-														tracker.trackerName, tracker.trackerDate]
-										 delegate:self 
-										 cancelButtonTitle:@"Cancel"
-										 destructiveButtonTitle:@"Yes, delete"
-										 otherButtonTitles:nil];
-	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
-	[checkTrackerEntryDelete release];
-}
-
+#pragma mark -
 #pragma mark UIActionSheet methods
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerEntryDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
@@ -310,11 +425,11 @@ const NSInteger kViewTag = 1;
 	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkTrackerEntryDelete.destructiveButtonIndex) {
-		int targD = [tracker prevDate];
+		int targD = [self.tracker prevDate];
 		if (!targD) {
-			targD = [tracker postDate];
+			targD = [self.tracker postDate];
 		}
-		[tracker deleteCurrEntry];
+		[self.tracker deleteCurrEntry];
 		[self setTrackerDate: targD];
 	} else {
 		NSLog(@"cancelled");
@@ -323,7 +438,7 @@ const NSInteger kViewTag = 1;
 }
 
 
-
+#pragma mark -
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -334,7 +449,7 @@ const NSInteger kViewTag = 1;
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	//return 0;  //[rTrackerAppDelegate.topLayoutTable count];
-	return [tracker.valObjTable count];
+	return [self.tracker.valObjTable count];
 }
 
 #define LMARGIN 60.0f
@@ -344,7 +459,7 @@ const NSInteger kViewTag = 1;
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
-	valueObj *vo = (valueObj *) [tracker.valObjTable  objectAtIndex:row];
+	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
     NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
     static NSString *CellIdentifier = @"Cell";
@@ -367,12 +482,12 @@ const NSInteger kViewTag = 1;
 	cell.textLabel.text = vo.valueName;
 	
 	CGRect bounds = cell.frame;
-	NSLog(@"maxLabel: % f %f",tracker.maxLabel.width, tracker.maxLabel.height);
+	NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
 	//bounds.origin.y = bounds.size.height;// - BMARGIN;
-	bounds.origin.y = tracker.maxLabel.height - BMARGIN;
-	bounds.size.height = tracker.maxLabel.height + BMARGIN;
-	bounds.size.width = bounds.size.width - tracker.maxLabel.width - LMARGIN - RMARGIN;
-	bounds.origin.x = bounds.origin.x + tracker.maxLabel.width + LMARGIN;
+	bounds.origin.y = self.tracker.maxLabel.height - BMARGIN;
+	bounds.size.height = self.tracker.maxLabel.height + BMARGIN;
+	bounds.size.width = bounds.size.width - self.tracker.maxLabel.width - LMARGIN - RMARGIN;
+	bounds.origin.x = bounds.origin.x + self.tracker.maxLabel.width + LMARGIN;
 
 	NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[vo display:bounds]];
@@ -390,11 +505,9 @@ const NSInteger kViewTag = 1;
 	// [anotherViewController release];
 	
 	NSUInteger row = [indexPath row];
-	valueObj *vo = (valueObj *) [tracker.valObjTable  objectAtIndex:row];
+	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
 
 	NSLog(@"selected row %d : %@", row, vo.valueName);
-	
-	
 }
 
 

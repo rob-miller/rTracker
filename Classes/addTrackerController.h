@@ -27,7 +27,7 @@
 @property (nonatomic, retain) trackerObj *tempTrackerObj;
 @property (nonatomic, retain) IBOutlet UITableView *table;
 
-//- (void)configureToolbarItems;
+- (void)configureToolbarItems;
 
 - (IBAction) nameFieldDone:(id)sender;
 

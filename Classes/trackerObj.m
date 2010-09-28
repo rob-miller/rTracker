@@ -20,51 +20,101 @@
 @synthesize colorSet, votArray;
 @synthesize maxLabel;
 
+#pragma mark -
+#pragma mark core object methods and support
+
 - (void) initTDb {
 	int c;
-	sql = @"create table if not exists trkrInfo (field text unique, val text);";
+	self.sql = @"create table if not exists trkrInfo (field text unique, val text);";
 	[self toExecSql];
-	sql = @"select count(*) from trkrInfo;";
+	self.sql = @"select count(*) from trkrInfo;";
 	c = [self toQry2Int];
 	if (c == 0) {
 		// init clean db
-		sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text, color int, graphtype int);";
+		self.sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text, color int, graphtype int);";
 		[self toExecSql];
-		sql = @"create table if not exists voData (id int, date int, val text);";
+		self.sql = @"create table if not exists voData (id int, date int, val text);";
 		[self toExecSql];
-		sql = @"create table if not exists trkrData (date int unique);";
+		self.sql = @"create table if not exists trkrData (date int unique);";
 		[self toExecSql];
-		sql = nil;
 	}
+	self.sql = nil;
 }
 
 - (void) confirmDb {
-	NSAssert(toid,@"tObj confirmDb toid=0");
-	if (! dbName) {
+	NSAssert(self.toid,@"tObj confirmDb toid=0");
+	if (! self.dbName) {
 		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
+		//self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		[self getTDb];
 		[self initTDb];
 	}
 }
 
-- (void) loadConfig {
-	NSLog(@"tObj loadConfig: %d",toid);
-	NSAssert(toid,@"tObj load toid=0");
+
+- (id)init {
+	
+	if (self = [super init]) {
+		self.trackerDate = nil;
+		//self.valObjTable = [[NSMutableArray alloc] init];
+		valObjTable = [[NSMutableArray alloc] init];
+		NSLog(@"init trackerObj New");
+	}
+	
+	return self;
+}
+
+- (id)init:(int) tid {
+	if (self = [self init]) {
+		NSLog(@"configure trackerObj id: %d",tid);
+		self.toid = tid;
+		[self confirmDb];
+		[self loadConfig];
+	}
+	return self;
+}
+
+- (void) dealloc {
+	NSLog(@"dealloc tObj: %@",trackerName);
+	
+	self.trackerName = nil;
 	[trackerName release];
-	sql = @"select val from trkrInfo where field='name';";
+	self.trackerDate = nil;
+	[trackerDate release];
+	self.valObjTable = nil;
+	[valObjTable release];
+	
+	self.colorSet = nil;
+	[colorSet release];
+	self.votArray = nil;
+	[votArray release];
+	
+	[super dealloc];
+}
+
+#pragma mark -
+#pragma mark load/save db<->object 
+
+- (void) loadConfig {
+	NSLog(@"tObj loadConfig: %d",self.toid);
+	NSAssert(self.toid,@"tObj load toid=0");
+	self.sql = @"select val from trkrInfo where field='name';";
+	self.trackerName = nil;
 	trackerName = [self toQry2StrCopy];
-	sql = @"select val from trkrInfo where field='width';";
-	maxLabel.width = [self toQry2Float];
-	sql = @"select val from trkrInfo where field='height';";
-	maxLabel.height = [self toQry2Float];
+	self.sql = @"select val from trkrInfo where field='width';";
+	maxLabel.width = [self toQry2Float];  // why not self?
+	self.sql = @"select val from trkrInfo where field='height';";
+	maxLabel.height = [self toQry2Float]; // why not self?
 	
 	NSMutableArray *i1 = [[NSMutableArray alloc] init];
 	NSMutableArray *i2 = [[NSMutableArray alloc] init];
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	NSMutableArray *i3 = [[NSMutableArray alloc] init];
 	NSMutableArray *i4 = [[NSMutableArray alloc] init];
-	sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
+	self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
 	[self toQry2AryIISII :i1 i2:i2 s1:s1 i3:i3 i4:i4];
+	
+	self.sql=nil;
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
 	NSEnumerator *e2 = [i2 objectEnumerator];
@@ -79,16 +129,22 @@
 									 in_vcolor:(int)[[e4 nextObject] intValue] 
 								 in_vgraphtype:(int)[[e5 nextObject] intValue] 
 						];
-		[valObjTable addObject:(id) vo];
+		[self.valObjTable addObject:(id) vo];
 		[vo release];
 	}
-
+	
 	[i1 release];
 	[i2 release];
 	[s1 release];
+	[i3 release];
+	[i4 release];
 	
-	[trackerDate release];
+	//[trackerDate release];
+	self.trackerDate = nil;
 	trackerDate = [[NSDate alloc] init];
+	//self.trackerDate = [[NSDate alloc] init];
+	//[trackerDate release];
+	
 }
 
 - (void) saveConfig {
@@ -96,33 +152,32 @@
 	
 	[self confirmDb];
 	
-	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", trackerName];
+	self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('name','%@');", self.trackerName];
 	[self toExecSql];
-	//[sql release];
 	
-	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('width',%f);",
-		self.maxLabel.width];
+	self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('width',%f);",
+				self.maxLabel.width];
 	[self toExecSql];
-	sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('height',%f);",
-		self.maxLabel.height];
+	self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('height',%f);",
+				self.maxLabel.height];
 	[self toExecSql];
 	
 	int i=0;
-	for (valueObj *vo in valObjTable) {
-
+	for (valueObj *vo in self.valObjTable) {
+		
 		if (vo.vid <= 0) {
 			vo.vid = [self getUnique];
 		}
 		
 		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
-		sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
-			   vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];
+		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
+					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];
 		[self toExecSql];
-		//[sql release];
 	}
 	
-	sql = nil;
+	self.sql = nil;
 }
+
 
 - (valueObj *) getValObj:(NSInteger) qVid {
 	valueObj *rvo=nil;
@@ -146,15 +201,13 @@
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
 	[self resetData];
-	sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d;",iDate];
+	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d;",iDate];
 	int c = [self toQry2Int];
 	if (c) {
-		//[self.trackerDate release];
-		//self.trackerDate = nil;
-		self.trackerDate = qDate;
+		self.trackerDate = qDate; // from convenience method above, so do the retain
 		NSMutableArray *i1 = [[NSMutableArray alloc] init];
 		NSMutableArray *s1 = [[NSMutableArray alloc] init];
-		sql = [NSString stringWithFormat:@"select id, val from voData where date = %d;", iDate];
+		self.sql = [NSString stringWithFormat:@"select id, val from voData where date = %d;", iDate];
 		[self toQry2AryIS :i1 s1:s1];
 		
 		NSEnumerator *e1 = [i1 objectEnumerator];
@@ -168,9 +221,9 @@
 		
 		[i1 release];
 		[s1 release];
+		self.sql = nil;
 		
 		return YES;
-		
 	} else {
 		NSLog(@"tObj loadData: nothing for date %d %@", iDate, qDate);
 		return NO;
@@ -180,116 +233,57 @@
 - (void) saveData {
 
 	if (self.trackerDate == nil) {
-		self.trackerDate = [[NSDate alloc] init];
+		trackerDate = [[NSDate alloc] init];
+		//self.trackerDate = [[NSDate alloc] init];
+		//[trackerDate release];
 	}
 	
-	sql = [NSString stringWithFormat:@"insert or replace into trkrData (date) values (%d);", 
+	self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date) values (%d);", 
 		   (int) [self.trackerDate timeIntervalSince1970] ];
 	[self toExecSql];
 
 	NSLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
 	
-	for (valueObj *vo in valObjTable) {
+	for (valueObj *vo in self.valObjTable) {
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		
 		NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
-		sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+		self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
 			   vo.vid, (int) [self.trackerDate timeIntervalSince1970], vo.value];
 		[self toExecSql];
 	}
 	
-	sql = nil;
-	
+	self.sql = nil;
 }
 
+#pragma mark -
+#pragma mark modify tracker object <-> db 
+
 - (void) resetData {
-
-	//[self.trackerDate release];
-	self.trackerDate = [[NSDate alloc] init];
-
+	self.trackerDate = nil;
+	trackerDate = [[NSDate alloc] init];
+	//self.trackerDate = [[NSDate alloc] init];
+	//[trackerDate release];
+	
 	NSEnumerator *e = [self.valObjTable objectEnumerator];
 	valueObj *vo;
 	while (vo = (valueObj *) [e nextObject]) {
 		[vo.value setString:@""];  // TODO: default values go here
 	}
-
-}
-
-- (void) deleteAllData {
-	[self deleteTDb];
-}
-
-- (void) deleteCurrEntry {
-	sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;",(int) [trackerDate timeIntervalSince1970]];
-	[self toExecSql];
-	sql = [NSString stringWithFormat:@"delete from voData where date = %d;",(int) [trackerDate timeIntervalSince1970]];
-	[self toExecSql];
-	sql = nil;
-}
-
-- (int) prevDate {
-	sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;", 
-		   (int) [trackerDate timeIntervalSince1970] ];
-	int rslt= [self toQry2Int];
-	sql = nil;
-	return rslt;
-}
-
-- (int) postDate {
-	sql = [NSString stringWithFormat:@"select date from trkrData where date > %d order by date asc limit 1;", 
-		   (int) [trackerDate timeIntervalSince1970] ];
-	int rslt= (NSInteger) [self toQry2Int];
-	sql = nil;
-	return rslt;
-}
-
-- (id)init {
-
-	if (self = [super init]) {
-		trackerDate = nil;
-		valObjTable = [[NSMutableArray alloc] init];
-		NSLog(@"init trackerObj New");
-	}
-	
-	return self;
-}
-
-- (id)init:(int) tid {
-	if (self = [self init]) {
-		NSLog(@"configure trackerObj id: %d",tid);
-		self.toid = tid;
-		[self confirmDb];
-		[self loadConfig];
-	}
-	return self;
-}
-
-- (void) dealloc {
-	NSLog(@"dealloc tObj: %@",trackerName);
-
-	[trackerName release];
-	[trackerDate release];
-	[valObjTable release];
-	
-	[colorSet release];
-	[votArray release];
-	
-	[super dealloc];
 }
 
 - (bool) updateValObj:(valueObj *) valObj {
-
+	
 	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
 	valueObj *vo;
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		if (vo.vid == valObj.vid) {
 			//*vo = *valObj; // indirection cannot be to an interface in non-fragile ABI
 			vo.vtype = valObj.vtype;
-			[vo.valueName release];
-			vo.valueName = valObj.valueName;
+			vo.valueName = valObj.valueName;     // property retain should keep these all ok w/o leaks
+			//[vo.valueName setString:valObj.valueName];  // valueName not mutableString
 			[vo.value setString:valObj.value];
-			[vo.display release];
 			vo.display = valObj.display;
 			return YES;
 		}
@@ -299,7 +293,7 @@
 
 - (void) setMaxLabel 
 {
-
+	
 	CGSize lsize = { 0.0f, 0.0f };
 	
 	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
@@ -318,7 +312,7 @@
 
 - (void) addValObj:(valueObj *) valObj {
 	NSLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
-
+	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
 		[self.valObjTable addObject:valObj];
@@ -327,21 +321,63 @@
 	[self setMaxLabel];
 }
 
+
+- (void) deleteAllData {
+	[self deleteTDb];
+}
+
+- (void) deleteCurrEntry {
+	self.sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;",
+				(int) [self.trackerDate timeIntervalSince1970]];
+	[self toExecSql];
+	self.sql = [NSString stringWithFormat:@"delete from voData where date = %d;",
+				(int) [self.trackerDate timeIntervalSince1970]];
+	[self toExecSql];
+	self.sql = nil;
+}
+
+#pragma mark -
+#pragma mark query tracker methods
+
+- (int) prevDate {
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;", 
+		   (int) [self.trackerDate timeIntervalSince1970] ];
+	int rslt= [self toQry2Int];
+	self.sql = nil;
+	return rslt;
+}
+
+- (int) postDate {
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d order by date asc limit 1;", 
+		   (int) [self.trackerDate timeIntervalSince1970] ];
+	int rslt= (NSInteger) [self toQry2Int];
+	self.sql = nil;
+	return rslt;
+}
+
+#pragma mark -
+#pragma mark manipulate tracker's valObjs
+
 - (valueObj *) voConfigCopy: (valueObj *) srcVO {
-	NSLog(@"voDeepCopy: to= id %d %@ input vid=%d %@", toid, trackerName, srcVO.vid,srcVO.valueName);
+	NSLog(@"voConfigCopy: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];
 	newVO.vid = [self getUnique];
 	newVO.vtype = srcVO.vtype;
-	newVO.valueName = [[NSString alloc] initWithString:srcVO.valueName];  
+	newVO.valueName = [NSString stringWithString:srcVO.valueName];
+	//newVO.valueName = [[NSString alloc] initWithString:srcVO.valueName];  
+	//[newVO.valueName release];  
 	
 	return newVO;
 }
 
-- (void) describe {
-	NSLog(@"tracker id %d name %@ dbName %@", toid, trackerName, dbName);
+#pragma mark -
+#pragma mark utility methods
 
-	NSEnumerator *enumer = [valObjTable objectEnumerator];
+- (void) describe {
+	NSLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
+
+	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
 	valueObj *vo;
 	while ( vo = (valueObj *) [enumer nextObject]) {
 		[vo describe];
@@ -370,16 +406,5 @@
 	
 	return votArray;
 }
-
-/*
-- (void)applicationWillTerminate:(NSNotification *)notification {
-	NSLog(@"trackerObj: notified app will terminate");
-	if (dbValues != nil) {
-		sqlite3_close(dbValues);
-		dbValues = nil;
-		NSLog(@"closed dbValues");
-	}
-}
-*/
 
 @end

@@ -21,16 +21,23 @@ static int selSegNdx=SegmentEdit;
 NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 UITableView *deleteTableView;
 
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
+#pragma mark -
+#pragma mark core object methods and support
 
+- (void)dealloc {
+	NSLog(@"configTlistController dealloc");
+	self.tlist = nil;
+	[tlist release];
+	 
+	self.table = nil;
+	[table release];
+	
+    [super dealloc];
+}
+
+
+# pragma mark -
+# pragma mark view support
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -53,14 +60,6 @@ UITableView *deleteTableView;
 }
 
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -75,7 +74,9 @@ UITableView *deleteTableView;
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 
+	self.title = nil;
 	self.tlist = nil;
+	self.table = nil;
 	self.toolbarItems = nil;
 
 }
@@ -84,7 +85,7 @@ UITableView *deleteTableView;
 	
 	NSLog(@"ctlc: viewWillAppear");
 	
-	[table reloadData];
+	[self.table reloadData];
 	
     [super viewWillAppear:animated];
 }
@@ -97,18 +98,8 @@ UITableView *deleteTableView;
 	[super viewWillDisappear:animated];
 }
 
-
-- (void)dealloc {
-	NSLog(@"configTlistController dealloc");
-
-	self.tlist = nil;
-	self.toolbarItems = nil;
-
-    [super dealloc];
-}
-
-
-#pragma mark button support
+#pragma mark -
+#pragma mark button press action methods
 
 - (IBAction)btnExport {
 	NSLog(@"btnExport was pressed!");
@@ -119,15 +110,15 @@ UITableView *deleteTableView;
 	switch (selSegNdx = [sender selectedSegmentIndex]) {
 		case SegmentEdit :
 			NSLog(@"ctlc: set edit mode");
-			[table setEditing:NO animated:YES];
+			[self.table setEditing:NO animated:YES];
 			break;
 		case SegmentCopy :
 			NSLog(@"ctlc: set copy mode");
-			[table setEditing:NO animated:YES];
+			[self.table setEditing:NO animated:YES];
 			break;
 		case SegmentMoveDelete :
 			NSLog(@"ctlc: set move/delete mode");
-			[table setEditing:YES animated:YES];
+			[self.table setEditing:YES animated:YES];
 			break;
 		default:
 			NSAssert(0,@"ctlc: segment index not handled");
@@ -137,6 +128,7 @@ UITableView *deleteTableView;
 			
 }
 
+#pragma mark -
 #pragma mark UIActionSheet methods
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
@@ -146,10 +138,10 @@ UITableView *deleteTableView;
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
 		NSUInteger row = [deleteIndexPath row];
 		NSLog(@"checkTrackerDelete: will delete row %d ",row);
-		[tlist deleteTrackerAllRow:row];
+		[self.tlist deleteTrackerAllRow:row];
 		[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
 						 withRowAnimation:UITableViewRowAnimationFade];		
-		[tlist reloadFromTLT];
+		[self.tlist reloadFromTLT];
 	} else {
 		NSLog(@"cancelled");
 	}
@@ -157,7 +149,7 @@ UITableView *deleteTableView;
 }
 					 
 					 
-
+#pragma mark -
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -167,15 +159,14 @@ UITableView *deleteTableView;
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	//return 0;  //[rTrackerAppDelegate.topLayoutTable count];
-	return [tlist.topLayoutNames count];
+	return [self.tlist.topLayoutNames count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView 
 		 cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier;
 	
@@ -192,17 +183,10 @@ UITableView *deleteTableView;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [tlist.topLayoutNames objectAtIndex:row];
+	cell.textLabel.text = [self.tlist.topLayoutNames objectAtIndex:row];
 	
     return cell;
 }
-
-/*
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableview 
-		   editingStyleForRowAtIndexPath:(NSIndexPath *) indexpath {
-	return UITableViewCellEditingStyleNone;
-}
-*/
 
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
 	return YES;
@@ -214,8 +198,8 @@ UITableView *deleteTableView;
 	NSUInteger toRow = [toIndexPath row];
 	
 	NSLog(@"ctlc: move row from %d to %d",fromRow, toRow);
-	[tlist reorderTLT :fromRow toRow:toRow];
-	[tlist reorderFromTLT];
+	[self.tlist reorderTLT :fromRow toRow:toRow];
+	[self.tlist reorderFromTLT];
 	
 }
 					 
@@ -228,7 +212,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
 										 initWithTitle:[NSString stringWithFormat:
 														@"Really delete all data for %@?",
-														[tlist.topLayoutNames objectAtIndex:[indexPath row]]]
+														[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]]
 							delegate:self 
 							cancelButtonTitle:@"Cancel"
 							destructiveButtonTitle:@"Yes, delete"
@@ -247,7 +231,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// [anotherViewController release];
 	
 	NSUInteger row = [indexPath row];
-	NSLog(@"configTList selected row %d : %@", row, [tlist.topLayoutNames objectAtIndex:row]);
+	NSLog(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
 		int toid = [self.tlist getTIDfromIndex:row];
@@ -268,8 +252,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[self.tlist confirmTopLayoutEntry:nTO];
 		[oTO release];
 		[nTO release];
-		[tlist loadTopLayoutTable];
-		[table reloadData];
+		[self.tlist loadTopLayoutTable];
+		[self.table reloadData];
 
 	} else if (selSegNdx == SegmentMoveDelete) {
 		NSLog(@"selected for move/delete?");

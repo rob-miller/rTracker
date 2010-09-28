@@ -17,20 +17,33 @@
 @synthesize tlist;
 @synthesize privateBtn, multiGraphBtn;
 
+#pragma mark -
+#pragma mark core object methods and support
+
+- (void)dealloc {
+	
+	NSLog(@"rvc dealloc");
+	self.tlist = nil;
+	[tlist release];
+	
+    [super dealloc];
+}
+
+/*
+- (void)applicationWillTerminate:(NSNotification *)notification {
+	NSLog(@"rvc: app will terminate");
+	// close trackerList
+	
+}
+*/
+
+#pragma mark -
+#pragma mark view support
+
 - (void)viewDidLoad {
 	NSLog(@"rvc: viewDidLoad");
     self.title = @"rTracker";
 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
-/*
-	UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
-								  initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-								  target:self
-								  action:@selector(btnEdit)];
-	self.navigationItem.leftBarButtonItem = editBtn;
-	[editBtn release];
- */	
 	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
 								target:self
@@ -45,31 +58,33 @@
 						   nil] 
 				 animated:NO];
 	
+	[privateBtn release];
+	[multiGraphBtn release];
 
-	tlist = [[trackerList alloc] init];
+	self.tlist = [[trackerList alloc] init];
 	//[tlist loadTopLayoutTable];
 
+	/*
 	UIApplication *app = [UIApplication sharedApplication];
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(applicationWillTerminate:) 
 												 name:UIApplicationWillTerminateNotification
 											   object:app];
 	
-
+	 */
+	
 	[super viewDidLoad];
 											
 }
-
-
 
 - (void)viewWillAppear:(BOOL)animated {
 
 	NSLog(@"rvc: viewWillAppear");	
 	
-	[tlist loadTopLayoutTable];
+	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 
-	if ([tlist.topLayoutNames count] == 0) {
+	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			//[self.navigationItem.leftBarButtonItem release];  // why is this not needed?
 			self.navigationItem.leftBarButtonItem = nil;
@@ -85,36 +100,8 @@
 			[editBtn release];
 		}
 	}
-
-	//NSString *foo = [[NSString alloc] initWithFormat:@"I am a wasteful string"];
-	//NSLog(@"foo is %@",foo);
-	
     [super viewWillAppear:animated];
 }
-
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
-
-/*
- // Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations.
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
- */
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -133,21 +120,21 @@
 	
 	NSLog(@"rvc viewDidUnload");
 
-	//[self.tlist release];
-	//self.tlist = nil;
-
+	self.title = nil;
+	self.navigationItem.rightBarButtonItem = nil;
+	self.navigationItem.leftBarButtonItem = nil;
+	[self setToolbarItems:nil
+				 animated:NO];
+	
+	self.tlist = nil;
+	
+	//NSLog(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
+	
 }
 
 
-- (void)dealloc {
-	
-	NSLog(@"rvc dealloc");
-	[tlist release];
-	
-    [super dealloc];
-}
-
-#pragma mark buttons
+#pragma mark -
+#pragma mark button accessor getters
 
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
@@ -171,7 +158,7 @@
 	return multiGraphBtn;
 }
 
-
+#pragma mark -
 #pragma mark button action methods
 
 - (void) btnAddTracker {
@@ -202,19 +189,16 @@
 	NSLog(@"btnPrivate was pressed!");
 }
 
-
-
-
+#pragma mark -
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [tlist.topLayoutNames count];
+	return [self.tlist.topLayoutNames count];
 }
 
 
@@ -231,7 +215,7 @@
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [tlist.topLayoutNames objectAtIndex:row];
+	cell.textLabel.text = [self.tlist.topLayoutNames objectAtIndex:row];
 
     return cell;
 }
@@ -241,15 +225,10 @@
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    // Navigation logic may go here -- for example, create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController animated:YES];
-	// [anotherViewController release];
-
 	NSUInteger row = [indexPath row];
-	NSLog(@"selected row %d : %@", row, [tlist.topLayoutNames objectAtIndex:row]);
+	NSLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
-	trackerObj *to = [[trackerObj alloc] init:[tlist getTIDfromIndex:row]];
+	trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromIndex:row]];
 	[to describe];
 
 	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
@@ -260,58 +239,6 @@
 	[to release];
 	
 }
-
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source.
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-
- - (void)applicationWillTerminate:(NSNotification *)notification {
-	 NSLog(@"rvc: app will terminate");
-	// close trackerList
-	 // TODO: close all tracker Dbs -- or sooner?
-	 [self.tlist release];
-	 //self.tlist = nil;
-
-}
-
 
 @end
 

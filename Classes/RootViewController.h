@@ -15,7 +15,7 @@
 
 @property (nonatomic,retain) trackerList *tlist;
 
-- (void)applicationWillTerminate:(NSNotification *)notification;
+//- (void)applicationWillTerminate:(NSNotification *)notification;
 
 //- (IBAction)btnAddTrackerPressed:(id)sender;
 //- (IBAction)btnConfigPressed:(id)sender;
