@@ -28,7 +28,7 @@
 #define VOG_LINE		2
 #define VOG_DOTSLINE	3
 #define VOG_PIE			4
-
+//histogram...
 #define VOG_MAX			5
 
 // supported colors ; tied to trackerObj:colorSet

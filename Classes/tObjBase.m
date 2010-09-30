@@ -61,6 +61,29 @@
 	return [docsDir stringByAppendingPathComponent:self.dbName];
 }
 
+static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const void *strB) 
+{
+	// strAm strB not guaranteed to be null-terminated
+	
+	//double va = atof(strA);
+	//double vb = atof(strB);
+	char *astr = (char *) strA;
+	char *bstr = (char *) strB;
+	char *ta = &(astr[lenA-1]);
+	char *tb = &(bstr[lenB-1]);
+	double va = strtod(strA,&ta);
+	double vb = strtod(strB,&tb);
+	int r=0;
+	if (va>vb)
+		r= 1;
+	if (va<vb) 
+		r= -1;
+	//NSLog(@"a= %f  b= %f  r= %d",va,vb,r);
+
+	return r;
+}
+
+
 - (void) getTDb {
 	NSLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
 	NSAssert(self.dbName, @"getTDb called with no dbName set");
@@ -88,6 +111,9 @@
 		}
 		self.sql = nil;
 
+		
+		sqlite3_create_collation(tDb,"CMPSTRDBL",SQLITE_UTF8,NULL,col_str_flt);
+		
 		UIApplication *app = [UIApplication sharedApplication];
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(applicationWillTerminate:) 
@@ -293,6 +319,53 @@
 }
 
 
+- (void) toQry2AryID : (NSMutableArray *)i1 d1:(NSMutableArray *)d1
+{
+	NSLog(@"toQry2AryIF: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2AryIF called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			[i1 addObject: [NSNumber numberWithInt:sqlite3_column_int(stmt, 0)]];
+			[d1 addObject: [NSNumber numberWithDouble: sqlite3_column_double(stmt, 1)]];
+
+			NSLog(@"  rslt: %@ %@",
+				  [i1 lastObject], [d1 lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+}
+   
+- (void) toQry2AryI : (NSMutableArray *) inAry {
+	
+	NSLog(@"toQry2AryI: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2AryI called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			[inAry addObject: [NSNumber numberWithInt:sqlite3_column_int(stmt, 0)]];
+			NSLog(@"  rslt: %@",[inAry lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	NSLog(@"  returns %@", inAry);
+}
+
+
 - (int) toQry2Int {
 	NSLog(@"toQry2Int: %@ => _%@_",self.dbName,self.sql);
 	NSAssert(tDb,@"toQry2Int called with no tDb");
@@ -368,6 +441,31 @@
 	NSLog(@"  returns %f",frslt);
 	
 	return frslt;
+}
+
+- (double) toQry2Double {
+	NSLog(@"toQry2Double: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2Double called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	double drslt=0.0f;
+	
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			drslt = sqlite3_column_double(stmt, 0);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	
+	NSLog(@"  returns %f",drslt);
+	
+	return drslt;
 }
 
 

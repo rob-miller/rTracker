@@ -79,6 +79,8 @@ UITableView *deleteTableView;
 	self.table = nil;
 	self.toolbarItems = nil;
 
+	[super viewDidLoad];
+	
 }
 
 - (void)viewWillAppear:(BOOL)animated {

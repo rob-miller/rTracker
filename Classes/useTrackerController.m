@@ -7,7 +7,7 @@
 //
 
 #import "useTrackerController.h"
-
+#import "graphTrackerVC.h"
 
 @implementation useTrackerController
 
@@ -48,9 +48,13 @@ const NSInteger kViewTag = 1;
 - (void)viewDidLoad {
 	self.title = tracker.trackerName;
 	
-	NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while ( vo = (valueObj *) [enumer nextObject]) {
+	
+	for (valueObj *vo in self.tracker.valObjTable) {
+	
+	
 		[vo display];
 	}
 	
@@ -114,8 +118,9 @@ const NSInteger kViewTag = 1;
 	
 	self.toolbarItems = nil;
 	self.navigationItem.rightBarButtonItem = nil;	
-	self.navigationItem.leftBarButtonItem = nil;	
+	self.navigationItem.leftBarButtonItem = nil;
 	
+	[super viewDidLoad];
 }
 
 # pragma mark view rotation methods
@@ -125,19 +130,19 @@ const NSInteger kViewTag = 1;
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"should rotate to interface orientation portrait?");
+			NSLog(@"utc should rotate to interface orientation portrait?");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"should rotate to interface orientation portrait upside down?");
+			NSLog(@"utc should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"should rotate to interface orientation landscape left?");
+			NSLog(@"utc should rotate to interface orientation landscape left?");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"should rotate to interface orientation landscape left?");
+			NSLog(@"utc should rotate to interface orientation landscape right?");
 			break;
 		default:
-			NSLog(@"rotation query but can't tell to where?");
+			NSLog(@"utc rotation query but can't tell to where?");
 			break;			
 	}
 	
@@ -148,19 +153,19 @@ const NSInteger kViewTag = 1;
 {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"did rotate from interface orientation portrait");
+			NSLog(@"utc did rotate from interface orientation portrait");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"did rotate from interface orientation portrait upside down");
+			NSLog(@"utc did rotate from interface orientation portrait upside down");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"did rotate from interface orientation landscape left");
+			NSLog(@"utc did rotate from interface orientation landscape left");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"did rotate from interface orientation landscape left");
+			NSLog(@"utc did rotate from interface orientation landscape right");
 			break;
 		default:
-			NSLog(@"did rotate but can't tell from where");
+			NSLog(@"utc did rotate but can't tell from where");
 			break;			
 	}
 }
@@ -169,19 +174,19 @@ const NSInteger kViewTag = 1;
 {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"will rotate to interface orientation portrait duration: %f sec",duration);
+			NSLog(@"utc will rotate to interface orientation portrait duration: %f sec",duration);
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"will rotate to interface orientation portrait upside down duration: %f sec", duration);
+			NSLog(@"utc will rotate to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"will rotate to interface orientation landscape left duration: %f sec", duration);
+			NSLog(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"will rotate to interface orientation landscape left duration: %f sec", duration);
+			NSLog(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
 			break;
 		default:
-			NSLog(@"will rotate but can't tell to where duration: %f sec", duration);
+			NSLog(@"utc will rotate but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
@@ -189,21 +194,35 @@ const NSInteger kViewTag = 1;
 #if (1) 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
+	graphTrackerVC *gt;
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"will animate rotation to interface orientation portrait duration: %f sec",duration);
+			NSLog(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
+			[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
+			NSLog(@"utc will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			NSLog(@"utc will animate rotation to interface orientation landscape left duration: %f sec", duration);
+
+			gt = [[graphTrackerVC alloc] init];
+			gt.tracker = self.tracker;
+			[self presentModalViewController:gt animated:YES];
+			[gt release];
+			
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			NSLog(@"utc will animate rotation to interface orientation landscape right duration: %f sec", duration);
+
+			gt = [[graphTrackerVC alloc] init];
+			gt.tracker = self.tracker;
+			[self presentModalViewController:gt animated:YES];
+			[gt release];
+			
 			break;
 		default:
-			NSLog(@"will animate rotation but can't tell to where duration: %f sec", duration);
+			NSLog(@"utc will animate rotation but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
@@ -212,12 +231,12 @@ const NSInteger kViewTag = 1;
 
 - (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	NSLog(@"will animate first half rotation to interface orientation duration: %@",duration);
+	NSLog(@"utc will animate first half rotation to interface orientation duration: %@",duration);
 }
 
 - (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	NSLog(@"will animate second half rotation to interface orientation duration: %@",duration);
+	NSLog(@"utc will animate second half rotation to interface orientation duration: %@",duration);
 }
 #endif
 
@@ -238,9 +257,10 @@ const NSInteger kViewTag = 1;
 
 - (void) updateTrackerTableView {
 	NSLog(@"utc: updateTrackerTableView");
-	NSEnumerator *enumer = [self.tracker.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [self.tracker.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while ( vo = (valueObj *) [enumer nextObject]) {
+	for (valueObj *vo in self.tracker.valObjTable) {
 		//[vo.display release];
 		vo.display = nil;
 		//[vo display]; // happens with table reloadData
@@ -333,7 +353,8 @@ const NSInteger kViewTag = 1;
 	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
 										 initWithTitle:[NSString stringWithFormat:
 														@"Really delete %@ entry %@?", 
-														self.tracker.trackerName, self.tracker.trackerDate]
+														self.tracker.trackerName, 
+														[self.tracker.trackerDate descriptionWithLocale:[NSLocale currentLocale]]]
 										 delegate:self 
 										 cancelButtonTitle:@"Cancel"
 										 destructiveButtonTitle:@"Yes, delete"

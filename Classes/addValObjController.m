@@ -53,9 +53,10 @@ CGSize sizeGTLabel;
 +(CGSize) maxLabelFromArray:(const NSArray *)arr 
 {
 	CGSize rsize = {0.0f, 0.0f};
-	NSEnumerator *e = [arr objectEnumerator];
-	NSString *s;
-	while ( s = (NSString *) [e nextObject]) {
+	//NSEnumerator *e = [arr objectEnumerator];
+	//NSString *s;
+	//while ( s = (NSString *) [e nextObject]) {
+	for (NSString *s in arr) {
 		CGSize tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
@@ -118,10 +119,11 @@ CGSize sizeGTLabel;
 		//self.graphTypes = [valueObj graphsForVOTCopy:tempValObj.vtype];
 		//[graphTypes release];
 		
-		NSEnumerator *e = [self.graphTypes objectEnumerator];
-		NSString *s;
+		//NSEnumerator *e = [self.graphTypes objectEnumerator];
+		//NSString *s;
 		NSInteger row=0;
-		while ( s = (NSString *) [e nextObject]) {
+		//while ( s = (NSString *) [e nextObject]) {
+		for (NSString *s in self.graphTypes) {
 			if ([g isEqual:s])
 				break;
 			row++;

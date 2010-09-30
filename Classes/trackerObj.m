@@ -182,16 +182,17 @@
 - (valueObj *) getValObj:(NSInteger) qVid {
 	valueObj *rvo=nil;
 	
-	NSEnumerator *e = [self.valObjTable objectEnumerator];
-	valueObj *vo;
-	while (vo = (valueObj *) [e nextObject]) {
+	//NSEnumerator *e = [self.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while (vo = (valueObj *) [e nextObject]) {
+	for (valueObj *vo in self.valObjTable) {
 		if (vo.vid == qVid) {
 			rvo = vo;
 			break;
 		}
 	}
 
-	if (vo == nil) {
+	if (rvo == nil) {
 		NSLog(@"tObj getValObj failed to find vid %d",qVid);
 	}
 	return rvo;
@@ -249,8 +250,15 @@
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		
 		NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
-		self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-			   vo.vid, (int) [self.trackerDate timeIntervalSince1970], vo.value];
+		if ([vo.value isEqualToString:@""]) {
+			//self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,NULL);",
+			//			vo.vid, (int) [self.trackerDate timeIntervalSince1970]];
+			self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",
+						vo.vid, (int) [self.trackerDate timeIntervalSince1970]];
+		} else {
+			self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+						vo.vid, (int) [self.trackerDate timeIntervalSince1970], vo.value];
+		}
 		[self toExecSql];
 	}
 	
@@ -266,18 +274,20 @@
 	//self.trackerDate = [[NSDate alloc] init];
 	//[trackerDate release];
 	
-	NSEnumerator *e = [self.valObjTable objectEnumerator];
-	valueObj *vo;
-	while (vo = (valueObj *) [e nextObject]) {
+	//NSEnumerator *e = [self.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while (vo = (valueObj *) [e nextObject]) {
+	for (valueObj *vo in self.valObjTable) {
 		[vo.value setString:@""];  // TODO: default values go here
 	}
 }
 
 - (bool) updateValObj:(valueObj *) valObj {
 	
-	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while ( vo = (valueObj *) [enumer nextObject]) {
+	for (valueObj *vo in self.valObjTable) {
 		if (vo.vid == valObj.vid) {
 			//*vo = *valObj; // indirection cannot be to an interface in non-fragile ABI
 			vo.vtype = valObj.vtype;
@@ -296,9 +306,10 @@
 	
 	CGSize lsize = { 0.0f, 0.0f };
 	
-	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while ( vo = (valueObj *) [enumer nextObject]) {
+	for (valueObj *vo in self.valObjTable) {
 		CGSize tsize = [vo.valueName sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
 		if (tsize.width > lsize.width) {
 			lsize = tsize;
@@ -377,9 +388,10 @@
 - (void) describe {
 	NSLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
 
-	NSEnumerator *enumer = [self.valObjTable objectEnumerator];
-	valueObj *vo;
-	while ( vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while ( vo = (valueObj *) [enumer nextObject]) {
+	for (valueObj *vo in self.valObjTable) {
 		[vo describe];
 	}
 }

@@ -35,10 +35,13 @@
 - (void) toQry2AryIS : (NSMutableArray *) i1 s1: (NSMutableArray *) s1;
 //- (void) toQry2AryIIS : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1;
 - (void) toQry2AryIISII :(NSMutableArray *)i1 i2:(NSMutableArray *)i2 s1:(NSMutableArray *)s1 i3:(NSMutableArray *)i3 i4:(NSMutableArray *)i4;
+- (void) toQry2AryID : (NSMutableArray *)i1 d1:(NSMutableArray *)d1;
+- (void) toQry2AryI : (NSMutableArray *) inAry;
 
 - (void) toExecSql;
 - (int) toQry2Int;
 - (NSString *) toQry2StrCopy;
 - (float) toQry2Float;
+- (double) toQry2Double;
 
 @end

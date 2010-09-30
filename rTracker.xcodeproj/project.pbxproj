@@ -31,6 +31,9 @@
 		D4C520F2123F9C2D00554627 /* chkbox_on.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C520F1123F9C2D00554627 /* chkbox_on.png */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4C5210E123F9E1400554627 /* whiteButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C5210D123F9E1400554627 /* whiteButton.png */; };
+		D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
+		D4E5FDD9125283B1004BB4EC /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4E5FDD7125283B1004BB4EC /* graphTracker.xib */; };
+		D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FE4512529300004BB4EC /* graphTrackerV.m */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +75,11 @@
 		D4C520F1123F9C2D00554627 /* chkbox_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chkbox_on.png; path = ../rTracker/chkbox_on.png; sourceTree = SOURCE_ROOT; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = ../UICatalog/images/blueButton.png; sourceTree = SOURCE_ROOT; };
 		D4C5210D123F9E1400554627 /* whiteButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteButton.png; path = ../UICatalog/images/whiteButton.png; sourceTree = SOURCE_ROOT; };
+		D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerVC.h; sourceTree = "<group>"; };
+		D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerVC.m; sourceTree = "<group>"; };
+		D4E5FDD7125283B1004BB4EC /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = Classes/graphTracker.xib; sourceTree = "<group>"; };
+		D4E5FE4412529300004BB4EC /* graphTrackerV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerV.h; sourceTree = "<group>"; };
+		D4E5FE4512529300004BB4EC /* graphTrackerV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerV.m; sourceTree = "<group>"; };
 		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,6 +113,10 @@
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
 				D49854AD12312A400009E458 /* useTrackerController.h */,
 				D49854AE12312A400009E458 /* useTrackerController.m */,
+				D4E5FE4412529300004BB4EC /* graphTrackerV.h */,
+				D4E5FE4512529300004BB4EC /* graphTrackerV.m */,
+				D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */,
+				D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */,
 				D4A314A81189BB6A00F062AC /* tObjBase.h */,
 				D4A314A91189BB6A00F062AC /* tObjBase.m */,
 				D482D270114FEB5E00CE6BC8 /* trackerList.h */,
@@ -153,6 +165,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4E5FDD7125283B1004BB4EC /* graphTracker.xib */,
 				D49854AF12312A400009E458 /* useTrackerController.xib */,
 				D4FF224712304E050047518A /* rt-types.plist */,
 				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
@@ -238,6 +251,7 @@
 				D4C520F2123F9C2D00554627 /* chkbox_on.png in Resources */,
 				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
 				D4C5210E123F9E1400554627 /* whiteButton.png in Resources */,
+				D4E5FDD9125283B1004BB4EC /* graphTracker.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +273,8 @@
 				D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */,
 				D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */,
 				D49854B012312A400009E458 /* useTrackerController.m in Sources */,
+				D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */,
+				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

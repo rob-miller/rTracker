@@ -67,7 +67,11 @@
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
-	int rank = [self.topLayoutNames count];
+	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
+	int rank = [self toQry2Int];
+	if (!(rank >= 1)) {
+		rank = [self.topLayoutNames count];
+	}
 	NSAssert(tObj.toid,@"confirmTLE: toid=0");
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
 		   rank, tObj.toid, tObj.trackerName ];
@@ -138,9 +142,10 @@
 	// release as well
 	newTO.trackerName = [NSString stringWithString:oTN];
 	
-	NSEnumerator *enumer = [srcTO.valObjTable objectEnumerator];
-	valueObj *vo;
-	while (vo = (valueObj *) [enumer nextObject]) {
+	//NSEnumerator *enumer = [srcTO.valObjTable objectEnumerator];
+	//valueObj *vo;
+	//while (vo = (valueObj *) [enumer nextObject]) {
+	for (valueObj *vo in srcTO.valObjTable) {
 		valueObj *newVO = [newTO voConfigCopy:vo];
 		[newTO addValObj:newVO];
 		[newVO release];
