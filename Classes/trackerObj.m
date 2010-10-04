@@ -20,6 +20,28 @@
 @synthesize colorSet, votArray;
 @synthesize maxLabel;
 
+
+/******************************
+ *
+ * trackerObj db tables
+ *
+ *  trkrInfo: field(text,unique) ; val(text)
+ *     field='name' : tracker name
+ *	   field='height','width' : max size over all valobj display widgets (num, text, slider, etc)
+ *
+ *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int)
+ *         type: rt-types.plist and defs in valueObj.h
+ *        color: defs in valueObj.h ; colorSet in trackerObj.m
+ *    graphtype: defs in valueObj.h ; graphsForVOTCopy and mapGraphType in valueObj.m
+ *
+ *  trkrData: date(int,unique)
+ *		entry indicates there will be corresponding voData items
+ *
+ *  voData: id(int) ; date(int) ; val(text)
+ *      valObj.vid value stored at specified timestamp
+ *  
+ *
+ ******************************/
 #pragma mark -
 #pragma mark core object methods and support
 
@@ -366,6 +388,16 @@
 	return rslt;
 }
 
+- (BOOL) voHasData:(NSInteger) vid
+{
+	self.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d;", (int) vid];
+	int rslt= (NSInteger) [self toQry2Int];
+	self.sql = nil;
+
+	if (rslt == 0)
+		return NO;
+	return YES;
+}
 #pragma mark -
 #pragma mark manipulate tracker's valObjs
 
@@ -407,6 +439,8 @@
 	}
 	return colorSet;
 }
+
+// TODO: dump plist, votArray could be encoded as colorSet above (?)
 
 - (NSArray *) votArray {
 	if (votArray == nil) {

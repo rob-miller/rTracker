@@ -17,6 +17,15 @@
 
 //sqlite3 *tDb;
 
+/******************************
+ *
+ * base tObj db tables
+ *
+ *  uniquev: id(int) ; value(int)
+ *       persistent store to maintain unique trackerObj and valueObj IDs
+ *
+ ******************************/
+
 #pragma mark -
 #pragma mark core object methods and support
 
@@ -56,7 +65,8 @@
 #pragma mark total db methods 
 
 - (NSString *) trackerDbFilePath {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
 	NSString *docsDir = [paths objectAtIndex:0];
 	return [docsDir stringByAppendingPathComponent:self.dbName];
 }
@@ -478,6 +488,42 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		if (sqlite3_step(stmt) != SQLITE_DONE) {
 			NSAssert2(0,@"tob error executing _%@_  : %s", self.sql, sqlite3_errmsg(tDb));
 		}
+	}
+	sqlite3_finalize(stmt);
+}
+
+
+- (void) toQry2Log {
+	NSLog(@"toQry2Log: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2Log called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	NSString *srslt;
+	
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		int c = sqlite3_column_count(stmt);
+		int i;
+		NSString *cols=@"";
+		for (i=0; i<c; i++) {
+			cols = [cols stringByAppendingString:[NSString stringWithUTF8String:sqlite3_column_name(stmt,i)]];
+			cols = [cols stringByAppendingString:@" "];
+		}
+		NSLog(@"%@",cols);
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			cols = @"";
+			for (i=0; i<c; i++) {
+				srslt = [NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, i)];
+				cols = [cols stringByAppendingString:srslt];
+				cols = [cols stringByAppendingString:@" "];
+			}
+			NSLog(@"%@",cols);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 }

@@ -28,5 +28,7 @@
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 </dict>
 </plist>

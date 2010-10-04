@@ -44,4 +44,6 @@
 - (float) toQry2Float;
 - (double) toQry2Double;
 
+- (void) toQry2Log;
+
 @end

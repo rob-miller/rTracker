@@ -154,6 +154,10 @@ CGSize sizeGTLabel;
     [super didReceiveMemoryWarning];
 	
 	// Release any cached data, images, etc that aren't in use.
+
+	parentTrackerObj.colorSet = nil;
+	parentTrackerObj.votArray = nil;
+	
 }
 
 - (void)viewDidUnload {

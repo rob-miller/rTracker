@@ -13,6 +13,15 @@
 @synthesize topLayoutNames, topLayoutIDs;
 //@synthesize tObj;
 
+/******************************
+ *
+ * trackerList db tables
+ *
+ *   toplevel: rank(int) ; id(int) ; name(text)
+ *      primarily for entry listbox of tracker names
+ *
+ ******************************/ 
+
 #pragma mark -
 #pragma mark core object methods and support
 
@@ -60,6 +69,10 @@
 - (void) loadTopLayoutTable {
 	[self.topLayoutNames removeAllObjects];
 	[self.topLayoutIDs removeAllObjects];
+
+	//self.sql = @"select * from toplevel";
+	//[self toQry2Log];
+	
 	self.sql = @"select id, name from toplevel order by rank;";
 	[self toQry2AryIS :(NSMutableArray *)self.topLayoutIDs s1: self.topLayoutNames];
 	self.sql = nil;
@@ -67,10 +80,13 @@
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
+	//self.sql = @"select * from toplevel";
+	//[self toQry2Log];
+	
 	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
-	int rank = [self toQry2Int];
-	if (!(rank >= 1)) {
-		rank = [self.topLayoutNames count];
+	int rank = [self toQry2Int];  // returns 0 if not found
+	if (rank == 0) {
+		rank = [self.topLayoutNames count] +1;  // so put at end
 	}
 	NSAssert(tObj.toid,@"confirmTLE: toid=0");
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",

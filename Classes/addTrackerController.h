@@ -11,7 +11,7 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
-@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
+@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIActionSheetDelegate>
 
 {
 

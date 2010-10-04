@@ -19,6 +19,7 @@
 @property(nonatomic) CGContextRef context;
 @property(nonatomic) int firstDate;
 @property(nonatomic) int lastDate;
+@property(nonatomic,retain) UIFont *myFont;
 
 
 @end

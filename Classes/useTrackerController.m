@@ -392,10 +392,14 @@ const NSInteger kViewTag = 1;
 
 - (UIBarButtonItem *) currDateBtn {
 	NSLog(@"currDateBtn called");
+	NSString *datestr = [NSDateFormatter localizedStringFromDate:tracker.trackerDate 
+													   dateStyle:NSDateFormatterShortStyle 
+													   timeStyle:NSDateFormatterShortStyle];
+
 	if (currDateBtn == nil) {
 		NSLog(@"creating button");
 		currDateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:[tracker.trackerDate description]
+					   initWithTitle:datestr
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnCurrDate)];

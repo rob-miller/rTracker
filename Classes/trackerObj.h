@@ -54,6 +54,8 @@
 - (valueObj *) getValObj: (NSInteger) vid;
 - (void) describe;
 
+- (BOOL) voHasData:(NSInteger) vid;
+
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
 @end

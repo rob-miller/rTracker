@@ -17,6 +17,10 @@
 @synthesize tempTrackerObj;
 @synthesize table;
 
+NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
+UITableView *deleteTableView;
+NSMutableArray *deleteVOs=nil;
+
 #pragma mark -
 #pragma mark core object methods and support
 
@@ -30,6 +34,11 @@
 	[tlist release];
 	self.table = nil;
 	[table release];
+
+	if (deleteVOs != nil) {
+		[deleteVOs release];
+		deleteVOs = nil;
+	}
 	
 	[super dealloc];
 }
@@ -43,12 +52,14 @@
 	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
 	
 	// cancel / save buttons on top nav bar
+	
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
 							   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 							   target:self
 							   action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
 	[cancelBtn release];
+	
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
 							   initWithBarButtonSystemItem:UIBarButtonSystemItemSave
@@ -87,6 +98,17 @@
     [super viewWillAppear:animated];
 }
 
+- (void)didReceiveMemoryWarning {
+	// Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+	
+	// Release any cached data, images, etc that aren't in use.
+	
+	tempTrackerObj.colorSet = nil;
+	tempTrackerObj.votArray = nil;
+	
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
 	//NSLog(@"atc: viewWillDisappear, namefield= %@",nameField.text);
 	NSLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
@@ -109,7 +131,12 @@
 	self.navigationItem.leftBarButtonItem = nil;
 	[self setToolbarItems:nil
 				 animated:NO];
-		
+	
+	if (deleteVOs != nil) {
+		[deleteVOs release];
+		deleteVOs = nil;
+	}
+	
 	[super viewDidUnload];
 }
 
@@ -166,19 +193,42 @@ static int editMode;
 
 # pragma mark -
 # pragma mark button press handlers
-
+/*
 - (IBAction)btnAddValue {
 NSLog(@"btnAddValue was pressed!");
 }
-
+*/
 - (IBAction)btnCancel {
 	NSLog(@"btnCancel was pressed!");
+
+	if (deleteVOs != nil) {
+		[deleteVOs release];
+		deleteVOs = nil;
+	}
+	
 	[self.navigationController popViewControllerAnimated:YES];
 }
+
+- (void) delVOdb:(NSInteger)vid 
+{
+	self.tempTrackerObj.sql = [NSString stringWithFormat:@"delete from voData where id=%d;",vid];
+	[self.tempTrackerObj toExecSql];
+	self.tempTrackerObj.sql = [NSString stringWithFormat:@"delete from voConfig where id=%d;",vid];
+	[self.tempTrackerObj toExecSql];
+}
+
 
 - (IBAction)btnSave {
 	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, tlist);
 
+	if (deleteVOs != nil) {
+		for (valueObj *vo in deleteVOs) {
+			[self delVOdb:vo.vid];
+		}
+		[deleteVOs release];
+		deleteVOs = nil;
+	}
+	
 	if ([self.nameField.text length] > 0) {
 		self.tempTrackerObj.trackerName = self.nameField.text;
 		if (! self.tempTrackerObj.toid) {
@@ -206,6 +256,37 @@ NSLog(@"btnAddValue was pressed!");
 	[sender resignFirstResponder];
 	self.tempTrackerObj.trackerName = nameField.text;
 }
+
+#pragma mark -
+#pragma mark UIActionSheet methods
+
+- (void) delVOlocal:(NSUInteger) row
+{
+	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
+	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
+						   withRowAnimation:UITableViewRowAnimationFade];		
+}
+
+- (void)actionSheet:(UIActionSheet *)checkValObjDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
+	NSLog(@"checkValObjDelete buttonIndex= %d",buttonIndex);
+	
+	if (buttonIndex == checkValObjDelete.destructiveButtonIndex) {
+		NSUInteger row = [deleteIndexPath row];
+		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+		NSLog(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
+		//[self delVOdb:vo.vid];
+		if (deleteVOs == nil) {
+			deleteVOs = [[NSMutableArray alloc] init];
+		}
+		[deleteVOs addObject:vo];
+		[self delVOlocal:row];
+	} else {
+		NSLog(@"cancelled");
+	}
+	
+}
+
 
 # pragma mark -
 # pragma mark Table View Data Source Methods
@@ -336,6 +417,27 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// NSUInteger section = [indexPath section];  // in theory this only called on vals section
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		NSLog(@"atc: delete row %d ",row);
+		deleteIndexPath = indexPath;
+		deleteTableView = tableView;
+		
+		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+		if ((! self.tempTrackerObj.toid)   // this tempTrackerObj not written to db yet at all
+			|| (! [self.tempTrackerObj voHasData:vo.vid]))  // no actual values stored in db for this valObj
+		{ 
+			[self delVOlocal:row];
+		} else {
+			UIActionSheet *checkValObjDelete = [[UIActionSheet alloc] 
+												initWithTitle:[NSString stringWithFormat:
+															   @"Value %@ has stored data, which will be removed when you 'Save' this page.",
+															   vo.valueName]
+												delegate:self 
+												cancelButtonTitle:@"Cancel"
+												destructiveButtonTitle:@"Yes, delete"
+												otherButtonTitles:nil];
+			//[checkTrackerDelete showInView:self.view];
+			[checkValObjDelete showFromToolbar:self.navigationController.toolbar ];
+			[checkValObjDelete release];
+		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		NSLog(@"atc: insert row %d ",row);
 

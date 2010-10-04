@@ -14,7 +14,8 @@
 @synthesize tracker;
 @synthesize context;
 
-@synthesize firstDate,lastDate;
+@synthesize firstDate,lastDate,myFont;
+
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -25,7 +26,11 @@
 
 - (void)dealloc {
 	self.context=nil;
+	self.tracker = nil;
+	self.myFont = nil;
 	
+	[tracker release];
+	[myFont release];
     [super dealloc];
 }
 
@@ -51,6 +56,9 @@
 #define STD_ALPHA 1.0f
 #define BAR_ALPHA 0.5f
 
+#define FONTNAME "Helvetica-Bold"
+#define FONTSIZE 10
+
 #define MoveTo(x,y) CGContextMoveToPoint(self.context,(x),(y))
 #define AddLineTo(x,y) CGContextAddLineToPoint(self.context,(x),(y))
 #define AddCircle(x,y) CGContextAddEllipseInRect(self.context, (CGRect) {{(x),(y)},{4.0f,4.0f}})
@@ -61,15 +69,32 @@
 #define f(x) ((CGFloat) (x))
 #define d(x) ((double) (x))
 
-- (void) drawAxes
+- (void) flipCTM 
 {
-	[[UIColor whiteColor] set];
+	CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
+	CGContextConcatCTM(self.context,tm);
+}
 
-	MoveTo(BORDER,BORDER);
-	AddLineTo(self.bounds.size.width - BORDER, BORDER);
-	MoveTo(BORDER,BORDER);
-	AddLineTo(BORDER,self.bounds.size.height - BORDER);
+- (void) drawTitle
+{
+	//const char *tstr = [self.tracker.trackerName UTF8String];
+	//CGContextShowTextAtPoint (self.context, self.bounds.size.width/2.0f, self.bounds.size.height - (BORDER/2.0f), tstr, strlen(tstr));
 
+	CGSize tsize = [self.tracker.trackerName sizeWithFont:myFont];
+	CGPoint tpos = { (self.bounds.size.width - tsize.width)/2.0f , /*self.bounds.size.height - */((BORDER - tsize.height)/2.0f) };
+	if (tpos.x < 0) 
+		tpos.x=0;
+	if (tpos.y > self.bounds.size.height)
+		tpos.y = self.bounds.size.height;
+
+	[self flipCTM];
+	[self.tracker.trackerName drawAtPoint:tpos withFont:myFont];
+	[self flipCTM];
+		
+}
+
+- (void) drawYAxis 
+{
 	int i;
 	CGFloat len = self.bounds.size.height - (CGFloat) (2*BORDER);
 	CGFloat step = len / YTICKS;
@@ -79,35 +104,118 @@
 		MoveTo(BORDER,y);
 		AddLineTo(BORDER-TICKLEN,y);
 	}
+	Stroke;
+}
+
+- (void) drawXAxis
+{
+	int i;
+	int dateInterval = self.lastDate - self.firstDate;
+	CGFloat dateStep = f(dateInterval) / XTICKS;
 	
-	len = self.bounds.size.width - (CGFloat) (2*BORDER);
-	step = len / XTICKS;
+	CGFloat len = self.bounds.size.width - (CGFloat) (2*BORDER);
+	CGFloat step = len / XTICKS;
+
+	[self flipCTM];
 	
-	for (i=1; i<= XTICKS; i++) {
+	for (i=0; i<= XTICKS; i++) {
 		CGFloat x = BORDER + (f(i) * step);
-		MoveTo(x,BORDER);
-		AddLineTo(x,BORDER-TICKLEN);
+		CGFloat y = self.bounds.size.height - BORDER;
+		MoveTo(x,y);
+		y += TICKLEN;
+		if (i>0)
+			AddLineTo(x,y);
+		y += 1.0f;
+		int date = self.firstDate + (int) ((f(i) * dateStep) +0.5f);
+
+		NSDate *sd = [NSDate dateWithTimeIntervalSince1970:date];
+		NSString *datestr = [NSDateFormatter localizedStringFromDate:sd 
+														   dateStyle:(NSDateFormatterStyle)NSDateFormatterShortStyle 
+														   timeStyle:(NSDateFormatterStyle)NSDateFormatterShortStyle];
+		NSArray *dta = [datestr componentsSeparatedByString:@" "];
+
+		NSString *ds = (NSString *) [dta objectAtIndex:0];
+		NSString *ts = (NSString *) [dta objectAtIndex:1];
+
+		CGSize tsize = [ds sizeWithFont:myFont];
+		x-= 10.0f;
+		if (i == 0
+			||
+			dateStep < 24*60*60
+			||
+			i == XTICKS) 
+			[ts drawAtPoint:(CGPoint) {x,y} withFont:myFont];
+		
+		y += tsize.height; // + 1.0f;
+		if (i == 0
+			||
+			dateStep >= 24*60*60
+			||
+			i == XTICKS) 
+			[ds drawAtPoint:(CGPoint) {x,y} withFont:myFont];
+		
 	}
 
 	Stroke;
-
-	NSDate *sd = [NSDate dateWithTimeIntervalSince1970:self.firstDate];
-	NSString *datestr = [NSDateFormatter localizedStringFromDate:sd dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-	NSArray *dta = [datestr componentsSeparatedByString:@" "];
+	
+	/*
 	const char *ds = [(NSString *) [dta objectAtIndex:0] UTF8String];
 	const char *ts = [(NSString *) [dta objectAtIndex:1] UTF8String];
 	
 	CGContextShowTextAtPoint (self.context, BORDER, 0, ds, strlen(ds));
 	CGContextShowTextAtPoint (self.context, BORDER, BORDER/2.0f, ts, strlen(ts));
-
+	 * /
+	
+	
+	CGPoint tpos1,tpos2;
+	tpos1.x = BORDER;
+	tpos2.x = BORDER;
+	tpos1.y = self.bounds.size.height - BORDER + (BORDER - (2*tsize.height));
+	tpos2.y = self.bounds.size.height - BORDER + (BORDER - tsize.height);
+	
+	tsize = [ts sizeWithFont:myFont];
+	[ts drawAtPoint:tpos2 withFont:myFont];
+	
 	sd = [NSDate dateWithTimeIntervalSince1970:self.lastDate];
 	datestr = [NSDateFormatter localizedStringFromDate:sd dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
 	dta = [datestr componentsSeparatedByString:@" "];
+	/*
 	ds = [(NSString *) [dta objectAtIndex:0] UTF8String];
 	ts = [(NSString *) [dta objectAtIndex:1] UTF8String];
 	
 	CGContextShowTextAtPoint (self.context, self.bounds.size.width-(2.0f*BORDER), 0, ds, strlen(ds));
 	CGContextShowTextAtPoint (self.context, self.bounds.size.width-(2.0f*BORDER), BORDER/2.0f, ts, strlen(ts));
+	 * /
+
+	ds = (NSString *) [dta objectAtIndex:0];
+	ts = (NSString *) [dta objectAtIndex:1];
+
+	tpos1.x = self.bounds.size.width-(2.0f*BORDER);
+	tpos2.x = self.bounds.size.width-(2.0f*BORDER);
+	
+	[ds drawAtPoint:tpos1 withFont:myFont];
+	[ts drawAtPoint:tpos2 withFont:myFont];
+
+	 */
+	
+	[self flipCTM];
+	
+}
+
+- (void) drawAxes
+{
+	[[UIColor whiteColor] set];
+
+	[self drawTitle];
+	
+	MoveTo(BORDER,BORDER);
+	AddLineTo(self.bounds.size.width - BORDER, BORDER);
+	MoveTo(BORDER,BORDER);
+	AddLineTo(BORDER,self.bounds.size.height - BORDER);
+
+	[self drawYAxis];
+	[self drawXAxis];
+
 }
 
 - (void) transformVO_num:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
@@ -157,6 +265,9 @@
 		[ydat addObject:[NSNumber numberWithDouble:v]];
 		
 	}
+	
+	[i1 release];
+	[d1 release];
 }
 
 - (void) transformVO_note:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
@@ -181,6 +292,7 @@
 		[ydat addObject:[NSNumber numberWithFloat:DEFAULT_PT]];
 		
 	}
+	[i1 release];
 }
 
 - (void) transformVO_bool:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
@@ -205,6 +317,7 @@
 		[ydat addObject:[NSNumber numberWithFloat:DEFAULT_PT]];
 		
 	}
+	[i1 release];
 }
 
 
@@ -358,6 +471,9 @@
 		
 		[self transformVO:vo xdat:xdat ydat:ydat];
 		[self plotVO:vo xdat:xdat ydat:ydat];
+		
+		[xdat release];
+		[ydat release];
 	}
 		
 }
@@ -382,13 +498,19 @@
 	// scale x to date range -- unfortunately buggered because line width is in user coords applied to both x and y
 	//CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
 	CGContextConcatCTM(self.context,tm);
-
+	// put the text back to normal ... why do they do this?
+	//CGAffineTransform tm2 = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, 0.0f };
+	//CGContextSetTextMatrix(self.context, tm2);
+	/*
 	CGContextSelectFont (self.context, 
 						 "Helvetica-Bold",
-						 10,
+						 FONTSIZE,
 						 kCGEncodingMacRoman);
     CGContextSetCharacterSpacing (self.context, 1); 
     CGContextSetTextDrawingMode (self.context, kCGTextFill); 
+	*/
+	self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
+	//self.myFont = [UIFont systemFontOfSize:FONTSIZE];
 	
 	[self drawBackground];
 	[self drawAxes];
