@@ -14,18 +14,18 @@
 @interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIActionSheetDelegate>
 
 {
-
-	UITextField	*nameField;
 	trackerList *tlist;
 	trackerObj *tempTrackerObj;
 	UITableView *table;
-	
+	UITextField	*nameField;
+	UITextField	*privField;	
 }
 
-@property (nonatomic, retain) UITextField *nameField;
 @property (nonatomic, retain) trackerList *tlist;
 @property (nonatomic, retain) trackerObj *tempTrackerObj;
 @property (nonatomic, retain) IBOutlet UITableView *table;
+@property (nonatomic, retain) UITextField *nameField;
+@property (nonatomic, retain) UITextField *privField;
 
 - (void)configureToolbarItems;
 

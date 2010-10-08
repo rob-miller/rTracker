@@ -335,7 +335,7 @@
 			break;
 		case VOT_BOOLEAN:
 			[self transformVO_bool:vo xdat:xdat ydat:ydat];
-		case VOT_PICK:
+		case VOT_CHOICE:
 			NSLog(@"transform for mult choice not done yet");
 			break;
 		case VOT_FUNC:
@@ -455,6 +455,8 @@
 			break;
 		case VOG_PIE:
 			NSLog(@"pie chart not yet supported");
+			break;
+		case VOG_NONE:  // nothing to do!
 			break;
 		default:
 			NSLog(@"plotVO: vGraphType %d not recognised",vo.vGraphType);

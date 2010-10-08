@@ -11,7 +11,7 @@
 
 @implementation valueObj
 
-@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display;
+@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display, useVO, optDict, checkButtonUseVO;
 
 extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
@@ -24,7 +24,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	NSLog(@"init valueObj: %@", self.valueName);
 	if (self = [super init]) {
 		//valueDate = [[NSDate alloc] init];
-		
+		self.useVO = NO;
 	}
 	return self;
 }
@@ -37,21 +37,29 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	switch (in_vtype) {
 		case VOT_NUMBER:
 		case VOT_SLIDER:
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:10];
+			value = [[NSMutableString alloc] initWithCapacity:10];
+			//[self.value setString:@"0"];
 			break;
 		case VOT_BOOLEAN:
-		case VOT_PICK:
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:1];
+			value = [[NSMutableString alloc] initWithCapacity:1];
+			[self.value setString:@"0"];
+			break;
+		case VOT_CHOICE:
+			value = [[NSMutableString alloc] initWithCapacity:1];
+			//[self.value setString:@"0"];
 			break;
 		case VOT_TEXT:
 		case VOT_FUNC:
 			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:32];
+			//[self.value setString:@""];
 			break;	
 		case VOT_IMAGE:
 			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:64];
+			//[self.value setString:@""];
 			break;
 		case VOT_TEXTB:
 			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:96];
+			//[self.value setString:@""];
 			break;
 		default:
 			NSAssert1(0,@"valueObj init vtype %d not supported",in_vtype);
@@ -74,8 +82,21 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	[value release];
 	self.display = nil;
 	[display release];
+	self.optDict = nil;
+	[optDict release];
+	
+	self.checkButtonUseVO = nil;
+	[checkButtonUseVO release];
 	
 	[super dealloc];
+}
+
+- (NSMutableDictionary *) optDict
+{
+	if (optDict == nil) {
+		optDict = [[NSMutableDictionary alloc] init];
+	}
+	return optDict;
 }
 
 #pragma mark -
@@ -160,115 +181,37 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 #pragma mark bool button 
 
-//#define kStdButtonWidth		106.0
-//#define kStdButtonHeight	40.0
-
-
-+ (UIButton *)buttonWithTitleCopy:	(NSString *)title
-					   target:(id)target
-					 selector:(SEL)selector
-						frame:(CGRect)frame
-						image:(UIImage *)image
-				 imagePressed:(UIImage *)imagePressed
-				darkTextColor:(BOOL)darkTextColor
-{	
-	UIButton *button = [[UIButton alloc] initWithFrame:frame];
-	// or you can do this:
-	//		UIButton *button = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-	//		button.frame = frame;
-	
-	button.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-	button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-	
-	[button setTitle:title forState:UIControlStateNormal];	
-	if (darkTextColor)
-	{
-		[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	}
-	else
-	{
-		[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-	}
-	
-	UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
-	[button setBackgroundImage:newImage forState:UIControlStateNormal];
-	
-	UIImage *newPressedImage = [imagePressed stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
-	[button setBackgroundImage:newPressedImage forState:UIControlStateHighlighted];
-	
-	[button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-	
-    // in case the parent view draws with a custom color or gradient, use a transparent color
-	button.backgroundColor = [UIColor clearColor];
-	//[button autorelease];  // let property retain handle this
-	return button;
-}
-
-- (BOOL) toggleBoolBtn 
-{
-	if (self.value == nil || [value isEqualToString:@""] ||[self.value isEqualToString:@"0"]) {
-		[self.value setString:@"1"];
-		return YES;
-	} else {
-		[self.value setString:@"0"];
-		return NO;
-	}
-}
 
 - (UIImage *) boolBtnImage {
-	UIImage *chkBox;
-	if (self.value == nil || [self.value isEqualToString:@""] || [self.value isEqualToString:@"0"]) {
-		chkBox = [UIImage imageNamed:@"chkbox_off.png"];
-	} else {
-		chkBox = [UIImage imageNamed:@"chkbox_on.png"];
-	}
-	return chkBox;
+	
+	return ( [self.value isEqualToString:@"0"] ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"] );
 }
+
 - (void)boolBtnAction:(UIButton *)imageButton
 {
-	//NSLog(@"boolBtnAction");
-	[self toggleBoolBtn];
-	[imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
+	if ([self.value isEqualToString:@"0"]) {
+		[self.value setString:@"1"];
+		[imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
+	} else {  // could be more robust here
+		[self.value setString:@"0"];
+		[imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];		
+	}
 }
 
 
 - (void) displayBoolBtn :(CGRect) bounds
 {
-	// create a UIButton with just an image instead of a title
-	
-	UIImage *buttonBackground = [UIImage imageNamed:@"whiteButton.png"];
-	UIImage *buttonBackgroundPressed = [UIImage imageNamed:@"blueButton.png"];
-	
-	//CGRect frame = CGRectMake(182.0, 5.0, kStdButtonWidth, kStdButtonHeight);
-	CGRect frame = bounds;
 
-	UIImage *bbi = [self boolBtnImage];
-	frame.origin.x += (frame.size.width - bbi.size.width) / 2.0f;
-	frame.size.width = bbi.size.width;
-	frame.size.height = bbi.size.height;
-	
-	UIButton *imageButton = [valueObj buttonWithTitleCopy:@""
-												  target:self
-											 selector:@selector(boolBtnAction:)
-												   frame:frame
-												   image:buttonBackground
-											imagePressed:buttonBackgroundPressed
-										   darkTextColor:YES];
-	
-	NSLog(@"booBtn: vo val= %@", self.value);
-	
-	[imageButton setImage:bbi forState: UIControlStateNormal];
-	//[imageButton setImage:chkBoxOn forState: UIControlStateHighlighted];
-		 
-	// Add an accessibility label to the image.
-	[imageButton setAccessibilityLabel:NSLocalizedString(@"CheckBoxButton", @"")];
+	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+	imageButton.frame = bounds; //CGRectZero;
+	imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
+	[imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];		
+	[imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
 	
 	imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
-	
 
 	/*self.*/ display = imageButton;
-	//[buttonBackground release];  // seems like these are convenience methods
-	//[buttonBackgroundPressed release];
 }
 
 #pragma mark slider
@@ -279,8 +222,11 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 { 
 	//NSLog(@"slider action value = %f", ((UISlider *)sender).value);
 	[self.value setString:[NSString stringWithFormat:@"%f",sender.value]];
-}
 
+	if (!self.useVO)
+		[self enableVO];
+	
+}
 
 - (void) displaySlider :(CGRect) bounds
 {
@@ -308,6 +254,65 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	/* self. */ display = sliderCtl;
 }
 
+#pragma mark segmented control
+
+- (void) segmentAction:(id) sender
+{
+	NSLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
+	
+	if ([sender selectedSegmentIndex] == UISegmentedControlNoSegment) {
+		[self disableVO];
+		[self.value setString:@""];
+	} else {
+		[self enableVO];
+		[self.value setString:[NSString stringWithFormat:@"%d",[sender selectedSegmentIndex]]];
+	}
+	
+//	if (!self.useVO && ((UISegmentedControl *) self.display).selectedSegmentIndex != UISegmentedControlNoSegment)
+//		[self enableVO]; // note setting 'NoSegment' triggers this method
+//	} else {
+//	}
+	
+		
+}
+
+- (void) displaySegment:(CGRect) bounds
+{
+	//NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
+
+	int i;
+	NSMutableArray *segmentTextContent = [[NSMutableArray alloc] init];
+	for (i=0;i<CHOICES;i++) {
+		NSString *key = [NSString stringWithFormat:@"c%d",i];
+		NSString *s = [self.optDict objectForKey:key];
+		if ((s != nil) && (![s isEqualToString:@""])) 
+			[segmentTextContent addObject:s];
+	}
+	//[segmentTextContent addObject:nil];
+
+	CGRect frame = bounds;
+	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	[segmentTextContent release];
+	
+	segmentedControl.frame = frame;
+	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+
+	if ([self.value isEqualToString:@""]) {
+		segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+		[self disableVO];
+	} else {
+		segmentedControl.selectedSegmentIndex = [self.value integerValue];
+	}
+	
+	//[segmentedControl setWidth:20.0f forSegmentAtIndex:0];
+	//segmentedControl.tintColor = [UIColor colorWithRed:0.70 green:0.171 blue:0.1 alpha:70.0];
+	//segmentedControl.alpha = 20.0f;
+	
+	segmentedControl.tag = kViewTag;
+	display = segmentedControl;
+}
+
 //#pragma mark -
 #pragma mark display fn dispatch
 
@@ -330,8 +335,9 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 				//NSLog(@"slider not implemented");
 				[self displaySlider:bounds];
 				break;
-			case VOT_PICK:
-				NSLog(@"pick not implemented");
+			case VOT_CHOICE:
+				//NSLog(@"pick not implemented");
+				[self displaySegment:bounds];
 				break;
 			case VOT_BOOLEAN:
 				//NSLog(@"bool not implemented");
@@ -354,6 +360,61 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 }
 
 #pragma mark -
+#pragma mark checkButton support
+
+- (void) enableVO 
+{
+	if (!self.useVO) {
+		self.useVO = YES;
+		[self.checkButtonUseVO setImage:[UIImage imageNamed:@"checked.png"] forState:UIControlStateNormal];
+	}
+}
+
+- (void) disableVO 
+{
+	if (self.useVO) {
+		self.useVO = NO;
+		[self.checkButtonUseVO setImage:[UIImage imageNamed:@"unchecked.png"] forState:UIControlStateNormal];
+	}
+}
+
+
+// called when the checkmark button is touched 
+- (void)checkAction:(id)sender
+{
+	NSLog(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
+	UIImage *checkImage;
+	
+	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
+	//self.useVO = !self.useVO;
+
+	if (self.useVO = !self.useVO) {
+		checkImage = [UIImage imageNamed:@"checked.png"];
+	} else {
+		checkImage = [UIImage imageNamed:@"unchecked.png"];
+		if (self.vtype == VOT_CHOICE)
+			((UISegmentedControl *) self.display).selectedSegmentIndex =  UISegmentedControlNoSegment;
+		else if (self.vtype == VOT_SLIDER)
+			[((UISlider *) self.display) setValue:50.0f animated:YES];
+	}
+
+	[checkButtonUseVO setImage:checkImage forState:UIControlStateNormal];
+	
+}
+
+- (UIButton *) checkButtonUseVO
+{
+	if (checkButtonUseVO == nil) {
+		checkButtonUseVO = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		checkButtonUseVO.frame = CGRectZero;
+		checkButtonUseVO.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+		checkButtonUseVO.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+		[checkButtonUseVO addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown];		
+	}
+	return checkButtonUseVO;
+}
+
+#pragma mark -
 #pragma mark utility methods
 
 - (void) describe 
@@ -372,7 +433,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 			//break;
 		case VOT_NUMBER: 
 			//ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", @"no graph", nil];
 			break;
 		case VOT_IMAGE:
 			//break;
@@ -380,19 +441,19 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 			//break;
 		case VOT_TEXTB:
 			//ret = [NSArray arrayWithObjects:@"dots", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"no graph", nil];
 			break;
-		case VOT_PICK:
+		case VOT_CHOICE:
 			//ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
-			ret =  [[NSArray alloc] initWithObjects:@"dots",@"pie", nil];
+			ret =  [[NSArray alloc] initWithObjects:@"dots",@"pie", @"no graph", nil];
 			break;
 		case VOT_BOOLEAN:
 			//ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar", @"no graph", nil];
 			break;
 		default:
 			//ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", @"no graph", nil];
 			break;
 	}
 	
@@ -412,6 +473,8 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		return VOG_DOTSLINE;
 	if ([gts isEqual:@"pie"])
 		return VOG_PIE;
+	if ([gts isEqual:@"no graph"])
+		return VOG_NONE;
 	
 	NSAssert1(0,@"mapGraphTypes: no match for %@",gts);
 	

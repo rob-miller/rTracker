@@ -16,9 +16,11 @@
 	//int tid;
 	NSString *trackerName;
 	NSDate *trackerDate;
+	NSInteger privacy;
 	NSMutableArray *valObjTable;
 	CGSize maxLabel;
-
+	NSInteger nextColor;
+	
 	NSArray *colorSet;
 	NSArray *votArray;
 }
@@ -26,8 +28,10 @@
 //@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
 @property (nonatomic,retain) NSDate *trackerDate;
+@property (nonatomic) NSInteger privacy;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 @property (nonatomic) CGSize maxLabel;
+@property (readonly) NSInteger nextColor;
 @property (nonatomic,retain) NSArray *colorSet;
 @property (nonatomic,retain) NSArray *votArray;
 

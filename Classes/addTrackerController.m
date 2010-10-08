@@ -12,10 +12,10 @@
 
 @implementation addTrackerController 
 
-@synthesize nameField;
 @synthesize tlist;
 @synthesize tempTrackerObj;
 @synthesize table;
+@synthesize nameField, privField;
 
 NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 UITableView *deleteTableView;
@@ -28,6 +28,8 @@ NSMutableArray *deleteVOs=nil;
 	NSLog(@"atc: dealloc");
 	self.nameField = nil;
 	[nameField release];
+	self.privField = nil;
+	[privField release];
 	self.tempTrackerObj = nil;
 	[tempTrackerObj release];
 	self.tlist = nil;
@@ -94,6 +96,8 @@ NSMutableArray *deleteVOs=nil;
 	NSLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
 	
 	[self.table reloadData];
+	if (self.navigationController.toolbarHidden)
+		[self.navigationController setToolbarHidden:NO animated:YES];
 	
     [super viewWillAppear:animated];
 }
@@ -250,11 +254,16 @@ NSLog(@"btnAddValue was pressed!");
 }
 
 # pragma mark -
-# pragma mark nameField support Methods
+# pragma mark nameField, privField support Methods
 
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
 	self.tempTrackerObj.trackerName = nameField.text;
+}
+
+- (IBAction) privFieldDone:(id)sender {
+	[sender resignFirstResponder];
+	self.tempTrackerObj.privacy = [nameField.text integerValue];
 }
 
 #pragma mark -
@@ -293,7 +302,7 @@ NSLog(@"btnAddValue was pressed!");
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (section == 0) {
-		return (NSInteger) 1;
+		return (NSInteger) 2;
 	} else {
 		int rval = [self.tempTrackerObj.valObjTable count];
 		if (editMode == 0) {
@@ -309,6 +318,8 @@ NSLog(@"btnAddValue was pressed!");
 		return (NSInteger) 2;
 }
 
+const NSInteger nViewTag = 2;
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *) indexPath {
 	UITableViewCell *cell;
 	
@@ -322,31 +333,56 @@ NSLog(@"btnAddValue was pressed!");
 					 initWithStyle:UITableViewCellStyleDefault
 					 reuseIdentifier: nameCellID] 
 					autorelease];
+		} else {
+			// the cell is being recycled, remove old embedded controls
+			UIView *viewToRemove = nil;
+			viewToRemove = [cell.contentView viewWithTag:nViewTag];
+			if (viewToRemove)
+				[viewToRemove removeFromSuperview];
+		}
+		
+		NSInteger row = [indexPath row];
+		if (row == 0) {
 
 			self.nameField = nil;
 			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
-			//self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
-			//[self.nameField release];
 			self.nameField.clearsOnBeginEditing = NO;
 			[self.nameField setDelegate:self];
 			self.nameField.returnKeyType = UIReturnKeyDone;
 			[self.nameField addTarget:self
 						  action:@selector(nameFieldDone:)
 				forControlEvents:UIControlEventEditingDidEndOnExit];
+			self.nameField.tag = nViewTag;
 			[cell.contentView addSubview:nameField];
 			
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		}
 		
-		self.nameField.text = self.tempTrackerObj.trackerName;
+			self.nameField.text = self.tempTrackerObj.trackerName;
+			self.nameField.placeholder = @"Tracker Name";
 
-		self.nameField.placeholder = @"Tracker Name";
+		} else {   // row = 1
+			cell.textLabel.text = @"privacy level:";
+			self.privField = nil;
+			privField = [[UITextField alloc] initWithFrame:CGRectMake(180,10,60,25) ];
+			self.privField.borderStyle = UITextBorderStyleRoundedRect;
+			self.privField.clearsOnBeginEditing = NO;
+			[self.privField setDelegate:self];
+			self.privField.returnKeyType = UIReturnKeyDone;
+			[self.privField addTarget:self
+						  action:@selector(privFieldDone:)
+				forControlEvents:UIControlEventEditingDidEndOnExit];
+			self.privField.tag = nViewTag;
+			[cell.contentView addSubview:privField];
+			
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
-		/*
-		if (tempTrackerObj.trackerName == @"") {
-		} else {
+			self.privField.text = self.tempTrackerObj.trackerName;
+
+			self.privField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+			self.privField.text = [NSString stringWithFormat:@"%d",self.tempTrackerObj.privacy];
+			self.privField.placeholder = @"num";
+			self.privField.textAlignment = UITextAlignmentRight;
 		}
-		*/
 		
 	} else {
 		static NSString *valCellID = @"valCellID";

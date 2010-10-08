@@ -477,9 +477,18 @@ const NSInteger kViewTag = 1;
 	return [self.tracker.valObjTable count];
 }
 
+
 #define LMARGIN 60.0f
 #define RMARGIN 10.0f
 #define BMARGIN  7.0f
+
+#define MARGIN 7.0f
+
+#define CELL_HEIGHT_NORMAL (self.tracker.maxLabel.height + (3.0*MARGIN))
+#define CELL_HEIGHT_TALL (2.0 * CELL_HEIGHT_NORMAL)
+
+#define CHECKBOX_WIDTH 40.0f
+
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -491,7 +500,7 @@ const NSInteger kViewTag = 1;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else {
 		// the cell is being recycled, remove old embedded controls
@@ -504,21 +513,74 @@ const NSInteger kViewTag = 1;
     
 	// Configure the cell.
 
-	cell.textLabel.text = vo.valueName;
+	CGRect bounds;
 	
-	CGRect bounds = cell.frame;
+	if ((vo.vtype == VOT_CHOICE) || (vo.vtype == VOT_SLIDER)) {
+		//cell.accessoryType = UITableViewCellAccessoryCheckmark;
+		
+		// checkButton top row left
+		
+		UIImage *checkImage = [UIImage imageNamed:@"checked.png"];
+		
+		bounds.origin.x = MARGIN;
+		bounds.origin.y = MARGIN;
+		bounds.size.width = checkImage.size.width ; //CHECKBOX_WIDTH; // cell.frame.size.width;
+		bounds.size.height = checkImage.size.height ; //self.tracker.maxLabel.height + 2*BMARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
+		
+		vo.checkButtonUseVO.frame = bounds;
+		vo.checkButtonUseVO.tag = kViewTag;
+		vo.checkButtonUseVO.backgroundColor = cell.backgroundColor;
+		[cell.contentView addSubview:vo.checkButtonUseVO];
+		
+		UIImage *image = (vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
+		UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
+		[vo.checkButtonUseVO setBackgroundImage:newImage forState:UIControlStateNormal];
+		
+		// cell label top row right 
+		
+		bounds.origin.x += checkImage.size.width + MARGIN;
+		bounds.size.width = cell.frame.size.width - checkImage.size.width - (2.0*MARGIN);
+		bounds.size.height = self.tracker.maxLabel.height + MARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
+		
+		UILabel *label = [[UILabel alloc] initWithFrame:bounds];
+		label.tag=kViewTag;
+		label.font = [UIFont boldSystemFontOfSize:18.0];
+		label.textAlignment = UITextAlignmentLeft;
+		label.textColor = [UIColor blackColor];
+		label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
+		label.contentMode = UIViewContentModeTopLeft;
+		label.text = vo.valueName;
+		[cell.contentView addSubview:label];
+		[label release];
+		
+		bounds.origin.y = self.tracker.maxLabel.height + (3.0*MARGIN); //CELL_HEIGHT_TALL/2.0 + MARGIN; // 38.0f; //bounds.size.height; // + BMARGIN;
+		bounds.size.height = /*CELL_HEIGHT_TALL/2.0 ; // */ self.tracker.maxLabel.height + (1.5*MARGIN);
+		
+		bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
+		bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
+	} else {
+		cell.textLabel.text = vo.valueName;
+		bounds.origin.x = cell.frame.origin.x + self.tracker.maxLabel.width + LMARGIN;
+		bounds.origin.y = self.tracker.maxLabel.height - (1.5*MARGIN);
+		bounds.size.width = cell.frame.size.width - self.tracker.maxLabel.width - LMARGIN - RMARGIN;
+		bounds.size.height = self.tracker.maxLabel.height + MARGIN;
+	}
+
 	NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
 	//bounds.origin.y = bounds.size.height;// - BMARGIN;
-	bounds.origin.y = self.tracker.maxLabel.height - BMARGIN;
-	bounds.size.height = self.tracker.maxLabel.height + BMARGIN;
-	bounds.size.width = bounds.size.width - self.tracker.maxLabel.width - LMARGIN - RMARGIN;
-	bounds.origin.x = bounds.origin.x + self.tracker.maxLabel.width + LMARGIN;
 
 	NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[vo display:bounds]];
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	NSInteger vt = ((valueObj*) [self.tracker.valObjTable objectAtIndex:[indexPath row]]).vtype;
+	if ( (vt == VOT_CHOICE) || (vt == VOT_SLIDER) )
+		return CELL_HEIGHT_TALL;
+	return CELL_HEIGHT_NORMAL;
+}
 
 
 // Override to support row selection in the table view.

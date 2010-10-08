@@ -15,12 +15,15 @@
 #define VOT_TEXT	1
 #define VOT_TEXTB	2
 #define VOT_SLIDER	3
-#define VOT_PICK	4
+#define VOT_CHOICE	4
 #define VOT_BOOLEAN	5
 #define VOT_IMAGE	6
 #define VOT_FUNC	7
 
 #define VOT_MAX		8
+
+// max number of choices for VOT_CHOICE
+#define CHOICES 6
 
 // supported graphs ; tied to valueObj:mapGraphType
 #define VOG_DOTS		0
@@ -29,7 +32,8 @@
 #define VOG_DOTSLINE	3
 #define VOG_PIE			4
 //histogram...
-#define VOG_MAX			5
+#define VOG_NONE		5
+#define VOG_MAX			6
 
 // supported colors ; tied to trackerObj:colorSet
 #define VOC_RED			0
@@ -57,6 +61,10 @@
 	NSInteger vcolor;
 	NSInteger vGraphType;
 	UIView *display;
+	BOOL useVO;
+	NSMutableDictionary *optDict;
+	
+	UIButton *checkButtonUseVO;
 }
 
 //+ (NSArray *) votArray;
@@ -69,6 +77,11 @@
 @property (nonatomic) NSInteger vGraphType;
 @property (nonatomic, retain) UIView *display;
 
+@property (nonatomic) BOOL useVO;
+@property (nonatomic,retain) NSMutableDictionary *optDict;
+
+@property (nonatomic,retain) UIButton *checkButtonUseVO;
+
 - (id) init;
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
@@ -76,6 +89,10 @@
 
 - (void) describe;
 - (UIView *) display:(CGRect)bounds;
+
+- (void) enableVO;
+- (void) disableVO;
+- (void)checkAction:(id)sender;
 
 + (NSArray *) graphsForVOTCopy:(NSInteger)vot;
 + (NSInteger) mapGraphType:(NSString *)gts;

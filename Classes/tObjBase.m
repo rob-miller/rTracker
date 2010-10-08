@@ -201,7 +201,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	NSLog(@"  returns %@", inAry);
@@ -217,14 +217,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			//NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
-			//[i1 addObject: i];
-			//[i release];
 			[i1 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,0)]];
 			
-			//NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 1)];
-			//[s1 addObject:(id) tlentry];
-			//[tlentry release];
 			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
 			
 			NSLog(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
@@ -233,11 +227,35 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 }
 
+- (void) toQry2ArySS : (NSMutableArray *) s1 s2: (NSMutableArray *) s2 {
+	
+	
+	NSLog(@"toQry2ArySS: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2ArySS called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 0)]];
+			
+			[s2 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
+			
+			NSLog(@"  rslt: %@ %@",[s1 lastObject], [s2 lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+}
 
 - (void) toQry2AryIIS : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1 {
 // not used
@@ -249,19 +267,10 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			//NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
-			//[i1 addObject: i];
-			//[i release];
 			[i1 addObject:[NSNumber numberWithInt: sqlite3_column_int(stmt, 0)]];
 			
-			//NSNumber *j = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 1)];
-			//[i2 addObject:(id) j];
-			//[j release];
 			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 1)]];
 			
-			//NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 2)];
-			//[s1 addObject:(id) tlentry];
-			//[tlentry release];
 			[s1 addObject: [NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 2)]];
 			
 			NSLog(@"  rslt: %@ %@ %@",[i1 lastObject], [i2 lastObject], [s1 lastObject]);
@@ -270,12 +279,9 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
-	//NSLog(@"  returns %@ : %@ : %@", i1, i2, s1);
-	
-
 }
 
 
@@ -290,29 +296,14 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			//NSNumber *i = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 0)];
-			//[i1 addObject: i];
-			//[i release];
 			[i1 addObject: [NSNumber numberWithInt:sqlite3_column_int(stmt, 0)]];
 			
-			//NSNumber *j = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 1)];
-			//[i2 addObject:(id) j];
-			//[j release];
 			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 1)]];
 			
-			//NSString *tlentry = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 2)];
-			//[s1 addObject:(id) tlentry];
-			//[tlentry release];
 			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 2)]];
 			
-			//NSNumber *k = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 3)];
-			//[i3 addObject: k];
-			//[k release];
 			[i3 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 3)]];
 			
-			//NSNumber *l = [[NSNumber alloc] initWithInt: sqlite3_column_int(stmt, 4)];
-			//[i4 addObject:(id) l];
-			//[l release];
 			[i4 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 4)]];
 			
 			NSLog(@"  rslt: %@ %@ %@ %@ %@",
@@ -322,10 +313,9 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
-	//NSLog(@"  returns %@ : %@ : %@", i1, i2, s1);
 }
 
 
@@ -348,7 +338,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 }
@@ -369,7 +359,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	NSLog(@"  returns %@", inAry);
@@ -392,7 +382,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	
@@ -444,7 +434,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	
@@ -469,7 +459,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
-		NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 	
@@ -488,6 +478,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		if (sqlite3_step(stmt) != SQLITE_DONE) {
 			NSAssert2(0,@"tob error executing _%@_  : %s", self.sql, sqlite3_errmsg(tDb));
 		}
+	} else {
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
 }

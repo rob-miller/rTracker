@@ -16,8 +16,8 @@
 @implementation trackerObj
 
 
-@synthesize trackerName, trackerDate, valObjTable;
-@synthesize colorSet, votArray;
+@synthesize trackerName, trackerDate, privacy, valObjTable;
+@synthesize nextColor, colorSet, votArray;
 @synthesize maxLabel;
 
 
@@ -29,7 +29,7 @@
  *     field='name' : tracker name
  *	   field='height','width' : max size over all valobj display widgets (num, text, slider, etc)
  *
- *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int)
+ *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) 
  *         type: rt-types.plist and defs in valueObj.h
  *        color: defs in valueObj.h ; colorSet in trackerObj.m
  *    graphtype: defs in valueObj.h ; graphsForVOTCopy and mapGraphType in valueObj.m
@@ -47,18 +47,21 @@
 
 - (void) initTDb {
 	int c;
-	self.sql = @"create table if not exists trkrInfo (field text unique, val text);";
+	self.sql = @"create table if not exists trkrInfo (field text, val text, unique ( field ) on conflict replace);";
 	[self toExecSql];
 	self.sql = @"select count(*) from trkrInfo;";
 	c = [self toQry2Int];
 	if (c == 0) {
 		// init clean db
-		self.sql = @"create table if not exists voConfig (id int unique, rank int, type int, name text, color int, graphtype int);";
+		self.sql = @"create table if not exists voConfig (id int, rank int, type int, name text, color int, graphtype int, unique (id) on conflict replace);";
 		[self toExecSql];
-		self.sql = @"create table if not exists voData (id int, date int, val text);";
+		self.sql = @"create table if not exists voInfo (id int, field text, val text, unique(id, field) on conflict replace);";
 		[self toExecSql];
-		self.sql = @"create table if not exists trkrData (date int unique);";
+		self.sql = @"create table if not exists voData (id int, date int, val text, unique(id, date) on conflict replace);";
 		[self toExecSql];
+		self.sql = @"create table if not exists trkrData (date int unique on conflict replace);";
+		[self toExecSql];
+		
 	}
 	self.sql = nil;
 }
@@ -80,6 +83,8 @@
 		self.trackerDate = nil;
 		//self.valObjTable = [[NSMutableArray alloc] init];
 		valObjTable = [[NSMutableArray alloc] init];
+		nextColor=0;
+		privacy=0;
 		NSLog(@"init trackerObj New");
 	}
 	
@@ -124,9 +129,12 @@
 	self.trackerName = nil;
 	trackerName = [self toQry2StrCopy];
 	self.sql = @"select val from trkrInfo where field='width';";
-	maxLabel.width = [self toQry2Float];  // why not self?
+	CGFloat w = [self toQry2Float];
 	self.sql = @"select val from trkrInfo where field='height';";
-	maxLabel.height = [self toQry2Float]; // why not self?
+	CGFloat h = [self toQry2Float];
+	self.maxLabel = (CGSize) {w,h};
+	self.sql = @"select val from trkrInfo where field='privacy';";
+	privacy = (NSInteger) [self toQry2Int];
 	
 	NSMutableArray *i1 = [[NSMutableArray alloc] init];
 	NSMutableArray *i2 = [[NSMutableArray alloc] init];
@@ -135,8 +143,6 @@
 	NSMutableArray *i4 = [[NSMutableArray alloc] init];
 	self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
 	[self toQry2AryIISII :i1 i2:i2 s1:s1 i3:i3 i4:i4];
-	
-	self.sql=nil;
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
 	NSEnumerator *e2 = [i2 objectEnumerator];
@@ -157,16 +163,60 @@
 	
 	[i1 release];
 	[i2 release];
-	[s1 release];
 	[i3 release];
 	[i4 release];
+
+	NSMutableArray *s2 = [[NSMutableArray alloc] init];
 	
-	//[trackerDate release];
+	for (valueObj *vo in self.valObjTable) {
+		[s1 removeAllObjects];
+		[s2 removeAllObjects];
+		
+		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%d;",vo.vid];
+		[self toQry2ArySS :s1 s2:s2];
+		e1 = [s1 objectEnumerator];
+		e2 = [s2 objectEnumerator];
+		
+		NSString *key;
+		while ( key = (NSString *) [e1 nextObject] ) {
+			[vo.optDict setObject:[e2 nextObject] forKey:key];
+		}
+		
+		if (vo.vcolor > self.nextColor)
+			nextColor = vo.vcolor;
+	}
+	
+	//[self nextColor];  // inc safely past last used color
+	if (nextColor >= [self.colorSet count])
+		nextColor=0;
+	
+	[s1 release];
+	[s2 release];
+
+	
+	self.sql=nil;
+	
 	self.trackerDate = nil;
 	trackerDate = [[NSDate alloc] init];
-	//self.trackerDate = [[NSDate alloc] init];
-	//[trackerDate release];
+}
+
+- (void) clearOptDict:(valueObj *)vo
+{
+	NSMutableArray *s1 = [[NSMutableArray alloc] init];
+	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%d;",vo.vid];
+	[self toQry2AryS:s1];
+	NSEnumerator *e1 = [s1 objectEnumerator];  // TODO: use fast enumeration
 	
+	NSString *key;
+	while ( key = (NSString *) [e1 nextObject] ) {
+		if ([vo.optDict objectForKey:key] == nil) {
+			self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
+			[self toExecSql];
+		}
+	}
+
+	[s1 release];
+	self.sql=nil;
 }
 
 - (void) saveConfig {
@@ -183,6 +233,9 @@
 	self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('height',%f);",
 				self.maxLabel.height];
 	[self toExecSql];
+	self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('privacy',%d);",
+				(int) self.privacy];
+	[self toExecSql];
 	
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
@@ -195,6 +248,14 @@
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
 					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];
 		[self toExecSql];
+		
+		[self clearOptDict:vo];
+		
+		for (NSString *key in vo.optDict) {
+			self.sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%d, '%@', '%@');",
+						vo.vid, key, [vo.optDict objectForKey:key]];
+			[self toExecSql];
+		}
 	}
 	
 	self.sql = nil;
@@ -426,6 +487,14 @@
 	for (valueObj *vo in self.valObjTable) {
 		[vo describe];
 	}
+}
+
+- (NSInteger) nextColor
+{
+	NSInteger rv = nextColor;
+	if (++nextColor >= [self.colorSet count])
+		nextColor=0;
+	return rv;
 }
 
 - (NSArray *) colorSet {
