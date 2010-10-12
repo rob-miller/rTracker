@@ -36,6 +36,5 @@
 @property (nonatomic) CGFloat lasty;
 
 - (void) addSVFields:(NSInteger) vot;
-- (IBAction)backgroundTap:(id)sender;
 
 @end

@@ -433,7 +433,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 			//break;
 		case VOT_NUMBER: 
 			//ret = [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", @"no graph", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", /*@"no graph",*/ nil];
 			break;
 		case VOT_IMAGE:
 			//break;
@@ -441,19 +441,19 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 			//break;
 		case VOT_TEXTB:
 			//ret = [NSArray arrayWithObjects:@"dots", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", @"no graph", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", /*@"no graph",*/ nil];
 			break;
 		case VOT_CHOICE:
 			//ret =  [NSArray arrayWithObjects:@"dots",@"pie", nil];
-			ret =  [[NSArray alloc] initWithObjects:@"dots",@"pie", @"no graph", nil];
+			ret =  [[NSArray alloc] initWithObjects:@"dots",@"pie", /*@"no graph",*/ nil];
 			break;
 		case VOT_BOOLEAN:
 			//ret = [NSArray arrayWithObjects:@"dots", @"bar", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar", @"no graph", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar", /*@"no graph",*/ nil];
 			break;
 		default:
 			//ret = [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", nil];
-			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", @"no graph", nil];
+			ret = [[NSArray alloc] initWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", /*@"no graph",*/ nil];
 			break;
 	}
 	

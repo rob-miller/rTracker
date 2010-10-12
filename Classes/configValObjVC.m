@@ -18,11 +18,16 @@
 @synthesize toolBar, navBar;
 @synthesize lasty;
 
-//BOOL keyboardIsShown;
+BOOL keyboardIsShown;
 
 #define kAnimationDuration 0.3
 
+#define MARGIN 10.0f
+#define SPACE 3.0f
+#define TFXTRA 2.0f;
+
 CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
+CGRect saveFrame;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -64,23 +69,23 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction) backgroundTap:(id)sender {
-	[activeField resignFirstResponder];
-}
+//- (IBAction) backgroundTap:(id)sender {
+//	[activeField resignFirstResponder];
+//}
+//
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 
+	
 	NSString *name = self.vo.valueName;
 	if ((name == nil) || [name isEqualToString:@""]) 
 		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:vo.vtype]];
-	
-	
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"configure %@",name]];
 	name = nil;
 	 
 	LFHeight = 31.0f; //((addValObjController *) [self parentViewController]).labelField.frame.size.height;
 
+	//self.scrollView.contentSize = self.scrollView.frame.size;
 	self.lasty = self.navBar.frame.size.height;
 	[self addSVFields:self.vo.vtype];
 
@@ -93,6 +98,18 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[doneBtn release];
 	
 	//[(UIControl *)self.view addTarget:self action:@selector(backgroundTap) forControlEvents:UIControlEventTouchDown];
+
+	keyboardIsShown = NO;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillShow:) 
+												 name:UIKeyboardWillShowNotification 
+											   object:self.view.window];
+	// register for keyboard notifications
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillHide:) 
+												 name:UIKeyboardWillHideNotification 
+											   object:self.view.window];
 	
     [super viewDidLoad];
 }
@@ -118,7 +135,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 
-	/*
+	///*
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillShowNotification 
@@ -127,7 +144,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
-	*/
+	//*/
 	
 	self.wDict = nil;
 	self.to = nil;
@@ -136,6 +153,14 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	self.toolBar = nil;
 	self.navBar = nil;
 
+}
+
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	UITouch *touch = [touches anyObject];
+	CGPoint touchPoint = [touch locationInView:self.view];
+	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+	
+	[activeField resignFirstResponder];
 }
 
 # pragma mark -
@@ -153,20 +178,19 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 
 
-/*
+
  
 # pragma mark -
 # pragma mark keyboard notifications
 
-//#define kKeyboardAnimationDuration 0.3
-
 - (void)keyboardWillShow:(NSNotification *)n
 {
-    if (keyboardIsShown) {
+    if (keyboardIsShown) { // need bit more logic to handle additional scrolling
         return;
     }
 	
-	NSLog(@"handling keyboard will show");
+	//NSLog(@"handling keyboard will show");
+	saveFrame = self.view.frame;
 	
     NSDictionary* userInfo = [n userInfo];
 	
@@ -174,30 +198,27 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
     NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
-	
-//	 // resize the noteView
-//	 CGRect viewFrame = self.scrollView.frame;
-//	 viewFrame.size.height -= keyboardSize.height;
-//	 
-//	 [UIView beginAnimations:nil context:NULL];
-//	 [UIView setAnimationBeginsFromCurrentState:YES];
-//	 [UIView setAnimationDuration:kKeyboardAnimationDuration];
-//	 [self.scrollView setFrame:viewFrame];
-//	 [UIView commitAnimations];
-	 
-	
 	if (activeField.tag == SCROLLTAG) {
 		CGRect viewFrame = self.view.frame;
-		viewFrame.origin.y -= keyboardSize.height; // animatedDistance;
+		//NSLog(@"k will show, y= %f",viewFrame.origin.y);
+		CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
+		CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+		if (boty <= topk) {
+			//NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+		} else {
+			//NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
+
+			viewFrame.origin.y -= (boty - topk);
+			viewFrame.size.height -= self.toolBar.frame.size.height;
+			
+			[UIView beginAnimations:nil context:NULL];
+			[UIView setAnimationBeginsFromCurrentState:YES];
+			[UIView setAnimationDuration:kAnimationDuration];
 		
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationBeginsFromCurrentState:YES];
-		[UIView setAnimationDuration:kKeyboardAnimationDuration];
+			[self.view setFrame:viewFrame];
 		
-		[self.view setFrame:viewFrame];
-		[self.scrollView scrollRectToVisible:[activeField frame] animated:YES];
-		
-		[UIView commitAnimations];
+			[UIView commitAnimations];
+		}
 	}
 	
     keyboardIsShown = YES;
@@ -207,42 +228,19 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 {
 	NSLog(@"handling keyboard will hide");
 	
-    NSDictionary* userInfo = [n userInfo];
-	
-    // get the size of the keyboard
-    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGSize keyboardSize = [boundsValue CGRectValue].size;
-	
-	
-//	 // resize the scrollview
-//	 CGRect viewFrame = self.scrollView.frame;
-//	 viewFrame.size.height += keyboardSize.height;
-//	 
-//	 [UIView beginAnimations:nil context:NULL];
-//	 [UIView setAnimationBeginsFromCurrentState:YES];
-//	 
-//	 [UIView setAnimationDuration:kKeyboardAnimationDuration];
-//	 [self.scrollView setFrame:viewFrame];
-//	 [UIView commitAnimations];
-	 
-	
 	if (activeField.tag == SCROLLTAG) {
-		CGRect viewFrame = self.view.frame;
-		viewFrame.origin.y += keyboardSize.height; // animatedDistance;
-		
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationBeginsFromCurrentState:YES];
-		[UIView setAnimationDuration:kKeyboardAnimationDuration];
+		[UIView setAnimationDuration:kAnimationDuration];
 		
-		[self.view setFrame:viewFrame];
-		[self.scrollView setContentOffset:(CGPoint) {0.0f,0.0f}];
-		
+		[self.view setFrame:saveFrame];
+
 		[UIView commitAnimations];
 	}
 	
     keyboardIsShown = NO;	
 }
-*/
+
 
 
 # pragma mark -
@@ -250,7 +248,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 #pragma mark newWidget methods
 
-- (UILabel *) newConfigLabel:(NSString *) text frame:(CGRect)frame
+- (CGRect) configLabel:(NSString *)text frame:(CGRect)frame key:(NSString*)key addsv:(BOOL)addsv
 {
 	frame.size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
 	
@@ -258,10 +256,18 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	rlab.text = text;
 	rlab.backgroundColor = [UIColor clearColor];
 	rlab.tag = SCROLLTAG;
-	return rlab;
+
+	[self.wDict setObject:rlab forKey:key];
+	if (addsv)
+		[self.view addSubview:rlab];
+	
+	CGRect retFrame = rlab.frame;
+	[rlab release];
+	
+	return retFrame;
 }
 
-- (UIButton *) newConfigButton:(CGRect) frame
+- (UIButton *) newConfigButton:(CGRect)frame key:(NSString*)key action:(SEL)action
 {
 	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 	imageButton.frame = frame;
@@ -269,13 +275,16 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 	imageButton.tag = SCROLLTAG;
 	//[imageButton addTarget:self action:@selector(configCheckButtonAction:) forControlEvents:UIControlEventTouchDown];
+
+	[self.wDict setObject:imageButton forKey:key];
+	[imageButton addTarget:self action:action forControlEvents:UIControlEventTouchDown];
 	
 	return imageButton;
 }
 
-
-- (UITextField *) newConfigTextField:(CGRect) frame
+- (void) configTextField:(CGRect)frame key:(NSString*)key action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
 {
+	frame.origin.y -= TFXTRA;
 	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
 	rtf.clearsOnBeginEditing = NO;
 	[rtf setDelegate:self];
@@ -283,12 +292,23 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	//[rtf addTarget:self action:@selector(configTextFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
 	rtf.borderStyle = UITextBorderStyleRoundedRect;
 	rtf.tag = SCROLLTAG;
-	return rtf;
+	[self.wDict setObject:rtf forKey:key];
+	[rtf addTarget:self action:action forControlEvents:UIControlEventEditingDidEndOnExit];
+	if (num) {
+		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+		rtf.textAlignment = UITextAlignmentRight;
+	}
+	rtf.placeholder = place;
+	
+	if (text)
+		rtf.text = text;
+	
+	if (addsv)
+		[self.view addSubview:rtf];
+	
+	[rtf release];
 }
 
-
-#define MARGIN 10.0f
-#define SPACE 3.0f
 
 #pragma mark autoscale / graph min/max options
 
@@ -364,27 +384,17 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	BOOL autoscale;
 	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
 	
-	UILabel *lab = [self newConfigLabel:@"Graphing:" frame:frame ];
-	[self.wDict setObject:lab forKey:@"gLab"];
-	//[self.scrollView addSubview:lab];
-	[self.view addSubview:lab];
+	CGRect labframe = [self configLabel:@"Graphing:" frame:frame key:@"gLab" addsv:YES];
 	
 	//frame = (CGRect) {MARGIN,frame.origin.y + lab.frame.size.height+(2*MARGIN),0.0,0.0};
-	frame.origin.y += lab.frame.size.height + MARGIN;
-	[lab release];
+	frame.origin.y += labframe.size.height + MARGIN;
 	
-	lab = [self newConfigLabel:@"  Auto Scale:" frame:frame ];
-	[self.wDict setObject:lab forKey:@"asLab"];
-	//[self.scrollView addSubview:lab];
-	[self.view addSubview:lab];
+	labframe = [self configLabel:@"  Auto Scale:" frame:frame key:@"asLab" addsv:YES];
 	
-	frame = (CGRect) {lab.frame.size.width+MARGIN+SPACE, frame.origin.y,lab.frame.size.height,lab.frame.size.height};
-	[lab release];
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	UIButton *btn = [self newConfigButton:frame];
-	[btn addTarget:self action:@selector(autoscaleButtonAction:) forControlEvents:UIControlEventTouchDown];
+	UIButton *btn = [self newConfigButton:frame key:@"asBtn" action:@selector(autoscaleButtonAction:)];
 	
-	[self.wDict setObject:btn forKey:@"asBtn"];
 	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
 		autoscale=NO;
 		[self updateAutoscaleBtn:btn state:NO];
@@ -393,7 +403,6 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		[self.vo.optDict setObject:@"1" forKey:@"autoscale"];  // confirm default setting
 		[self updateAutoscaleBtn:btn state:YES];
 	}
-	//[self.scrollView addSubview:btn];
 	[self.view addSubview:btn];
 	[btn release];
 
@@ -401,55 +410,34 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
-	lab = [self newConfigLabel:@" min:" frame:frame];
-	[self.wDict setObject:lab forKey:@"minLab"];
-	//[self.scrollView addSubview:lab];
+	labframe = [self configLabel:@"min:" frame:frame key:@"minLab" addsv:NO];
 	
-	frame.origin.x = lab.frame.size.width + MARGIN + SPACE;
+	frame.origin.x = labframe.size.width + MARGIN + SPACE;
 	CGFloat tfWidth = [[NSString stringWithString:@"9999999999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
-	[lab release];
 	
-	UITextField *tf = [self newConfigTextField:frame];
-	[self.wDict setObject:tf forKey:@"minTF"];
-	[tf addTarget:self action:@selector(mtfDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
-	tf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-	tf.placeholder = @"<number>";
-	tf.textAlignment = UITextAlignmentRight;
-	
-	NSString *s;
-	if (s = [self.vo.optDict objectForKey:@"gmin"]) {
-		NSLog(@"gmin found val: %@",s);
-		tf.text = s;
-	}
-	//[self.scrollView addSubview:tf];
-	[tf release];
-	
+	[self configTextField:frame 
+					  key:@"minTF" 
+				   action:@selector(mtfDone:) 
+					  num:YES place:@"<number>" 
+					 text:[self.vo.optDict objectForKey:@"gmin"] 
+					addsv:NO ];
+
 	frame.origin.x += tfWidth + MARGIN;
-	lab = [self newConfigLabel:@" max:" frame:frame];
-	[self.wDict setObject:lab forKey:@"maxLab"];
-	//[self.scrollView addSubview:lab];
+	labframe = [self configLabel:@" max:" frame:frame key:@"maxLab" addsv:NO];
 	
-	frame.origin.x += lab.frame.size.width + SPACE;
+	frame.origin.x += labframe.size.width + SPACE;
 	frame.size.width = tfWidth;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
-	[lab release];
-	
-	tf = [self newConfigTextField:frame];
-	[self.wDict setObject:tf forKey:@"maxTF"];
-	[tf addTarget:self action:@selector(mtfDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
-	tf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-	tf.placeholder = @"<number>";
-	tf.textAlignment = UITextAlignmentRight;
-	
-	if (s = [self.vo.optDict objectForKey:@"gmax"]) {
-		NSLog(@"gmax found val: %@",s);
-		tf.text = s;
-	}
-	//[self.scrollView addSubview:tf];
-	[tf release];
-	
+
+	[self configTextField:frame 
+					  key:@"maxTF" 
+				   action:@selector(mtfDone:) 
+					  num:YES place:@"<number>" 
+					 text:[self.vo.optDict objectForKey:@"gmax"]
+					addsv:NO ];
+
 	if (! autoscale) {
 		[self addGraphMinMax];
 	}
@@ -459,35 +447,6 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 }
 
 #pragma mark choice valObj options 
-
-/*
-#define SVINC 100.0
-
-//CGFloat origFrameY;
-
-- (void)upDownButtonAction:(UIButton *)btn
-{
-	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:kAnimationDuration];
-	
-	CGRect frame = self.scrollView.frame;
-	if (self.scrollView.contentSize.height == self.scrollView.frame.size.height) {
-		frame.size.height -= SVINC; 
-		frame.origin.y += SVINC;
-		self.scrollView.frame = frame;
-		[btn setImage:[UIImage imageNamed:@"up.png"] forState: UIControlStateNormal];
-	} else {
-		frame.size.height += SVINC;
-		frame.origin.y -= SVINC;
-		self.scrollView.frame = frame;
-		[btn setImage:[UIImage imageNamed:@"down.png"] forState: UIControlStateNormal];
-	}
-	
-	[UIView commitAnimations];	
-}
-*/
 
 - (void) ctfDone:(UITextField *)tf
 {
@@ -553,50 +512,27 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 - (void) drawSVChoiceOpts 
 {
-	//CGSize siz = self.scrollView.contentSize;
-	//siz.height += SVINC;
-	//self.scrollView.contentSize = siz;
-	
-	//origFrameY = self.scrollView.frame.origin.y;
 	
 	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
 	
-	UILabel *lab = [self newConfigLabel:@"Choices:" frame:frame ];
-	[self.wDict setObject:lab forKey:@"coLab"];
-	[self.view addSubview:lab];
-	
-	/*
-	frame.origin.x = 300;
-	frame.size.height = 16.0;
-	frame.size.width = 10.0;
-	
-	UIButton *btn = [self newConfigButton:frame];
-	[btn addTarget:self action:@selector(upDownButtonAction:) forControlEvents:UIControlEventTouchDown];
-	
-	[btn setImage:[UIImage imageNamed:@"up.png"] forState: UIControlStateNormal];
-	[self.wDict setObject:btn forKey:@"udBtn"];
-	[self.scrollView addSubview:btn];
-	[btn release];
-	*/
+	CGRect labframe = [self configLabel:@"Choices:" frame:frame key:@"coLab" addsv:YES ];
 	
 	frame.origin.x = MARGIN;
-	frame.origin.y += lab.frame.size.height + MARGIN;
-	[lab release];
+	frame.origin.y += labframe.size.height + MARGIN;
 	
 	CGFloat tfWidth = [[NSString stringWithString:@"9999999999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
 	int i,j=1;
-	UITextField *tf;
 	for (i=0; i<CHOICES; i++) {
 		
-		tf = [self newConfigTextField:frame];
-		[self.wDict setObject:tf forKey:[NSString stringWithFormat:@"%dtf",i]];
-		[tf addTarget:self action:@selector(ctfDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
-		tf.text = [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]];
-		tf.placeholder = [NSString stringWithFormat:@"choice %d",i+1];
-		[self.view addSubview:tf];
+		[self configTextField:frame 
+							 key:[NSString stringWithFormat:@"%dtf",i] 
+						  action:@selector(ctfDone:) num:NO 
+						   place:[NSString stringWithFormat:@"choice %d",i+1]
+							text:[self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]]
+						   addsv:YES ];
 		
 		frame.origin.x += MARGIN + tfWidth;
 		
@@ -618,13 +554,11 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		[self.wDict setObject:btn forKey:[NSString stringWithFormat:@"%dbtn",i]];
 		[self.view addSubview:btn];
 		
-		frame.origin.x = MARGIN + (j * (tfWidth + tf.frame.size.height + 2*MARGIN));
+		frame.origin.x = MARGIN + (j * (tfWidth + LFHeight + 2*MARGIN));
 		j = ( j ? 0 : 1 ); // j toggles 0-1
-		frame.origin.y += j * ((2*MARGIN) + tf.frame.size.height);
+		frame.origin.y += j * ((2*MARGIN) + LFHeight);
 		frame.size.width = tfWidth;
 		//frame.size.height = self.labelField.frame.size.height; // lab.frame.size.height;
-		
-		[tf release];
 	}
 
 	self.lasty = frame.origin.y - (2*MARGIN);  // allready added  + frame.size.height; in loop
@@ -654,28 +588,37 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	}
 }
 
+
+- (void) ptfDone:(UITextField *)tf
+{
+	CGFloat in_val = [tf.text floatValue];
+	CGFloat curr_val = [[self.vo.optDict objectForKey:@"privacy"] floatValue];
+
+	if (in_val != curr_val) {
+		NSLog(@"vo %@ old priv= %f new priv= %f", vo.valueName, curr_val, in_val);
+		[self.vo.optDict setObject:tf.text forKey:@"privacy"];
+	}
+}
+
 - (void) drawGeneralOpts 
 {
 	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
 	
-	UILabel *lab = [self newConfigLabel:@"Options:" frame:frame ];
-	[self.wDict setObject:lab forKey:@"goLab"];
-	[self.view addSubview:lab];
+	//-- title label
 	
-	frame.origin.y += lab.frame.size.height + MARGIN;
-	[lab release];
+	CGRect labframe = [self configLabel:@"Options:" frame:frame key:@"goLab" addsv:YES];
 	
-	lab = [self newConfigLabel:@"draw graph:" frame:frame ];
-	[self.wDict setObject:lab forKey:@"ggLab"];
-	[self.view addSubview:lab];
+	frame.origin.y += labframe.size.height + MARGIN;
 	
-	frame = (CGRect) {lab.frame.size.width+MARGIN+SPACE, frame.origin.y,lab.frame.size.height,lab.frame.size.height};
-	[lab release];
+	labframe = [self configLabel:@"draw graph:" frame:frame key:@"ggLab" addsv:YES];
 	
-	UIButton *btn = [self newConfigButton:frame];
-	[btn addTarget:self action:@selector(graphButtonAction:) forControlEvents:UIControlEventTouchDown];
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	[self.wDict setObject:btn forKey:@"asBtn"];
+	//-- draw graphs button
+	
+	UIButton *btn = [self newConfigButton:frame key:@"ggBtn" action:@selector(graphButtonAction:) ];
+
+	
 	if ([[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
 		[self updateGraphBtn:btn state:NO];
 	} else {
@@ -685,11 +628,29 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	//[self.scrollView addSubview:btn];
 	[self.view addSubview:btn];
 	
-	self.lasty = btn.frame.origin.y + btn.frame.size.height;
-	
 	[btn release];
 	
+	//-- privacy level label
 	
+	frame.origin.x += frame.size.width + MARGIN + SPACE;
+	//frame.origin.y += MARGIN + frame.size.height;
+	labframe = [self configLabel:@" privacy level:" frame:frame key:@"gpLab" addsv:YES];
+	
+	//-- privacy level textfield
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	CGFloat tfWidth = [[NSString stringWithString:@"9999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+
+	[self configTextField:frame 
+					  key:@"gpTF" 
+				   action:@selector(ptfDone:) 
+					  num:YES 
+					place:@"0" 
+					 text:[self.vo.optDict objectForKey:@"privacy"]
+					addsv:YES ];
+
 }
 
 #pragma mark main scrollView methods
