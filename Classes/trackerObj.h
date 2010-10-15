@@ -35,17 +35,12 @@
 @property (nonatomic,retain) NSArray *colorSet;
 @property (nonatomic,retain) NSArray *votArray;
 
-//+ (NSString *) makeSafeStr : (NSString *) inStr;
-
-//- (id)init;
 - (id) init:(int) tid;
-//- (void) dealloc;
 
-//- (bool) updateValObj:(valueObj *) valObj;
-- (void) addValObj:(valueObj *) valObj;
+- (void) addValObj:(valueObj*)valObj;
 - (void) saveConfig;
 - (void) loadConfig;
-- (BOOL) loadData: (NSInteger) iDate;
+- (BOOL) loadData:(NSInteger)iDate;
 - (void) saveData;
 - (void) resetData;
 - (void) deleteAllData;
@@ -53,12 +48,19 @@
 
 - (NSInteger) prevDate;
 - (NSInteger) postDate;
+- (NSInteger) lastDate;
 
-- (valueObj *) voConfigCopy: (valueObj *) srcVO;
-- (valueObj *) getValObj: (NSInteger) vid;
+- (valueObj *) voConfigCopy:(valueObj*)srcVO;
+- (valueObj *) getValObj:(NSInteger)vid;
 - (void) describe;
 
-- (BOOL) voHasData:(NSInteger) vid;
+- (BOOL) voHasData:(NSInteger)vid;
+- (BOOL) checkData;
+- (BOOL) hasData;
+
+- (int) noCollideDate:(int)testDate;
+- (void) changeDate:(NSDate*)newdate;
+
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

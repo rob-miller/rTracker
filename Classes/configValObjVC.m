@@ -16,18 +16,15 @@
 
 @synthesize to, vo, wDict;
 @synthesize toolBar, navBar;
-@synthesize lasty;
+@synthesize lasty, saveFrame;
 
 BOOL keyboardIsShown;
-
-#define kAnimationDuration 0.3
 
 #define MARGIN 10.0f
 #define SPACE 3.0f
 #define TFXTRA 2.0f;
 
 CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
-CGRect saveFrame;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -83,10 +80,10 @@ CGRect saveFrame;
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"configure %@",name]];
 	name = nil;
 	 
-	LFHeight = 31.0f; //((addValObjController *) [self parentViewController]).labelField.frame.size.height;
-
-	//self.scrollView.contentSize = self.scrollView.frame.size;
-	self.lasty = self.navBar.frame.size.height;
+	LFHeight = 31.0f; 
+	//LFHeight = ((addValObjController *) [self parentViewController]).labelField.frame.size.height;
+	
+	self.lasty = self.navBar.frame.size.height + MARGIN;
 	[self addSVFields:self.vo.vtype];
 
 	
@@ -97,15 +94,12 @@ CGRect saveFrame;
 	self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
 	[doneBtn release];
 	
-	//[(UIControl *)self.view addTarget:self action:@selector(backgroundTap) forControlEvents:UIControlEventTouchDown];
-
+	// register for keyboard notifications
 	keyboardIsShown = NO;
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(keyboardWillShow:) 
 												 name:UIKeyboardWillShowNotification 
 											   object:self.view.window];
-	// register for keyboard notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(keyboardWillHide:) 
 												 name:UIKeyboardWillHideNotification 
@@ -185,12 +179,12 @@ CGRect saveFrame;
 
 - (void)keyboardWillShow:(NSNotification *)n
 {
-    if (keyboardIsShown) { // need bit more logic to handle additional scrolling
+    if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }
 	
 	//NSLog(@"handling keyboard will show");
-	saveFrame = self.view.frame;
+	self.saveFrame = self.view.frame;
 	
     NSDictionary* userInfo = [n userInfo];
 	
@@ -198,27 +192,25 @@ CGRect saveFrame;
     NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
-	if (activeField.tag == SCROLLTAG) {
-		CGRect viewFrame = self.view.frame;
-		//NSLog(@"k will show, y= %f",viewFrame.origin.y);
-		CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
-		CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
-		if (boty <= topk) {
-			//NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
-		} else {
-			//NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
-
-			viewFrame.origin.y -= (boty - topk);
-			viewFrame.size.height -= self.toolBar.frame.size.height;
-			
-			[UIView beginAnimations:nil context:NULL];
-			[UIView setAnimationBeginsFromCurrentState:YES];
-			[UIView setAnimationDuration:kAnimationDuration];
+	CGRect viewFrame = self.view.frame;
+	//NSLog(@"k will show, y= %f",viewFrame.origin.y);
+	CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
+	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+	if (boty <= topk) {
+		//NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+	} else {
+		//NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
 		
-			[self.view setFrame:viewFrame];
+		viewFrame.origin.y -= (boty - topk);
+		viewFrame.size.height -= self.toolBar.frame.size.height;
 		
-			[UIView commitAnimations];
-		}
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		[UIView setAnimationDuration:kAnimationDuration];
+		
+		[self.view setFrame:viewFrame];
+		
+		[UIView commitAnimations];
 	}
 	
     keyboardIsShown = YES;
@@ -226,17 +218,15 @@ CGRect saveFrame;
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
-	NSLog(@"handling keyboard will hide");
+	//NSLog(@"handling keyboard will hide");
 	
-	if (activeField.tag == SCROLLTAG) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationBeginsFromCurrentState:YES];
-		[UIView setAnimationDuration:kAnimationDuration];
-		
-		[self.view setFrame:saveFrame];
-
-		[UIView commitAnimations];
-	}
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:kAnimationDuration];
+	
+	[self.view setFrame:self.saveFrame];
+	
+	[UIView commitAnimations];
 	
     keyboardIsShown = NO;	
 }
@@ -255,7 +245,6 @@ CGRect saveFrame;
 	UILabel *rlab = [[UILabel alloc] initWithFrame:frame];
 	rlab.text = text;
 	rlab.backgroundColor = [UIColor clearColor];
-	rlab.tag = SCROLLTAG;
 
 	[self.wDict setObject:rlab forKey:key];
 	if (addsv)
@@ -267,20 +256,100 @@ CGRect saveFrame;
 	return retFrame;
 }
 
-- (UIButton *) newConfigButton:(CGRect)frame key:(NSString*)key action:(SEL)action
+- (void) checkBtnAction:(UIButton*)btn
+{
+	NSString *okey, *dflt, *ndflt, *img;
+	BOOL dfltState;
+	
+	if ( btn == [self.wDict objectForKey:@"nasBtn"] ) {
+		okey = @"autoscale"; dfltState=AUTOSCALEDFLT;
+		if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:@"0"]) { // will switch on
+			[self removeGraphMinMax];
+		} else {
+			[self addGraphMinMax];
+		}
+	} else if ( btn == [self.wDict objectForKey:@"csBtn"] ) {
+		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
+		okey = @"tbnl"; dfltState=TBNLDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbabBtn"] ) {
+		okey = @"tbab"; dfltState=TBABDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
+		okey = @"graph"; dfltState=GRAPHDFLT;
+	}else {
+		NSAssert(0,@"ckButtonAction cannot identify btn");
+	}
+	
+	if (dfltState == YES) {
+		dflt=@"1"; ndflt = @"0";
+	} else {
+		dflt=@"0"; ndflt = @"1";
+	}
+	
+	if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:ndflt]) {
+		[self.vo.optDict setObject:dflt forKey:okey]; 
+		img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
+	} else {
+		[self.vo.optDict setObject:ndflt forKey:okey];
+		img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
+	}
+	
+	[btn setImage:[UIImage imageNamed:img] forState: UIControlStateNormal];
+	
+}
+
+- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state
 {
 	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 	imageButton.frame = frame;
 	imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
-	imageButton.tag = SCROLLTAG;
-	//[imageButton addTarget:self action:@selector(configCheckButtonAction:) forControlEvents:UIControlEventTouchDown];
 
 	[self.wDict setObject:imageButton forKey:key];
-	[imageButton addTarget:self action:action forControlEvents:UIControlEventTouchDown];
+	[imageButton addTarget:self action:@selector(checkBtnAction:) forControlEvents:UIControlEventTouchUpInside];
 	
-	return imageButton;
+	[imageButton setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")] 
+				 forState: UIControlStateNormal];
+	
+	[self.view addSubview:imageButton];
+	[imageButton release];
 }
+
+- (void) tfDone:(UITextField *)tf
+{
+	NSString *okey, *nkey;
+	if ( tf == [self.wDict objectForKey:@"nminTF"] ) {
+		okey = @"ngmin";
+		nkey = @"nmaxTF";
+	} else if ( tf == [self.wDict objectForKey:@"nmaxTF"] ) {
+		okey = @"ngmax";
+		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"sminTF"] ) {
+		okey = @"smin";
+		nkey = @"smaxTF";
+	} else if ( tf == [self.wDict objectForKey:@"smaxTF"] ) {
+		okey = @"smax";
+		nkey = @"sdfltTF";
+	} else if ( tf == [self.wDict objectForKey:@"sdfltTF"] ) {
+		okey = @"sdflt";
+		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"gpTF"] ) {
+		okey = @"privacy";
+		nkey = nil;
+	} else {
+		NSAssert(0,@"mtfDone cannot identify tf");
+	}
+
+	NSLog(@"set %@: %@", okey, tf.text);
+	
+	[self.vo.optDict setObject:tf.text forKey:okey];
+	if (nkey) {
+		[[self.wDict objectForKey:nkey] becomeFirstResponder];
+	} else {
+		[tf resignFirstResponder];
+	}
+}
+
 
 - (void) configTextField:(CGRect)frame key:(NSString*)key action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
 {
@@ -289,11 +358,14 @@ CGRect saveFrame;
 	rtf.clearsOnBeginEditing = NO;
 	[rtf setDelegate:self];
 	rtf.returnKeyType = UIReturnKeyDone;
-	//[rtf addTarget:self action:@selector(configTextFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
 	rtf.borderStyle = UITextBorderStyleRoundedRect;
-	rtf.tag = SCROLLTAG;
 	[self.wDict setObject:rtf forKey:key];
-	[rtf addTarget:self action:action forControlEvents:UIControlEventEditingDidEndOnExit];
+
+	if (action != nil) 
+		[rtf addTarget:self action:action forControlEvents:UIControlEventEditingDidEndOnExit];
+	else
+		[rtf addTarget:self action:@selector(tfDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
+	
 	if (num) {
 		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
 		rtf.textAlignment = UITextAlignmentRight;
@@ -318,10 +390,10 @@ CGRect saveFrame;
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
 	
-	[[self.wDict objectForKey:@"minLab"] removeFromSuperview];
-	[[self.wDict objectForKey:@"minTF"] removeFromSuperview];
-	[[self.wDict objectForKey:@"maxLab"] removeFromSuperview];
-	[[self.wDict objectForKey:@"maxTF"] removeFromSuperview];
+	[[self.wDict objectForKey:@"nminLab"] removeFromSuperview];
+	[[self.wDict objectForKey:@"nminTF"] removeFromSuperview];
+	[[self.wDict objectForKey:@"nmaxLab"] removeFromSuperview];
+	[[self.wDict objectForKey:@"nmaxTF"] removeFromSuperview];
 	
 	[UIView commitAnimations];
 }
@@ -332,85 +404,35 @@ CGRect saveFrame;
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
 	
-	[self.view addSubview:[self.wDict objectForKey:@"minLab"]];
-	[self.view addSubview:[self.wDict objectForKey:@"minTF"]];
-	[self.view addSubview:[self.wDict objectForKey:@"maxLab"]];
-	[self.view addSubview:[self.wDict objectForKey:@"maxTF"]];
+	[self.view addSubview:[self.wDict objectForKey:@"nminLab"]];
+	[self.view addSubview:[self.wDict objectForKey:@"nminTF"]];
+	[self.view addSubview:[self.wDict objectForKey:@"nmaxLab"]];
+	[self.view addSubview:[self.wDict objectForKey:@"nmaxTF"]];
 	
 	[UIView commitAnimations];
 }
 
-- (void) updateAutoscaleBtn:(UIButton*)btn state:(BOOL)state
+- (void) drawNumOpts 
 {
-	if (state) {
-		[btn setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
-	} else {
-		[btn setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
-	}
-}
-
-- (void)autoscaleButtonAction:(UIButton *)btn
-{
-	if ([(NSString*) [self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
-		[self.vo.optDict setObject:@"1" forKey:@"autoscale"];  //default is 1 if not set
-		[self updateAutoscaleBtn:btn state:YES];
-		[self removeGraphMinMax];
-	} else {
-		[self.vo.optDict setObject:@"0" forKey:@"autoscale"];
-		[self updateAutoscaleBtn:btn state:NO];
-		[self addGraphMinMax];
-	}
-}
-
-
-- (void) mtfDone:(UITextField *)tf
-{
-	if ( tf == [self.wDict objectForKey:@"minTF"] ) {
-		NSLog(@"set gmin: %@", tf.text);
-		[self.vo.optDict setObject:tf.text forKey:@"gmin"];
-		[[self.wDict objectForKey:@"maxTF"] becomeFirstResponder];
-	} else if ( tf == [self.wDict objectForKey:@"maxTF"] ) {
-		NSLog(@"set gmax: %@", tf.text);
-		[self.vo.optDict setObject:tf.text forKey:@"gmax"];
-		[tf resignFirstResponder];
-	} else {
-		NSAssert(0,@"mtfDone cannot identify tf");
-	}
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
 	
-}
-
-- (void) drawSVGraphMinMax 
-{
-	BOOL autoscale;
-	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
+	CGRect labframe = [self configLabel:@"Graph Y axis:" frame:frame key:@"ngLab" addsv:YES];
 	
-	CGRect labframe = [self configLabel:@"Graphing:" frame:frame key:@"gLab" addsv:YES];
-	
-	//frame = (CGRect) {MARGIN,frame.origin.y + lab.frame.size.height+(2*MARGIN),0.0,0.0};
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-	labframe = [self configLabel:@"  Auto Scale:" frame:frame key:@"asLab" addsv:YES];
+	labframe = [self configLabel:@"Auto Scale:" frame:frame key:@"nasLab" addsv:YES];
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	UIButton *btn = [self newConfigButton:frame key:@"asBtn" action:@selector(autoscaleButtonAction:)];
+	[self configCheckButton:frame 
+				   key:@"nasBtn" 
+				 state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) ]; // default:1
 	
-	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
-		autoscale=NO;
-		[self updateAutoscaleBtn:btn state:NO];
-	} else {
-		autoscale=YES;
-		[self.vo.optDict setObject:@"1" forKey:@"autoscale"];  // confirm default setting
-		[self updateAutoscaleBtn:btn state:YES];
-	}
-	[self.view addSubview:btn];
-	[btn release];
-
 	//if (! autoscale) {  still need to calc lasty, make room before general options
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
-	labframe = [self configLabel:@"min:" frame:frame key:@"minLab" addsv:NO];
+	labframe = [self configLabel:@"min:" frame:frame key:@"nminLab" addsv:NO];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
 	CGFloat tfWidth = [[NSString stringWithString:@"9999999999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
@@ -418,31 +440,40 @@ CGRect saveFrame;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
 	[self configTextField:frame 
-					  key:@"minTF" 
-				   action:@selector(mtfDone:) 
-					  num:YES place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"gmin"] 
+					  key:@"nminTF" 
+				   action:nil
+					  num:YES 
+					place:@"<number>" 
+					 text:[self.vo.optDict objectForKey:@"ngmin"] 
 					addsv:NO ];
 
 	frame.origin.x += tfWidth + MARGIN;
-	labframe = [self configLabel:@" max:" frame:frame key:@"maxLab" addsv:NO];
+	labframe = [self configLabel:@" max:" frame:frame key:@"nmaxLab" addsv:NO];
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	frame.size.width = tfWidth;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 
 	[self configTextField:frame 
-					  key:@"maxTF" 
-				   action:@selector(mtfDone:) 
-					  num:YES place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"gmax"]
+					  key:@"nmaxTF" 
+	 				   action:nil
+					  num:YES 
+					place:@"<number>" 
+					 text:[self.vo.optDict objectForKey:@"ngmax"]
 					addsv:NO ];
 
-	if (! autoscale) {
+	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) 
 		[self addGraphMinMax];
-	}
 	
-	self.lasty = frame.origin.y + frame.size.height;
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	frame.origin.x = MARGIN;
+	
+	//-- title label
+	
+	labframe = [self configLabel:@"Other options:" frame:frame key:@"noLab" addsv:YES];
+	
+	self.lasty = frame.origin.y + labframe.size.height + MARGIN;
 	
 }
 
@@ -510,10 +541,10 @@ CGRect saveFrame;
 	
 }
 
-- (void) drawSVChoiceOpts 
+- (void) drawChoiceOpts 
 {
 	
-	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
 	
 	CGRect labframe = [self configLabel:@"Choices:" frame:frame key:@"coLab" addsv:YES ];
 	
@@ -529,7 +560,8 @@ CGRect saveFrame;
 		
 		[self configTextField:frame 
 							 key:[NSString stringWithFormat:@"%dtf",i] 
-						  action:@selector(ctfDone:) num:NO 
+						  action:@selector(ctfDone:) 
+						  num:NO 
 						   place:[NSString stringWithFormat:@"choice %d",i+1]
 							text:[self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]]
 						   addsv:YES ];
@@ -561,74 +593,186 @@ CGRect saveFrame;
 		//frame.size.height = self.labelField.frame.size.height; // lab.frame.size.height;
 	}
 
-	self.lasty = frame.origin.y - (2*MARGIN);  // allready added  + frame.size.height; in loop
+	//frame.origin.y -= MARGIN; // remove extra from end of loop, add one back for next line
+	frame.origin.x = MARGIN;
+	
+	//-- general options label
+	
+	labframe = [self configLabel:@"Other options:" frame:frame key:@"goLab" addsv:YES];
+	
+	frame.origin.y += labframe.size.height + MARGIN;
+
+	labframe = [self configLabel:@"Shrink buttons:" frame:frame key:@"csbLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[self configCheckButton:frame 
+				   key:@"csbBtn" 
+				 state:[[self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"] ]; // default:0
+	
+	self.lasty = frame.origin.y + frame.size.height + MARGIN;
 	
 }	
+
+#pragma mark slider options
+
+- (void) drawSliderOpts 
+{
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	
+	CGRect labframe = [self configLabel:@"Slider range:" frame:frame key:@"srLab" addsv:YES];
+	
+	frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
+
+	labframe = [self configLabel:@"min:" frame:frame key:@"sminLab" addsv:YES];
+	
+	frame.origin.x = labframe.size.width + MARGIN + SPACE;
+	CGFloat tfWidth = [[NSString stringWithString:@"9999999999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; 
+	
+	[self configTextField:frame 
+					  key:@"sminTF" 
+				   action:nil
+					  num:YES 
+					place:[NSString stringWithFormat:@"%3.1f",SLIDRMINDFLT] 
+					 text:[self.vo.optDict objectForKey:@"smin"] 
+					addsv:YES ];
+	
+	frame.origin.x += tfWidth + MARGIN;
+	labframe = [self configLabel:@" max:" frame:frame key:@"smaxLab" addsv:YES];
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; 
+	
+	[self configTextField:frame 
+					  key:@"smaxTF" 
+				   action:nil
+					  num:YES 
+					place:[NSString stringWithFormat:@"%3.1f",SLIDRMAXDFLT] 
+					 text:[self.vo.optDict objectForKey:@"smax"]
+					addsv:YES ];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	frame.origin.x = 8*MARGIN;
+	
+	labframe = [self configLabel:@"default:" frame:frame key:@"sdfltLab" addsv:YES];
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; 
+	
+	[self configTextField:frame 
+					  key:@"sdfltTF" 
+				   action:nil
+					  num:YES 
+					place:[NSString stringWithFormat:@"%3.1f",SLIDRDFLTDFLT]
+					 text:[self.vo.optDict objectForKey:@"sdflt"]
+					addsv:YES ];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	frame.origin.x = MARGIN;
+	//-- title label
+	
+	labframe = [self configLabel:@"Other options:" frame:frame key:@"soLab" addsv:YES];
+	
+	self.lasty = frame.origin.y + labframe.size.height + MARGIN;
+	
+	
+}
+
+#pragma mark textbox options
+
+- (void) drawTextbOpts
+{
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	
+	CGRect labframe = [self configLabel:@"Text box options:" frame:frame key:@"tboLab" addsv:YES];
+	
+	frame.origin.y += labframe.size.height + MARGIN;
+	
+	labframe = [self configLabel:@"Use number of lines for graph:" frame:frame key:@"tbnlLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[self configCheckButton:frame 
+						key:@"tbnlBtn" 
+					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
+	
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + frame.size.height;
+
+	labframe = [self configLabel:@"Pick names from addressbook:" frame:frame key:@"tbabLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[self configCheckButton:frame 
+						key:@"tbabBtn" 
+					  state:[[self.vo.optDict objectForKey:@"tbab"] isEqualToString:@"1"] ]; // default:0
+	
+//	frame.origin.x = MARGIN;
+//	frame.origin.y += MARGIN + frame.size.height;
+//
+//	labframe = [self configLabel:@"Other options:" frame:frame key:@"soLab" addsv:YES];
+	
+	self.lasty = frame.origin.y + labframe.size.height + MARGIN;
+	
+}
+
+#pragma mark image options
+
+- (void) drawImageOpts
+{
+	CGRect labframe = [self configLabel:@"need Image Location -- Options:" 
+								  frame:(CGRect) {MARGIN,self.lasty,0.0,0.0}
+									key:@"ioLab" 
+								  addsv:YES ];
+	
+	self.lasty += labframe.size.height + MARGIN;
+}
+
+#pragma mark function options
+
+- (void) drawFuncOpts
+{
+	CGRect labframe = [self configLabel:@"need function defn -- Options:" 
+								  frame:(CGRect) {MARGIN,self.lasty,0.0,0.0}
+									key:@"foLab" 
+								  addsv:YES ];
+	
+	self.lasty += labframe.size.height + MARGIN;
+}
+
+#pragma mark general options only label
+
+- (void) drawGenOptsOnly 
+{
+	CGRect labframe = [self configLabel:@"Options:" 
+								  frame:(CGRect) {MARGIN,self.lasty,0.0,0.0}
+									key:@"gooLab" 
+								  addsv:YES ];
+	
+	self.lasty += labframe.size.height + MARGIN;
+}
 
 #pragma mark -
 #pragma mark general opts for all 
 
-- (void) updateGraphBtn:(UIButton*)btn state:(BOOL)state
-{
-	if (state) {
-		[btn setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
-	} else {
-		[btn setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
-	}
-}
-
-- (void) graphButtonAction:(UIButton*)btn 
-{
-	if ([(NSString*) [self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
-		[self.vo.optDict setObject:@"1" forKey:@"graph"];  //default is 1 if not set
-		[self updateGraphBtn:btn state:YES];
-	} else {
-		[self.vo.optDict setObject:@"0" forKey:@"graph"];
-		[self updateGraphBtn:btn state:NO];
-	}
-}
-
-
-- (void) ptfDone:(UITextField *)tf
-{
-	CGFloat in_val = [tf.text floatValue];
-	CGFloat curr_val = [[self.vo.optDict objectForKey:@"privacy"] floatValue];
-
-	if (in_val != curr_val) {
-		NSLog(@"vo %@ old priv= %f new priv= %f", vo.valueName, curr_val, in_val);
-		[self.vo.optDict setObject:tf.text forKey:@"privacy"];
-	}
-}
-
 - (void) drawGeneralOpts 
 {
-	CGRect frame = {MARGIN,self.lasty + MARGIN,0.0,0.0};
-	
-	//-- title label
-	
-	CGRect labframe = [self configLabel:@"Options:" frame:frame key:@"goLab" addsv:YES];
-	
-	frame.origin.y += labframe.size.height + MARGIN;
-	
-	labframe = [self configLabel:@"draw graph:" frame:frame key:@"ggLab" addsv:YES];
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+		
+	CGRect labframe = [self configLabel:@"draw graph:" frame:frame key:@"ggLab" addsv:YES];
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	//-- draw graphs button
 	
-	UIButton *btn = [self newConfigButton:frame key:@"ggBtn" action:@selector(graphButtonAction:) ];
-
-	
-	if ([[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
-		[self updateGraphBtn:btn state:NO];
-	} else {
-		[self.vo.optDict setObject:@"1" forKey:@"graph"];  // confirm default setting
-		[self updateGraphBtn:btn state:YES];
-	}
-	//[self.scrollView addSubview:btn];
-	[self.view addSubview:btn];
-	
-	[btn release];
+	[self configCheckButton:frame 
+						key:@"ggBtn" 
+					  state:(![[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) ]; // default = @"1"
 	
 	//-- privacy level label
 	
@@ -645,15 +789,15 @@ CGRect saveFrame;
 
 	[self configTextField:frame 
 					  key:@"gpTF" 
-				   action:@selector(ptfDone:) 
+				   action:nil
 					  num:YES 
-					place:@"0" 
+					place:[NSString stringWithFormat:@"%d",PRIVDFLT] 
 					 text:[self.vo.optDict objectForKey:@"privacy"]
 					addsv:YES ];
 
 }
 
-#pragma mark main scrollView methods
+#pragma mark main config region methods
 
 - (NSMutableDictionary *) wDict 
 {
@@ -671,7 +815,6 @@ CGRect saveFrame;
 		[(UIView *) [self.wDict valueForKey:key] removeFromSuperview];
 	}
 	[self.wDict removeAllObjects];
-	//self.scrollView.contentSize = self.scrollView.frame.size;
 }
 
 
@@ -682,26 +825,32 @@ CGRect saveFrame;
 		case VOT_NUMBER: 
 			// uilabel 'autoscale graph'   uibutton checkbutton
 			// uilabel 'graph min' uitextfield uilabel 'max' ; enabled/disabled by checkbutton
-			[self drawSVGraphMinMax];
+			[self drawNumOpts];
 			break;
 		case VOT_TEXT:
+			[self drawGenOptsOnly];
 			break;
 		case VOT_TEXTB:
+			[self drawTextbOpts];
 			break;
 		case VOT_SLIDER:
 			// uilabel 'min' uitextfield uilabel 'max' uitextfield uilabel 'default' uitextfield
+			[self drawSliderOpts];
 			break;
 		case VOT_CHOICE:
 			// 6 rows uitextfield + button with color ; button cycles color on press ; button blank/off if no text in textfield
 			// uilabel 'dynamic width' uibutton checkbutton
-			[self drawSVChoiceOpts];
+			[self drawChoiceOpts];
 			break;
 		case VOT_BOOLEAN:
+			[self drawGenOptsOnly];
 			break;
 		case VOT_IMAGE:
+			[self drawImageOpts];
 			break;
 		case VOT_FUNC:
 			// uitextfield for function, picker or buttons for available valObjs and functions?
+			[self drawFuncOpts];
 			break;
 		default:
 			break;

@@ -10,13 +10,17 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
+#import "datePickerVC.h"
+
 
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 //UITableViewController 
 {
 	trackerObj *tracker;
-	//UITableView *table;
 
+	UITableView *table;
+	datePickerVC *dpvc;
+	
 	//UIBarButtonItem *prevDateBtn;
 	//UIBarButtonItem *postDateBtn;
 	//UIBarButtonItem *currDateBtn;
@@ -24,7 +28,7 @@
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
-//@property (nonatomic, retain) IBOutlet UITableView *table;
+@property (nonatomic, retain) IBOutlet UITableView *table;
 
 @property (nonatomic, retain) UIBarButtonItem *prevDateBtn;
 @property (nonatomic, retain) UIBarButtonItem *postDateBtn;
@@ -33,5 +37,9 @@
 @property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
 @property (nonatomic, retain) UIBarButtonItem *fixed1SpaceButtonItem;
 
+@property (nonatomic, retain) datePickerVC *dpvc;
+
+- (void) updateToolBar;
+- (void) setTrackerDate:(int) targD;
 
 @end

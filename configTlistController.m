@@ -133,17 +133,23 @@ UITableView *deleteTableView;
 #pragma mark -
 #pragma mark UIActionSheet methods
 
+- (void) delTracker
+{
+	NSUInteger row = [deleteIndexPath row];
+	NSLog(@"checkTrackerDelete: will delete row %d ",row);
+	[self.tlist deleteTrackerAllRow:row];
+	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
+						   withRowAnimation:UITableViewRowAnimationFade];		
+	[self.tlist reloadFromTLT];	
+}
+
+
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
 	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
-		NSUInteger row = [deleteIndexPath row];
-		NSLog(@"checkTrackerDelete: will delete row %d ",row);
-		[self.tlist deleteTrackerAllRow:row];
-		[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
-						 withRowAnimation:UITableViewRowAnimationFade];		
-		[self.tlist reloadFromTLT];
+		[self delTracker];
 	} else {
 		NSLog(@"cancelled");
 	}
@@ -210,18 +216,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	deleteIndexPath = indexPath;
 	deleteTableView = tableView;
 	
-
-	UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
-										 initWithTitle:[NSString stringWithFormat:
-														@"Really delete all data for %@?",
-														[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]]
-							delegate:self 
-							cancelButtonTitle:@"Cancel"
-							destructiveButtonTitle:@"Yes, delete"
-							otherButtonTitles:nil];
-	//[checkTrackerDelete showInView:self.view];
-	[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
-	[checkTrackerDelete release];
+	int toid = [self.tlist getTIDfromIndex:[indexPath row]];
+	trackerObj *to = [[trackerObj alloc] init:toid];
+	BOOL haveData = [to checkData];
+	[to release];
+	
+	if (haveData) {
+		UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
+											 initWithTitle:[NSString stringWithFormat:
+															@"Really delete all data for %@?",
+															[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]]
+											 delegate:self 
+											 cancelButtonTitle:@"Cancel"
+											 destructiveButtonTitle:@"Yes, delete"
+											 otherButtonTitles:nil];
+		//[checkTrackerDelete showInView:self.view];
+		[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
+		[checkTrackerDelete release];
+	} else {
+		[self delTracker];
+	}
 }
 
 // Override to support row selection in the table view.

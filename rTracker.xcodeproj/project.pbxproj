@@ -29,6 +29,8 @@
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
 		D4A317B41192B7C800F062AC /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
 		D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A317B31192B7C800F062AC /* configTlistController.xib */; };
+		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
+		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4C5210E123F9E1400554627 /* whiteButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C5210D123F9E1400554627 /* whiteButton.png */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
@@ -78,6 +80,9 @@
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = configTlistController.h; path = ../configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = configTlistController.m; path = ../configTlistController.m; sourceTree = "<group>"; };
 		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = configTlistController.xib; sourceTree = "<group>"; };
+		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
+		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
+		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Classes/datePickerVC.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = ../UICatalog/images/blueButton.png; sourceTree = SOURCE_ROOT; };
 		D4C5210D123F9E1400554627 /* whiteButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteButton.png; path = ../UICatalog/images/whiteButton.png; sourceTree = SOURCE_ROOT; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = ../TouchCells/images/checked.png; sourceTree = SOURCE_ROOT; };
@@ -124,6 +129,8 @@
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
 				D49854AD12312A400009E458 /* useTrackerController.h */,
 				D49854AE12312A400009E458 /* useTrackerController.m */,
+				D4BBB57D12672C94000F8467 /* datePickerVC.h */,
+				D4BBB57E12672C94000F8467 /* datePickerVC.m */,
 				D4E5FE4412529300004BB4EC /* graphTrackerV.h */,
 				D4E5FE4512529300004BB4EC /* graphTrackerV.m */,
 				D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */,
@@ -172,6 +179,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
 				D4EE9D63125E6897001BDD06 /* down.png */,
 				D4EE9D61125E6886001BDD06 /* up.png */,
 				D4E5FDD7125283B1004BB4EC /* graphTracker.xib */,
@@ -269,6 +277,7 @@
 				D4EE9D62125E6886001BDD06 /* up.png in Resources */,
 				D4EE9D64125E6897001BDD06 /* down.png in Resources */,
 				D487D7751260A77800298C1D /* configValObjVC.xib in Resources */,
+				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +302,7 @@
 				D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */,
 				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
 				D487D7741260A77800298C1D /* configValObjVC.m in Sources */,
+				D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,7 +344,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator4.1;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Debug;
 		};

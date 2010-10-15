@@ -51,6 +51,24 @@
 
 #define VOC_MAX			0
 
+// vo config checkbutton default states
+#define AUTOSCALEDFLT   YES
+#define SHRINKBDFLT     NO 
+#define TBNLDFLT        NO
+#define TBABDFLT        NO
+#define GRAPHDFLT	    YES
+
+// vo config textfield default values
+#define SLIDRMINDFLT	0.0
+#define SLIDRMAXDFLT	100.0
+#define SLIDRDFLTDFLT	50.0
+#define PRIVDFLT		0
+
+
+#define kViewTag		((NSInteger) 1)
+#define kViewTag2		((NSInteger) 2)
+
+#define kAnimationDuration 0.3
 
 
 @interface valueObj : NSObject <UITextFieldDelegate> {
@@ -95,6 +113,7 @@
 - (void)checkAction:(id)sender;
 
 + (NSArray *) graphsForVOTCopy:(NSInteger)vot;
+- (NSArray *) graphsForVOTCopy:(NSInteger)vot;
 + (NSInteger) mapGraphType:(NSString *)gts;
 
 //- (void) txtDTF:(BOOL)num;

@@ -11,8 +11,6 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
-#define SCROLLTAG 1
-
 @interface configValObjVC : UIViewController <UIScrollViewDelegate, UITextFieldDelegate> {
 
 	trackerObj *to;
@@ -23,7 +21,9 @@
 	
 	UINavigationBar *navBar;
 	UIToolbar *toolBar;
+
 	CGFloat lasty;
+	CGRect saveFrame;
 }
 
 @property (nonatomic,retain) trackerObj *to;
@@ -34,7 +34,11 @@
 @property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
 
 @property (nonatomic) CGFloat lasty;
+@property (nonatomic) CGRect saveFrame;
 
 - (void) addSVFields:(NSInteger) vot;
+- (void) removeGraphMinMax;
+- (void) addGraphMinMax;
+
 
 @end

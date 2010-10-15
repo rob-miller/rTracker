@@ -109,11 +109,10 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self updateForPickerRowSelect:self.tempValObj.vtype inComponent:0];
 		[self.votPicker selectRow:self.tempValObj.vGraphType inComponent:2 animated:NO];
 		[self updateForPickerRowSelect:self.tempValObj.vGraphType inComponent:2];
-		//[self updateScrollView:self.tempValObj.vtype];
 		 
 		NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
 		self.graphTypes = nil;
-		graphTypes = [valueObj graphsForVOTCopy:tempValObj.vtype];
+		graphTypes = [self.tempValObj graphsForVOTCopy:tempValObj.vtype];
 
 		NSInteger row=0;
 		//while ( s = (NSString *) [e nextObject]) {
@@ -176,6 +175,19 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[super viewDidUnload];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+	
+	NSLog(@"avoc: viewWillAppear");
+	
+	if (self.tempValObj) {
+		self.graphTypes = nil;
+		graphTypes = [self.tempValObj graphsForVOTCopy:self.tempValObj.vtype];
+		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
+	}
+	
+    [super viewWillAppear:animated];
+}
+
 
 #pragma mark -
 #pragma mark button press action methods
@@ -233,21 +245,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	cvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:cvovc animated:YES];
 	//[cvovc release];
-	
-	/*
-	CGRect frame = {25.0, 125.0, 50.0, 50.0 };
-	UIView *myView = [[UIView alloc] initWithFrame:frame];
-
-	UIButton *myButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-	myButton.frame = CGRectZero;
-	myButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-	myButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-	[myButton addTarget:self action:@selector(myButtonAction:) forControlEvents:UIControlEventTouchDown];
-	[myButton setTitle:@"button" forState:UIControlStateNormal];
-	//[myView addSubview:myButton];
-	
-	//[self.scrollView addSubview:myButton];
-	*/
 }
 
 
@@ -424,8 +421,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 {
 	if (component == 0) {
 		self.graphTypes = nil;
-		graphTypes = [valueObj graphsForVOTCopy:row];
-		
+		if (self.tempValObj) 
+			graphTypes = [self.tempValObj graphsForVOTCopy:row];
+		else
+			graphTypes = [valueObj graphsForVOTCopy:row];
+
 		[self.votPicker reloadComponent:2];
 		[self updateColorCount];
 		//[self updateScrollView:row];

@@ -13,7 +13,7 @@
 
 @synthesize vid, vtype, valueName, value, vcolor, vGraphType, display, useVO, optDict, checkButtonUseVO;
 
-extern const NSInteger kViewTag;
+//extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 #pragma mark -
@@ -238,11 +238,19 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	// in case the parent view draws with a custom color or gradient, use a transparent color
 	sliderCtl.backgroundColor = [UIColor clearColor];
 	
-	sliderCtl.minimumValue = 0.0;
-	sliderCtl.maximumValue = 100.0;
+	NSNumber *nsmin = [self.optDict objectForKey:@"smin"];
+	NSNumber *nsmax = [self.optDict objectForKey:@"smax"];
+	NSNumber *nsdflt = [self.optDict objectForKey:@"sdflt"];
+	
+	CGFloat smin = (nsmin ? [nsmin floatValue] : SLIDRMINDFLT);
+	CGFloat smax = (nsmax ? [nsmax floatValue] : SLIDRMAXDFLT);
+	CGFloat sdflt = (nsdflt ? [nsdflt floatValue] : SLIDRDFLTDFLT);
+	
+	sliderCtl.minimumValue = smin;
+	sliderCtl.maximumValue = smax;
 	sliderCtl.continuous = YES;
 	if ([self.value isEqualToString:@""]) {
-		sliderCtl.value = 50.0;  // TODO: default value here
+		sliderCtl.value = sdflt;  
 	} else {
 		sliderCtl.value = [self.value floatValue];
 	}
@@ -264,16 +272,20 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		[self disableVO];
 		[self.value setString:@""];
 	} else {
+		int i;
 		[self enableVO];
-		[self.value setString:[NSString stringWithFormat:@"%d",[sender selectedSegmentIndex]]];
+		// user may leave an intermediate choice title blank, must get their choice number not just seg ndx
+		NSString *ch = [(UISegmentedControl*) display titleForSegmentAtIndex:[sender selectedSegmentIndex]];
+		for (i=0; i<CHOICES;i++) {
+			NSString *key = [NSString stringWithFormat:@"c%d",i];
+			NSString *val = [self.optDict objectForKey:key];
+			if ([val isEqualToString:ch]) {
+				[self.value setString:[NSString stringWithFormat:@"%d",i]];
+				break;
+			}
+		}
+		NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");
 	}
-	
-//	if (!self.useVO && ((UISegmentedControl *) self.display).selectedSegmentIndex != UISegmentedControlNoSegment)
-//		[self enableVO]; // note setting 'NoSegment' triggers this method
-//	} else {
-//	}
-	
-		
 }
 
 - (void) displaySegment:(CGRect) bounds
@@ -292,6 +304,15 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 	CGRect frame = bounds;
 	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+	
+	if ([self.optDict objectForKey:@"shrinkb"]) {  // default is NO, so a defined result means yes
+		int j=0;
+		for (NSString *s in segmentTextContent) {
+			CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+			[segmentedControl setWidth:siz.width forSegmentAtIndex:j];
+			j++;
+		}
+	}
 	[segmentTextContent release];
 	
 	segmentedControl.frame = frame;
@@ -330,6 +351,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 				break;
 			case VOT_TEXTB:
 				NSLog(@"text box not implemented");
+				// don't forget addressbook names picker
 				break;
 			case VOT_SLIDER: 
 				//NSLog(@"slider not implemented");
@@ -390,12 +412,17 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 	if (self.useVO = !self.useVO) {
 		checkImage = [UIImage imageNamed:@"checked.png"];
+		if (self.vtype == VOT_SLIDER)
+			[self.value setString:[NSString stringWithFormat:@"%f",((UISlider*)self.display).value]];
 	} else {
 		checkImage = [UIImage imageNamed:@"unchecked.png"];
 		if (self.vtype == VOT_CHOICE)
 			((UISegmentedControl *) self.display).selectedSegmentIndex =  UISegmentedControlNoSegment;
-		else if (self.vtype == VOT_SLIDER)
-			[((UISlider *) self.display) setValue:50.0f animated:YES];
+		else if (self.vtype == VOT_SLIDER) {
+			NSNumber *nsdflt = [self.optDict objectForKey:@"sdflt"];
+			CGFloat sdflt =  nsdflt ? [nsdflt floatValue] : SLIDRDFLTDFLT;
+			[((UISlider *) self.display) setValue:sdflt animated:YES];
+		}
 	}
 
 	[checkButtonUseVO setImage:checkImage forState:UIControlStateNormal];
@@ -462,6 +489,17 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	return ret;
 }
 
+// object version so can change components dynamically
+- (const NSArray *) graphsForVOTCopy:(NSInteger)vot 
+{
+	if (vot == VOT_TEXTB) {
+		if ([self.optDict objectForKey:@"tbnl"]) // default is no and thus nil, so any defined val means linecount is a num for graph
+			return [[NSArray alloc] initWithObjects:@"dots",@"bar",@"line", @"line+dots", /*@"no graph",*/ nil];
+	}
+	return [valueObj graphsForVOTCopy:vot];
+	
+		
+}
 + (NSInteger) mapGraphType:(NSString *)gts {
 	if ([gts isEqual:@"dots"])
 		return VOG_DOTS;

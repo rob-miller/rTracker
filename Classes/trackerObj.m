@@ -20,6 +20,8 @@
 @synthesize nextColor, colorSet, votArray;
 @synthesize maxLabel;
 
+#define f(x) ((CGFloat) (x))
+
 
 /******************************
  *
@@ -33,6 +35,21 @@
  *         type: rt-types.plist and defs in valueObj.h
  *        color: defs in valueObj.h ; colorSet in trackerObj.m
  *    graphtype: defs in valueObj.h ; graphsForVOTCopy and mapGraphType in valueObj.m
+ *
+ *  voInfo: id(int) ; field(text) ; val(text)  : unique(id,field)
+ *    field='autoscale' : bool - calc number min and max Y-axis val from data
+ *    field='ngmin'     :  user specified Y-axis min for number graph
+ *    field='ngmax'     :  user specified Y-axis max for number graph
+ *    field='shrinkb'   : bool - adjust width of choice buttons to match text in each
+ *    field='tbnl'      : bool - use number of lines in textbox as number when graphing; add graph opts back to picker if set
+ *    field='tbab'      : bool - show name-from-addressbook picker for textbox display
+ *    field='graph'     : bool - do graph vo 
+ *    field='smin'		: user specified slider minimum
+ *    field='smax'		: user specified slider maximum
+ *    field='sdflt'		: user specified slider default
+ *    field='privacy'	: user specified privacy value
+ *    field='c%d'		: text string for choice %d
+ *    field='cc%d'		: graph color for for choice %d
  *
  *  trkrData: date(int,unique)
  *		entry indicates there will be corresponding voData items
@@ -207,14 +224,36 @@
 	[self toQry2AryS:s1];
 	NSEnumerator *e1 = [s1 objectEnumerator];  // TODO: use fast enumeration
 	
-	NSString *key;
+	NSString *key, *val;
+
 	while ( key = (NSString *) [e1 nextObject] ) {
-		if ([vo.optDict objectForKey:key] == nil) {
-			self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
+		val = [vo.optDict objectForKey:key];
+		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
+		
+		if (val == nil) {
 			[self toExecSql];
+		} else if (([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"tbab"] && [val isEqualToString:(TBABDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"smin"] && ([val floatValue] == f(SLIDRMINDFLT)))
+				   ||
+				   ([key isEqualToString:@"smax"] && ([val floatValue] == f(SLIDRMAXDFLT)))
+				   ||
+				   ([key isEqualToString:@"sdflt"] && ([val floatValue] == f(SLIDRDFLTDFLT)))
+				   ||
+				   ([key isEqualToString:@"privacy"] && ([val floatValue] == f(PRIVDFLT)))) {
+			[self toExecSql];
+			[vo.optDict removeObjectForKey:key];
 		}
 	}
-
+	
 	[s1 release];
 	self.sql=nil;
 }
@@ -354,14 +393,9 @@
 - (void) resetData {
 	self.trackerDate = nil;
 	trackerDate = [[NSDate alloc] init];
-	//self.trackerDate = [[NSDate alloc] init];
-	//[trackerDate release];
 	
-	//NSEnumerator *e = [self.valObjTable objectEnumerator];
-	//valueObj *vo;
-	//while (vo = (valueObj *) [e nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
-		[vo.value setString:@""];  // TODO: default values go here
+		[vo.value setString:@""];  
 	}
 }
 
@@ -449,6 +483,13 @@
 	return rslt;
 }
 
+- (int) lastDate {
+	self.sql = @"select date from trkrData order by date desc limit 1;";
+	int rslt= (NSInteger) [self toQry2Int];
+	self.sql = nil;
+	return rslt;
+}
+
 - (BOOL) voHasData:(NSInteger) vid
 {
 	self.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d;", (int) vid];
@@ -459,6 +500,48 @@
 		return NO;
 	return YES;
 }
+
+- (BOOL) checkData {  // does a contained valObj have stored data?
+	for (valueObj *vo in self.valObjTable) {
+		if ([self voHasData:vo.vid])
+			return YES;
+	}
+	return NO;
+}
+
+- (BOOL) hasData {  // is there a date entry in trkrData?
+	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",(int) [self.trackerDate timeIntervalSince1970]];
+	int r = [self toQry2Int];
+	self.sql = nil;
+	return (r!=0);
+}
+
+- (int) noCollideDate:(int)testDate {
+	BOOL going=YES;
+	
+	while (going) {
+		self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",testDate];
+		if ([self toQry2Int] == 0)
+			going=NO;
+		else 
+			testDate++;
+	}
+	self.sql = nil;
+	return testDate;
+}
+	
+- (void) changeDate:(NSDate*)newDate {
+	int ndi = (int) [self noCollideDate:[newDate timeIntervalSince1970]];
+	int odi = (int) [self.trackerDate timeIntervalSince1970];
+	
+	self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,odi];
+	[self toExecSql];
+	self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,odi];
+	[self toExecSql];
+	self.sql=nil;
+	self.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)ndi]; // might have changed to avoid collision
+}
+
 #pragma mark -
 #pragma mark manipulate tracker's valObjs
 

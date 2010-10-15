@@ -14,8 +14,9 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
+@synthesize table, dpvc;
 
-const NSInteger kViewTag = 1;
+//const NSInteger kViewTag = 1;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -35,6 +36,12 @@ const NSInteger kViewTag = 1;
 	self.flexibleSpaceButtonItem = nil;
 	[flexibleSpaceButtonItem release];
 	
+	self.dpvc = nil;
+	[dpvc release];
+	
+	self.table = nil;
+	[table release];
+	
 	self.tracker = nil;
 	[tracker release];
 	[super dealloc];
@@ -46,27 +53,14 @@ const NSInteger kViewTag = 1;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+	
+	NSLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
+	
 	self.title = tracker.trackerName;
 	
-	//NSEnumerator *enumer = [tracker.valObjTable objectEnumerator];
-	//valueObj *vo;
-	//while ( vo = (valueObj *) [enumer nextObject]) {
-	
 	for (valueObj *vo in self.tracker.valObjTable) {
-	
-	
 		[vo display];
 	}
-	
-	// cancel / save buttons on top nav bar
-	/*
-	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
-								  initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-								  target:self
-								  action:@selector(btnCancel)];
-	self.navigationItem.leftBarButtonItem = cancelBtn;
-	[cancelBtn release];
-	*/
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
@@ -80,19 +74,18 @@ const NSInteger kViewTag = 1;
 	int pDate = [tracker prevDate];
 	if (pDate == 0) {
 		[self setToolbarItems:[NSArray arrayWithObjects: 
-							   //self.flexibleSpaceButtonItem,
 							   self.fixed1SpaceButtonItem, self.currDateBtn, 
-							   //self.flexibleSpaceButtonItem, 
 							   nil] 
 					 animated:NO];
 	} else { 
 		[self setToolbarItems:[NSArray arrayWithObjects: 
-							   //self.flexibleSpaceButtonItem,
 							   self.prevDateBtn, self.currDateBtn, 
-							   //self.flexibleSpaceButtonItem, 
 							   nil] 
 					 animated:NO];
 	} 
+	
+	//self.dpvc = nil;
+	
     [super viewDidLoad];
 }
 
@@ -107,6 +100,12 @@ const NSInteger kViewTag = 1;
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	UIView *haveView = [self.view viewWithTag:kViewTag2];
+	if (haveView) 
+		[haveView removeFromSuperview];
+	self.dpvc = nil;
+	self.table = nil;
+	
 	self.title = nil;
 	self.prevDateBtn = nil;
 	self.currDateBtn = nil;
@@ -120,9 +119,51 @@ const NSInteger kViewTag = 1;
 	self.navigationItem.rightBarButtonItem = nil;	
 	self.navigationItem.leftBarButtonItem = nil;
 	
+	self.dpvc.action = DPA_CANCEL;
+	
 	[super viewDidLoad];
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+	if (dpvc) {
+		switch (self.dpvc.action) {
+			case DPA_NEW:
+				[self.tracker resetData];
+				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpvc.date timeIntervalSince1970]]];
+				//break;
+			case DPA_SET:
+			{
+				if ([self.tracker hasData]) {
+					[self.tracker changeDate:self.dpvc.date];
+				}  
+				self.tracker.trackerDate = self.dpvc.date;
+				[self updateToolBar];
+				break;
+			}
+			case DPA_GOTO:
+			{
+				int targD = (int) [self.dpvc.date timeIntervalSince1970];
+				if (! [self.tracker loadData:targD]) {
+					self.tracker.trackerDate = self.dpvc.date;
+					targD = [self.tracker prevDate];
+					if (!targD) 
+						targD = [self.tracker postDate];
+				}
+				[self setTrackerDate:targD];
+				break;
+			}
+			case DPA_CANCEL:
+				break;
+			default:
+				NSAssert(0,@"failed to determine dpvc action");
+				break;
+		}
+		self.dpvc.date = nil;
+		self.dpvc = nil;
+		[dpvc release];
+	}
+}
 # pragma mark view rotation methods
 
 // Override to allow orientations other than the default portrait orientation.
@@ -148,9 +189,7 @@ const NSInteger kViewTag = 1;
 	
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation 
-{
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			NSLog(@"utc did rotate from interface orientation portrait");
@@ -169,9 +208,7 @@ const NSInteger kViewTag = 1;
 			break;			
 	}
 }
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			NSLog(@"utc will rotate to interface orientation portrait duration: %f sec",duration);
@@ -190,10 +227,8 @@ const NSInteger kViewTag = 1;
 			break;			
 	}
 }
-
 #if (1) 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 	graphTrackerVC *gt;
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -222,24 +257,110 @@ const NSInteger kViewTag = 1;
 			
 			break;
 		default:
-			NSLog(@"utc will animate rotation but can't tell to where duration: %f sec", duration);
+			NSLog(@"utc will animate rotation but can't tell to where. duration: %f sec", duration);
 			break;			
 	}
 }
-
 #else 
-
-- (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	NSLog(@"utc will animate first half rotation to interface orientation duration: %@",duration);
 }
-
-- (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration {
 	NSLog(@"utc will animate second half rotation to interface orientation duration: %@",duration);
 }
 #endif
 
+#pragma mark -
+#pragma mark datepicker support
+
+- (void) updateTrackerTableView {
+	NSLog(@"utc: updateTrackerTableView");
+	
+	for (valueObj *vo in self.tracker.valObjTable) {
+		vo.display = nil;
+	}
+	
+		[self.table reloadData];
+	//[(UITableView *) self.view reloadData];
+	//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
+}
+
+- (void) updateToolBar {
+	NSMutableArray *tbi=[[NSMutableArray alloc] init];
+	
+	int prevD = [self.tracker prevDate];
+	int postD = [self.tracker postDate];
+	int lastD = [self.tracker lastDate];
+	int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
+
+	NSLog(@"prevD = %d",prevD);
+	NSLog(@"currD = %d",currD);
+	NSLog(@"postD = %d",postD);
+	NSLog(@"lastD = %d",lastD);
+	
+	self.currDateBtn = nil;
+	if (prevD ==0) 
+		[tbi addObject:self.fixed1SpaceButtonItem];
+	else
+		[tbi addObject:self.prevDateBtn];
+	
+	[tbi addObject:self.currDateBtn];
+	
+	if (postD != 0 || (lastD == currD)) {
+		[tbi addObject:self.postDateBtn];
+		[tbi addObject:self.flexibleSpaceButtonItem];
+		[tbi addObject:self.delBtn];
+	}
+
+	/*
+	if ((prevD==0) && (postD==0) && (lastD==0)) {  // no stored entries
+		self.postDateBtn = nil;
+		self.prevDateBtn = nil;
+		tbi = [NSArray arrayWithObjects: 
+				   self.fixed1SpaceButtonItem, 
+				   self.currDateBtn,
+				   nil];
+	} else if ((prevD != 0) && (postD==0)) {
+		self.postDateBtn = nil;
+		tbi = [NSArray arrayWithObjects: 
+			   self.prevDateBtn, self.currDateBtn,
+			   nil];
+	} else if ((prevD==0) && (postD != 0)) {
+		self.prevDateBtn = nil;
+		tbi = [NSArray arrayWithObjects: 
+			   self.fixed1SpaceButtonItem, 
+			   self.currDateBtn, self.postDateBtn, 
+			   self.flexibleSpaceButtonItem, 
+			   self.delBtn, 
+			   nil];
+	} else {
+		tbi = [NSArray arrayWithObjects: 
+			   self.fixed1SpaceButtonItem, 
+			   self.currDateBtn, self.postDateBtn, 
+			   self.flexibleSpaceButtonItem, 
+			   self.delBtn, 
+			   nil];
+	}
+*/
+	
+	[self setToolbarItems:tbi animated:YES];
+}
+
+- (void) setTrackerDate:(int) targD {
+	
+	if (targD == 0) {
+		NSLog(@" setTrackerDate: %d = reset to now",targD);
+		[self.tracker resetData];
+	} else if (targD < 0) {
+		NSLog(@"setTrackerDate: %d = no earlier date", targD);
+	} else {
+		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)targD]);
+		[self.tracker loadData:targD];
+	}
+	
+	[self updateToolBar];
+	[self updateTrackerTableView];
+}
 
 #pragma mark -
 #pragma mark button press action methods
@@ -255,97 +376,85 @@ const NSInteger kViewTag = 1;
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void) updateTrackerTableView {
-	NSLog(@"utc: updateTrackerTableView");
-	//NSEnumerator *enumer = [self.tracker.valObjTable objectEnumerator];
-	//valueObj *vo;
-	//while ( vo = (valueObj *) [enumer nextObject]) {
-	for (valueObj *vo in self.tracker.valObjTable) {
-		//[vo.display release];
-		vo.display = nil;
-		//[vo display]; // happens with table reloadData
-	}
-	
-//	[self.table reloadData];
-	[(UITableView *) self.view reloadData];
-//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
-}
-
-- (void) setTrackerDate:(int) targD {
-	NSArray *tbi=nil;
-	self.currDateBtn = nil;
-	
-	if (targD == 0) {
-		NSLog(@" setTrackerDate: %d = reset to today",targD);
-		[self.tracker resetData];
-		int pDate = [self.tracker prevDate];
-		[self updateTrackerTableView];
-		if (pDate != 0) {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem, 
-				   self.prevDateBtn, self.currDateBtn,
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		} else {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem, 
-				   self.fixed1SpaceButtonItem, 
-				   self.currDateBtn,
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		}
-	} else if (targD < 0) {
-		NSLog(@"setTrackerDate: %d = no earlier date", targD);
-		tbi = [NSArray arrayWithObjects: 
-			   //self.flexibleSpaceButtonItem,
-			   self.fixed1SpaceButtonItem, 
-			   self.currDateBtn, self.postDateBtn, 
-			   self.flexibleSpaceButtonItem, 
-			   self.delBtn, 
-			   //self.flexibleSpaceButtonItem, 
-			   nil];
-	} else {
-		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:targD]);
-		[self.tracker loadData:targD];
-		int pDate = [self.tracker prevDate];
-		[self updateTrackerTableView];
-		if (pDate != 0) {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem,
-				   self.prevDateBtn, self.currDateBtn, self.postDateBtn, 
-				   self.flexibleSpaceButtonItem, 
-				   self.delBtn, 
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		} else {
-			tbi = [NSArray arrayWithObjects: 
-				   //self.flexibleSpaceButtonItem,
-				   self.fixed1SpaceButtonItem, 
-				   self.currDateBtn, self.postDateBtn, 
-				   self.flexibleSpaceButtonItem, 
-				   self.delBtn, 
-				   //self.flexibleSpaceButtonItem, 
-				   nil];
-		}
-	}
-	
-	[self setToolbarItems:tbi animated:YES];
-}
-
 - (void) btnPrevDate {
-	int targD = [tracker prevDate];
+	int targD = [self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
 	} 
-	[self setTrackerDate: targD];
+	[self setTrackerDate:targD];
 }
 
 - (void) btnPostDate {
 	[self setTrackerDate:[self.tracker postDate]];
 }
 
+- (datePickerVC*) dpvc
+{ 
+	if (dpvc == nil) {
+		dpvc = [[datePickerVC alloc] init];;
+	}
+	return dpvc;
+}
+
 - (void) btnCurrDate {
 	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
+	
+	
+	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
+	self.dpvc.date = self.tracker.trackerDate;
+	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+	[self presentModalViewController:self.dpvc animated:YES];
+
+	/*
+	
+	
+	CGRect viewFrame = self.view.frame;
+	
+	UIView *haveView = [self.view viewWithTag:kViewTag2];
+
+	if (haveView) {
+		if (haveView.frame.origin.y == self.view.frame.size.height) {// is hidden
+			viewFrame.origin.y = self.view.frame.origin.y + 100;
+			self.table.userInteractionEnabled = NO;
+		} else {  // is up
+			viewFrame.origin.y = self.view.frame.size.height;
+			self.table.userInteractionEnabled = YES;
+		}
+		
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		[UIView setAnimationDuration:kAnimationDuration];
+		
+		[haveView setFrame:viewFrame];		
+		[UIView commitAnimations];
+		
+		//[viewToRemove removeFromSuperview];
+	} else {
+		viewFrame.origin.y = viewFrame.size.height;
+		
+		UIView *myView = [[UIView alloc] initWithFrame:viewFrame];
+		myView.backgroundColor = [UIColor whiteColor];
+		myView.tag = kViewTag2;
+		
+		[self buildDatePickerView:myView];
+		
+
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		[UIView setAnimationDuration:kAnimationDuration];
+		
+		self.table.userInteractionEnabled = NO;
+
+		[self.view addSubview:myView];
+		//viewFrame.size.height -=100;
+		viewFrame.origin.y = self.view.frame.origin.y + 100;
+		[myView setFrame:viewFrame];
+		
+		[UIView commitAnimations];
+	}
+	 
+	 */
+	
 }
 
 
@@ -365,7 +474,7 @@ const NSInteger kViewTag = 1;
 
 
 #pragma mark -
-#pragma mark button accessor getters
+#pragma mark UIBar button getters
 
 - (UIBarButtonItem *) prevDateBtn {
 	if (prevDateBtn == nil) {
@@ -505,8 +614,7 @@ const NSInteger kViewTag = 1;
     } else {
 		// the cell is being recycled, remove old embedded controls
 		UIView *viewToRemove = nil;
-		viewToRemove = [cell.contentView viewWithTag:kViewTag];
-		if (viewToRemove)
+		while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
 			[viewToRemove removeFromSuperview];
 	}
 	
@@ -530,11 +638,13 @@ const NSInteger kViewTag = 1;
 		vo.checkButtonUseVO.frame = bounds;
 		vo.checkButtonUseVO.tag = kViewTag;
 		vo.checkButtonUseVO.backgroundColor = cell.backgroundColor;
-		[cell.contentView addSubview:vo.checkButtonUseVO];
+		if (!postDateBtn) {
+			[cell.contentView addSubview:vo.checkButtonUseVO];
 		
-		UIImage *image = (vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
-		UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
-		[vo.checkButtonUseVO setBackgroundImage:newImage forState:UIControlStateNormal];
+			UIImage *image = (vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
+			UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
+			[vo.checkButtonUseVO setBackgroundImage:newImage forState:UIControlStateNormal];
+		}
 		
 		// cell label top row right 
 		

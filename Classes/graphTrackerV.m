@@ -128,7 +128,7 @@
 		y += 1.0f;
 		int date = self.firstDate + (int) ((f(i) * dateStep) +0.5f);
 
-		NSDate *sd = [NSDate dateWithTimeIntervalSince1970:date];
+		NSDate *sd = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) date];
 		NSString *datestr = [NSDateFormatter localizedStringFromDate:sd 
 														   dateStyle:(NSDateFormatterStyle)NSDateFormatterShortStyle 
 														   timeStyle:(NSDateFormatterStyle)NSDateFormatterShortStyle];
@@ -176,7 +176,7 @@
 	tsize = [ts sizeWithFont:myFont];
 	[ts drawAtPoint:tpos2 withFont:myFont];
 	
-	sd = [NSDate dateWithTimeIntervalSince1970:self.lastDate];
+	sd = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.lastDate];
 	datestr = [NSDateFormatter localizedStringFromDate:sd dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
 	dta = [datestr componentsSeparatedByString:@" "];
 	/*
@@ -218,15 +218,26 @@
 
 }
 
-- (void) transformVO_num:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
+- (void) transformVO_num:(valueObj *)vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
 {
 	double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
+	double minVal,maxVal;
 
-	tracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
-	double minVal = [tracker toQry2Double];
-		
-	tracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
-	double maxVal = [tracker toQry2Double];
+	if (vo.vtype == VOT_NUMBER && [vo.optDict objectForKey:@"autoscale"]) { // default is autoscale, so any stored val means 'no'
+		minVal = [[vo.optDict objectForKey:@"ngmin"] doubleValue];
+		maxVal = [[vo.optDict objectForKey:@"ngmax"] doubleValue];
+	} else if (vo.vtype == VOT_SLIDER) {
+		NSNumber *nmin = [vo.optDict objectForKey:@"smin"];
+		NSNumber *nmax = [vo.optDict objectForKey:@"smax"];
+		minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
+		maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
+	} else {
+		tracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
+		minVal = [tracker toQry2Double];
+		tracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
+		maxVal = [tracker toQry2Double];
+	}
+	
 	if (minVal == maxVal) {
 		minVal = 0.0f;
 	}
