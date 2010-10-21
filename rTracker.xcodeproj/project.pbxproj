@@ -17,8 +17,8 @@
 		D482D1FF114F7E8900CE6BC8 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */; };
 		D482D272114FEB5E00CE6BC8 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
 		D482D276114FEB7500CE6BC8 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
-		D487D7741260A77800298C1D /* configValObjVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D487D7721260A77800298C1D /* configValObjVC.m */; };
-		D487D7751260A77800298C1D /* configValObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D487D7731260A77800298C1D /* configValObjVC.xib */; };
+		D487D7741260A77800298C1D /* configTVObjVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D487D7721260A77800298C1D /* configTVObjVC.m */; };
+		D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D487D7731260A77800298C1D /* configTVObjVC.xib */; };
 		D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
 		D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
@@ -55,6 +55,7 @@
 		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* rTracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "rTracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -62,9 +63,9 @@
 		D482D271114FEB5E00CE6BC8 /* trackerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerList.m; sourceTree = "<group>"; };
 		D482D274114FEB7500CE6BC8 /* trackerObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerObj.h; sourceTree = "<group>"; };
 		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerObj.m; sourceTree = "<group>"; };
-		D487D7711260A77800298C1D /* configValObjVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configValObjVC.h; sourceTree = "<group>"; };
-		D487D7721260A77800298C1D /* configValObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configValObjVC.m; sourceTree = "<group>"; };
-		D487D7731260A77800298C1D /* configValObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configValObjVC.xib; path = Classes/configValObjVC.xib; sourceTree = "<group>"; };
+		D487D7711260A77800298C1D /* configTVObjVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTVObjVC.h; sourceTree = "<group>"; };
+		D487D7721260A77800298C1D /* configTVObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTVObjVC.m; sourceTree = "<group>"; };
+		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = Classes/configTVObjVC.xib; sourceTree = "<group>"; };
 		D48F9E7D119AA02A00B37C93 /* valueObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = valueObj.h; sourceTree = "<group>"; };
 		D48F9E7E119AA02A00B37C93 /* valueObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = valueObj.m; sourceTree = "<group>"; };
 		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
@@ -121,8 +122,8 @@
 				D4588ADB1177497200AD2106 /* addTrackerController.m */,
 				D48F9FAF119B4CA600B37C93 /* addValObjController.h */,
 				D48F9FB0119B4CA600B37C93 /* addValObjController.m */,
-				D487D7711260A77800298C1D /* configValObjVC.h */,
-				D487D7721260A77800298C1D /* configValObjVC.m */,
+				D487D7711260A77800298C1D /* configTVObjVC.h */,
+				D487D7721260A77800298C1D /* configTVObjVC.m */,
 				D4A317B11192B7C800F062AC /* configTlistController.h */,
 				D4A317B21192B7C800F062AC /* configTlistController.m */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
@@ -143,6 +144,7 @@
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
 				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
 				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
+				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -190,7 +192,7 @@
 				D4A3150C11903F5E00F062AC /* addTrackerController.xib */,
 				D4A316C01191987E00F062AC /* MainWindow.xib */,
 				D4A317B31192B7C800F062AC /* configTlistController.xib */,
-				D487D7731260A77800298C1D /* configValObjVC.xib */,
+				D487D7731260A77800298C1D /* configTVObjVC.xib */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
 				D4C5210D123F9E1400554627 /* whiteButton.png */,
@@ -276,7 +278,7 @@
 				D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */,
 				D4EE9D62125E6886001BDD06 /* up.png in Resources */,
 				D4EE9D64125E6897001BDD06 /* down.png in Resources */,
-				D487D7751260A77800298C1D /* configValObjVC.xib in Resources */,
+				D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */,
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,7 +303,7 @@
 				D49854B012312A400009E458 /* useTrackerController.m in Sources */,
 				D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */,
 				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
-				D487D7741260A77800298C1D /* configValObjVC.m in Sources */,
+				D487D7741260A77800298C1D /* configTVObjVC.m in Sources */,
 				D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -86,7 +86,6 @@
 
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
-			//[self.navigationItem.leftBarButtonItem release];  // why is this not needed?
 			self.navigationItem.leftBarButtonItem = nil;
 		}
 	} else {

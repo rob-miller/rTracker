@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+//#import "trackerObj.h"
 
 // supported valueObj types ; note these defns tied to Resource: rt-types.plist
 #define VOT_NUMBER	0
@@ -57,6 +58,7 @@
 #define TBNLDFLT        NO
 #define TBABDFLT        NO
 #define GRAPHDFLT	    YES
+#define NSWLDFLT        NO
 
 // vo config textfield default values
 #define SLIDRMINDFLT	0.0
@@ -81,6 +83,7 @@
 	UIView *display;
 	BOOL useVO;
 	NSMutableDictionary *optDict;
+	id *parentTracker;
 	
 	UIButton *checkButtonUseVO;
 }
@@ -94,19 +97,20 @@
 @property (nonatomic) NSInteger vcolor;
 @property (nonatomic) NSInteger vGraphType;
 @property (nonatomic, retain) UIView *display;
-
 @property (nonatomic) BOOL useVO;
 @property (nonatomic,retain) NSMutableDictionary *optDict;
+@property (nonatomic,assign) id *parentTracker;
+
 
 @property (nonatomic,retain) UIButton *checkButtonUseVO;
 
 - (id) init;
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
-- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname in_vcolor:(NSInteger) in_vcolor in_vgraphtype:(NSInteger) in_vgraphtype;
+- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
 
 - (void) describe;
-- (UIView *) display:(CGRect)bounds;
+- (UIView *) display:(CGRect)bounds af:(UITextField**)af;
 
 - (void) enableVO;
 - (void) disableVO;

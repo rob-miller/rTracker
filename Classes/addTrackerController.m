@@ -9,13 +9,14 @@
 #import "addTrackerController.h"
 #import "valueObj.h"
 #import "addValObjController.h"
+#import "configTVObjVC.h"
 
 @implementation addTrackerController 
 
 @synthesize tlist;
 @synthesize tempTrackerObj;
 @synthesize table;
-@synthesize nameField, privField;
+@synthesize nameField;
 
 NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 UITableView *deleteTableView;
@@ -28,8 +29,6 @@ NSMutableArray *deleteVOs=nil;
 	NSLog(@"atc: dealloc");
 	self.nameField = nil;
 	[nameField release];
-	self.privField = nil;
-	[privField release];
 	self.tempTrackerObj = nil;
 	[tempTrackerObj release];
 	self.tlist = nil;
@@ -147,6 +146,17 @@ NSMutableArray *deleteVOs=nil;
 # pragma mark -
 # pragma mark toolbar support
 
+- (void) btnSetup {
+	NSLog(@"addTObjC: config was pressed!");
+	
+	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
+	ctvovc.to = self.tempTrackerObj;
+	ctvovc.vo = nil;
+	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[self presentModalViewController:ctvovc animated:YES];
+	//[ctvovc release];
+}
+
 static int editMode;
 
 - (void)configureToolbarItems {
@@ -156,8 +166,8 @@ static int editMode;
 	
 	// Create and configure the segmented control
 	UISegmentedControl *editToggle = [[UISegmentedControl alloc]
-									  initWithItems:[NSArray arrayWithObjects:@"Manage Tracker",
-													 @"Configure Values", nil]];
+									  initWithItems:[NSArray arrayWithObjects:@"Tracker",
+													 @"Values", nil]];
 	editToggle.segmentedControlStyle = UISegmentedControlStyleBar;
 	editToggle.selectedSegmentIndex = 0;
 	editMode = 0;
@@ -168,13 +178,23 @@ static int editMode;
 	UIBarButtonItem *editToggleButtonItem = [[UIBarButtonItem alloc]
 											 initWithCustomView:editToggle];
 	[editToggle release];
+
+	UIBarButtonItem *setupBtnItem = [[UIBarButtonItem alloc]
+								 initWithTitle:@"Setup"
+								 style:UIBarButtonItemStyleBordered
+								 target:self
+								 action:@selector(btnSetup)];
+	
 	
 	// Set our toolbar items
 	self.toolbarItems = [NSArray arrayWithObjects:
+                         //flexibleSpaceButtonItem,
+						 setupBtnItem,
                          flexibleSpaceButtonItem,
                          editToggleButtonItem,
                          flexibleSpaceButtonItem,
                          nil];
+	[setupBtnItem release];
 	[flexibleSpaceButtonItem release];
 	[editToggleButtonItem release];
 }
@@ -259,12 +279,15 @@ NSLog(@"btnAddValue was pressed!");
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
 	self.tempTrackerObj.trackerName = nameField.text;
+	[self.tempTrackerObj.optDict setObject:nameField.text forKey:@"name"];
 }
 
+/*
 - (IBAction) privFieldDone:(id)sender {
 	[sender resignFirstResponder];
 	self.tempTrackerObj.privacy = [nameField.text integerValue];
 }
+*/
 
 #pragma mark -
 #pragma mark UIActionSheet methods
@@ -302,7 +325,7 @@ NSLog(@"btnAddValue was pressed!");
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (section == 0) {
-		return (NSInteger) 2;
+		return (NSInteger) 1;
 	} else {
 		int rval = [self.tempTrackerObj.valObjTable count];
 		if (editMode == 0) {
@@ -317,8 +340,6 @@ NSLog(@"btnAddValue was pressed!");
 - (NSInteger)numberOfSectionsInTableView: (UITableView *) tableView {
 		return (NSInteger) 2;
 }
-
-const NSInteger nViewTag = 2;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *) indexPath {
 	UITableViewCell *cell;
@@ -336,13 +357,12 @@ const NSInteger nViewTag = 2;
 		} else {
 			// the cell is being recycled, remove old embedded controls
 			UIView *viewToRemove = nil;
-			viewToRemove = [cell.contentView viewWithTag:nViewTag];
-			if (viewToRemove)
+			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
 				[viewToRemove removeFromSuperview];
 		}
 		
-		NSInteger row = [indexPath row];
-		if (row == 0) {
+		//NSInteger row = [indexPath row];
+		//if (row == 0) {
 
 			self.nameField = nil;
 			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
@@ -352,7 +372,7 @@ const NSInteger nViewTag = 2;
 			[self.nameField addTarget:self
 						  action:@selector(nameFieldDone:)
 				forControlEvents:UIControlEventEditingDidEndOnExit];
-			self.nameField.tag = nViewTag;
+			self.nameField.tag = kViewTag;
 			[cell.contentView addSubview:nameField];
 			
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -360,29 +380,29 @@ const NSInteger nViewTag = 2;
 			self.nameField.text = self.tempTrackerObj.trackerName;
 			self.nameField.placeholder = @"Tracker Name";
 
-		} else {   // row = 1
-			cell.textLabel.text = @"privacy level:";
-			self.privField = nil;
-			privField = [[UITextField alloc] initWithFrame:CGRectMake(180,10,60,25) ];
-			self.privField.borderStyle = UITextBorderStyleRoundedRect;
-			self.privField.clearsOnBeginEditing = NO;
-			[self.privField setDelegate:self];
-			self.privField.returnKeyType = UIReturnKeyDone;
-			[self.privField addTarget:self
-						  action:@selector(privFieldDone:)
-				forControlEvents:UIControlEventEditingDidEndOnExit];
-			self.privField.tag = nViewTag;
-			[cell.contentView addSubview:privField];
-			
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		
-			self.privField.text = self.tempTrackerObj.trackerName;
-
-			self.privField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-			self.privField.text = [NSString stringWithFormat:@"%d",self.tempTrackerObj.privacy];
-			self.privField.placeholder = @"num";
-			self.privField.textAlignment = UITextAlignmentRight;
-		}
+//		} else {   // row = 1
+//			cell.textLabel.text = @"privacy level:";
+//			self.privField = nil;
+//			privField = [[UITextField alloc] initWithFrame:CGRectMake(180,10,60,25) ];
+//			self.privField.borderStyle = UITextBorderStyleRoundedRect;
+//			self.privField.clearsOnBeginEditing = NO;
+//			[self.privField setDelegate:self];
+//			self.privField.returnKeyType = UIReturnKeyDone;
+//			[self.privField addTarget:self
+//						  action:@selector(privFieldDone:)
+//				forControlEvents:UIControlEventEditingDidEndOnExit];
+//			self.privField.tag = kViewTag;
+//			[cell.contentView addSubview:privField];
+//			
+//			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//		
+//			self.privField.text = self.tempTrackerObj.trackerName;
+//
+//			self.privField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+//			self.privField.text = [NSString stringWithFormat:@"%d",self.tempTrackerObj.privacy];
+//			self.privField.placeholder = @"num";
+//			self.privField.textAlignment = UITextAlignmentRight;
+//		}
 		
 	} else {
 		static NSString *valCellID = @"valCellID";
@@ -396,6 +416,7 @@ const NSInteger nViewTag = 2;
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
 			cell.detailTextLabel.text = @"add value";
+			cell.textLabel.text = @"";
 		} else {
 			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
@@ -429,6 +450,11 @@ const NSInteger nViewTag = 2;
 	NSUInteger toSection = [toIndexPath section];
 	
 	NSLog(@"atc: move row from %d:%d to %d:%d",fromSection, fromRow, toSection, toRow);
+	valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:fromRow];
+	[vo retain];
+	[self.tempTrackerObj.valObjTable removeObjectAtIndex:fromRow];
+	[self.tempTrackerObj.valObjTable insertObject:vo atIndex:toRow];
+	[vo release];
 	
 	// fail [table reloadData];
 }

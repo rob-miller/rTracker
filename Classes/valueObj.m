@@ -7,11 +7,12 @@
 //
 
 #import "valueObj.h"
-
+#import "trackerObj.h"
+#import "rTracker-constants.h"
 
 @implementation valueObj
 
-@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display, useVO, optDict, checkButtonUseVO;
+@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
 
 //extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
@@ -29,9 +30,15 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	return self;
 }
 
-- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname in_vcolor:(NSInteger) in_vcolor in_vgraphtype:(NSInteger) in_vgraphtype
+- (id) init:(id*)parentTO 
+	 in_vid:(NSInteger)in_vid 
+   in_vtype:(NSInteger)in_vtype 
+   in_vname:(NSString *)in_vname 
+  in_vcolor:(NSInteger)in_vcolor 
+in_vgraphtype:(NSInteger)in_vgraphtype
 {
 	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	self.parentTracker = parentTO;
 	self.vid = in_vid;
 	self.vtype = in_vtype;
 	switch (in_vtype) {
@@ -105,16 +112,37 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 #pragma mark textfield
 
+UITextField **activeField;
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+	NSLog(@"tf begin editing");
+    *activeField = textField;
+}
+
+- (void)tfvoFinEdit:(UITextField*)tf {
+	[self.value setString:tf.text];
+	tf.textColor = [UIColor blackColor];
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+	NSLog(@"tf end editing");
+	[self tfvoFinEdit:textField];
+    *activeField = nil;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	NSLog(@"textField done: %@", textField.text);
-	[self.value setString:textField.text];
+	//NSLog(@"textField done: %@", textField.text);
+	[self tfvoFinEdit:textField];
 	[textField resignFirstResponder];
 	return YES;
 }
 
-- (void)displayTextfield:(BOOL)num bounds:(CGRect) bounds
+- (void)displayTextfield:(BOOL)num bounds:(CGRect)bounds
 {
 	CGRect frame = bounds;
 	UITextField * dtf = [[UITextField alloc] initWithFrame:frame];
@@ -130,6 +158,21 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 		dtf.placeholder = @"<enter number>";
 		dtf.textAlignment = UITextAlignmentRight;
 		//[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
+		trackerObj *to = (trackerObj*)parentTracker;
+		if ([[self.optDict objectForKey:@"nswl"] isEqualToString:@"1"]
+			&& ![to hasData]) {  // only if new entry
+			to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d",self.vid];
+			int v = [to toQry2Int];
+			if (v>0) {
+				to.sql = [NSString stringWithFormat:@"select val from voData where id=%d order by date desc limit 1;",self.vid];
+				NSString *r = [to toQry2StrCopy];
+				dtf.textColor = [UIColor blueColor];
+				dtf.text = r;
+				[r release];
+			}
+			to.sql = nil;
+		}
+				
 	} else {
 		dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard 
 		dtf.placeholder = @"<enter text>";
@@ -140,7 +183,6 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
 	
 	dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
-	//UITextFieldDelegate
 	dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
 	
 	// Add an accessibility label that describes what the text field is for.
@@ -160,6 +202,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 - (void)switchAction:(id)sender
 {
 	// NSLog(@"switchAction: value = %d", [sender isOn]);
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
 - (void) displaySwitch 
@@ -183,19 +226,20 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 
 - (UIImage *) boolBtnImage {
-	
-	return ( [self.value isEqualToString:@"0"] ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"] );
+	// default is not checked
+	return ( [self.value isEqualToString:@"1"] ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"] );
 }
 
 - (void)boolBtnAction:(UIButton *)imageButton
-{
-	if ([self.value isEqualToString:@"0"]) {
-		[self.value setString:@"1"];
-		[imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
-	} else {  // could be more robust here
+{  // default is unchecked or nil, so only certain is if =1
+	if ([self.value isEqualToString:@"1"]) {
 		[self.value setString:@"0"];
-		[imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];		
+		[imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
+	} else {  
+		[self.value setString:@"1"];
+		[imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];		
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
 
@@ -225,7 +269,8 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 	if (!self.useVO)
 		[self enableVO];
-	
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
 - (void) displaySlider :(CGRect) bounds
@@ -285,11 +330,11 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 			}
 		}
 		NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");
+		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 	}
 }
 
-- (void) displaySegment:(CGRect) bounds
-{
+- (void) displaySegment:(CGRect)bounds {
 	//NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
 
 	int i;
@@ -334,14 +379,28 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 	display = segmentedControl;
 }
 
-//#pragma mark -
+#pragma mark displayFunction
+
+- (void) displayFunc:(CGRect)bounds {
+	
+	//trackerObj *to = (trackerObj*) parentTracker;
+	
+	UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
+	rlab.backgroundColor = [UIColor grayColor];
+	rlab.textAlignment = UITextAlignmentRight;
+	rlab.text = @"42";
+	
+	display = rlab;
+}
+
+#pragma mark -
 #pragma mark display fn dispatch
 
-- (UIView *) display :(CGRect) bounds
-{
+- (UIView *) display:(CGRect)bounds af:(UITextField**)af; {
 	NSLog(@"vo display %@",self.valueName);
 	BOOL num=NO;
-	if (self.display == nil) {
+	activeField = af;
+	if (display == nil) {
 		switch (self.vtype) {
 			case VOT_NUMBER: 
 				num=YES;
@@ -358,12 +417,9 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 				[self displaySlider:bounds];
 				break;
 			case VOT_CHOICE:
-				//NSLog(@"pick not implemented");
 				[self displaySegment:bounds];
 				break;
 			case VOT_BOOLEAN:
-				//NSLog(@"bool not implemented");
-				//[self displaySwitch];
 				[self displayBoolBtn:bounds];
 				break;
 			case VOT_IMAGE:
@@ -371,6 +427,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 				break;
 			case VOT_FUNC:
 				NSLog(@"func not implemented");
+				[self displayFunc:bounds];
 				break;
 			default:
 				NSLog(@"vtype %d not identified!", self.vtype);

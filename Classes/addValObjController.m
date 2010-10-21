@@ -7,7 +7,7 @@
 //
 
 #import "addValObjController.h"
-#import "configValObjVC.h"
+#import "configTVObjVC.h"
 
 @implementation addValObjController
 
@@ -98,6 +98,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 	if (self.tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
+		tempValObj.parentTracker = (id*) self.parentTrackerObj;
 		self.graphTypes = nil;
 		graphTypes = [valueObj graphsForVOTCopy:VOT_NUMBER];
 		//[self updateScrollView:(NSInteger)VOT_NUMBER];
@@ -237,13 +238,13 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (void) btnSetup {
 	NSLog(@"addVObjC: config was pressed!");
 	
-	configValObjVC *cvovc = [[configValObjVC alloc] init];
-	cvovc.to = self.parentTrackerObj;
+	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
+	ctvovc.to = self.parentTrackerObj;
 	//[parentTrackerObj retain];
-	cvovc.vo = self.tempValObj;
+	ctvovc.vo = self.tempValObj;
 	//[tempValObj retain];
-	cvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentModalViewController:cvovc animated:YES];
+	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[self presentModalViewController:ctvovc animated:YES];
 	//[cvovc release];
 }
 

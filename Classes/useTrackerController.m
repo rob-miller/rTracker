@@ -8,15 +8,17 @@
 
 #import "useTrackerController.h"
 #import "graphTrackerVC.h"
+#import "rTracker-constants.h"
 
 @implementation useTrackerController
 
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc;
+@synthesize table, dpvc, saveFrame;
+@synthesize testBtn;
 
-//const NSInteger kViewTag = 1;
+BOOL keyboardIsShown;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -30,6 +32,9 @@
 	[postDateBtn release];
 	self.delBtn = nil;
 	[delBtn release];
+	
+	self.testBtn = nil;
+	[testBtn release];
 	
 	self.fixed1SpaceButtonItem = nil;
 	[fixed1SpaceButtonItem release];
@@ -51,6 +56,24 @@
 # pragma mark -
 # pragma mark view support
 
+- (void) showSaveBtn:(BOOL)doit {
+	if (doit && self.navigationItem.rightBarButtonItem == nil) {
+		UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
+									initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+									target:self
+									action:@selector(btnSave)];
+		[self.navigationItem setRightBarButtonItem:saveBtn animated:YES ];
+		[saveBtn release];
+	} else if (!doit && self.navigationItem.rightBarButtonItem != nil) {
+		[self.navigationItem setRightBarButtonItem:nil animated:YES ];
+	}
+}
+
+- (void) updateUTC:(NSNotification*)n {
+	NSLog(@"utc update.");
+	[self showSaveBtn:YES];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
@@ -58,33 +81,27 @@
 	
 	self.title = tracker.trackerName;
 	
-	for (valueObj *vo in self.tracker.valObjTable) {
-		[vo display];
-	}
+	//for (valueObj *vo in self.tracker.valObjTable) {
+	//	[vo display];
+	//}
 	
-	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-								target:self
-								action:@selector(btnSave)];
-	self.navigationItem.rightBarButtonItem = saveBtn;
-	[saveBtn release];
 			
-	//self.toolbarItems = [NSArray arrayWithObjects: self.prevDateBtn, self.currDateBtn,nil];
-
-	int pDate = [tracker prevDate];
-	if (pDate == 0) {
-		[self setToolbarItems:[NSArray arrayWithObjects: 
-							   self.fixed1SpaceButtonItem, self.currDateBtn, 
-							   nil] 
-					 animated:NO];
-	} else { 
-		[self setToolbarItems:[NSArray arrayWithObjects: 
-							   self.prevDateBtn, self.currDateBtn, 
-							   nil] 
-					 animated:NO];
-	} 
+	[self updateToolBar];
 	
-	//self.dpvc = nil;
+	keyboardIsShown = NO;
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillShow:) 
+												 name:UIKeyboardWillShowNotification 
+											   object:self.view.window];
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillHide:) 
+												 name:UIKeyboardWillHideNotification 
+											   object:self.view.window];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(updateUTC:) 
+												 name:rtTrackerUpdatedNotification 
+											   object:self.tracker];
 	
     [super viewDidLoad];
 }
@@ -120,6 +137,20 @@
 	self.navigationItem.leftBarButtonItem = nil;
 	
 	self.dpvc.action = DPA_CANCEL;
+	
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillShowNotification 
+                                                  object:nil]; 
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillHideNotification 
+                                                  object:nil];  
+	
+	//unregister for tracker updated notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:rtTrackerUpdatedNotification
+                                                  object:nil];  
 	
 	[super viewDidLoad];
 }
@@ -270,6 +301,78 @@
 }
 #endif
 
+
+
+# pragma mark -
+# pragma mark keyboard notifications
+
+UITextField *activeField;
+
+- (void)keyboardWillShow:(NSNotification *)n
+{
+    if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
+        return;
+    }
+	
+	NSLog(@"handling keyboard will show");
+	self.saveFrame = self.view.frame;
+	
+    NSDictionary* userInfo = [n userInfo];
+	
+    // get the size of the keyboard
+    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];
+    CGSize keyboardSize = [boundsValue CGRectValue].size;
+	
+	CGRect viewFrame = self.view.frame;
+	CGPoint coff = self.table.contentOffset;
+	NSLog(@"coff x=%f y=%f",coff.x,coff.y);
+	//NSLog(@"k will show, y= %f",viewFrame.origin.y);
+	CGFloat boty = activeField.superview.superview.frame.origin.y - coff.y ;  //+ activeField.superview.superview.frame.size.height + MARGIN;
+	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+	if (boty <= topk) {
+		NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+	} else {
+		NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
+		
+		viewFrame.origin.y -= (boty - topk);
+		//viewFrame.size.height -= self.navigationController.toolbar.frame.size.height;
+		
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		[UIView setAnimationDuration:kAnimationDuration];
+		
+		[self.view setFrame:viewFrame];
+		
+		[UIView commitAnimations];
+	}
+	
+    keyboardIsShown = YES;
+	
+}
+- (void)keyboardWillHide:(NSNotification *)n
+{
+	//NSLog(@"handling keyboard will hide");
+	
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:kAnimationDuration];
+	
+	[self.view setFrame:self.saveFrame];
+	
+	[UIView commitAnimations];
+	
+    keyboardIsShown = NO;	
+}
+
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	UITouch *touch = [touches anyObject];
+	CGPoint touchPoint = [touch locationInView:self.view];
+	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+	
+	[activeField resignFirstResponder];
+}
+
+
 #pragma mark -
 #pragma mark datepicker support
 
@@ -283,6 +386,48 @@
 		[self.table reloadData];
 	//[(UITableView *) self.view reloadData];
 	//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
+}
+
+- (void)testAction:(id)sender {
+	NSLog(@"test button pressed");
+	/*
+	 *  fn= period[full tank]:(delta[odometer]/postSum[fuel])
+	 *
+	 *  keywords
+	 *      period(x)	x= non-null vo | time interval string : define begin,end timestamps; default if not spec'd is each pair of dates
+	 *			-> gen array T0[] and array T1[]
+	 *		delta(x)	x= non-null vo : return vo(time1) - vo(time0)
+	 *			-> ('select val where id=%id and date=%t1' | vo.value) - 'select val where id=%id and date=%t0'
+	 *		postsum(x)	x= vo : return sum of vo(>time0)...vo(=time1)
+	 *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... sum
+	 *		presum(x)	x= vo : return sum of vo(=time0)...vo(<time1)
+	 *			-> 'select val where id=%id and date >= %t0 and date < %t1' ... sum
+	 *		sum(x)		x= vo : return sum of vo(=time0)...vo(=time1)
+	 *			-> 'select val where id=%id and date >= %t0 and date <= %t1' ... sum
+	 *		avg(x)      x= vo : return avg of vo(=time0)...vo(=time1)
+	 *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... avg
+	 *		
+	 * -> vo => convert to vid
+	 * -> separately define period: none | event pair | event + (plus,minus,centered) time interval 
+	 *                            : event = vo not null or hour / week day / month day
+	 *
+	 * ... can't do plus/minus/centered, value will be plotted on T1
+	 */
+	//NSString *myfn = @"period[full tank]:(delta[odometer]/postSum[fuel])";
+	
+}
+
+- (UIBarButtonItem*)testBtn {
+	if (testBtn == nil) {
+		testBtn = [[UIBarButtonItem alloc]
+				   initWithTitle:@"test"
+				   style:UIBarButtonItemStyleBordered
+				   target:self
+				   action:@selector(testAction:)];
+	}
+	
+	return testBtn;
+	
 }
 
 - (void) updateToolBar {
@@ -312,37 +457,8 @@
 		[tbi addObject:self.delBtn];
 	}
 
-	/*
-	if ((prevD==0) && (postD==0) && (lastD==0)) {  // no stored entries
-		self.postDateBtn = nil;
-		self.prevDateBtn = nil;
-		tbi = [NSArray arrayWithObjects: 
-				   self.fixed1SpaceButtonItem, 
-				   self.currDateBtn,
-				   nil];
-	} else if ((prevD != 0) && (postD==0)) {
-		self.postDateBtn = nil;
-		tbi = [NSArray arrayWithObjects: 
-			   self.prevDateBtn, self.currDateBtn,
-			   nil];
-	} else if ((prevD==0) && (postD != 0)) {
-		self.prevDateBtn = nil;
-		tbi = [NSArray arrayWithObjects: 
-			   self.fixed1SpaceButtonItem, 
-			   self.currDateBtn, self.postDateBtn, 
-			   self.flexibleSpaceButtonItem, 
-			   self.delBtn, 
-			   nil];
-	} else {
-		tbi = [NSArray arrayWithObjects: 
-			   self.fixed1SpaceButtonItem, 
-			   self.currDateBtn, self.postDateBtn, 
-			   self.flexibleSpaceButtonItem, 
-			   self.delBtn, 
-			   nil];
-	}
-*/
-	
+	[tbi addObject:[self testBtn]];
+	 
 	[self setToolbarItems:tbi animated:YES];
 }
 
@@ -358,6 +474,7 @@
 		[self.tracker loadData:targD];
 	}
 	
+	[self showSaveBtn:NO];
 	[self updateToolBar];
 	[self updateTrackerTableView];
 }
@@ -373,7 +490,13 @@
 - (IBAction)btnSave {
 	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 	[self.tracker saveData];
-	[self.navigationController popViewControllerAnimated:YES];
+	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
+		[self.tracker resetData];
+		[self updateToolBar];
+		[self updateTrackerTableView];
+	} else {
+		[self.navigationController popViewControllerAnimated:YES];
+	}
 }
 
 - (void) btnPrevDate {
@@ -591,7 +714,7 @@
 #define RMARGIN 10.0f
 #define BMARGIN  7.0f
 
-#define MARGIN 7.0f
+//#define MARGIN 7.0f
 
 #define CELL_HEIGHT_NORMAL (self.tracker.maxLabel.height + (3.0*MARGIN))
 #define CELL_HEIGHT_TALL (2.0 * CELL_HEIGHT_NORMAL)
@@ -603,27 +726,30 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-    NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
-	
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    } else {
-		// the cell is being recycled, remove old embedded controls
-		UIView *viewToRemove = nil;
-		while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
-			[viewToRemove removeFromSuperview];
-	}
+    //NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
     
 	// Configure the cell.
 
 	CGRect bounds;
+	UITableViewCell *cell;
 	
-	if ((vo.vtype == VOT_CHOICE) || (vo.vtype == VOT_SLIDER)) {
+	if (vo.vtype == VOT_CHOICE || vo.vtype == VOT_SLIDER ) {
+
+		static NSString *CellIdentifier = @"Cell1";
+		
+		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		} else {
+			// the cell is being recycled, remove old embedded controls
+			UIView *viewToRemove = nil;
+			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
+				[viewToRemove removeFromSuperview];
+		}
+		
+		
 		//cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		
 		// checkButton top row left
@@ -669,25 +795,41 @@
 		bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
 		bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
 	} else {
+		
+		static NSString *CellIdentifier = @"Cell2";
+		
+		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+		if (cell == nil) {
+			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		} else {
+			// the cell is being recycled, remove old embedded controls
+			UIView *viewToRemove = nil;
+			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
+				[viewToRemove removeFromSuperview];
+		}
+		
+		
 		cell.textLabel.text = vo.valueName;
+		//cell.textLabel.tag = kViewTag;
 		bounds.origin.x = cell.frame.origin.x + self.tracker.maxLabel.width + LMARGIN;
-		bounds.origin.y = self.tracker.maxLabel.height - (1.5*MARGIN);
+		bounds.origin.y = self.tracker.maxLabel.height - (MARGIN);
 		bounds.size.width = cell.frame.size.width - self.tracker.maxLabel.width - LMARGIN - RMARGIN;
 		bounds.size.height = self.tracker.maxLabel.height + MARGIN;
 	}
 
-	NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
+	//NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
 	//bounds.origin.y = bounds.size.height;// - BMARGIN;
 
-	NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
-	[cell.contentView addSubview:[vo display:bounds]];
+	//NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
+	[cell.contentView addSubview:[vo display:bounds af:&activeField]];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSInteger vt = ((valueObj*) [self.tracker.valObjTable objectAtIndex:[indexPath row]]).vtype;
-	if ( (vt == VOT_CHOICE) || (vt == VOT_SLIDER) )
+	if ( vt == VOT_CHOICE || vt == VOT_SLIDER )
 		return CELL_HEIGHT_TALL;
 	return CELL_HEIGHT_NORMAL;
 }

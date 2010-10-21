@@ -11,7 +11,7 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
-@interface configValObjVC : UIViewController <UIScrollViewDelegate, UITextFieldDelegate> {
+@interface configTVObjVC : UIViewController <UITextFieldDelegate> {
 
 	trackerObj *to;
 	valueObj *vo;
@@ -36,7 +36,9 @@
 @property (nonatomic) CGFloat lasty;
 @property (nonatomic) CGRect saveFrame;
 
-- (void) addSVFields:(NSInteger) vot;
+- (void) addVOFields:(NSInteger) vot;
+- (void) addTOFields;
+
 - (void) removeGraphMinMax;
 - (void) addGraphMinMax;
 

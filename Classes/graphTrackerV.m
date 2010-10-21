@@ -346,6 +346,7 @@
 			break;
 		case VOT_BOOLEAN:
 			[self transformVO_bool:vo xdat:xdat ydat:ydat];
+			break;
 		case VOT_CHOICE:
 			NSLog(@"transform for mult choice not done yet");
 			break;
@@ -479,14 +480,17 @@
 {
 
 	for (valueObj *vo in tracker.valObjTable) {
-		NSMutableArray *xdat = [[NSMutableArray alloc] init];
-		NSMutableArray *ydat = [[NSMutableArray alloc] init];
-		
-		[self transformVO:vo xdat:xdat ydat:ydat];
-		[self plotVO:vo xdat:xdat ydat:ydat];
-		
-		[xdat release];
-		[ydat release];
+		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+			
+			NSMutableArray *xdat = [[NSMutableArray alloc] init];
+			NSMutableArray *ydat = [[NSMutableArray alloc] init];
+			
+			[self transformVO:vo xdat:xdat ydat:ydat];
+			[self plotVO:vo xdat:xdat ydat:ydat];
+			
+			[xdat release];
+			[ydat release];
+		}
 	}
 		
 }

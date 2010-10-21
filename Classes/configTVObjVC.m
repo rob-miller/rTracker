@@ -1,5 +1,5 @@
 //
-//  configValObjVC.m
+//  configTVObjVC.m
 //  rTracker
 //
 //  Created by Robert Miller on 09/10/2010.
@@ -8,21 +8,18 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "configValObjVC.h"
+#import "configTVObjVC.h"
 
 #import "addValObjController.h"
+#import "rTracker-constants.h"
 
-@implementation configValObjVC
+@implementation configTVObjVC
 
 @synthesize to, vo, wDict;
 @synthesize toolBar, navBar;
 @synthesize lasty, saveFrame;
 
 BOOL keyboardIsShown;
-
-#define MARGIN 10.0f
-#define SPACE 3.0f
-#define TFXTRA 2.0f;
 
 CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
@@ -62,7 +59,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 - (void)btnDone:(UIButton *)btn
 {
-	NSLog(@"configValObjVC: btnDone pressed.");
+	NSLog(@"configTVObjVC: btnDone pressed.");
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -73,8 +70,13 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 - (void)viewDidLoad {
 
+	NSString *name;
+	if (self.vo == nil) {
+		name = self.to.trackerName;
+	} else {
+		name = self.vo.valueName;
+	}
 	
-	NSString *name = self.vo.valueName;
 	if ((name == nil) || [name isEqualToString:@""]) 
 		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:vo.vtype]];
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"configure %@",name]];
@@ -84,7 +86,11 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	//LFHeight = ((addValObjController *) [self parentViewController]).labelField.frame.size.height;
 	
 	self.lasty = self.navBar.frame.size.height + MARGIN;
-	[self addSVFields:self.vo.vtype];
+	if (self.vo == nil) {
+		[self addTOFields];
+	} else {
+		[self addVOFields:self.vo.vtype];
+	}
 
 	
 	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]
@@ -162,11 +168,13 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+	NSLog(@"tf begin editing");
     activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+	NSLog(@"tf end editing");
     activeField = nil;
 }
 
@@ -276,6 +284,10 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		okey = @"tbab"; dfltState=TBABDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
 		okey = @"graph"; dfltState=GRAPHDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"swlBtn"] ) {
+		okey = @"nswl"; dfltState=NSWLDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"srBtn"] ) {
+		okey = @"savertn"; dfltState=SAVERTNDFLT;
 	}else {
 		NSAssert(0,@"ckButtonAction cannot identify btn");
 	}
@@ -286,14 +298,23 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		dflt=@"0"; ndflt = @"1";
 	}
 	
-	if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:ndflt]) {
-		[self.vo.optDict setObject:dflt forKey:okey]; 
-		img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
+	if (self.vo == nil) {
+		if ([(NSString*) [self.to.optDict objectForKey:okey] isEqualToString:ndflt]) {
+			[self.to.optDict setObject:dflt forKey:okey]; 
+			img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
+		} else {
+			[self.to.optDict setObject:ndflt forKey:okey];
+			img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
+		}
 	} else {
-		[self.vo.optDict setObject:ndflt forKey:okey];
-		img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
+		if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:ndflt]) {
+			[self.vo.optDict setObject:dflt forKey:okey]; 
+			img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
+		} else {
+			[self.vo.optDict setObject:ndflt forKey:okey];
+			img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
+		}
 	}
-	
 	[btn setImage:[UIImage imageNamed:img] forState: UIControlStateNormal];
 	
 }
@@ -416,12 +437,19 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 {
 	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
 	
-	CGRect labframe = [self configLabel:@"Graph Y axis:" frame:frame key:@"ngLab" addsv:YES];
+	CGRect labframe = [self configLabel:@"start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	[self configCheckButton:frame 
+				   key:@"swlBtn" 
+				 state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]) ]; // default:0
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + frame.size.height;
 	
+	
+	labframe = [self configLabel:@"Graph Y axis:" frame:frame key:@"ngLab" addsv:YES];
 	frame.origin.y += labframe.size.height + MARGIN;
 	
 	labframe = [self configLabel:@"Auto Scale:" frame:frame key:@"nasLab" addsv:YES];
-	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	[self configCheckButton:frame 
@@ -760,7 +788,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 #pragma mark -
 #pragma mark general opts for all 
 
-- (void) drawGeneralOpts 
+- (void) drawGeneralVoOpts 
 {
 	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
 		
@@ -778,7 +806,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	
 	frame.origin.x += frame.size.width + MARGIN + SPACE;
 	//frame.origin.y += MARGIN + frame.size.height;
-	labframe = [self configLabel:@" privacy level:" frame:frame key:@"gpLab" addsv:YES];
+	labframe = [self configLabel:@"privacy level:" frame:frame key:@"gpLab" addsv:YES];
 	
 	//-- privacy level textfield
 	
@@ -797,6 +825,45 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
 }
 
+- (void) drawGeneralToOpts 
+{
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	
+	CGRect labframe = [self configLabel:@"save returns to tracker list:" frame:frame key:@"srLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	//-- draw graphs button
+	
+	[self configCheckButton:frame 
+						key:@"srBtn" 
+					  state:(![[self.to.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) ]; // default = @"1"
+	
+	//-- privacy level label
+	
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+	labframe = [self configLabel:@"privacy level:" frame:frame key:@"gpLab" addsv:YES];
+	
+	//-- privacy level textfield
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	
+	CGFloat tfWidth = [[NSString stringWithString:@"9999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+	
+	[self configTextField:frame 
+					  key:@"gpTF" 
+				   action:nil
+					  num:YES 
+					place:[NSString stringWithFormat:@"%d",PRIVDFLT] 
+					 text:[self.to.optDict objectForKey:@"privacy"]
+					addsv:YES ];
+	
+}
+
 #pragma mark main config region methods
 
 - (NSMutableDictionary *) wDict 
@@ -807,7 +874,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	return wDict;
 }
 
-
+/*
 - (void) removeSVFields 
 {
 	for (NSString *key in self.wDict) {
@@ -816,10 +883,10 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	}
 	[self.wDict removeAllObjects];
 }
+*/
 
 
-
-- (void) addSVFields:(NSInteger) vot
+- (void) addVOFields:(NSInteger) vot
 {
 	switch(vot) {
 		case VOT_NUMBER: 
@@ -856,10 +923,19 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 			break;
 	}
 	
-	[self drawGeneralOpts];
+	[self drawGeneralVoOpts];
 	
 }
 
+- (void) addTOFields {
+	
+	[self drawGeneralToOpts];
+	
+	
+}
+
+
+/*
 - (void) updateScrollView:(NSInteger) vot 
 {
 //	[UIView beginAnimations:nil context:NULL];
@@ -867,11 +943,11 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 //	[UIView setAnimationDuration:kAnimationDuration];
 	
 	//[self removeSVFields];
-	[self addSVFields:vot];
+	[self addVOFields:vot];
 	
 //	[UIView commitAnimations];
 }
-
+*/
 
 
 @end

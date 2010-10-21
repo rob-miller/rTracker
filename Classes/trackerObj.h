@@ -12,11 +12,19 @@
 #import "tObjBase.h"
 #import "valueObj.h"
 
+// to config checkbutton default states
+#define SAVERTNDFLT   YES
+
+// to config textfield default values
+// #define PRIVDFLT		0  //note: already in valObj.h
+
+
 @interface trackerObj : tObjBase {
 	//int tid;
 	NSString *trackerName;
 	NSDate *trackerDate;
-	NSInteger privacy;
+	NSMutableDictionary *optDict;
+
 	NSMutableArray *valObjTable;
 	CGSize maxLabel;
 	NSInteger nextColor;
@@ -28,7 +36,7 @@
 //@property (nonatomic) int tid;
 @property (nonatomic,retain) NSString *trackerName;
 @property (nonatomic,retain) NSDate *trackerDate;
-@property (nonatomic) NSInteger privacy;
+@property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 @property (nonatomic) CGSize maxLabel;
 @property (readonly) NSInteger nextColor;
@@ -61,6 +69,7 @@
 - (int) noCollideDate:(int)testDate;
 - (void) changeDate:(NSDate*)newdate;
 
+- (void) trackerUpdated:(NSNotification*)n;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
