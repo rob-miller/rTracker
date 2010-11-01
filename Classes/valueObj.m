@@ -95,6 +95,8 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
+	
+	
 	[super dealloc];
 }
 

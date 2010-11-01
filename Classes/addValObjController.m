@@ -169,8 +169,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 	self.navigationItem.rightBarButtonItem = nil;
 	self.navigationItem.leftBarButtonItem = nil;
-	[self setToolbarItems:nil
-				 animated:NO];
+	//[self setToolbarItems:nil
+	//			 animated:NO];
 	self.title = nil;
 	
 	[super viewDidUnload];
@@ -217,6 +217,15 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		self.tempValObj.vid = [self.parentTrackerObj getUnique];
 	}
 	
+	// clear extraneous frv entries to keep db clean
+	NSInteger v = [[self.tempValObj.optDict objectForKey:@"frep0"] integerValue] ;
+	if (v >= FREPDFLT) 
+		[self.tempValObj.optDict removeObjectForKey:@"frv0"];
+	v = [[self.tempValObj.optDict objectForKey:@"frep1"] integerValue] ;
+	if (v >= FREPDFLT) 
+		[self.tempValObj.optDict removeObjectForKey:@"frv1"];
+	
+	
 	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
 	NSLog(@"label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
 	
@@ -245,7 +254,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//[tempValObj retain];
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:ctvovc animated:YES];
-	//[cvovc release];
+	[ctvovc release];
 }
 
 

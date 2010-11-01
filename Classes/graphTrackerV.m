@@ -224,8 +224,8 @@
 	double minVal,maxVal;
 
 	if (vo.vtype == VOT_NUMBER && [vo.optDict objectForKey:@"autoscale"]) { // default is autoscale, so any stored val means 'no'
-		minVal = [[vo.optDict objectForKey:@"ngmin"] doubleValue];
-		maxVal = [[vo.optDict objectForKey:@"ngmax"] doubleValue];
+		minVal = [[vo.optDict objectForKey:@"gmin"] doubleValue];
+		maxVal = [[vo.optDict objectForKey:@"gmax"] doubleValue];
 	} else if (vo.vtype == VOT_SLIDER) {
 		NSNumber *nmin = [vo.optDict objectForKey:@"smin"];
 		NSNumber *nmax = [vo.optDict objectForKey:@"smax"];

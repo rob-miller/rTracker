@@ -276,11 +276,17 @@
 				   ||
 				   ([key isEqualToString:@"nswl"] && [val isEqualToString:(NSWLDFLT ? @"1" : @"0")])
 				   ||
+				   ([key isEqualToString:@"func"] && [val isEqualToString:@""])
+				   ||
 				   ([key isEqualToString:@"smin"] && ([val floatValue] == f(SLIDRMINDFLT)))
 				   ||
 				   ([key isEqualToString:@"smax"] && ([val floatValue] == f(SLIDRMAXDFLT)))
 				   ||
 				   ([key isEqualToString:@"sdflt"] && ([val floatValue] == f(SLIDRDFLTDFLT)))
+				   ||
+				   ([key isEqualToString:@"frep0"] && ([val intValue] == f(FREPDFLT)))
+				   ||
+				   ([key isEqualToString:@"frep1"] && ([val intValue] == f(FREPDFLT)))
 				   ||
 				   ([key isEqualToString:@"privacy"] && ([val floatValue] == f(PRIVDFLT)))) {
 			[self toExecSql];
@@ -429,16 +435,17 @@
 	for (valueObj *vo in self.valObjTable) {
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
-		
-		NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
-		if ([vo.value isEqualToString:@""]) {
-			self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
-		} else {
-			haveData = YES;
-			self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-						vo.vid, tdi, vo.value];
-		}
-		[self toExecSql];
+		if (vo.vtype != VOT_FUNC) { // no fn results data kept
+			NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+			if ([vo.value isEqualToString:@""]) {
+				self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
+			} else {
+				haveData = YES;
+				self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+							vo.vid, tdi, vo.value];
+			}
+			[self toExecSql];
+		} 
 	}
 	
 	if (haveData) {
@@ -560,6 +567,15 @@
 	int rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
+}
+
+- (NSString*) voGetNameForVID:(NSInteger)vid {
+	for (valueObj *vo in self.valObjTable) {
+		if (vo.vid == vid)
+			return vo.valueName;
+	}
+	NSAssert(0,@"voGetNameForVID failed");
+	return [NSString stringWithFormat:@"vid %d not found",vid];
 }
 
 - (BOOL) voHasData:(NSInteger) vid

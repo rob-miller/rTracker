@@ -13,11 +13,18 @@
 #import "addValObjController.h"
 #import "rTracker-constants.h"
 
+//  private methods including properties can go here!
+@interface configTVObjVC ()
+- (void) updateFnTitles;
+//@property (nonatomic, retain) NSNumber *foo;
+@end
+
+
 @implementation configTVObjVC
 
 @synthesize to, vo, wDict;
 @synthesize toolBar, navBar;
-@synthesize lasty, saveFrame;
+@synthesize epTitles, fnTitles, fnStrs, fnArray, lasty, saveFrame, fnSegNdx;
 
 BOOL keyboardIsShown;
 
@@ -27,7 +34,6 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 #pragma mark core object methods and support
 
 - (void)dealloc {
-    [super dealloc];
 
 	self.to = nil;
 	[to release];
@@ -41,6 +47,16 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[toolBar release];
 	self.navBar = nil;
 	[navBar release];
+
+	self.epTitles = nil;
+	[epTitles release];
+
+	self.fnArray = nil;
+	[fnArray release];
+	self.fnStrs = nil;
+	[fnStrs release];
+	
+    [super dealloc];
 }
 
 # pragma mark -
@@ -60,6 +76,10 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 - (void)btnDone:(UIButton *)btn
 {
 	NSLog(@"configTVObjVC: btnDone pressed.");
+	if (fnArray != nil && [self.fnArray count] != 0) {
+		[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
+	}
+	
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -75,6 +95,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		name = self.to.trackerName;
 	} else {
 		name = self.vo.valueName;
+		self.epTitles = [NSArray arrayWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years", nil];
 	}
 	
 	if ((name == nil) || [name isEqualToString:@""]) 
@@ -97,7 +118,32 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 								initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 								target:self
 								action:@selector(btnDone:)];
-	self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
+	
+	if (self.vo != nil && self.vo.vtype == VOT_FUNC && [self.to.valObjTable count] > 0) {
+		[self.fnArray addObjectsFromArray:[[self.vo.optDict objectForKey:@"func"] componentsSeparatedByString:@" "]];
+		
+		UIBarButtonItem *flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+													initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+													target:nil action:nil];
+		
+		NSArray *segmentTextContent = [NSArray arrayWithObjects: @"overview", @"range", @"fn definition", nil];
+		
+		UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+		//[segmentTextContent release];
+		
+		[segmentedControl addTarget:self action:@selector(fnSegmentAction:) forControlEvents:UIControlEventValueChanged];
+		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+		segmentedControl.selectedSegmentIndex = self.fnSegNdx = 0;
+		UIBarButtonItem *scButtonItem = [[UIBarButtonItem alloc]
+												 initWithCustomView:segmentedControl];
+		
+		self.toolBar.items = [NSArray arrayWithObjects: doneBtn, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem, nil];
+		[segmentedControl release];
+		[scButtonItem release];
+		[flexibleSpaceButtonItem release];
+	} else {
+		self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
+	}
 	[doneBtn release];
 	
 	// register for keyboard notifications
@@ -149,6 +195,9 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	self.wDict = nil;
 	self.to = nil;
 	self.vo = nil;
+	self.epTitles = nil;
+	self.fnArray = nil;
+	self.fnStrs = nil;
 	
 	self.toolBar = nil;
 	self.navBar = nil;
@@ -210,7 +259,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		//NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
 		
 		viewFrame.origin.y -= (boty - topk);
-		viewFrame.size.height -= self.toolBar.frame.size.height;
+		viewFrame.size.height -= self.toolBar.frame.size.height - MARGIN;
 		
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationBeginsFromCurrentState:YES];
@@ -336,14 +385,33 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[imageButton release];
 }
 
+- (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label action:(SEL)action {
+
+	UIButton *button = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	frame.size.width = [label sizeWithFont:button.titleLabel.font].width + 4*SPACE;
+	if (frame.origin.x == -1.0f) {
+		frame.origin.x = self.view.frame.size.width - (frame.size.width + MARGIN); // right justify
+	}
+	button.frame = frame;
+	[button setTitle:label forState:UIControlStateNormal];
+	//imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+	//imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
+	
+	[self.wDict setObject:button forKey:key];
+	[button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+	
+	[self.view addSubview:button];
+	[button release];
+}
+
 - (void) tfDone:(UITextField *)tf
 {
 	NSString *okey, *nkey;
 	if ( tf == [self.wDict objectForKey:@"nminTF"] ) {
-		okey = @"ngmin";
+		okey = @"gmin";
 		nkey = @"nmaxTF";
 	} else if ( tf == [self.wDict objectForKey:@"nmaxTF"] ) {
-		okey = @"ngmax";
+		okey = @"gmax";
 		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:@"sminTF"] ) {
 		okey = @"smin";
@@ -356,6 +424,12 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:@"gpTF"] ) {
 		okey = @"privacy";
+		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
+		okey = @"frv0";
+		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"fr1TF"] ) {
+		okey = @"frv1";
 		nkey = nil;
 	} else {
 		NSAssert(0,@"mtfDone cannot identify tf");
@@ -381,7 +455,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	rtf.returnKeyType = UIReturnKeyDone;
 	rtf.borderStyle = UITextBorderStyleRoundedRect;
 	[self.wDict setObject:rtf forKey:key];
-
+	
 	if (action != nil) 
 		[rtf addTarget:self action:action forControlEvents:UIControlEventEditingDidEndOnExit];
 	else
@@ -402,6 +476,38 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[rtf release];
 }
 
+- (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text {
+
+	UITextView *rtv = [[UITextView alloc] initWithFrame:frame];
+	rtv.editable = NO;
+	[self.wDict setObject:rtv forKey:key];
+	
+	rtv.text = text;
+	[self.view addSubview:rtv];
+	[rtv release];
+}
+
+
+- (CGRect) configPicker:(CGRect)frame key:(NSString*)key
+{
+	UIPickerView *myPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
+	frame.size = [myPickerView sizeThatFits:CGSizeZero];;
+	myPickerView.frame = frame;
+	
+	myPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	myPickerView.showsSelectionIndicator = YES;	// note this is default to NO
+	
+	// this view controller is the data source and delegate
+	myPickerView.delegate = self;
+	myPickerView.dataSource = self;
+	
+	[self.wDict setObject:myPickerView forKey:key];
+	[self.view addSubview:myPickerView];
+	
+	[myPickerView release];
+	
+	return frame;
+}
 
 #pragma mark autoscale / graph min/max options
 
@@ -433,17 +539,8 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	[UIView commitAnimations];
 }
 
-- (void) drawNumOpts 
-{
-	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
-	
-	CGRect labframe = [self configLabel:@"start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
-	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	[self configCheckButton:frame 
-				   key:@"swlBtn" 
-				 state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]) ]; // default:0
-	frame.origin.x = MARGIN;
-	frame.origin.y += MARGIN + frame.size.height;
+- (CGRect) yAutoscale:(CGRect)frame {
+	CGRect labframe;
 	
 	
 	labframe = [self configLabel:@"Graph Y axis:" frame:frame key:@"ngLab" addsv:YES];
@@ -453,8 +550,8 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	[self configCheckButton:frame 
-				   key:@"nasBtn" 
-				 state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) ]; // default:1
+						key:@"nasBtn" 
+					  state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) ]; // default:1
 	
 	//if (! autoscale) {  still need to calc lasty, make room before general options
 	
@@ -474,25 +571,42 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 					place:@"<number>" 
 					 text:[self.vo.optDict objectForKey:@"ngmin"] 
 					addsv:NO ];
-
+	
 	frame.origin.x += tfWidth + MARGIN;
 	labframe = [self configLabel:@" max:" frame:frame key:@"nmaxLab" addsv:NO];
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	frame.size.width = tfWidth;
 	frame.size.height = LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
-
+	
 	[self configTextField:frame 
 					  key:@"nmaxTF" 
-	 				   action:nil
+				   action:nil
 					  num:YES 
 					place:@"<number>" 
 					 text:[self.vo.optDict objectForKey:@"ngmax"]
 					addsv:NO ];
-
+	
 	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) 
 		[self addGraphMinMax];
 	
+	return frame;
+}
+
+
+- (void) drawNumOpts 
+{
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	
+	CGRect labframe = [self configLabel:@"start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	[self configCheckButton:frame 
+				   key:@"swlBtn" 
+				 state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]) ]; // default:0
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + frame.size.height;
+	
+	frame = [self yAutoscale:frame];
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	frame.origin.x = MARGIN;
@@ -716,26 +830,17 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 - (void) drawTextbOpts
 {
 	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
-	
 	CGRect labframe = [self configLabel:@"Text box options:" frame:frame key:@"tboLab" addsv:YES];
-	
 	frame.origin.y += labframe.size.height + MARGIN;
-	
 	labframe = [self configLabel:@"Use number of lines for graph:" frame:frame key:@"tbnlLab" addsv:YES];
-	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	
 	[self configCheckButton:frame 
 						key:@"tbnlBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
-	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
-
 	labframe = [self configLabel:@"Pick names from addressbook:" frame:frame key:@"tbabLab" addsv:YES];
-	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	
 	[self configCheckButton:frame 
 						key:@"tbabBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbab"] isEqualToString:@"1"] ]; // default:0
@@ -762,16 +867,497 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 }
 
 #pragma mark function options
+- (NSMutableArray*) fnTitles {
+	if (fnTitles == nil) {
+		fnTitles = [[NSMutableArray alloc] init];
+	}
+	return fnTitles;
+}
 
-- (void) drawFuncOpts
-{
-	CGRect labframe = [self configLabel:@"need function defn -- Options:" 
-								  frame:(CGRect) {MARGIN,self.lasty,0.0,0.0}
-									key:@"foLab" 
+- (NSMutableArray*) fnArray {
+	if (fnArray == nil) {
+		fnArray = [[NSMutableArray alloc] init];
+	}
+	return fnArray;
+}
+
+- (NSMutableArray*) fnStrs {
+	if (fnStrs == nil) {
+		fnStrs = [[NSMutableArray alloc] initWithObjects:FnArrStrs,nil];
+		for (valueObj* valo in self.to.valObjTable) {
+			[fnStrs addObject:valo.valueName];
+		}
+	}
+	return fnStrs;
+}
+
+
+- (NSInteger) epToRow:(NSInteger)component {
+	NSString *key = [NSString stringWithFormat:@"frep%d",component];
+	NSNumber *n = [self.vo.optDict objectForKey:key];
+	NSInteger ep = [n integerValue];
+	if (n == nil || ep == FREPDFLT) 
+		return 0;
+	if (ep >= 0)
+		return ep+1;
+	return (ep * -1) + [self.to.valObjTable count] -1;
+}
+
+- (NSString *) fnrRowTitle:(NSInteger)row {
+	if (row != 0) {
+		NSInteger votc = [self.to.valObjTable count];
+		if (row <= votc) {
+			return ((valueObj*) [self.to.valObjTable objectAtIndex:row-1]).valueName;
+		} else {
+			row -= votc;
+		}
+	}
+	return [self.epTitles objectAtIndex:row];
+}
+
+- (void) updateValTF:(NSInteger)row component:(NSInteger)component {
+	NSInteger votc = [self.to.valObjTable count];
+
+	if (row > votc) {
+		NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
+		NSString *key = [NSString stringWithFormat:@"frep%d",component];
+		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
+		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
+		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
+		
+		[self.vo.optDict setObject:[NSNumber numberWithInt:(((row - votc) +1) * -1)] forKey:key];
+		UITextField *vtf= [self.wDict objectForKey:vtfkey];
+		vtf.text = [self.vo.optDict objectForKey:vkey];
+		[self.view addSubview:vtf];
+		[self.view addSubview:[self.wDict objectForKey:pre_vkey]];
+		UILabel *postLab = [self.wDict objectForKey:post_vkey];
+		postLab.text = [self fnrRowTitle:row];
+		[self.view addSubview:postLab];
+	}
+}
+
+- (void) drawFuncOptsRange {
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+
+	CGRect labframe = [self configLabel:@"Function range endpoints:" 
+								  frame:frame
+									key:@"freLab" 
+								  addsv:YES ];
+	frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
+
+	labframe = [self configLabel:@"Previous" 
+								  frame:frame
+									key:@"frpLab" 
+								  addsv:YES ];
+	frame.origin.x = (self.view.frame.size.width / 2.0) + MARGIN;
+					   
+	labframe = [self configLabel:@"Current" 
+								  frame:frame
+									key:@"frcLab" 
+						   addsv:YES ];
+	
+	frame.origin.y += labframe.size.height + MARGIN;
+	frame.origin.x = 0.0;
+	
+	frame = [self configPicker:frame key:@"frPkr"];
+	UIPickerView *pkr = [self.wDict objectForKey:@"frPkr"];
+	
+	[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
+	[pkr selectRow:[self epToRow:1] inComponent:1 animated:NO];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	frame.origin.x = MARGIN;
+		
+	labframe = [self configLabel:@"-" 
+								  frame:frame
+									key:@"frpre0vLab" 
+						   addsv:NO ];
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	CGFloat tfWidth = [[NSString stringWithString:@"9999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = tfWidth;
+	frame.size.height = LFHeight; 
+	
+	[self configTextField:frame 
+					  key:@"fr0TF" 
+				   action:nil
+					  num:YES 
+					place:nil
+					 text:[self.vo.optDict objectForKey:@"frv0"] 
+					addsv:NO ];
+	
+	frame.origin.x += tfWidth + 2*SPACE;
+	labframe = [self configLabel:@"months" 
+								  frame:frame
+									key:@"frpost0vLab" 
+						   addsv:NO ];
+	
+	[self updateValTF:[self epToRow:0] component:0];
+	
+	frame.origin.x = (self.view.frame.size.width / 2.0) + MARGIN;
+	
+	labframe = [self configLabel:@"+" 
+								  frame:frame
+									key:@"frpre1vLab" 
+						   addsv:NO ];
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	[self configTextField:frame 
+					  key:@"fr1TF" 
+				   action:nil
+					  num:YES 
+					place:nil
+					 text:[self.vo.optDict objectForKey:@"frv1"] 
+					addsv:NO ];
+	
+	frame.origin.x += tfWidth + 2*SPACE;
+	labframe = [self configLabel:@"months" 
+								  frame:frame
+									key:@"frpost1vLab" 
+						   addsv:NO ];
+
+	[self updateValTF:[self epToRow:1] component:1];
+	
+}
+
+- (NSString*) voFnDefnStr {
+	NSMutableString *fstr = [[NSMutableString alloc] init];
+	BOOL closePending = NO;
+	
+	for (NSNumber *n in self.fnArray) {
+		NSInteger i = [n integerValue];
+		if (i<0) {
+			NSInteger ndx = (i * -1) -1;
+			[fstr appendString:[self.fnStrs objectAtIndex:ndx]];
+			if (isFnFn(i)) {
+				[fstr appendString:@"["];
+				closePending=YES;
+			}
+		} else {
+			[fstr appendString:[self.to voGetNameForVID:i]];
+			if (closePending) {
+				[fstr appendString:@"]"];
+				closePending=NO;
+			}
+		}
+		if (! closePending)
+			[fstr appendString:@" "];
+	}
+	return [fstr autorelease];
+}
+
+
+- (void) updateFnTV {
+	UITextView *ftv = [self.wDict objectForKey:@"fdefnTV2"];
+	ftv.text = [self voFnDefnStr];
+}
+
+- (void) btnAdd:(id)sender {
+	UIPickerView *pkr = [self.wDict objectForKey:@"fdPkr"];
+	NSInteger row = [pkr selectedRowInComponent:0];
+	NSNumber *ntok = [self.fnTitles objectAtIndex:row];
+	[self.fnArray addObject:ntok];
+	[self updateFnTitles];
+	[pkr reloadComponent:0];
+	[self updateFnTV];
+}
+
+- (void) btnDelete:(id)sender {
+	UIPickerView *pkr = [self.wDict objectForKey:@"fdPkr"];
+	[self.fnArray removeLastObject];
+	[self updateFnTitles];
+	[pkr reloadComponent:0];
+	[self updateFnTV];
+}
+
+- (void) drawFuncOptsDefinition {
+	[self updateFnTitles];
+	
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	
+	CGRect labframe = [self configLabel:@"Function definition:" 
+								  frame:frame
+									key:@"fdLab" 
+								  addsv:YES ];
+
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + labframe.size.height;
+	frame.size.width = self.view.frame.size.width - 2*MARGIN; // 300.0f;
+	frame.size.height = LFHeight;
+	
+	[self configTextView:frame key:@"fdefnTV2" text:[self voFnDefnStr]];
+	
+	frame.origin.x = 0.0;
+	frame.origin.y += frame.size.height + MARGIN;
+	
+	frame = [self configPicker:frame key:@"fdPkr"];
+	//UIPickerView *pkr = [self.wDict objectForKey:@"fdPkr"];
+	
+	//[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
+	//[pkr selectRow:[self epToRow:1] inComponent:1 animated:NO];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	frame.origin.x = MARGIN;
+	frame.size.height = labframe.size.height;
+
+	[self configActionBtn:frame key:@"fdaBtn" label:@"Add" action:@selector(btnAdd:)]; 
+	frame.origin.x = -1.0f;
+	[self configActionBtn:frame key:@"fddBtn" label:@"Delete" action:@selector(btnDelete:)]; 
+	
+}
+
+
+- (NSString*) voEpStr:(NSInteger)component {
+	NSString *key = [NSString stringWithFormat:@"frep%d",component];
+	NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
+	NSString *pre = component ? @"current" : @"previous";
+	
+	NSNumber *n = [self.vo.optDict objectForKey:key];
+	NSInteger ep = [n integerValue];
+	NSUInteger ep2 = n ? (ep+1)*-1 : 0;
+	if (n == nil || ep == FREPDFLT) 
+		return [NSString stringWithFormat:@"%@ %@", pre, [self.epTitles objectAtIndex:ep2]];  // FREPDFLT
+	if (ep >= 0) 
+		return [NSString stringWithFormat:@"%@ %@", pre, ((valueObj*)[self.to.valObjTable objectAtIndex:ep]).valueName];
+	
+	return [NSString stringWithFormat:@"%@%d %@", 
+			(component ? @"+" : @"-"), [[self.vo.optDict objectForKey:vkey] intValue], [self.epTitles objectAtIndex:ep2]];
+}
+
+- (NSString*) voRangeStr {
+	return [NSString stringWithFormat:@"%@ to %@", [self voEpStr:0], [self voEpStr:1]];
+}
+
+- (void) drawFuncOptsOverview {
+	CGRect frame = {MARGIN,self.lasty,0.0,0.0};
+	CGRect labframe = [self configLabel:@"Range:" 
+								  frame:frame
+									key:@"frLab" 
 								  addsv:YES ];
 	
-	self.lasty += labframe.size.height + MARGIN;
+	//frame = (CGRect) {-1.0f, frame.origin.y, 0.0f,labframe.size.height};
+	//[self configActionBtn:frame key:@"frbBtn" label:@"Build" action:@selector(btnBuild:)]; 
+	
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + labframe.size.height;
+	frame.size.width = self.view.frame.size.width - 2*MARGIN; // 300.0f;
+	frame.size.height = LFHeight;
+	
+	[self configTextView:frame key:@"frangeTV" text:[self voRangeStr]];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	labframe = [self configLabel:@"Definition:" 
+								  frame:frame
+									key:@"fdLab" 
+								  addsv:YES];
+
+	frame = (CGRect) {-1.0f, frame.origin.y, 0.0f,labframe.size.height};
+	//[self configActionBtn:frame key:@"fdbBtn" label:@"Build" action:@selector(btnBuild:)]; 
+	
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + frame.size.height;
+	frame.size.width = 300.0f;
+	frame.size.height = LFHeight;
+	
+	[self configTextView:frame key:@"fdefnTV" text:[self voFnDefnStr]];
+	
+	frame.origin.y += frame.size.height + MARGIN;
+	
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + labframe.size.height;
+
+	frame = [self yAutoscale:frame];
+	
+	//frame.origin.y += frame.size.height + MARGIN;
+	//frame.origin.x = MARGIN;
+	
+	self.lasty = frame.origin.y + frame.size.height + MARGIN;
 }
+
+- (void) fnSegmentAction:(id)sender
+{
+	self.fnSegNdx = [sender selectedSegmentIndex];
+	NSLog(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
+
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:kAnimationDuration];
+	
+	[self removeSVFields];
+	switch (self.fnSegNdx) {
+		case 0: 
+			[self drawFuncOptsOverview];
+			[self drawGeneralVoOpts];			
+			break;
+		case 1:
+			[self drawFuncOptsRange];
+			break;
+		case 2:
+			[self drawFuncOptsDefinition];
+			break;
+		default:
+			NSAssert(0,@"fnSegmentAction bad index!");
+			break;
+	}
+	
+	[UIView commitAnimations];
+}
+
+- (NSInteger) numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+	if (self.fnSegNdx == FNSEGNDX_RANGEBLD)
+		return 2;
+	else 
+		return 1;
+}
+
+- (void) ftAddFnSet {
+	int i;
+	for (i=FNFNFIRST;i>=FNFNLAST;i--) {
+		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
+	}
+}
+
+- (void) ftAdd2OpSet {
+	int i;
+	for (i=FN2OPFIRST;i>=FN2OPLAST;i--) {
+		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
+	}
+}
+
+- (void) ftAddVOs {
+	for (valueObj *valo in self.to.valObjTable) {
+		[self.fnTitles addObject:[NSNumber numberWithInteger:valo.vid]];
+	}
+}
+
+- (void) ftAddCloseParen {
+	int pcount=0;
+	for (NSNumber *ni in self.fnArray) {
+		int i = [ni intValue];
+		if (i == FNPARENOPEN) {
+			pcount++;
+		} else if (i == FNPARENCLOSE) {
+			pcount--;
+		}
+	}
+	if (pcount > 0) 
+		[self.fnTitles addObject:[NSNumber numberWithInt:FNPARENCLOSE]];
+}
+
+- (void) ftStartSet {
+	[self ftAddFnSet];
+	[self.fnTitles addObject:[NSNumber numberWithInt:FNPARENOPEN]];
+	[self ftAddVOs];
+}
+
+- (void) updateFnTitles {
+	[self.fnTitles removeAllObjects];
+	if ([self.fnArray count] == 0) {  // state = start
+		[self ftStartSet];
+	} else {
+		int last = [[self.fnArray lastObject] intValue];
+		if (last >= 0) { // state = after valObj
+			[self ftAdd2OpSet];
+			[self ftAddCloseParen];
+		} else if (last <= FNFNFIRST && last >= FNFNLAST) {  // state = after fnfn = delta, avg, sum
+			[self ftAddVOs];
+		} else if (last <= FN2OPFIRST && last >= FN2OPLAST) { // state = after fn2op = +,-,*,/
+			[self ftStartSet];
+		} else if (last == FNPARENCLOSE) { // state = after close paren
+			[self ftAdd2OpSet];
+			[self ftAddCloseParen];
+		} else if (last == FNPARENOPEN) { // state = after open paren
+			[self ftStartSet];
+		} else {
+			NSAssert(0,@"lost it at updateFnTitles");
+		}
+	}
+}
+
+- (NSString*) fnTokenToStr:(NSInteger)tok {
+	if (tok >= 0) {
+		for (valueObj *valo in self.to.valObjTable) {
+			if (valo.vid == tok)
+				return valo.valueName;
+		}
+		NSAssert(0,@"fnTokenToStr failed to find valObj");
+		return @"unknown vid";
+	} else {
+		tok = (tok * -1) -1;
+		return [self.fnStrs objectAtIndex:tok];
+	}
+}
+
+- (NSString*) fndRowTitle:(NSInteger)row {
+	return [self fnTokenToStr:[[self.fnTitles objectAtIndex:row] integerValue]];
+}
+
+- (NSInteger) fnrRowCount:(NSInteger)component {
+	NSInteger other = (component ? 0 : 1);
+	NSString *otherKey = [NSString stringWithFormat:@"frep%d",other];
+	id otherObj = [self.vo.optDict objectForKey:otherKey];
+	NSInteger otherVal = [otherObj integerValue];
+	if (otherVal < -1) {
+		return [self.to.valObjTable count]+1;
+	} else {
+		return [self.to.valObjTable count] + 6;
+	}
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger) component {
+	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) 
+		return [self fnrRowCount:component];
+	else 
+		return [self.fnTitles count];
+}
+
+- (NSString *) pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row
+			 forComponent:(NSInteger)component {
+	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
+		return [self fnrRowTitle:row];
+	} else {  // FNSEGNDX_FUNCTBLD
+		return [self fndRowTitle:row];
+	}
+	//return [NSString stringWithFormat:@"row %d", row];
+}
+
+- (void) updateForPickerRowSelect:(NSInteger)row inComponent:(NSInteger)component {
+	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
+		[((UIPickerView*) [self.wDict objectForKey:@"frPkr"]) reloadComponent:(component ? 0 : 1)];
+	} else {
+		//[((UIPickerView*) [self.wDict objectForKey:@"fnPkr"]) reloadComponent:0];
+	}
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{	
+	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
+		NSInteger votc = [self.to.valObjTable count];
+		NSString *key = [NSString stringWithFormat:@"frep%d",component];
+		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
+		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
+		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
+		
+		[((UIView*) [self.wDict objectForKey:pre_vkey]) removeFromSuperview];
+		[((UIView*) [self.wDict objectForKey:vtfkey]) removeFromSuperview];
+		[((UIView*) [self.wDict objectForKey:post_vkey]) removeFromSuperview];
+		
+		if (row == 0) {
+			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:key];
+		} else if (row <= votc) {
+			[self.vo.optDict setObject:[NSNumber numberWithInt:row-1] forKey:key];
+		} else { 
+			[self updateValTF:row component:component];
+		}
+		NSLog(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
+	} else {
+	}
+	
+	[self updateForPickerRowSelect:row inComponent:component];
+	
+}
+
 
 #pragma mark general options only label
 
@@ -874,7 +1460,7 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 	return wDict;
 }
 
-/*
+
 - (void) removeSVFields 
 {
 	for (NSString *key in self.wDict) {
@@ -882,8 +1468,9 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 		[(UIView *) [self.wDict valueForKey:key] removeFromSuperview];
 	}
 	[self.wDict removeAllObjects];
+	self.lasty = self.navBar.frame.size.height + MARGIN;	
 }
-*/
+
 
 
 - (void) addVOFields:(NSInteger) vot
@@ -917,13 +1504,18 @@ CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 			break;
 		case VOT_FUNC:
 			// uitextfield for function, picker or buttons for available valObjs and functions?
-			[self drawFuncOpts];
+			//[self drawFuncOptsOverview];
+			if ([self.to.valObjTable count] == 0) {
+				[self drawFuncOptsOverview];
+				[self drawGeneralVoOpts];				
+			}
 			break;
 		default:
 			break;
 	}
 	
-	[self drawGeneralVoOpts];
+	if (vot != VOT_FUNC)
+		[self drawGeneralVoOpts];
 	
 }
 

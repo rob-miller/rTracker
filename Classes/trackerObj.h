@@ -65,6 +65,7 @@
 - (BOOL) voHasData:(NSInteger)vid;
 - (BOOL) checkData;
 - (BOOL) hasData;
+- (NSString*) voGetNameForVID:(NSInteger)vid;
 
 - (int) noCollideDate:(int)testDate;
 - (void) changeDate:(NSDate*)newdate;

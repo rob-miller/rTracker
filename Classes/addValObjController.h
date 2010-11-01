@@ -32,6 +32,6 @@
 
 - (void) updateColorCount;
 - (void) updateForPickerRowSelect:(NSInteger)row inComponent:(NSInteger)component;
-//- (void) btnSetup;
+//- (IBAction) btnSetup;
 
 @end

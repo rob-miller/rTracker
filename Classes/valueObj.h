@@ -65,6 +65,44 @@
 #define SLIDRMAXDFLT	100.0
 #define SLIDRDFLTDFLT	50.0
 #define PRIVDFLT		0
+#define FREPDFLT		-1
+
+
+//function support
+#define FNSETVERSION	1
+
+#define FNSTART			-1
+
+#define FNFNFIRST		FNSTART
+#define FNFNDELTA		(FNFNFIRST)
+#define FNFNSUM			(FNFNDELTA-1)
+#define FNFNPOSTSUM		(FNFNSUM-1)
+#define FNFNPRESUM		(FNFNPOSTSUM-1)
+#define FNFNAVG			(FNFNPRESUM-1)
+#define FNFNLAST		FNFNAVG
+
+#define isFnFn(i)		((i<=FNFNFIRST) && (i>=FNFNLAST))
+
+#define FN2OPFIRST		(FNFNLAST-1)
+#define FN2OPPLUS		(FN2OPFIRST)
+#define FN2OPMINUS		(FN2OPPLUS-1)
+#define FN2OPTIMES		(FN2OPMINUS-1)
+#define FN2OPDIVIDE		(FN2OPTIMES-1)
+#define FN2OPLAST		FN2OPDIVIDE
+
+#define FNPARENOPEN		(FN2OPLAST-1)
+#define FNPARENCLOSE	(FNPARENOPEN-1)
+
+#define FNPARENLAST		FNPARENCLOSE
+
+#define FNFIN			FNPARENLAST
+
+#define FnArrStrs	@"delta", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")"
+
+#define FNFNSET			FNFNDELTA,FNFNSUM,FNFNAVG
+#define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
+
+// end functions 
 
 
 #define kViewTag		((NSInteger) 1)
@@ -101,7 +139,6 @@
 @property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,assign) id *parentTracker;
 
-
 @property (nonatomic,retain) UIButton *checkButtonUseVO;
 
 - (id) init;
@@ -119,6 +156,7 @@
 + (NSArray *) graphsForVOTCopy:(NSInteger)vot;
 - (NSArray *) graphsForVOTCopy:(NSInteger)vot;
 + (NSInteger) mapGraphType:(NSString *)gts;
+
 
 //- (void) txtDTF:(BOOL)num;
 
