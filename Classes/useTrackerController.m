@@ -306,7 +306,18 @@ BOOL keyboardIsShown;
 # pragma mark -
 # pragma mark keyboard notifications
 
-UITextField *activeField;
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+	NSLog(@"utc: tf begin editing");
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+	NSLog(@"utc: tf end editing");
+}
+
+//UITextField *activeField;
 
 - (void)keyboardWillShow:(NSNotification *)n
 {
@@ -314,7 +325,7 @@ UITextField *activeField;
         return;
     }
 	
-	NSLog(@"handling keyboard will show");
+	NSLog(@"handling keyboard will show: %@",[n object]);
 	self.saveFrame = self.view.frame;
 	
     NSDictionary* userInfo = [n userInfo];
@@ -327,7 +338,7 @@ UITextField *activeField;
 	CGPoint coff = self.table.contentOffset;
 	NSLog(@"coff x=%f y=%f",coff.x,coff.y);
 	//NSLog(@"k will show, y= %f",viewFrame.origin.y);
-	CGFloat boty = activeField.superview.superview.frame.origin.y - coff.y ;  //+ activeField.superview.superview.frame.size.height + MARGIN;
+	CGFloat boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;  // activeField.superview.superview.frame.origin.y - coff.y ;  //+ activeField.superview.superview.frame.size.height + MARGIN;
 	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
 	if (boty <= topk) {
 		NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
@@ -369,7 +380,7 @@ UITextField *activeField;
 	CGPoint touchPoint = [touch locationInView:self.view];
 	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
 	
-	[activeField resignFirstResponder];
+	[self.tracker.activeControl resignFirstResponder];
 }
 
 
@@ -494,6 +505,7 @@ UITextField *activeField;
 		[self.tracker resetData];
 		[self updateToolBar];
 		[self updateTrackerTableView];
+		[self showSaveBtn:NO];
 	} else {
 		[self.navigationController popViewControllerAnimated:YES];
 	}
@@ -710,10 +722,6 @@ UITextField *activeField;
 }
 
 
-#define LMARGIN 60.0f
-#define RMARGIN 10.0f
-#define BMARGIN  7.0f
-
 //#define MARGIN 7.0f
 
 #define CELL_HEIGHT_NORMAL (self.tracker.maxLabel.height + (3.0*MARGIN))
@@ -728,102 +736,7 @@ UITextField *activeField;
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
     //NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
-    
-	// Configure the cell.
-
-	CGRect bounds;
-	UITableViewCell *cell;
-	
-	if (vo.vtype == VOT_CHOICE || vo.vtype == VOT_SLIDER ) {
-
-		static NSString *CellIdentifier = @"Cell1";
-		
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		} else {
-			// the cell is being recycled, remove old embedded controls
-			UIView *viewToRemove = nil;
-			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
-				[viewToRemove removeFromSuperview];
-		}
-		
-		
-		//cell.accessoryType = UITableViewCellAccessoryCheckmark;
-		
-		// checkButton top row left
-		
-		UIImage *checkImage = [UIImage imageNamed:@"checked.png"];
-		
-		bounds.origin.x = MARGIN;
-		bounds.origin.y = MARGIN;
-		bounds.size.width = checkImage.size.width ; //CHECKBOX_WIDTH; // cell.frame.size.width;
-		bounds.size.height = checkImage.size.height ; //self.tracker.maxLabel.height + 2*BMARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
-		
-		vo.checkButtonUseVO.frame = bounds;
-		vo.checkButtonUseVO.tag = kViewTag;
-		vo.checkButtonUseVO.backgroundColor = cell.backgroundColor;
-		if (!postDateBtn) {
-			[cell.contentView addSubview:vo.checkButtonUseVO];
-		
-			UIImage *image = (vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
-			UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
-			[vo.checkButtonUseVO setBackgroundImage:newImage forState:UIControlStateNormal];
-		}
-		
-		// cell label top row right 
-		
-		bounds.origin.x += checkImage.size.width + MARGIN;
-		bounds.size.width = cell.frame.size.width - checkImage.size.width - (2.0*MARGIN);
-		bounds.size.height = self.tracker.maxLabel.height + MARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
-		
-		UILabel *label = [[UILabel alloc] initWithFrame:bounds];
-		label.tag=kViewTag;
-		label.font = [UIFont boldSystemFontOfSize:18.0];
-		label.textAlignment = UITextAlignmentLeft;
-		label.textColor = [UIColor blackColor];
-		label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
-		label.contentMode = UIViewContentModeTopLeft;
-		label.text = vo.valueName;
-		[cell.contentView addSubview:label];
-		[label release];
-		
-		bounds.origin.y = self.tracker.maxLabel.height + (3.0*MARGIN); //CELL_HEIGHT_TALL/2.0 + MARGIN; // 38.0f; //bounds.size.height; // + BMARGIN;
-		bounds.size.height = /*CELL_HEIGHT_TALL/2.0 ; // */ self.tracker.maxLabel.height + (1.5*MARGIN);
-		
-		bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
-		bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
-	} else {
-		
-		static NSString *CellIdentifier = @"Cell2";
-		
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		} else {
-			// the cell is being recycled, remove old embedded controls
-			UIView *viewToRemove = nil;
-			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
-				[viewToRemove removeFromSuperview];
-		}
-		
-		
-		cell.textLabel.text = vo.valueName;
-		//cell.textLabel.tag = kViewTag;
-		bounds.origin.x = cell.frame.origin.x + self.tracker.maxLabel.width + LMARGIN;
-		bounds.origin.y = self.tracker.maxLabel.height - (MARGIN);
-		bounds.size.width = cell.frame.size.width - self.tracker.maxLabel.width - LMARGIN - RMARGIN;
-		bounds.size.height = self.tracker.maxLabel.height + MARGIN;
-	}
-
-	//NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
-	//bounds.origin.y = bounds.size.height;// - BMARGIN;
-
-	//NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
-	[cell.contentView addSubview:[vo display:bounds af:&activeField]];
-    return cell;
+	return [vo.vos voTVCell:tableView];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

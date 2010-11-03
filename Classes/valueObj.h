@@ -37,6 +37,7 @@
 #define VOG_MAX			6
 
 // supported colors ; tied to trackerObj:colorSet
+// not used
 #define VOC_RED			0
 #define VOC_GREEN		0
 #define VOC_BLUE		0
@@ -68,47 +69,16 @@
 #define FREPDFLT		-1
 
 
-//function support
-#define FNSETVERSION	1
-
-#define FNSTART			-1
-
-#define FNFNFIRST		FNSTART
-#define FNFNDELTA		(FNFNFIRST)
-#define FNFNSUM			(FNFNDELTA-1)
-#define FNFNPOSTSUM		(FNFNSUM-1)
-#define FNFNPRESUM		(FNFNPOSTSUM-1)
-#define FNFNAVG			(FNFNPRESUM-1)
-#define FNFNLAST		FNFNAVG
-
-#define isFnFn(i)		((i<=FNFNFIRST) && (i>=FNFNLAST))
-
-#define FN2OPFIRST		(FNFNLAST-1)
-#define FN2OPPLUS		(FN2OPFIRST)
-#define FN2OPMINUS		(FN2OPPLUS-1)
-#define FN2OPTIMES		(FN2OPMINUS-1)
-#define FN2OPDIVIDE		(FN2OPTIMES-1)
-#define FN2OPLAST		FN2OPDIVIDE
-
-#define FNPARENOPEN		(FN2OPLAST-1)
-#define FNPARENCLOSE	(FNPARENOPEN-1)
-
-#define FNPARENLAST		FNPARENCLOSE
-
-#define FNFIN			FNPARENLAST
-
-#define FnArrStrs	@"delta", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")"
-
-#define FNFNSET			FNFNDELTA,FNFNSUM,FNFNAVG
-#define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
-
-// end functions 
 
 
-#define kViewTag		((NSInteger) 1)
-#define kViewTag2		((NSInteger) 2)
 
-#define kAnimationDuration 0.3
+
+@protocol voProtocol
+- (UIView*) voDisplay:(CGRect)bounds;
+- (UITableViewCell*) voTVCell:(UITableView *)tableView;
+- (NSArray*) voGraphSet;
+- (void) voDrawOptions:(id)ctvovc;
+@end
 
 
 @interface valueObj : NSObject <UITextFieldDelegate> {
@@ -120,8 +90,10 @@
 	NSInteger vGraphType;
 	UIView *display;
 	BOOL useVO;
+	BOOL retrievedData;
 	NSMutableDictionary *optDict;
-	id *parentTracker;
+	id parentTracker;
+	id <voProtocol> vos;
 	
 	UIButton *checkButtonUseVO;
 }
@@ -134,27 +106,39 @@
 @property (nonatomic,retain) NSMutableString *value;
 @property (nonatomic) NSInteger vcolor;
 @property (nonatomic) NSInteger vGraphType;
+@property (nonatomic,retain) NSMutableDictionary *optDict;
+@property (nonatomic,retain) id <voProtocol> vos;
+
 @property (nonatomic, retain) UIView *display;
 @property (nonatomic) BOOL useVO;
-@property (nonatomic,retain) NSMutableDictionary *optDict;
-@property (nonatomic,assign) id *parentTracker;
+@property (nonatomic) BOOL retrievedData;
+@property (nonatomic,assign) id parentTracker;
 
 @property (nonatomic,retain) UIButton *checkButtonUseVO;
 
-- (id) init;
+- (id) initWithData:(id)parentTO 
+			 in_vid:(NSInteger)in_vid 
+		   in_vtype:(NSInteger)in_vtype 
+		   in_vname:(NSString *)in_vname 
+		  in_vcolor:(NSInteger)in_vcolor 
+	  in_vgraphtype:(NSInteger)in_vgraphtype;
+
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
-- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
+//- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
 
 - (void) describe;
-- (UIView *) display:(CGRect)bounds af:(UITextField**)af;
+- (UIView *) display:(CGRect)bounds;
 
 - (void) enableVO;
 - (void) disableVO;
 - (void)checkAction:(id)sender;
 
-+ (NSArray *) graphsForVOTCopy:(NSInteger)vot;
-- (NSArray *) graphsForVOTCopy:(NSInteger)vot;
+- (void) resetData;
+
+//+ (NSArray *) graphsForVOT:(NSInteger)vot;
+//- (NSArray *) graphsForVOT:(NSInteger)vot;
++ (NSArray*) allGraphs;
 + (NSInteger) mapGraphType:(NSString *)gts;
 
 

@@ -13,3 +13,8 @@
 
 #define rtTrackerUpdatedNotification @"rtTrackerUpdatedNotification"
 #define rtValueUpdatedNotification @"rtValueUpdatedNotification"
+
+#define kAnimationDuration 0.3
+
+#define kViewTag		((NSInteger) 1)
+#define kViewTag2		((NSInteger) 2)

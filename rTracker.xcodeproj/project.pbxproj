@@ -29,6 +29,15 @@
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
 		D4A317B41192B7C800F062AC /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
 		D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A317B31192B7C800F062AC /* configTlistController.xib */; };
+		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
+		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
+		D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
+		D4B6AE77127EC36E00C036ED /* voSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE76127EC36E00C036ED /* voSlider.m */; };
+		D4B6AE7C127EC38300C036ED /* voChoice.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE7B127EC38300C036ED /* voChoice.m */; };
+		D4B6AE83127EC39800C036ED /* voBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE82127EC39800C036ED /* voBoolean.m */; };
+		D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE89127EC3AA00C036ED /* voImage.m */; };
+		D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE8E127EC3BE00C036ED /* voFunction.m */; };
+		D4B6AEB6127EE24D00C036ED /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
 		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
 		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
@@ -81,6 +90,24 @@
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = configTlistController.h; path = ../configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = configTlistController.m; path = ../configTlistController.m; sourceTree = "<group>"; };
 		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = configTlistController.xib; sourceTree = "<group>"; };
+		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
+		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
+		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
+		D4B6AE6C127EC34D00C036ED /* voText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voText.m; sourceTree = "<group>"; };
+		D4B6AE70127EC35E00C036ED /* voTextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voTextBox.h; sourceTree = "<group>"; };
+		D4B6AE71127EC35E00C036ED /* voTextBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voTextBox.m; sourceTree = "<group>"; };
+		D4B6AE75127EC36E00C036ED /* voSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voSlider.h; sourceTree = "<group>"; };
+		D4B6AE76127EC36E00C036ED /* voSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voSlider.m; sourceTree = "<group>"; };
+		D4B6AE7A127EC38300C036ED /* voChoice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voChoice.h; sourceTree = "<group>"; };
+		D4B6AE7B127EC38300C036ED /* voChoice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voChoice.m; sourceTree = "<group>"; };
+		D4B6AE81127EC39800C036ED /* voBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voBoolean.h; sourceTree = "<group>"; };
+		D4B6AE82127EC39800C036ED /* voBoolean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voBoolean.m; sourceTree = "<group>"; };
+		D4B6AE88127EC3AA00C036ED /* voImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voImage.h; sourceTree = "<group>"; };
+		D4B6AE89127EC3AA00C036ED /* voImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voImage.m; sourceTree = "<group>"; };
+		D4B6AE8D127EC3BE00C036ED /* voFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voFunction.h; sourceTree = "<group>"; };
+		D4B6AE8E127EC3BE00C036ED /* voFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voFunction.m; sourceTree = "<group>"; };
+		D4B6AEB4127EE24D00C036ED /* voState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voState.h; sourceTree = "<group>"; };
+		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voState.m; sourceTree = "<group>"; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Classes/datePickerVC.xib; sourceTree = "<group>"; };
@@ -144,6 +171,24 @@
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
 				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
 				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
+				D4B6AEB4127EE24D00C036ED /* voState.h */,
+				D4B6AEB5127EE24D00C036ED /* voState.m */,
+				D4B6AE8D127EC3BE00C036ED /* voFunction.h */,
+				D4B6AE8E127EC3BE00C036ED /* voFunction.m */,
+				D4B6AE75127EC36E00C036ED /* voSlider.h */,
+				D4B6AE76127EC36E00C036ED /* voSlider.m */,
+				D4B6AE88127EC3AA00C036ED /* voImage.h */,
+				D4B6AE89127EC3AA00C036ED /* voImage.m */,
+				D4B6AE81127EC39800C036ED /* voBoolean.h */,
+				D4B6AE82127EC39800C036ED /* voBoolean.m */,
+				D4B6AE7A127EC38300C036ED /* voChoice.h */,
+				D4B6AE7B127EC38300C036ED /* voChoice.m */,
+				D4B6AE70127EC35E00C036ED /* voTextBox.h */,
+				D4B6AE71127EC35E00C036ED /* voTextBox.m */,
+				D4B6AE6B127EC34D00C036ED /* voText.h */,
+				D4B6AE6C127EC34D00C036ED /* voText.m */,
+				D4B6AE66127EC33500C036ED /* voNumber.h */,
+				D4B6AE67127EC33500C036ED /* voNumber.m */,
 				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 			);
 			path = Classes;
@@ -305,6 +350,15 @@
 				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
 				D487D7741260A77800298C1D /* configTVObjVC.m in Sources */,
 				D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */,
+				D4B6AE68127EC33500C036ED /* voNumber.m in Sources */,
+				D4B6AE6D127EC34D00C036ED /* voText.m in Sources */,
+				D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */,
+				D4B6AE77127EC36E00C036ED /* voSlider.m in Sources */,
+				D4B6AE7C127EC38300C036ED /* voChoice.m in Sources */,
+				D4B6AE83127EC39800C036ED /* voBoolean.m in Sources */,
+				D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */,
+				D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */,
+				D4B6AEB6127EE24D00C036ED /* voState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,7 +400,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator4.1;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Debug;
 		};
@@ -359,7 +413,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphonesimulator4.1;
 			};
 			name = Release;
 		};

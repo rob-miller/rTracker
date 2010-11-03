@@ -14,12 +14,14 @@
 #import "valueObj.h"
 #import "rTracker-constants.h"
 
+#import "voState.h";
+
 @implementation trackerObj
 
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
 @synthesize nextColor, colorSet, votArray;
-@synthesize maxLabel;
+@synthesize maxLabel,activeControl;
 
 #define f(x) ((CGFloat) (x))
 
@@ -203,7 +205,7 @@
 	NSEnumerator *e5 = [i4 objectEnumerator];
 	int vid;
 	while ( vid = (int) [[e1 nextObject] intValue]) {
-		valueObj *vo = [[valueObj alloc] init :(id*)self
+		valueObj *vo = [[valueObj alloc] initWithData:(id)self
 										in_vid:vid 
 									  in_vtype:(int)[[e2 nextObject] intValue] 
 									  in_vname: (NSString *) [e3 nextObject] 
@@ -408,6 +410,7 @@
 			valueObj *vo = [self getValObj:vid];
 			NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			[vo.value setString:(NSString *) [e3 nextObject]];
+			vo.retrievedData = YES;
 		}
 		
 		[i1 release];
@@ -471,7 +474,8 @@
 	trackerDate = [[NSDate alloc] init];
 	
 	for (valueObj *vo in self.valObjTable) {
-		[vo.value setString:@""];  
+		[vo resetData];
+		//[vo.value setString:@""];  
 	}
 }
 
@@ -633,8 +637,15 @@
 #pragma mark tracker data updated event handling
 
 - (void) trackerUpdated:(NSNotification*)n {
-	valueObj *vo = (valueObj*) [n object];
-	NSLog(@"tracker %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+	id obj = [n object];
+	if ([obj isMemberOfClass:[valueObj class]]) {
+		valueObj *vo = (valueObj*) [n object];
+		NSLog(@"tracker %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+	
+	} else {
+		voState *vos= (voState*) obj;
+		NSLog(@"tracker %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtTrackerUpdatedNotification object:self];
 }
 

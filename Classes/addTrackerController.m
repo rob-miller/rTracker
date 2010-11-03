@@ -10,6 +10,7 @@
 #import "valueObj.h"
 #import "addValObjController.h"
 #import "configTVObjVC.h"
+#import "rTracker-constants.h"
 
 @implementation addTrackerController 
 
@@ -278,8 +279,10 @@ NSLog(@"btnAddValue was pressed!");
 
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
-	self.tempTrackerObj.trackerName = nameField.text;
-	[self.tempTrackerObj.optDict setObject:nameField.text forKey:@"name"];
+	if (nameField.text) {
+		self.tempTrackerObj.trackerName = nameField.text;
+		[self.tempTrackerObj.optDict setObject:nameField.text forKey:@"name"];
+	}
 }
 
 /*

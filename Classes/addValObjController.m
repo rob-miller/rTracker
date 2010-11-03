@@ -8,6 +8,7 @@
 
 #import "addValObjController.h"
 #import "configTVObjVC.h"
+#import "voState.h"
 
 @implementation addValObjController
 
@@ -91,16 +92,16 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	
 	sizeVOTLabel = [addValObjController maxLabelFromArray:parentTrackerObj.votArray];
-	NSArray *allGraphs = [valueObj graphsForVOTCopy:-1];
+	NSArray *allGraphs = [valueObj allGraphs];
 	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
 	
 	colorCount = [self.parentTrackerObj.colorSet count];
 
 	if (self.tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
-		tempValObj.parentTracker = (id*) self.parentTrackerObj;
+		tempValObj.parentTracker = (id) self.parentTrackerObj;
 		self.graphTypes = nil;
-		graphTypes = [valueObj graphsForVOTCopy:VOT_NUMBER];
+		self.graphTypes = [voState voGraphSetNum];  //[valueObj graphsForVOT:VOT_NUMBER];
 		//[self updateScrollView:(NSInteger)VOT_NUMBER];
 		[self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
 	} else {
@@ -112,8 +113,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self updateForPickerRowSelect:self.tempValObj.vGraphType inComponent:2];
 		 
 		NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
-		self.graphTypes = nil;
-		graphTypes = [self.tempValObj graphsForVOTCopy:tempValObj.vtype];
+		self.graphTypes = [self.tempValObj.vos voGraphSet];
 
 		NSInteger row=0;
 		//while ( s = (NSString *) [e nextObject]) {
@@ -127,8 +127,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self.votPicker selectRow:row inComponent:2 animated:NO];
 	}
 
-	[allGraphs release];
-	
 	self.title = @"value";
 	
 	self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
@@ -182,7 +180,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	if (self.tempValObj) {
 		self.graphTypes = nil;
-		graphTypes = [self.tempValObj graphsForVOTCopy:self.tempValObj.vtype];
+		self.graphTypes = [self.tempValObj.vos voGraphSet];
 		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
 	}
 	
@@ -430,12 +428,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (void) updateForPickerRowSelect:(NSInteger)row inComponent:(NSInteger)component
 {
 	if (component == 0) {
-		self.graphTypes = nil;
-		if (self.tempValObj) 
-			graphTypes = [self.tempValObj graphsForVOTCopy:row];
-		else
-			graphTypes = [valueObj graphsForVOTCopy:row];
-
+		self.graphTypes = [self.tempValObj.vos voGraphSet];
 		[self.votPicker reloadComponent:2];
 		[self updateColorCount];
 		//[self updateScrollView:row];

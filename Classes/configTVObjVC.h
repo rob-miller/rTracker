@@ -11,8 +11,9 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
-@interface configTVObjVC : UIViewController <UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource> {
+@interface configTVObjVC : UIViewController <UITextFieldDelegate> {
 
+	BOOL vdlConfigVO;
 	trackerObj *to;
 	valueObj *vo;
 	
@@ -24,13 +25,11 @@
 
 	CGFloat lasty;
 	CGRect saveFrame;
-
-	NSInteger fnSegNdx;
-	NSArray *epTitles;
-	NSMutableArray *fnTitles;
-	NSMutableArray *fnStrs;
-	NSMutableArray *fnArray;
+	CGFloat LFHeight;
+	
 }
+
+@property (nonatomic) BOOL vdlConfigVO;
 
 @property (nonatomic,retain) trackerObj *to;
 @property (nonatomic,retain) valueObj *vo;
@@ -41,22 +40,23 @@
 
 @property (nonatomic) CGFloat lasty;
 @property (nonatomic) CGRect saveFrame;
-@property (nonatomic) NSInteger fnSegNdx;
-@property (nonatomic,retain) NSArray *epTitles;
-@property (nonatomic,retain) NSMutableArray *fnTitles;
-@property (nonatomic,retain) NSMutableArray *fnStrs;
-@property (nonatomic,retain) NSMutableArray *fnArray;
+@property (nonatomic) CGFloat LFHeight;
 
 - (void) addVOFields:(NSInteger) vot;
 - (void) addTOFields;
 - (void) removeSVFields;
-- (void) drawGeneralVoOpts;
+
+- (CGRect) configLabel:(NSString *)text frame:(CGRect)frame key:(NSString*)key addsv:(BOOL)addsv;
+- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state;
+- (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action;
+- (void) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv;
+- (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text;
+- (CGRect) configPicker:(CGRect)frame key:(NSString*)key caller:(id)caller;
+- (CGRect) yAutoscale:(CGRect)frame;
+
 
 - (void) removeGraphMinMax;
 - (void) addGraphMinMax;
 
-#define FNSEGNDX_OVERVIEW 0
-#define FNSEGNDX_RANGEBLD 1
-#define FNSEGNDX_FUNCTBLD 2
 
 @end

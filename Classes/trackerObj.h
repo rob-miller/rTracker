@@ -31,6 +31,8 @@
 	
 	NSArray *colorSet;
 	NSArray *votArray;
+	
+	UIControl *activeControl;  // ugly: track currently active text field so can scroll when keyboard shown, resign on background tap
 }
 
 //@property (nonatomic) int tid;
@@ -42,6 +44,7 @@
 @property (readonly) NSInteger nextColor;
 @property (nonatomic,retain) NSArray *colorSet;
 @property (nonatomic,retain) NSArray *votArray;
+@property (nonatomic,assign) UIControl *activeControl;
 
 - (id) init:(int) tid;
 
