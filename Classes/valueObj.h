@@ -67,7 +67,7 @@
 #define SLIDRDFLTDFLT	50.0
 #define PRIVDFLT		0
 #define FREPDFLT		-1
-
+#define FDDPDFLT		2
 
 
 
@@ -78,11 +78,13 @@
 - (UITableViewCell*) voTVCell:(UITableView *)tableView;
 - (NSArray*) voGraphSet;
 - (void) voDrawOptions:(id)ctvovc;
+- (void) loadConfig;
+- (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID;
 @end
 
 
 @interface valueObj : NSObject <UITextFieldDelegate> {
-	NSInteger vid;
+	NSInteger vid;   
 	NSInteger vtype;
 	NSString *valueName;
 	NSMutableString *value;

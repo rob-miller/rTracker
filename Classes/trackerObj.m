@@ -57,6 +57,8 @@
  *    field='privacy'	: user specified privacy value for valueObj
  *    field='c%d'		: text string for choice %d
  *    field='cc%d'		: graph color for for choice %d
+ *	  field='frep%d'    : function range endpoint 0 or 1: -constant or valobj vid
+ *    field='frv%d'     : function range endpoint 0 or 1 value if frep is offset like hours, months, ... (%d=1 not used)
  *
  *  trkrData: date(int,unique)
  *		entry indicates there will be corresponding voData items
@@ -236,6 +238,8 @@
 		
 		if (vo.vcolor > self.nextColor)
 			nextColor = vo.vcolor;
+		
+		[vo.vos loadConfig];
 	}
 	
 	//[self nextColor];  // inc safely past last used color
@@ -290,6 +294,8 @@
 				   ||
 				   ([key isEqualToString:@"frep1"] && ([val intValue] == f(FREPDFLT)))
 				   ||
+				   ([key isEqualToString:@"fnddp"] && ([val intValue] == f(FDDPDFLT)))
+				   ||
 				   ([key isEqualToString:@"privacy"] && ([val floatValue] == f(PRIVDFLT)))) {
 			[self toExecSql];
 			[vo.optDict removeObjectForKey:key];
@@ -337,6 +343,12 @@
 	
 }
 
+- (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID {
+	for (valueObj *vo in self.valObjTable) {
+		[vo.vos updateVORefs:newVID old:oldVID];
+	}
+}
+
 - (void) saveConfig {
 	NSLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
 	
@@ -346,13 +358,19 @@
 
 	[self saveToOptDict];
 	
+	// put valobjs in state for saving 
+	for (valueObj *vo in self.valObjTable) {
+		if (vo.vid <= 0) {
+			NSInteger old = vo.vid;
+			vo.vid = [self getUnique];
+			[self updateVORefs:vo.vid old:old];
+		}
+	}
+	
+	// now save
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
-		
-		if (vo.vid <= 0) {
-			vo.vid = [self getUnique];
-		}
-		
+
 		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
 					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];

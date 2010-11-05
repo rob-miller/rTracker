@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSString *sql;
 @property (nonatomic, retain) NSString *dbName;
 //@property (nonatomic, retain) sqlite3 *tDb; // not of object type
+@property (nonatomic) NSInteger tuniq;
 
 - (id) init;
 - (void) getTDb;
@@ -41,7 +42,7 @@
 
 - (void) toExecSql;
 - (int) toQry2Int;
-- (NSString *) toQry2StrCopy;
+- (NSString *) toQry2Str;
 - (float) toQry2Float;
 - (double) toQry2Double;
 

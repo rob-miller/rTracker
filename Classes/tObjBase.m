@@ -7,14 +7,11 @@
 //
 
 #import "tObjBase.h"
-
+#import "rTracker-constants.h"
 
 @implementation tObjBase
 
-@synthesize toid;
-@synthesize dbName;
-@synthesize sql;
-
+@synthesize toid, dbName, sql, tuniq;
 //sqlite3 *tDb;
 
 /******************************
@@ -31,10 +28,12 @@
 
 - (id) init {
 	
-	NSLog(@"tObjBase init: db %@",self.dbName);
-	tDb=nil;
-	//[self getTDb];
-	
+	if (self = [super init]) {
+		NSLog(@"tObjBase init: db %@",self.dbName);
+		tDb=nil;
+		//[self getTDb];
+		self.tuniq = TMPUNIQSTART;
+	}
 	return self;
 }
 
@@ -391,7 +390,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	return irslt;
 }
 
-- (NSString *) toQry2StrCopy {
+- (NSString *) toQry2Str {
 	NSLog(@"toQry2StrCopy: %@ => _%@_",self.dbName,self.sql);
 	NSAssert(tDb,@"toQry2StrCopy called with no tDb");
 	
@@ -401,7 +400,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		//int rslt;
 		if((/*rslt =*/ sqlite3_step(stmt)) == SQLITE_ROW) {
-			srslt = [[NSString alloc] initWithUTF8String: (char *) sqlite3_column_text(stmt, 0)];
+			srslt = [NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 0)];
 		} else {
 			NSLog(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}

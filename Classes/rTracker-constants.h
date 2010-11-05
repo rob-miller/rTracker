@@ -18,3 +18,5 @@
 
 #define kViewTag		((NSInteger) 1)
 #define kViewTag2		((NSInteger) 2)
+
+#define TMPUNIQSTART		1000

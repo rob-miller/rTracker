@@ -31,6 +31,9 @@
 	[super dealloc];
 }
 
+- (void) loadConfig {
+}
+
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	
@@ -190,6 +193,11 @@
 
 + (NSArray*) voGraphSetNum {
 	return [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
+}
+
+
+- (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID {
+	// subclass overrides if need to do anything
 }
 
 @end

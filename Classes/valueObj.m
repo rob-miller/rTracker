@@ -107,7 +107,7 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 		case VOT_BOOLEAN:
 			self.vos = [[voBoolean alloc] initWithVO:self];
 			value = [[NSMutableString alloc] initWithCapacity:1];
-			[self.value setString:@"0"];
+			//[self.value setString:@"0"];
 			break;
 		case VOT_CHOICE:
 			self.vos = [[voChoice alloc] initWithVO:self];
@@ -138,7 +138,6 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 			break;
 	}
 }
-
 
 #pragma mark -
 #pragma mark display fn dispatch

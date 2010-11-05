@@ -22,7 +22,7 @@
 - (void)boolBtnAction:(UIButton *)imageButton
 {  // default is unchecked or nil, so only certain is if =1
 	if ([self.vo.value isEqualToString:@"1"]) {
-		[self.vo.value setString:@"0"];
+		[self.vo.value setString:@""];
 		[imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
 	} else {  
 		[self.vo.value setString:@"1"];

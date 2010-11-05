@@ -14,34 +14,50 @@
 
 #define FNSTART			-1
 
-#define FNFNFIRST		FNSTART
-#define FNFNDELTA		(FNFNFIRST)
-#define FNFNSUM			(FNFNDELTA-1)
-#define FNFNPOSTSUM		(FNFNSUM-1)
-#define FNFNPRESUM		(FNFNPOSTSUM-1)
-#define FNFNAVG			(FNFNPRESUM-1)
-#define FNFNLAST		FNFNAVG
+#define FN1ARGFIRST		FNSTART
+#define FN1ARGDELTA		(FN1ARGFIRST)
+#define FN1ARGSUM			(FN1ARGDELTA-1)
+#define FN1ARGPOSTSUM		(FN1ARGSUM-1)
+#define FN1ARGPRESUM		(FN1ARGPOSTSUM-1)
+#define FN1ARGAVG			(FN1ARGPRESUM-1)
+#define FN1ARGLAST		FN1ARGAVG
 
-#define isFnFn(i)		((i<=FNFNFIRST) && (i>=FNFNLAST))
+#define isFn1Arg(i)		((i<=FN1ARGFIRST) && (i>=FN1ARGLAST))
 
-#define FN2OPFIRST		(FNFNLAST-1)
-#define FN2OPPLUS		(FN2OPFIRST)
-#define FN2OPMINUS		(FN2OPPLUS-1)
-#define FN2OPTIMES		(FN2OPMINUS-1)
-#define FN2OPDIVIDE		(FN2OPTIMES-1)
-#define FN2OPLAST		FN2OPDIVIDE
+#define FN2ARGFIRST		(FN1ARGLAST-1)
+#define FN2ARGPLUS		(FN2ARGFIRST)
+#define FN2ARGMINUS		(FN2ARGPLUS-1)
+#define FN2ARGTIMES		(FN2ARGMINUS-1)
+#define FN2ARGDIVIDE		(FN2ARGTIMES-1)
+#define FN2ARGLAST		FN2ARGDIVIDE
 
-#define FNPARENOPEN		(FN2OPLAST-1)
+#define isFn2ArgOp(i)		((i<=FN2ARGFIRST) && (i>=FN2ARGLAST))
+
+#define FNPARENOPEN		(FN2ARGLAST-1)
 #define FNPARENCLOSE	(FNPARENOPEN-1)
 
 #define FNPARENLAST		FNPARENCLOSE
 
 #define FNFIN			FNPARENLAST
 
+#define isFn(i)		((i<=FNSTART) && (i>=FNFIN))
+
 #define FnArrStrs	@"delta", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")"
 
-#define FNFNSET			FNFNDELTA,FNFNSUM,FNFNAVG
+#define FN1ARGSET			FN1ARGDELTA,FN1ARGSUM,FN1ARGAVG
 #define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
+
+
+
+// range endpoint symbols tied to epTitles ivar creation
+//   @"entry", @"hours", @"days", @"weeks", @"months", @"years"
+
+#define FREPENTRY  -1
+#define FREPHOURS  -2
+#define FREPDAYS   -3
+#define FREPWEEKS  -4
+#define FREPMONTHS -5
+#define FREPYEARS  -6
 
 
 #define FNSEGNDX_OVERVIEW 0
@@ -58,6 +74,8 @@
 	NSMutableArray *fnTitles;		// 
 	NSMutableArray *fnArray;		// ordered array of symbols (valObj [vid] or operation [<0]) to compute, <=> optDict:@"func"
 	NSMutableArray *fnStrs;			// valueObj names or predefined operation names (map to symbols, vids in nfArray)
+
+	NSInteger currFnNdx;			// index as we compute the function
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
@@ -66,6 +84,7 @@
 @property (nonatomic,retain) NSMutableArray *fnTitles;
 @property (nonatomic,retain) NSMutableArray *fnStrs;
 @property (nonatomic,retain) NSMutableArray *fnArray;
+@property (nonatomic) NSInteger currFnNdx;
 
 - (void) funcDone;
 - (void) funcVDL:(configTVObjVC*)ctvovc donebutton:(UIBarButtonItem*)db ;

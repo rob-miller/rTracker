@@ -10,6 +10,10 @@
 #import "graphTrackerVC.h"
 #import "rTracker-constants.h"
 
+@interface useTrackerController ()
+- (void) updateTrackerTableView;
+@end
+
 @implementation useTrackerController
 
 @synthesize tracker;
@@ -71,6 +75,7 @@ BOOL keyboardIsShown;
 
 - (void) updateUTC:(NSNotification*)n {
 	NSLog(@"utc update.");
+	[self updateTrackerTableView];
 	[self showSaveBtn:YES];
 }
 
@@ -502,7 +507,8 @@ BOOL keyboardIsShown;
 	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 	[self.tracker saveData];
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
-		[self.tracker resetData];
+		if (![self.toolbarItems containsObject:postDateBtn])
+			[self.tracker resetData];
 		[self updateToolBar];
 		[self updateTrackerTableView];
 		[self showSaveBtn:NO];

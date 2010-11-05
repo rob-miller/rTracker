@@ -394,6 +394,9 @@ BOOL keyboardIsShown;
 	} else if ( tf == [self.wDict objectForKey:@"fr1TF"] ) {
 		okey = @"frv1";
 		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"fnddpTF"] ) {
+		okey = @"fnddp";
+		nkey = nil;
 	} else {
 		NSAssert(0,@"mtfDone cannot identify tf");
 	}
@@ -561,23 +564,6 @@ BOOL keyboardIsShown;
 
 
 
-#pragma mark choice valObj options 
-
-#pragma mark slider options
-
-#pragma mark textbox options
-
-
-#pragma mark image options
-
-#pragma mark function options
-
-#pragma mark general options only label
-/*
-- (void) drawGenOptsOnly 
-{
-}
-*/
 #pragma mark -
 #pragma mark general opts for all 
 

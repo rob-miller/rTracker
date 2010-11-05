@@ -22,6 +22,7 @@
 
 - (id) init;
 - (id) initWithVO:(valueObj*)valo;
+- (void) loadConfig;
 - (UITableViewCell*) voTVEnabledCell:(UITableView *)tableView;
 + (NSArray*) voGraphSetNum;
 

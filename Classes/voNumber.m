@@ -18,8 +18,8 @@
 }
 
 - (void)tfvoFinEdit:(UITextField*)tf {
-	[self.vo.value setString:tf.text];
 	tf.textColor = [UIColor blackColor];
+	[self.vo.value setString:tf.text];
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
@@ -53,19 +53,23 @@
 	dtf.textAlignment = UITextAlignmentRight;
 	//[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
 	trackerObj *to = (trackerObj*)self.vo.parentTracker;
-	if ([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]
-		&& ![to hasData]) {  // only if new entry
-		to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d",self.vo.vid];
-		int v = [to toQry2Int];
-		if (v>0) {
-			to.sql = [NSString stringWithFormat:@"select val from voData where id=%d order by date desc limit 1;",self.vo.vid];
-			NSString *r = [to toQry2StrCopy];
-			dtf.textColor = [UIColor grayColor];
-			dtf.text = r;
-			[r release];
+	if ([self.vo.value isEqualToString:@""]) {
+		if ([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]
+			/* && ![to hasData] */) {  // only if new entry
+			to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d",self.vo.vid];
+			int v = [to toQry2Int];
+			if (v>0) {
+				to.sql = [NSString stringWithFormat:@"select val from voData where id=%d order by date desc limit 1;",self.vo.vid];
+				NSString *r = [to toQry2Str];
+				dtf.textColor = [UIColor grayColor];
+				dtf.text = r;
+			}
+			to.sql = nil;
 		}
-		to.sql = nil;
+	} else {
+		dtf.text = self.vo.value;
 	}
+	
 	
 	dtf.returnKeyType = UIReturnKeyDone;
 	
@@ -78,9 +82,6 @@
 	[dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
 	
 	NSLog(@"dtf: vo val= %@", self.vo.value);
-	if (![self.vo.value isEqualToString:@""]) {
-		dtf.text = self.vo.value;
-	}
 	
 	return [dtf autorelease];
 }
