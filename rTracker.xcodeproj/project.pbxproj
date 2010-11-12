@@ -14,6 +14,9 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
+		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
+		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
+		D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
 		D482D1FF114F7E8900CE6BC8 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */; };
 		D482D272114FEB5E00CE6BC8 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
 		D482D276114FEB7500CE6BC8 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
@@ -40,6 +43,8 @@
 		D4B6AEB6127EE24D00C036ED /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
 		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
 		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
+		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
+		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4C5210E123F9E1400554627 /* whiteButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C5210D123F9E1400554627 /* whiteButton.png */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
@@ -67,6 +72,9 @@
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
+		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Classes/voTBacc.xib; sourceTree = "<group>"; };
+		D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		D482D270114FEB5E00CE6BC8 /* trackerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerList.h; sourceTree = "<group>"; };
 		D482D271114FEB5E00CE6BC8 /* trackerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerList.m; sourceTree = "<group>"; };
@@ -111,6 +119,9 @@
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Classes/datePickerVC.xib; sourceTree = "<group>"; };
+		D4C1873D128A971000A612C4 /* voDataEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voDataEdit.h; sourceTree = "<group>"; };
+		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
+		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Classes/voDataEdit.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = ../UICatalog/images/blueButton.png; sourceTree = SOURCE_ROOT; };
 		D4C5210D123F9E1400554627 /* whiteButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteButton.png; path = ../UICatalog/images/whiteButton.png; sourceTree = SOURCE_ROOT; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = ../TouchCells/images/checked.png; sourceTree = SOURCE_ROOT; };
@@ -134,6 +145,8 @@
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
 				D482D1FF114F7E8900CE6BC8 /* libsqlite3.dylib in Frameworks */,
+				D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */,
+				D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +198,8 @@
 				D4B6AE7B127EC38300C036ED /* voChoice.m */,
 				D4B6AE70127EC35E00C036ED /* voTextBox.h */,
 				D4B6AE71127EC35E00C036ED /* voTextBox.m */,
+				D4C1873D128A971000A612C4 /* voDataEdit.h */,
+				D4C1873E128A971000A612C4 /* voDataEdit.m */,
 				D4B6AE6B127EC34D00C036ED /* voText.h */,
 				D4B6AE6C127EC34D00C036ED /* voText.m */,
 				D4B6AE66127EC33500C036ED /* voNumber.h */,
@@ -226,6 +241,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
+				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
 				D4EE9D63125E6897001BDD06 /* down.png */,
 				D4EE9D61125E6886001BDD06 /* up.png */,
@@ -253,6 +270,8 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
+				D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */,
+				D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -325,6 +344,8 @@
 				D4EE9D64125E6897001BDD06 /* down.png in Resources */,
 				D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */,
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
+				D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */,
+				D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +380,7 @@
 				D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */,
 				D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */,
 				D4B6AEB6127EE24D00C036ED /* voState.m in Sources */,
+				D4C18740128A971000A612C4 /* voDataEdit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +409,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
 				INFOPLIST_FILE = "rTracker-Info.plist";
+				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_NAME = rTracker;
 			};
 			name = Release;
@@ -412,6 +436,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator4.1;
 			};

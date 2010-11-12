@@ -21,7 +21,7 @@
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
 @synthesize nextColor, colorSet, votArray;
-@synthesize maxLabel,activeControl;
+@synthesize maxLabel,activeControl,vc;
 
 #define f(x) ((CGFloat) (x))
 
@@ -49,7 +49,8 @@
  *    field='nswl'      : bool - number should start with last saved value
  *    field='shrinkb'   : bool - adjust width of choice buttons to match text in each
  *    field='tbnl'      : bool - use number of lines in textbox as number when graphing; add graph opts back to picker if set
- *    field='tbab'      : bool - show name-from-addressbook picker for textbox display
+ *    field='tbni'      : bool - show names index component in picker for textbox display
+ *    field='tbhi'      : bool - show history index component in picker for textbox display
  *    field='graph'     : bool - do graph vo 
  *    field='smin'		: user specified slider minimum
  *    field='smax'		: user specified slider maximum
@@ -152,6 +153,9 @@
 	self.optDict = nil;
 	[optDict release];
 
+	self.vc = nil;
+	self.activeControl = nil;
+	
 	//unregister for value updated notices
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:rtValueUpdatedNotification
@@ -276,7 +280,9 @@
 				   ||
 				   ([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
 				   ||
-				   ([key isEqualToString:@"tbab"] && [val isEqualToString:(TBABDFLT ? @"1" : @"0")])
+				   ([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
+				   ||
+				   ([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
 				   ||
 				   ([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
 				   ||

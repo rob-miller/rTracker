@@ -57,7 +57,8 @@
 #define AUTOSCALEDFLT   YES
 #define SHRINKBDFLT     NO 
 #define TBNLDFLT        NO
-#define TBABDFLT        NO
+#define TBNIDFLT        NO
+#define TBHIDFLT        NO
 #define GRAPHDFLT	    YES
 #define NSWLDFLT        NO
 
@@ -80,6 +81,12 @@
 - (void) voDrawOptions:(id)ctvovc;
 - (void) loadConfig;
 - (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID;
+- (void) dataEditVDidLoad:(UIViewController*)vc;
+- (void) dataEditVWAppear:(UIViewController*)vc;
+- (void) dataEditVWDisappear;
+- (void) dataEditVDidUnload;
+//- (void) dataEditFinished;
+- (void) dealloc;
 @end
 
 

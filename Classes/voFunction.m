@@ -14,7 +14,6 @@
 //@property (nonatomic, retain) NSNumber *foo;
 @end
 
-#define MyTracker ((trackerObj*) self.vo.parentTracker)
 
 @implementation voFunction
 
@@ -247,7 +246,7 @@
 	}
 	
 	
-	return [NSNumber numberWithInt:42];
+	return [NSNumber numberWithDouble:result];
 	
 }
 

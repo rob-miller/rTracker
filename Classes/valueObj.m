@@ -59,22 +59,28 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 
 - (void) dealloc 
 {
-	NSLog(@"dealloc valueObj: %@",valueName);
+	//NSLog(@"dealloc valueObj: %@",valueName);
+	//NSLog(@"valuename retain count= %d",[valueName retainCount] );
 	self.valueName = nil;
 	[valueName release];
 	self.value = nil;
 	[value release];
 	self.display = nil;
 	[display release];
+	
 	self.optDict = nil;
 	[optDict release];
 	
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
+	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	self.vos = nil;
-	[(voState*)vos release];
-	
+	[(id)vos release];
+	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//[(voState*)vos release];
+	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//[vos dealloc];
 	[super dealloc];
 }
 
@@ -137,6 +143,7 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 			NSAssert1(0,@"valueObj init vtype %d not supported",vt);
 			break;
 	}
+	[(id) self.vos release];
 }
 
 #pragma mark -

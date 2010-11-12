@@ -13,6 +13,8 @@
 #import "configTVObjVC.h"
 #import "rTracker-constants.h"
 
+#define MyTracker ((trackerObj*) self.vo.parentTracker)
+
 @interface voState : NSObject <voProtocol> {
 
 	valueObj *vo;

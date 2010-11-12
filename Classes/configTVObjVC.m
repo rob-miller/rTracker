@@ -292,8 +292,10 @@ BOOL keyboardIsShown;
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbabBtn"] ) {
-		okey = @"tbab"; dfltState=TBABDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
+		okey = @"tbni"; dfltState=TBNIDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
+		okey = @"tbhi"; dfltState=TBHIDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
 		okey = @"graph"; dfltState=GRAPHDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"swlBtn"] ) {

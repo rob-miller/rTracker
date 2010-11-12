@@ -27,7 +27,7 @@
 
 - (void) dealloc {
 
-	
+	NSLog(@"voState default dealloc");
 	[super dealloc];
 }
 
@@ -186,6 +186,18 @@
 	[cell.contentView addSubview:[self.vo display:bounds]];
 	return cell;
 }
+
+- (void) dataEditVDidLoad:(UIViewController*)vc {
+}
+- (void) dataEditVWAppear:(UIViewController*)vc {
+}
+- (void) dataEditVWDisappear {
+}
+
+- (void) dataEditVDidUnload {
+}
+//- (void) dataEditFinished {
+//}
 
 - (NSArray*) voGraphSet {
 	return [NSArray arrayWithObjects:@"dots", nil];

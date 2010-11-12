@@ -92,21 +92,15 @@ BOOL keyboardIsShown;
 	
 			
 	[self updateToolBar];
-	
 	keyboardIsShown = NO;
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillShow:) 
-												 name:UIKeyboardWillShowNotification 
-											   object:self.view.window];
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillHide:) 
-												 name:UIKeyboardWillHideNotification 
-											   object:self.view.window];
+	
+	self.tracker.vc = self;
 
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(updateUTC:) 
 												 name:rtTrackerUpdatedNotification 
 											   object:self.tracker];
+	
 	
     [super viewDidLoad];
 }
@@ -122,6 +116,13 @@ BOOL keyboardIsShown;
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+
+	//unregister for tracker updated notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:rtTrackerUpdatedNotification
+                                                  object:nil];  
+	
+	
 	UIView *haveView = [self.view viewWithTag:kViewTag2];
 	if (haveView) 
 		[haveView removeFromSuperview];
@@ -143,21 +144,9 @@ BOOL keyboardIsShown;
 	
 	self.dpvc.action = DPA_CANCEL;
 	
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillShowNotification 
-                                                  object:nil]; 
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillHideNotification 
-                                                  object:nil];  
+	self.tracker.vc = nil;
 	
-	//unregister for tracker updated notices
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:rtTrackerUpdatedNotification
-                                                  object:nil];  
-	
-	[super viewDidLoad];
+	[super viewDidUnload];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -199,7 +188,32 @@ BOOL keyboardIsShown;
 		self.dpvc = nil;
 		[dpvc release];
 	}
+
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillShow:) 
+												 name:UIKeyboardWillShowNotification 
+											   object:self.view.window];
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(keyboardWillHide:) 
+												 name:UIKeyboardWillHideNotification 
+											   object:self.view.window];
+	
+	
 }
+
+- (void) viewWillDisappear :(BOOL)animated
+{
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillShowNotification 
+                                                  object:nil]; 
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillHideNotification 
+                                                  object:nil];  
+	
+}
+
 # pragma mark view rotation methods
 
 // Override to allow orientations other than the default portrait orientation.
@@ -336,7 +350,7 @@ BOOL keyboardIsShown;
     NSDictionary* userInfo = [n userInfo];
 	
     // get the size of the keyboard
-    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey];
+    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey 
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
 	CGRect viewFrame = self.view.frame;
@@ -476,6 +490,7 @@ BOOL keyboardIsShown;
 	[tbi addObject:[self testBtn]];
 	 
 	[self setToolbarItems:tbi animated:YES];
+	[tbi release];
 }
 
 - (void) setTrackerDate:(int) targD {

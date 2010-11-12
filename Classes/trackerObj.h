@@ -32,7 +32,8 @@
 	NSArray *colorSet;
 	NSArray *votArray;
 	
-	UIControl *activeControl;  // ugly: track currently active text field so can scroll when keyboard shown, resign on background tap
+	UIControl *activeControl;	// ugly: track currently active text field so can scroll when keyboard shown, resign on background tap
+	UIViewController *vc;		// ugly: vos may need this to present a voEdit page
 }
 
 //@property (nonatomic) int tid;
@@ -45,6 +46,7 @@
 @property (nonatomic,retain) NSArray *colorSet;
 @property (nonatomic,retain) NSArray *votArray;
 @property (nonatomic,assign) UIControl *activeControl;
+@property (nonatomic,assign) UIViewController *vc;
 
 - (id) init:(int) tid;
 
