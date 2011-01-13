@@ -40,7 +40,13 @@
 - (void) saveFnArray {
 	// note this converts NSNumbers to NSStrings
 	// works because NSNumber returns an NSString for [description]
-	[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
+	
+	//[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
+	// don't save an empty string
+	NSString *ts = [self.fnArray componentsJoinedByString:@" "];
+	if (0 < [ts length]) {
+		[self.vo.optDict setObject:ts forKey:@"func"];
+	}
 }
 
 - (void) loadFnArray {
@@ -423,12 +429,13 @@
 	NSString *key = [NSString stringWithFormat:@"frep%d",component];
 	NSNumber *n = [self.vo.optDict objectForKey:key];
 	NSInteger ep = [n integerValue];
-	if (n == nil || ep == FREPDFLT) 
+	if (n == nil || ep == FREPDFLT) // no endpoint defined, so default row 0
 		return 0;
-	if (ep >= 0  || ep <= -TMPUNIQSTART) 
+	if (ep >= 0  || ep <= -TMPUNIQSTART)  // ep defined and saved, or ep not saved and has tmp vid, so return ndx in vo table
 		return [MyTracker.valObjTable indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
 		//return ep+1;
-	return (ep * -1) + [MyTracker.valObjTable count] -1;
+	
+	return (ep * -1) + [MyTracker.valObjTable count] -1;  // ep is offset into hours, months list
 }
 
 - (NSString *) fnrRowTitle:(NSInteger)row {
@@ -662,13 +669,15 @@
 	
 	NSNumber *n = [self.vo.optDict objectForKey:key];
 	NSInteger ep = [n integerValue];
-	NSUInteger ep2 = n ? (ep+1)*-1 : 0;
-	if (n == nil || ep == FREPDFLT) 
+	NSUInteger ep2 = n ? (ep+1)*-1 : 0; // invalid if ep is tmpUniq (negative)
+	
+	if (n == nil || ep == FREPDFLT) // no endpoint defined, default is 'entry'
 		return [NSString stringWithFormat:@"%@ %@", pre, [self.epTitles objectAtIndex:ep2]];  // FREPDFLT
-	if (ep >= 0) 
+	if (ep >= 0 || ep <= -TMPUNIQSTART )  // endpoint is vid and valobj saved, or tmp vid as valobj not saved
 		return [NSString stringWithFormat:@"%@ %@", pre, ((valueObj*)[MyTracker getValObj:ep]).valueName];
 	
-	return [NSString stringWithFormat:@"%@%d %@", 
+	// ep is hours / days / months entry
+	return [NSString stringWithFormat:@"%@%d %@",  
 			(component ? @"+" : @"-"), [[self.vo.optDict objectForKey:vkey] intValue], [self.epTitles objectAtIndex:ep2]];
 }
 

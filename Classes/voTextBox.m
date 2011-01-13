@@ -270,7 +270,6 @@ BOOL keyboardIsShown;
 #pragma mark voState display
 
 - (UIView*) voDisplay:(CGRect)bounds {
-	// don't forget addressbook names picker
 
 	UIButton *tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	tbButton.frame = bounds; //CGRectZero;

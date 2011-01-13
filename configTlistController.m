@@ -88,6 +88,7 @@ UITableView *deleteTableView;
 	NSLog(@"ctlc: viewWillAppear");
 	
 	[self.table reloadData];
+	selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
 	
     [super viewWillAppear:animated];
 }
