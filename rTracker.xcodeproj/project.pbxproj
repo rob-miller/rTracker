@@ -41,6 +41,7 @@
 		D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE89127EC3AA00C036ED /* voImage.m */; };
 		D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE8E127EC3BE00C036ED /* voFunction.m */; };
 		D4B6AEB6127EE24D00C036ED /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
+		D4BA7A4D12EDD7870046BBBE /* privacy.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BA7A4C12EDD7870046BBBE /* privacy.m */; };
 		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
 		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
@@ -52,6 +53,9 @@
 		D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
 		D4E5FDD9125283B1004BB4EC /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4E5FDD7125283B1004BB4EC /* graphTracker.xib */; };
 		D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FE4512529300004BB4EC /* graphTrackerV.m */; };
+		D4E8F90112E8682100A2526B /* privacyV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90012E8682100A2526B /* privacyV.m */; };
+		D4E8F90412E868A300A2526B /* tictacV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90312E868A300A2526B /* tictacV.m */; };
+		D4E8F90712E868B700A2526B /* ppwV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90612E868B700A2526B /* ppwV.m */; };
 		D4EE9D62125E6886001BDD06 /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EE9D61125E6886001BDD06 /* up.png */; };
 		D4EE9D64125E6897001BDD06 /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EE9D63125E6897001BDD06 /* down.png */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
@@ -116,6 +120,8 @@
 		D4B6AE8E127EC3BE00C036ED /* voFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voFunction.m; sourceTree = "<group>"; };
 		D4B6AEB4127EE24D00C036ED /* voState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voState.h; sourceTree = "<group>"; };
 		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voState.m; sourceTree = "<group>"; };
+		D4BA7A4B12EDD76E0046BBBE /* privacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privacy.h; sourceTree = "<group>"; };
+		D4BA7A4C12EDD7870046BBBE /* privacy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = privacy.m; sourceTree = "<group>"; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Classes/datePickerVC.xib; sourceTree = "<group>"; };
@@ -131,6 +137,12 @@
 		D4E5FDD7125283B1004BB4EC /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = Classes/graphTracker.xib; sourceTree = "<group>"; };
 		D4E5FE4412529300004BB4EC /* graphTrackerV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerV.h; sourceTree = "<group>"; };
 		D4E5FE4512529300004BB4EC /* graphTrackerV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerV.m; sourceTree = "<group>"; };
+		D4E8F8FF12E8682100A2526B /* privacyV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privacyV.h; sourceTree = "<group>"; };
+		D4E8F90012E8682100A2526B /* privacyV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = privacyV.m; sourceTree = "<group>"; };
+		D4E8F90212E868A300A2526B /* tictacV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tictacV.h; sourceTree = "<group>"; };
+		D4E8F90312E868A300A2526B /* tictacV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tictacV.m; sourceTree = "<group>"; };
+		D4E8F90512E868B700A2526B /* ppwV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ppwV.h; sourceTree = "<group>"; };
+		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ppwV.m; sourceTree = "<group>"; };
 		D4EE9D61125E6886001BDD06 /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = up.png; path = ../../up.png; sourceTree = SOURCE_ROOT; };
 		D4EE9D63125E6897001BDD06 /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = ../../down.png; sourceTree = SOURCE_ROOT; };
 		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
@@ -156,54 +168,11 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
-				28C286E00D94DF7D0034E888 /* RootViewController.m */,
-				D4588ADA1177497200AD2106 /* addTrackerController.h */,
-				D4588ADB1177497200AD2106 /* addTrackerController.m */,
-				D48F9FAF119B4CA600B37C93 /* addValObjController.h */,
-				D48F9FB0119B4CA600B37C93 /* addValObjController.m */,
-				D487D7711260A77800298C1D /* configTVObjVC.h */,
-				D487D7721260A77800298C1D /* configTVObjVC.m */,
-				D4A317B11192B7C800F062AC /* configTlistController.h */,
-				D4A317B21192B7C800F062AC /* configTlistController.m */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
-				D49854AD12312A400009E458 /* useTrackerController.h */,
-				D49854AE12312A400009E458 /* useTrackerController.m */,
-				D4BBB57D12672C94000F8467 /* datePickerVC.h */,
-				D4BBB57E12672C94000F8467 /* datePickerVC.m */,
-				D4E5FE4412529300004BB4EC /* graphTrackerV.h */,
-				D4E5FE4512529300004BB4EC /* graphTrackerV.m */,
-				D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */,
-				D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */,
-				D4A314A81189BB6A00F062AC /* tObjBase.h */,
-				D4A314A91189BB6A00F062AC /* tObjBase.m */,
-				D482D270114FEB5E00CE6BC8 /* trackerList.h */,
-				D482D271114FEB5E00CE6BC8 /* trackerList.m */,
-				D482D274114FEB7500CE6BC8 /* trackerObj.h */,
-				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
-				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
-				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
-				D4B6AEB4127EE24D00C036ED /* voState.h */,
-				D4B6AEB5127EE24D00C036ED /* voState.m */,
-				D4B6AE8D127EC3BE00C036ED /* voFunction.h */,
-				D4B6AE8E127EC3BE00C036ED /* voFunction.m */,
-				D4B6AE75127EC36E00C036ED /* voSlider.h */,
-				D4B6AE76127EC36E00C036ED /* voSlider.m */,
-				D4B6AE88127EC3AA00C036ED /* voImage.h */,
-				D4B6AE89127EC3AA00C036ED /* voImage.m */,
-				D4B6AE81127EC39800C036ED /* voBoolean.h */,
-				D4B6AE82127EC39800C036ED /* voBoolean.m */,
-				D4B6AE7A127EC38300C036ED /* voChoice.h */,
-				D4B6AE7B127EC38300C036ED /* voChoice.m */,
-				D4B6AE70127EC35E00C036ED /* voTextBox.h */,
-				D4B6AE71127EC35E00C036ED /* voTextBox.m */,
-				D4C1873D128A971000A612C4 /* voDataEdit.h */,
-				D4C1873E128A971000A612C4 /* voDataEdit.m */,
-				D4B6AE6B127EC34D00C036ED /* voText.h */,
-				D4B6AE6C127EC34D00C036ED /* voText.m */,
-				D4B6AE66127EC33500C036ED /* voNumber.h */,
-				D4B6AE67127EC33500C036ED /* voNumber.m */,
+				D4956B2212E076B900B0BB9B /* views */,
+				D4956B2012E0710100B0BB9B /* trackerObj classes */,
+				D4956B1F12E06EAA00B0BB9B /* valueObj classes */,
 				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 			);
 			path = Classes;
@@ -274,6 +243,105 @@
 				D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D4956B1F12E06EAA00B0BB9B /* valueObj classes */ = {
+			isa = PBXGroup;
+			children = (
+				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
+				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
+				D4B6AEB4127EE24D00C036ED /* voState.h */,
+				D4B6AEB5127EE24D00C036ED /* voState.m */,
+				D4B6AE8D127EC3BE00C036ED /* voFunction.h */,
+				D4B6AE8E127EC3BE00C036ED /* voFunction.m */,
+				D4B6AE75127EC36E00C036ED /* voSlider.h */,
+				D4B6AE76127EC36E00C036ED /* voSlider.m */,
+				D4B6AE88127EC3AA00C036ED /* voImage.h */,
+				D4B6AE89127EC3AA00C036ED /* voImage.m */,
+				D4B6AE81127EC39800C036ED /* voBoolean.h */,
+				D4B6AE82127EC39800C036ED /* voBoolean.m */,
+				D4B6AE7A127EC38300C036ED /* voChoice.h */,
+				D4B6AE7B127EC38300C036ED /* voChoice.m */,
+				D4B6AE70127EC35E00C036ED /* voTextBox.h */,
+				D4B6AE71127EC35E00C036ED /* voTextBox.m */,
+				D4C1873D128A971000A612C4 /* voDataEdit.h */,
+				D4C1873E128A971000A612C4 /* voDataEdit.m */,
+				D4B6AE6B127EC34D00C036ED /* voText.h */,
+				D4B6AE6C127EC34D00C036ED /* voText.m */,
+				D4B6AE66127EC33500C036ED /* voNumber.h */,
+				D4B6AE67127EC33500C036ED /* voNumber.m */,
+			);
+			name = "valueObj classes";
+			sourceTree = "<group>";
+		};
+		D4956B2012E0710100B0BB9B /* trackerObj classes */ = {
+			isa = PBXGroup;
+			children = (
+				D4A314A81189BB6A00F062AC /* tObjBase.h */,
+				D4A314A91189BB6A00F062AC /* tObjBase.m */,
+				D482D270114FEB5E00CE6BC8 /* trackerList.h */,
+				D482D271114FEB5E00CE6BC8 /* trackerList.m */,
+				D482D274114FEB7500CE6BC8 /* trackerObj.h */,
+				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
+			);
+			name = "trackerObj classes";
+			sourceTree = "<group>";
+		};
+		D4956B2112E0717400B0BB9B /* graphing */ = {
+			isa = PBXGroup;
+			children = (
+				D4E5FE4412529300004BB4EC /* graphTrackerV.h */,
+				D4E5FE4512529300004BB4EC /* graphTrackerV.m */,
+				D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */,
+				D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */,
+			);
+			name = graphing;
+			sourceTree = "<group>";
+		};
+		D4956B2212E076B900B0BB9B /* views */ = {
+			isa = PBXGroup;
+			children = (
+				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
+				28C286E00D94DF7D0034E888 /* RootViewController.m */,
+				D4588ADA1177497200AD2106 /* addTrackerController.h */,
+				D4588ADB1177497200AD2106 /* addTrackerController.m */,
+				D48F9FAF119B4CA600B37C93 /* addValObjController.h */,
+				D48F9FB0119B4CA600B37C93 /* addValObjController.m */,
+				D487D7711260A77800298C1D /* configTVObjVC.h */,
+				D487D7721260A77800298C1D /* configTVObjVC.m */,
+				D4A317B11192B7C800F062AC /* configTlistController.h */,
+				D4A317B21192B7C800F062AC /* configTlistController.m */,
+				D49854AD12312A400009E458 /* useTrackerController.h */,
+				D49854AE12312A400009E458 /* useTrackerController.m */,
+				D4956B2112E0717400B0BB9B /* graphing */,
+				D4956B2312E076E100B0BB9B /* date picker */,
+				D4956B3A12E0886E00B0BB9B /* privacy */,
+			);
+			name = views;
+			sourceTree = "<group>";
+		};
+		D4956B2312E076E100B0BB9B /* date picker */ = {
+			isa = PBXGroup;
+			children = (
+				D4BBB57D12672C94000F8467 /* datePickerVC.h */,
+				D4BBB57E12672C94000F8467 /* datePickerVC.m */,
+			);
+			name = "date picker";
+			sourceTree = "<group>";
+		};
+		D4956B3A12E0886E00B0BB9B /* privacy */ = {
+			isa = PBXGroup;
+			children = (
+				D4BA7A4B12EDD76E0046BBBE /* privacy.h */,
+				D4BA7A4C12EDD7870046BBBE /* privacy.m */,
+				D4E8F8FF12E8682100A2526B /* privacyV.h */,
+				D4E8F90012E8682100A2526B /* privacyV.m */,
+				D4E8F90212E868A300A2526B /* tictacV.h */,
+				D4E8F90312E868A300A2526B /* tictacV.m */,
+				D4E8F90512E868B700A2526B /* ppwV.h */,
+				D4E8F90612E868B700A2526B /* ppwV.m */,
+			);
+			name = privacy;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -381,6 +449,10 @@
 				D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */,
 				D4B6AEB6127EE24D00C036ED /* voState.m in Sources */,
 				D4C18740128A971000A612C4 /* voDataEdit.m in Sources */,
+				D4E8F90112E8682100A2526B /* privacyV.m in Sources */,
+				D4E8F90412E868A300A2526B /* tictacV.m in Sources */,
+				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
+				D4BA7A4D12EDD7870046BBBE /* privacy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

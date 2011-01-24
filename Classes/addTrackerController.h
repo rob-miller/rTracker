@@ -2,6 +2,8 @@
 //  addTrackerController.h
 //  rTracker
 //
+//  from this screen the user creates or edits a tracker, by naming it and adding values.
+//
 //  Created by Robert Miller on 15/04/2010.
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //

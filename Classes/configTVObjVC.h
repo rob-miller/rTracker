@@ -2,6 +2,10 @@
 //  configValObjVC.h
 //  rTracker
 //
+//  This screen displays configuration options for a tracker or a specific value object type.  The 
+//  class provides routines to support labels, checkboxes, textboxes, etc., while the specific arrangement is 
+//  delegated to the tracker or valueObj with addTOFields: or addVOFields:
+//
 //  Created by Robert Miller on 09/10/2010.
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //

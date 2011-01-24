@@ -2,6 +2,8 @@
 //  useTrackerController.h
 //  rTracker
 //
+//  this screen presents the list of value objects for a specified tracker
+//
 //  Created by Robert Miller on 03/09/2010.
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //

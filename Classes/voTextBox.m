@@ -307,6 +307,8 @@ BOOL keyboardIsShown;
 						key:@"tbnlBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
 	
+	/* TODO: support address book picker in v 2.0 */
+	
 	/*  TODO: support index picker component in v 2.0
 	 
 	frame.origin.x = MARGIN;

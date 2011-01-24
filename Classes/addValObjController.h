@@ -2,6 +2,8 @@
 //  addValObjController.h
 //  rTracker
 //
+//  this screen supports create/edit of a value object, specifying its label, type and graph color/style
+//
 //  Created by Robert Miller on 12/05/2010.
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //

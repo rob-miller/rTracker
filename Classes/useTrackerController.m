@@ -9,6 +9,7 @@
 #import "useTrackerController.h"
 #import "graphTrackerVC.h"
 #import "rTracker-constants.h"
+#import "privacy.h"
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
@@ -198,6 +199,8 @@ BOOL keyboardIsShown;
 												 name:UIKeyboardWillHideNotification 
 											   object:self.view.window];
 	
+
+	NSLog(@"useTrackerController: viwWillAppear privacy= %d", [privacy getPrivacyValue]);
 	
 }
 

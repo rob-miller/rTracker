@@ -12,10 +12,12 @@
 #import "configTlistController.h"
 #import "useTrackerController.h"
 
+#import "privacyV.h"
+
 @implementation RootViewController
 
 @synthesize tlist;
-@synthesize privateBtn, multiGraphBtn;
+@synthesize privateBtn, multiGraphBtn,payBtn, privacyObj;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -41,7 +43,7 @@
 #pragma mark view support
 
 - (void)viewDidLoad {
-	NSLog(@"rvc: viewDidLoad");
+	NSLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     self.title = @"rTracker";
 
 	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
@@ -53,11 +55,12 @@
 	
 	[self setToolbarItems:[NSArray arrayWithObjects: 
 						   //self.flexibleSpaceButtonItem,
-						   self.privateBtn, self.multiGraphBtn, 
+						   self.payBtn, self.privateBtn, self.multiGraphBtn, 
 						   //self.flexibleSpaceButtonItem, 
 						   nil] 
 				 animated:NO];
 	
+	[payBtn release];
 	[privateBtn release];
 	[multiGraphBtn release];
 
@@ -79,7 +82,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	NSLog(@"rvc: viewWillAppear");	
+	NSLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
 	
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
@@ -135,6 +138,17 @@
 #pragma mark -
 #pragma mark button accessor getters
 
+- (UIBarButtonItem *) payBtn {
+	if (payBtn == nil) {
+		payBtn = [[UIBarButtonItem alloc]
+					  initWithTitle:@"$"
+					  style:UIBarButtonItemStyleBordered
+					  target:self
+					  action:@selector(btnPay)];
+	}
+	return payBtn;
+}
+
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
 		privateBtn = [[UIBarButtonItem alloc]
@@ -155,6 +169,13 @@
 					  action:@selector(btnMultiGraph)];
 	}
 	return multiGraphBtn;
+}
+
+- (privacyV*) privacyObj {
+	if (privacyObj == nil) {
+		privacyObj = [[privacyV alloc] initWithParentView:self.view];
+	}
+	return privacyObj;
 }
 
 #pragma mark -
@@ -186,6 +207,14 @@
 
 - (void)btnPrivate {
 	NSLog(@"btnPrivate was pressed!");
+	
+	[self.privacyObj togglePrivacySetter ];
+	
+}
+
+- (void)btnPay {
+	NSLog(@"btnPay was pressed!");
+	
 }
 
 #pragma mark -

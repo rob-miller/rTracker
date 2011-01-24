@@ -2,6 +2,8 @@
 //  datePicker.h
 //  rTracker
 //
+//  this support screen enables the user to specify a date/time to navigate, create or edit  entries for a tracker
+//
 //  Created by Robert Miller on 14/10/2010.
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //
