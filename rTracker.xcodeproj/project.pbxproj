@@ -47,7 +47,6 @@
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
-		D4C5210E123F9E1400554627 /* whiteButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C5210D123F9E1400554627 /* whiteButton.png */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
 		D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
@@ -56,8 +55,6 @@
 		D4E8F90112E8682100A2526B /* privacyV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90012E8682100A2526B /* privacyV.m */; };
 		D4E8F90412E868A300A2526B /* tictacV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90312E868A300A2526B /* tictacV.m */; };
 		D4E8F90712E868B700A2526B /* ppwV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90612E868B700A2526B /* ppwV.m */; };
-		D4EE9D62125E6886001BDD06 /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EE9D61125E6886001BDD06 /* up.png */; };
-		D4EE9D64125E6897001BDD06 /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EE9D63125E6897001BDD06 /* down.png */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
@@ -76,7 +73,7 @@
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
-		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Classes/voTBacc.xib; sourceTree = "<group>"; };
+		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
 		D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -86,22 +83,22 @@
 		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerObj.m; sourceTree = "<group>"; };
 		D487D7711260A77800298C1D /* configTVObjVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTVObjVC.h; sourceTree = "<group>"; };
 		D487D7721260A77800298C1D /* configTVObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTVObjVC.m; sourceTree = "<group>"; };
-		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = Classes/configTVObjVC.xib; sourceTree = "<group>"; };
+		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = Resources/xib/configTVObjVC.xib; sourceTree = "<group>"; };
 		D48F9E7D119AA02A00B37C93 /* valueObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = valueObj.h; sourceTree = "<group>"; };
 		D48F9E7E119AA02A00B37C93 /* valueObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = valueObj.m; sourceTree = "<group>"; };
 		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
 		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
-		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Classes/addValObjController.xib; sourceTree = "<group>"; };
+		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Resources/xib/addValObjController.xib; sourceTree = "<group>"; };
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
-		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Classes/useTrackerController.xib; sourceTree = "<group>"; };
+		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
-		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = addTrackerController.xib; sourceTree = "<group>"; };
-		D4A316C01191987E00F062AC /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = configTlistController.h; path = ../configTlistController.h; sourceTree = "<group>"; };
-		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = configTlistController.m; path = ../configTlistController.m; sourceTree = "<group>"; };
-		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = configTlistController.xib; sourceTree = "<group>"; };
+		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
+		D4A316C01191987E00F062AC /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/xib/MainWindow.xib; sourceTree = "<group>"; };
+		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTlistController.h; sourceTree = "<group>"; };
+		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTlistController.m; sourceTree = "<group>"; };
+		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
 		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
@@ -124,17 +121,16 @@
 		D4BA7A4C12EDD7870046BBBE /* privacy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = privacy.m; sourceTree = "<group>"; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
-		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Classes/datePickerVC.xib; sourceTree = "<group>"; };
+		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
 		D4C1873D128A971000A612C4 /* voDataEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voDataEdit.h; sourceTree = "<group>"; };
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
-		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Classes/voDataEdit.xib; sourceTree = "<group>"; };
-		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = ../UICatalog/images/blueButton.png; sourceTree = SOURCE_ROOT; };
-		D4C5210D123F9E1400554627 /* whiteButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = whiteButton.png; path = ../UICatalog/images/whiteButton.png; sourceTree = SOURCE_ROOT; };
-		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = ../TouchCells/images/checked.png; sourceTree = SOURCE_ROOT; };
-		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = ../TouchCells/images/unchecked.png; sourceTree = SOURCE_ROOT; };
+		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
+		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
+		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
+		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
 		D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerVC.h; sourceTree = "<group>"; };
 		D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerVC.m; sourceTree = "<group>"; };
-		D4E5FDD7125283B1004BB4EC /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = Classes/graphTracker.xib; sourceTree = "<group>"; };
+		D4E5FDD7125283B1004BB4EC /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = Resources/xib/graphTracker.xib; sourceTree = "<group>"; };
 		D4E5FE4412529300004BB4EC /* graphTrackerV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerV.h; sourceTree = "<group>"; };
 		D4E5FE4512529300004BB4EC /* graphTrackerV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerV.m; sourceTree = "<group>"; };
 		D4E8F8FF12E8682100A2526B /* privacyV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privacyV.h; sourceTree = "<group>"; };
@@ -143,9 +139,7 @@
 		D4E8F90312E868A300A2526B /* tictacV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tictacV.m; sourceTree = "<group>"; };
 		D4E8F90512E868B700A2526B /* ppwV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ppwV.h; sourceTree = "<group>"; };
 		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ppwV.m; sourceTree = "<group>"; };
-		D4EE9D61125E6886001BDD06 /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = up.png; path = ../../up.png; sourceTree = SOURCE_ROOT; };
-		D4EE9D63125E6897001BDD06 /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = ../../down.png; sourceTree = SOURCE_ROOT; };
-		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
+		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Resources/plist/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,12 +162,12 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
 				D4956B2212E076B900B0BB9B /* views */,
 				D4956B2012E0710100B0BB9B /* trackerObj classes */,
 				D4956B1F12E06EAA00B0BB9B /* valueObj classes */,
-				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -213,20 +207,17 @@
 				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
 				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
-				D4EE9D63125E6897001BDD06 /* down.png */,
-				D4EE9D61125E6886001BDD06 /* up.png */,
 				D4E5FDD7125283B1004BB4EC /* graphTracker.xib */,
 				D49854AF12312A400009E458 /* useTrackerController.xib */,
-				D4FF224712304E050047518A /* rt-types.plist */,
 				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
-				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
 				D4A3150C11903F5E00F062AC /* addTrackerController.xib */,
 				D4A316C01191987E00F062AC /* MainWindow.xib */,
 				D4A317B31192B7C800F062AC /* configTlistController.xib */,
 				D487D7731260A77800298C1D /* configTVObjVC.xib */,
+				D4FF224712304E050047518A /* rt-types.plist */,
+				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
-				D4C5210D123F9E1400554627 /* whiteButton.png */,
 				D4C52109123F9DF700554627 /* blueButton.png */,
 			);
 			name = Resources;
@@ -404,12 +395,9 @@
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
 				D49854B112312A400009E458 /* useTrackerController.xib in Resources */,
 				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
-				D4C5210E123F9E1400554627 /* whiteButton.png in Resources */,
 				D4E5FDD9125283B1004BB4EC /* graphTracker.xib in Resources */,
 				D4D7DCEB125B25E00049EB93 /* checked.png in Resources */,
 				D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */,
-				D4EE9D62125E6886001BDD06 /* up.png in Resources */,
-				D4EE9D64125E6897001BDD06 /* down.png in Resources */,
 				D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */,
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
 				D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */,
