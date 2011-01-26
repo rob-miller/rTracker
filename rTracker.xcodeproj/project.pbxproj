@@ -139,7 +139,7 @@
 		D4E8F90312E868A300A2526B /* tictacV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tictacV.m; sourceTree = "<group>"; };
 		D4E8F90512E868B700A2526B /* ppwV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ppwV.h; sourceTree = "<group>"; };
 		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ppwV.m; sourceTree = "<group>"; };
-		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Resources/plist/rt-types.plist"; sourceTree = "<group>"; };
+		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
