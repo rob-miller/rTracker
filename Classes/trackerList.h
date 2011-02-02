@@ -15,7 +15,7 @@
 @interface trackerList : tObjBase {
 	
 	NSMutableArray *topLayoutNames;
-	//NSMutableArray *topLayoutIDs;
+	NSMutableArray *topLayoutIDs;
 	//trackerObj *tObj;
 	
 }

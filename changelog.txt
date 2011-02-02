@@ -1,0 +1,14 @@
+26 jan 2011
+  - moved to macbook pro, though not ssd yet.
+  - after refactoring and migrating svn repository, privacy subview working again
+  - fixed bug in re-ordering valobjs in a tracker, must check if toRow > array count
+  - bug in fn defn, somehow not updating ep ids? ... should add to updateVORefs, recheck also fn setup fix for crash 13/01
+
+02 feb 2011
+  - can draw privacy view, tictacview
+  - shifted line drawing routine defns to gfx.h
+  - added this file to scm
+  
+--- check in ---
+
+

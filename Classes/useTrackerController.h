@@ -19,36 +19,26 @@
 //UITableViewController 
 {
 	trackerObj *tracker;
-
-	UITableView *table;
 	datePickerVC *dpvc;
-
-	UITextField	*activeField;
-	
-	//UIBarButtonItem *prevDateBtn;
-	//UIBarButtonItem *postDateBtn;
-	//UIBarButtonItem *currDateBtn;
-
 	CGRect saveFrame;
-	
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
-@property (nonatomic, retain) IBOutlet UITableView *table;
+@property (nonatomic, retain) datePickerVC *dpvc;
+@property (nonatomic) CGRect saveFrame;
 
+// UI element properties 
+
+@property (nonatomic, retain) IBOutlet UITableView *table;
 @property (nonatomic, retain) UIBarButtonItem *prevDateBtn;
 @property (nonatomic, retain) UIBarButtonItem *postDateBtn;
 @property (nonatomic, retain) UIBarButtonItem *currDateBtn;
 @property (nonatomic, retain) UIBarButtonItem *delBtn;
 @property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
 @property (nonatomic, retain) UIBarButtonItem *fixed1SpaceButtonItem;
-
 @property (nonatomic, retain) UIBarButtonItem *testBtn;
 
-@property (nonatomic, retain) datePickerVC *dpvc;
-@property (nonatomic) CGRect saveFrame;
-
-
+//@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 
 - (void) updateToolBar;
 - (void) setTrackerDate:(int) targD;

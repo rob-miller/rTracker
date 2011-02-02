@@ -24,17 +24,13 @@
 	NSDate *date;
 
 	NSInteger action;
-	
-	UINavigationBar *navBar;
-	UIToolbar *toolBar;
-	UIDatePicker *datePicker;
-	UIButton *newBtn,*setBtn,*gotoBtn;
 }
 
 @property (nonatomic,retain) NSString *myTitle;
 @property (nonatomic,retain) NSDate *date;
 @property (nonatomic) NSInteger action;
 
+// UI element properties 
 @property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
 @property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
 @property (nonatomic,retain) IBOutlet UIDatePicker *datePicker;

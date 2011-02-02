@@ -22,29 +22,28 @@
 	valueObj *vo;
 	
 	NSMutableDictionary *wDict;  // widget dictionary
-	UITextField	*activeField;
-	
-	UINavigationBar *navBar;
-	UIToolbar *toolBar;
 
 	CGFloat lasty;
 	CGRect saveFrame;
 	CGFloat LFHeight;
+
 	
 }
 
 @property (nonatomic) BOOL vdlConfigVO;
-
 @property (nonatomic,retain) trackerObj *to;
 @property (nonatomic,retain) valueObj *vo;
 @property (nonatomic,retain) NSMutableDictionary *wDict;
-
-@property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
-@property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
-
 @property (nonatomic) CGFloat lasty;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) CGFloat LFHeight;
+
+// UI element properties 
+@property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
+@property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
+
+@property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
+
 
 - (void) addVOFields:(NSInteger) vot;
 - (void) addTOFields;

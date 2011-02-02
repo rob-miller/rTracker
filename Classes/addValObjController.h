@@ -18,15 +18,13 @@
 	valueObj *tempValObj;
 	trackerObj *parentTrackerObj;
 	NSArray *graphTypes;
-
-	UITextField *labelField;
-	UIPickerView *votPicker;
 }
 
 @property (nonatomic,retain) valueObj *tempValObj;
 @property (nonatomic,retain) trackerObj *parentTrackerObj;  // this makes a retain cycle....
 @property (nonatomic,retain) NSArray *graphTypes;
 
+// UI element properties 
 @property (nonatomic,retain) IBOutlet UITextField *labelField;
 @property (nonatomic,retain) IBOutlet UIPickerView *votPicker;
 

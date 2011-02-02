@@ -175,8 +175,8 @@
 
 - (void) deleteTrackerAllRow:(NSUInteger)row
 {
-	int toid = [[self.topLayoutIDs objectAtIndex:row] intValue];
-	trackerObj *to = [[trackerObj alloc] init:toid];
+	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
+	trackerObj *to = [[trackerObj alloc] init:tid];
 	[to deleteAllData];
 	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];

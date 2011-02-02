@@ -260,6 +260,8 @@
 	trackerDate = [[NSDate alloc] init];
 }
 
+// delete default settings from vo.optDict to save space
+
 - (void) clearVoOptDict:(valueObj *)vo
 {
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];

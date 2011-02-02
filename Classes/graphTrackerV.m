@@ -7,7 +7,7 @@
 //
 
 #import "graphTrackerV.h"
-
+#import "gfx.h"
 
 @implementation graphTrackerV
 
@@ -59,15 +59,6 @@
 #define FONTNAME "Helvetica-Bold"
 #define FONTSIZE 10
 
-#define MoveTo(x,y) CGContextMoveToPoint(self.context,(x),(y))
-#define AddLineTo(x,y) CGContextAddLineToPoint(self.context,(x),(y))
-#define AddCircle(x,y) CGContextAddEllipseInRect(self.context, (CGRect) {{(x),(y)},{4.0f,4.0f}})
-
-#define DevPt(x,y) CGContextConvertPointToUserSpace(self.context,(CGPoint){(x),(y)})
-#define Stroke CGContextStrokePath(self.context)
-
-#define f(x) ((CGFloat) (x))
-#define d(x) ((double) (x))
 
 - (void) flipCTM 
 {

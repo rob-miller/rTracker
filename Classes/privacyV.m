@@ -34,15 +34,17 @@ static int privacyValue=0;
     return self;
 }
 */
-#define PVH 0.3333f
+#define PVH 0.45f
 
 - (id)initWithParentView:(UIView *)pv {
 	CGSize pfs = pv.frame.size;
 	CGRect frame = CGRectMake(0.0f,pfs.height,pfs.width,(pfs.height * PVH));
+	NSLog(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
-		self.backgroundColor = [UIColor redColor];
+		self.backgroundColor = [UIColor brownColor];
 		self.shown = false;
+		[self addSubview:self.ttv];
 		[self.parentView addSubview:self];
     }
     return self;
@@ -66,6 +68,7 @@ static int privacyValue=0;
 	[UIView setAnimationDuration:kAnimationDuration];
 	self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
 	[UIView commitAnimations];
+	
 	self.shown = true;
 }
 
@@ -86,5 +89,10 @@ static int privacyValue=0;
 }
 
 
-
+- (tictacV *) ttv {
+	if (ttv == nil) {
+		ttv = [[tictacV alloc] initWithPFrame:self.frame];
+	}
+	return ttv;
+}
 @end

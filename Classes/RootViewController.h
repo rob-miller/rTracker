@@ -22,21 +22,18 @@
 
 @interface RootViewController : UITableViewController {
 
-	//trackerList *tlist;
+	trackerList *tlist;
+	privacyV *privacyObj;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
+@property (nonatomic, retain) privacyV *privacyObj;
 
-//- (void)applicationWillTerminate:(NSNotification *)notification;
-
-//- (IBAction)btnAddTrackerPressed:(id)sender;
-//- (IBAction)btnConfigPressed:(id)sender;
-//- (IBAction)btnMultiGraphPressed:(id)sender;
-//- (IBAction)btnPrivatePressed:(id)sender;
-
+// UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
 @property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 @property (nonatomic, retain) UIBarButtonItem *payBtn;
-@property (nonatomic, retain) privacyV *privacyObj;
+
+//- (void)applicationWillTerminate:(NSNotification *)notification;
 
 @end

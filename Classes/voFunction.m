@@ -81,6 +81,15 @@
 		}
 	}
 	[self saveFnArray];
+	
+	for (i=0;i<2;i++) {
+		NSString *key = [NSString stringWithFormat:@"frep%d",i];
+		NSNumber *nep = [self.vo.optDict objectForKey:key];
+		NSInteger ep = [nep integerValue];
+		if (ep == oldVID) {
+			[self.vo.optDict setObject:[NSNumber numberWithInteger:newVID] forKey:key];
+		}
+	}
 }
 
 
@@ -180,7 +189,7 @@
 				[offsetComponents setYear:ival];
 				break;
 			default:
-				NSAssert(0,@"getEpDate: failed to identify ep");
+				NSAssert(0,@"getEpDate: failed to identify ep %d",ep);
 				break;
 		}
 	
@@ -766,6 +775,8 @@
 			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:@"frep0"];
 		if ([self.vo.optDict objectForKey:@"frep1"] == nil) 
 			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:@"frep1"];
+		
+		NSLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
 		
 	}
 }

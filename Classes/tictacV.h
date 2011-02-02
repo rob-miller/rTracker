@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-
 @interface tictacV : UIView {
-
+//	BOOL flag;
 }
+
+// UI element properties 
+@property(nonatomic) CGContextRef context;
+
+- (id) initWithPFrame:(CGRect)parent;
 
 @end

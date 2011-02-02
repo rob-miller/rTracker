@@ -19,6 +19,7 @@
 
 @synthesize to, vo, wDict;
 @synthesize toolBar, navBar, lasty, saveFrame, LFHeight, vdlConfigVO;
+@synthesize activeField;
 
 BOOL keyboardIsShown;
 

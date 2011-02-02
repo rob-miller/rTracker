@@ -13,12 +13,16 @@
 
 @interface graphTrackerV : UIView {
 	trackerObj *tracker;
+	int firstDate;
+	int lastDate;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
-@property(nonatomic) CGContextRef context;
 @property(nonatomic) int firstDate;
 @property(nonatomic) int lastDate;
+
+// UI element properties 
+@property(nonatomic) CGContextRef context;
 @property(nonatomic,retain) UIFont *myFont;
 
 

@@ -65,7 +65,6 @@
 	[multiGraphBtn release];
 
 	self.tlist = [[trackerList alloc] init];
-	//[tlist loadTopLayoutTable];
 
 	/*
 	UIApplication *app = [UIApplication sharedApplication];

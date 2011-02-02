@@ -456,6 +456,8 @@ NSLog(@"btnAddValue was pressed!");
 	valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:fromRow];
 	[vo retain];
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:fromRow];
+	if (toRow > [self.tempTrackerObj.valObjTable count])
+		toRow = [self.tempTrackerObj.valObjTable count];
 	[self.tempTrackerObj.valObjTable insertObject:vo atIndex:toRow];
 	[vo release];
 	

@@ -41,12 +41,12 @@
 		D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE89127EC3AA00C036ED /* voImage.m */; };
 		D4B6AE8F127EC3BE00C036ED /* voFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE8E127EC3BE00C036ED /* voFunction.m */; };
 		D4B6AEB6127EE24D00C036ED /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
-		D4BA7A4D12EDD7870046BBBE /* privacy.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BA7A4C12EDD7870046BBBE /* privacy.m */; };
 		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
 		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D4D2457F12F0AC8000E994C6 /* changelog.txt in Resources */ = {isa = PBXBuildFile; fileRef = D4D2457E12F0AC8000E994C6 /* changelog.txt */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
 		D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
@@ -71,6 +71,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* rTracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "rTracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
+		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
@@ -117,8 +118,6 @@
 		D4B6AE8E127EC3BE00C036ED /* voFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voFunction.m; sourceTree = "<group>"; };
 		D4B6AEB4127EE24D00C036ED /* voState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voState.h; sourceTree = "<group>"; };
 		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voState.m; sourceTree = "<group>"; };
-		D4BA7A4B12EDD76E0046BBBE /* privacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privacy.h; sourceTree = "<group>"; };
-		D4BA7A4C12EDD7870046BBBE /* privacy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = privacy.m; sourceTree = "<group>"; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
@@ -126,6 +125,7 @@
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
 		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
+		D4D2457E12F0AC8000E994C6 /* changelog.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = changelog.txt; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
 		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
 		D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerVC.h; sourceTree = "<group>"; };
@@ -168,6 +168,7 @@
 				D4956B2212E076B900B0BB9B /* views */,
 				D4956B2012E0710100B0BB9B /* trackerObj classes */,
 				D4956B1F12E06EAA00B0BB9B /* valueObj classes */,
+				D43C494412FA129000B95AB7 /* gfx.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -188,6 +189,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				D4D2457E12F0AC8000E994C6 /* changelog.txt */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -323,8 +325,6 @@
 		D4956B3A12E0886E00B0BB9B /* privacy */ = {
 			isa = PBXGroup;
 			children = (
-				D4BA7A4B12EDD76E0046BBBE /* privacy.h */,
-				D4BA7A4C12EDD7870046BBBE /* privacy.m */,
 				D4E8F8FF12E8682100A2526B /* privacyV.h */,
 				D4E8F90012E8682100A2526B /* privacyV.m */,
 				D4E8F90212E868A300A2526B /* tictacV.h */,
@@ -402,6 +402,7 @@
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
 				D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */,
 				D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */,
+				D4D2457F12F0AC8000E994C6 /* changelog.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +441,6 @@
 				D4E8F90112E8682100A2526B /* privacyV.m in Sources */,
 				D4E8F90412E868A300A2526B /* tictacV.m in Sources */,
 				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
-				D4BA7A4D12EDD7870046BBBE /* privacy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +483,9 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				"New Setting" = "";
+				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				PREBINDING = NO;
 				SDKROOT = iphoneos4.1;
 			};

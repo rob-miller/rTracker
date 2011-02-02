@@ -13,14 +13,14 @@
 
 @interface privacyV : UIView {
 	UIView *parentView;
-	//tictacV *ttv;
-	//ppwV *ppwv;
+	tictacV *ttv;
+	ppwV *ppwv;
+	BOOL shown;
 }
 
 @property (nonatomic,retain) UIView *parentView;
 @property (nonatomic,retain) tictacV *ttv;
 @property (nonatomic,retain) ppwV *ppwv;
-
 @property (nonatomic) BOOL shown;
 
 - (id) initWithParentView:(UIView*)pv;

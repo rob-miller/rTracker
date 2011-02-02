@@ -19,12 +19,12 @@
 @interface configTlistController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 //@interface configTlistController : UITableViewController
 {
-
 	trackerList *tlist;
-	UITableView *table;
 }
 
 @property (nonatomic, retain) trackerList *tlist;
+
+// UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;
 
 - (IBAction) btnExport;

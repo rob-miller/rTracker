@@ -9,7 +9,7 @@
 #import "useTrackerController.h"
 #import "graphTrackerVC.h"
 #import "rTracker-constants.h"
-#import "privacy.h"
+#import "privacyV.h"
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
@@ -21,7 +21,7 @@
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
 @synthesize table, dpvc, saveFrame;
-@synthesize testBtn;
+@synthesize testBtn;  //, activeField;
 
 BOOL keyboardIsShown;
 
@@ -200,7 +200,7 @@ BOOL keyboardIsShown;
 											   object:self.view.window];
 	
 
-	NSLog(@"useTrackerController: viwWillAppear privacy= %d", [privacy getPrivacyValue]);
+	NSLog(@"useTrackerController: viwWillAppear privacy= %d", [privacyV getPrivacyValue]);
 	
 }
 

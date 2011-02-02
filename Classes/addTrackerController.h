@@ -18,12 +18,12 @@
 {
 	trackerList *tlist;
 	trackerObj *tempTrackerObj;
-	UITableView *table;
-	UITextField	*nameField;
 }
 
 @property (nonatomic, retain) trackerList *tlist;
 @property (nonatomic, retain) trackerObj *tempTrackerObj;
+
+// UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;
 @property (nonatomic, retain) UITextField *nameField;
 
