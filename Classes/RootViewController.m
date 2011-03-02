@@ -174,6 +174,7 @@
 	if (privacyObj == nil) {
 		privacyObj = [[privacyV alloc] initWithParentView:self.view];
 	}
+	privacyObj.tob = (id) self.tlist;  // not set at init
 	return privacyObj;
 }
 
@@ -208,7 +209,11 @@
 	NSLog(@"btnPrivate was pressed!");
 	
 	[self.privacyObj togglePrivacySetter ];
-	
+	if (0 != self.privacyObj.showing) {
+		self.privateBtn.title = @"dismiss";
+	} else {
+		self.privateBtn.title = @"private";
+	}
 }
 
 - (void)btnPay {

@@ -364,6 +364,30 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	NSLog(@"  returns %@", inAry);
 }
 
+- (void) toQry2IntInt:(int *)i1 i2:(int*)i2 {
+	
+	NSLog(@"toQry2AryII: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2AryII called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		*i1=0;
+		*i2=0;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			*i1 = sqlite3_column_int(stmt, 0);
+			*i2 = sqlite3_column_int(stmt, 1);
+			NSLog(@"  rslt: %d %d",*i1,*i2);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	NSLog(@"  returns %d %d",*i1,*i2);
+}
 
 - (int) toQry2Int {
 	NSLog(@"toQry2Int: %@ => _%@_",self.dbName,self.sql);

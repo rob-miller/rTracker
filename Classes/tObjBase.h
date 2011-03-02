@@ -41,6 +41,8 @@
 - (void) toQry2AryI : (NSMutableArray *) inAry;
 
 - (void) toExecSql;
+
+- (void) toQry2IntInt:(int*)i1 i2:(int*)i2;
 - (int) toQry2Int;
 - (NSString *) toQry2Str;
 - (float) toQry2Float;

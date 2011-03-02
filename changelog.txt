@@ -12,3 +12,7 @@
 --- check in ---
 
 
+02 mar 2011
+  - set, change privacy val all in place, not yet used by tracker display
+  
+--- check in ---

@@ -79,7 +79,7 @@
 	dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
 	
 	// Add an accessibility label that describes what the text field is for.
-	[dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
+	[dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
 	
 	NSLog(@"dtf: vo val= %@", self.vo.value);
 	

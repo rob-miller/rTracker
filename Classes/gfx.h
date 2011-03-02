@@ -7,9 +7,17 @@
  *
  */
 
+#define GFXHDEBUG 0
+
+#if GFXHDEBUG 
 #define MoveTo(x,y) NSLog(@"mov: %f,%f",x,y); CGContextMoveToPoint(self.context,(x),(y))
 #define AddLineTo(x,y) NSLog(@"lin: %f,%f",x,y); CGContextAddLineToPoint(self.context,(x),(y))
 #define AddCircle(x,y) NSLog(@"cir: %f,%f",x,y); CGContextAddEllipseInRect(self.context, (CGRect) {{(x),(y)},{4.0f,4.0f}})
+#else
+#define MoveTo(x,y) CGContextMoveToPoint(self.context,(x),(y))
+#define AddLineTo(x,y) CGContextAddLineToPoint(self.context,(x),(y))
+#define AddCircle(x,y)  CGContextAddEllipseInRect(self.context, (CGRect) {{(x),(y)},{4.0f,4.0f}})
+#endif
 
 #define DevPt(x,y) CGContextConvertPointToUserSpace(self.context,(CGPoint){(x),(y)})
 #define Stroke CGContextStrokePath(self.context)

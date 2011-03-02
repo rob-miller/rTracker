@@ -8,13 +8,37 @@
 
 #import <UIKit/UIKit.h>
 
+#import "tObjBase.h"
+
 @interface tictacV : UIView {
+	tObjBase *tob;
+	unsigned int key;
+	int currX;
+	int currY;
+	CGRect currRect;
 //	BOOL flag;
 }
 
+@property (nonatomic,retain) tObjBase *tob;
+@property (nonatomic) unsigned int key;
+@property (nonatomic) CGRect currRect;
+@property (nonatomic) int currX;
+@property (nonatomic) int currY;
+
+// region definitions
+@property (nonatomic) CGFloat vborder;
+@property (nonatomic) CGFloat hborder;
+@property (nonatomic) CGFloat vlen;
+@property (nonatomic) CGFloat hlen;
+@property (nonatomic) CGFloat vstep;
+@property (nonatomic) CGFloat hstep;
+
 // UI element properties 
 @property(nonatomic) CGContextRef context;
+@property(nonatomic,retain) UIFont *myFont;
 
 - (id) initWithPFrame:(CGRect)parent;
+- (void) showKey:(unsigned int)k;
+
 
 @end
