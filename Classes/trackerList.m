@@ -7,17 +7,18 @@
 //
 
 #import "trackerList.h"
+#import "privacyV.h"
 
 @implementation trackerList
 
-@synthesize topLayoutNames, topLayoutIDs;
+@synthesize topLayoutNames, topLayoutIDs, topLayoutPriv;
 //@synthesize tObj;
 
 /******************************
  *
  * trackerList db tables
  *
- *   toplevel: rank(int) ; id(int) ; name(text)
+ *   toplevel: rank(int) ; id(int) ; name(text) ; priv(int)
  *      primarily for entry listbox of tracker names
  *
  ******************************/ 
@@ -32,7 +33,7 @@
 	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
-	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text);";
+	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer);";
 	[self toExecSql];
 	self.sql = @"select count(*) from toplevel;";
 	c = [self toQry2Int];
@@ -73,8 +74,8 @@
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
 	
-	self.sql = @"select id, name from toplevel order by rank;";
-	[self toQry2AryIS :(NSMutableArray *)self.topLayoutIDs s1: self.topLayoutNames];
+	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
+	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
 	self.sql = nil;
 	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutNames);
 }
@@ -89,8 +90,8 @@
 		rank = [self.topLayoutNames count] +1;  // so put at end
 	}
 	NSAssert(tObj.toid,@"confirmTLE: toid=0");
-	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name) values (%i, %i, \"%@\");",
-		   rank, tObj.toid, tObj.trackerName ];
+	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
+				rank, tObj.toid, tObj.trackerName, [[tObj.optDict valueForKey:@"privacy"] intValue]]; 
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -110,13 +111,14 @@
 
 - (void) reloadFromTLT {
 	int nrank=0;
-	self.sql = @"delete from toplevel;";
+	self.sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
 	[self toExecSql];
 	for (NSString *tracker in self.topLayoutNames) {
 		NSInteger tid = [[self.topLayoutIDs objectAtIndex:nrank] intValue];
-
+		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
+		
 		NSLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name) values (%i, %d, \"%@\");",nrank,tid,tracker];
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\");",nrank,tid,tracker, priv];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -126,6 +128,22 @@
 - (int) getTIDfromIndex:(NSUInteger)ndx {
 	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
 }
+
+
+#pragma mark -
+#pragma mark write tracker list xls file
+
+- (void) writeTListXLS:(NSFileHandle*)nsfh {
+	
+	for (id *tID in self.topLayoutIDs) {
+		trackerObj *to = [[trackerObj alloc] init:[(NSNumber*)tID intValue]];
+		[to writeTrackerXLS:nsfh];
+		[to release];
+	}
+}
+
+#pragma mark -
+#pragma mark tracker manipulation methods
 
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow
 {
@@ -142,9 +160,6 @@
 	[tName release];
 	[tID release];
 }
-
-#pragma mark -
-#pragma mark tracker manipulation methods
 
 - (trackerObj *) toConfigCopy : (trackerObj *) srcTO {
 	NSLog(@"toConfigCopy: src id= %d %@",srcTO.toid,srcTO.trackerName);

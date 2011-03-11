@@ -15,6 +15,7 @@
 #import "rTracker-constants.h"
 
 #import "voState.h";
+#import "privacyV.h";
 
 @implementation trackerObj
 
@@ -37,10 +38,11 @@
  *	   field='privacy'   : user specified privacy value for trackerObj
  *     field='savertn'   : bool - save button returns to tracker list (else reset for new tracker data)
  *
- *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) 
+ *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) ; priv(int)
  *         type: rt-types.plist and defs in valueObj.h
  *        color: defs in valueObj.h ; colorSet in trackerObj.m
  *    graphtype: defs in valueObj.h ; graphsForVOTCopy and mapGraphType in valueObj.m
+ *         priv: copy from voInfo below
  *
  *  voInfo: id(int) ; field(text) ; val(text)  : unique(id,field)
  *    field='autoscale' : bool - calc number min and max Y-axis val from data
@@ -80,7 +82,7 @@
 	c = [self toQry2Int];
 	if (c == 0) {
 		// init clean db
-		self.sql = @"create table if not exists voConfig (id int, rank int, type int, name text, color int, graphtype int, unique (id) on conflict replace);";
+		self.sql = @"create table if not exists voConfig (id int, rank int, type int, name text, color int, graphtype int, priv int, unique (id) on conflict replace);";
 		[self toExecSql];
 		self.sql = @"create table if not exists voInfo (id int, field text, val text, unique(id, field) on conflict replace);";
 		[self toExecSql];
@@ -201,7 +203,9 @@
 	[s1 removeAllObjects];
 	NSMutableArray *i3 = [[NSMutableArray alloc] init];
 	NSMutableArray *i4 = [[NSMutableArray alloc] init];
-	self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
+	//self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
+	self.sql = [NSString stringWithFormat:@"select id, type, name, color, graphtype from voConfig where priv <= %i order by rank;",
+				[privacyV getPrivacyValue]];
 	[self toQry2AryIISII :i1 i2:i2 s1:s1 i3:i3 i4:i4];
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
@@ -380,8 +384,8 @@
 	for (valueObj *vo in self.valObjTable) {
 
 		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
-		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype) values (%d, %d, %d, '%@', %d, %d);",
-					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType];
+		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
+					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
 		[self toExecSql];
 		
 		[self clearVoOptDict:vo];
@@ -434,9 +438,11 @@
 		NSInteger vid;
 		while ( vid = (NSInteger) [[e1 nextObject] intValue]) {			
 			valueObj *vo = [self getValObj:vid];
-			NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
-			[vo.value setString:(NSString *) [e3 nextObject]];
-			vo.retrievedData = YES;
+			//NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
+			if (vo) { // no vo if privacy restricted
+				[vo.value setString:(NSString *) [e3 nextObject]];
+				vo.retrievedData = YES;
+			}
 		}
 		
 		[i1 release];
@@ -490,6 +496,26 @@
 	}
 
 	self.sql = nil;
+}
+
+#pragma mark -
+#pragma mark write tracker as xls file
+
+- (void) writeTrackerXLS:(NSFileHandle*)nsfh {
+	
+	//[nsfh writeData:[self.trackerName dataUsingEncoding:NSUnicodeStringEncoding]];
+	[nsfh writeData:[self.trackerName dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	for (valueObj *vo in self.valObjTable) {
+		
+		NSAssert((vo.vid >= 0),@"tObj writeTrackerXLS vo.vid <= 0");
+		if (vo.vtype != VOT_FUNC) { // no fn results data kept
+			NSLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+			//[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
+			[nsfh writeData:[vo.valueName dataUsingEncoding:NSUTF8StringEncoding]];
+		} 
+	}
+	
 }
 
 #pragma mark -

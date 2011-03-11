@@ -79,10 +79,7 @@
 	
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-
-	NSLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
-	
+- (void) refreshView {
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 
@@ -101,6 +98,12 @@
 			[editBtn release];
 		}
 	}
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+	NSLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+	[self refreshView];
     [super viewWillAppear:animated];
 }
 
@@ -213,6 +216,8 @@
 		self.privateBtn.title = @"dismiss";
 	} else {
 		self.privateBtn.title = @"private";
+		[self refreshView];
+		
 	}
 }
 

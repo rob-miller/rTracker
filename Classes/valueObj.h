@@ -93,6 +93,7 @@
 @interface valueObj : NSObject <UITextFieldDelegate> {
 	NSInteger vid;   
 	NSInteger vtype;
+	NSInteger vpriv;
 	NSString *valueName;
 	NSMutableString *value;
 	NSInteger vcolor;

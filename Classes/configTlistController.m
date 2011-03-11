@@ -104,8 +104,28 @@ UITableView *deleteTableView;
 #pragma mark -
 #pragma mark button press action methods
 
+- (NSString *) ioFilePath:(NSString*)fname {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
+	NSString *docsDir = [paths objectAtIndex:0];
+	
+	NSLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
+	
+	return [docsDir stringByAppendingPathComponent:fname];
+}
+
 - (IBAction)btnExport {
 	NSLog(@"btnExport was pressed!");
+
+	NSString *fpath = [self ioFilePath:@"rTracker_out.xls"];
+	[[NSFileManager defaultManager] createFileAtPath:fpath contents:nil attributes:nil];
+	NSFileHandle *nsfh = [NSFileHandle fileHandleForWritingAtPath:fpath];
+	
+	[nsfh writeData:[@"hello, world." dataUsingEncoding:NSUTF8StringEncoding]];
+	 
+	[self.tlist writeTListXLS:nsfh];
+	[nsfh closeFile];
+	//[nsfh release];
 }
 
 - (IBAction) modeChoice:(id)sender {

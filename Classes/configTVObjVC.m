@@ -404,9 +404,14 @@ BOOL keyboardIsShown;
 		NSAssert(0,@"mtfDone cannot identify tf");
 	}
 
-	NSLog(@"set %@: %@", okey, tf.text);
-	
-	[self.vo.optDict setObject:tf.text forKey:okey];
+	if (self.vo == nil) {      // tracker config
+		NSLog(@"to set %@: %@", okey, tf.text);    
+		[self.to.optDict setObject:tf.text forKey:okey];
+	} else {                   // valobj config
+		NSLog(@"vo set %@: %@", okey, tf.text);
+		[self.vo.optDict setObject:tf.text forKey:okey];
+	}
+		
 	if (nkey) {
 		[[self.wDict objectForKey:nkey] becomeFirstResponder];
 	} else {

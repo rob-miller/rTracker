@@ -16,12 +16,14 @@
 	
 	NSMutableArray *topLayoutNames;
 	NSMutableArray *topLayoutIDs;
+	NSMutableArray *topLayoutPriv;
 	//trackerObj *tObj;
 	
 }
 
 @property (nonatomic,retain) NSMutableArray *topLayoutNames;
 @property (nonatomic,retain) NSMutableArray *topLayoutIDs;
+@property (nonatomic,retain) NSMutableArray *topLayoutPriv;
 //@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;
@@ -38,5 +40,6 @@
 - (void) deleteTrackerAllRow : (NSUInteger) row;
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow;
 
+- (void) writeTListXLS:(NSFileHandle*)nsfh;
 
 @end

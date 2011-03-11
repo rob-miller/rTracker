@@ -16,3 +16,11 @@
   - set, change privacy val all in place, not yet used by tracker display
   
 --- check in ---
+
+11 mar -plane to uk-
+  - initial export xls working, can open file and write data for each tracker and valobj
+  - privacy view restriction implemented for both tracker and value level
+  
+--- check in ---
+
+  

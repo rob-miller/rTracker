@@ -27,6 +27,7 @@ static int privacyValue=0;
 - (void)setPrivacyValue:(int)priv {
 	privacyValue = priv;
 	NSLog(@"updatePrivacy:%d",[privacyV getPrivacyValue]);
+	//[self.pvc.tableView reloadData ];
 }
 
 #pragma mark -

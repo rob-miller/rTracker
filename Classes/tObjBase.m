@@ -64,8 +64,8 @@
 #pragma mark total db methods 
 
 - (NSString *) trackerDbFilePath {
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
 	NSString *docsDir = [paths objectAtIndex:0];
 	return [docsDir stringByAppendingPathComponent:self.dbName];
 }
@@ -221,6 +221,31 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
 			
 			NSLog(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
+		}
+		if (rslt != SQLITE_DONE) {
+			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		NSLog(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+}
+
+- (void) toQry2AryISI : (NSMutableArray *) i1 s1:(NSMutableArray *)s1 i2:(NSMutableArray *)i2 {
+	
+	
+	NSLog(@"toQry2AryISI: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2AryISI called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			[i1 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,0)]];
+			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
+			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,2)]];
+			
+			NSLog(@"  rslt: %@ %@ %@",[i1 lastObject], [s1 lastObject],[i2 lastObject]);
 		}
 		if (rslt != SQLITE_DONE) {
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));

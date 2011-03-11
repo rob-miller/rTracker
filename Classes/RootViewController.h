@@ -36,4 +36,7 @@
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
+- (void) refreshView;
+
+
 @end

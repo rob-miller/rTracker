@@ -77,6 +77,8 @@
 
 - (void) trackerUpdated:(NSNotification*)n;
 
+- (void) writeTrackerXLS:(NSFileHandle*)nsfh;
+
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
 @end
