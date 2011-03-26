@@ -35,11 +35,13 @@
 - (void)reloadFromTLT;
 
 - (int) getTIDfromIndex:(NSUInteger)ndx;
-- (trackerObj *) toConfigCopy : (trackerObj *) srcTO;
+- (int) getTIDfromName:(NSString*)str;
+- (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 
 - (void) deleteTrackerAllRow : (NSUInteger) row;
+- (void) deleteTrackerRecordsRow : (NSUInteger) row;
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow;
 
-- (void) writeTListXLS:(NSFileHandle*)nsfh;
+//- (void) writeTListXLS:(NSFileHandle*)nsfh;
 
 @end

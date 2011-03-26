@@ -27,7 +27,7 @@
 // UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;
 
-- (IBAction) btnExport;
+//- (IBAction) btnExport;
 - (IBAction) modeChoice:(id)sender;
 
 @end

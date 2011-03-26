@@ -13,6 +13,8 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
+		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
 		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
@@ -70,8 +72,12 @@
 		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* rTracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "rTracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
+		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
+		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
+		D43EE367133CBF8D00737E76 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
@@ -163,13 +169,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
 				1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */,
 				1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */,
 				D4956B2212E076B900B0BB9B /* views */,
 				D4956B2012E0710100B0BB9B /* trackerObj classes */,
 				D4956B1F12E06EAA00B0BB9B /* valueObj classes */,
+				D43EE365133CBF4100737E76 /* csv support */,
 				D43C494412FA129000B95AB7 /* gfx.h */,
+				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
+				D40DC28E133BEC2A00023D5D /* rTracker-resource.h */,
+				D40DC28F133BEC3600023D5D /* rTracker-resource.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -237,6 +246,15 @@
 				D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D43EE365133CBF4100737E76 /* csv support */ = {
+			isa = PBXGroup;
+			children = (
+				D43EE366133CBF8D00737E76 /* CSVParser.h */,
+				D43EE367133CBF8D00737E76 /* CSVParser.m */,
+			);
+			name = "csv support";
 			sourceTree = "<group>";
 		};
 		D4956B1F12E06EAA00B0BB9B /* valueObj classes */ = {
@@ -443,6 +461,8 @@
 				D4E8F90112E8682100A2526B /* privacyV.m in Sources */,
 				D4E8F90412E868A300A2526B /* tictacV.m in Sources */,
 				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
+				D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */,
+				D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

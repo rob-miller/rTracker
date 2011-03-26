@@ -23,6 +23,11 @@
 	[super dealloc];
 }
 
+- (int) getValCap {  // NSMutableString size for value
+    return 64;
+}
+
+
 #pragma mark -
 #pragma mark table cell item display
 
@@ -156,6 +161,21 @@
 
 #pragma mark -
 #pragma mark options page 
+
+- (void) setOptDictDflts {
+    
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    
+    return [super cleanOptDictDflts:key];
+}
+
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 

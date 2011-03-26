@@ -18,7 +18,7 @@
 #pragma mark -
 #pragma mark singleton privacyValue support
 
-static int privacyValue=0;
+static int privacyValue=1;
 
 + (int)getPrivacyValue {
 	return privacyValue;

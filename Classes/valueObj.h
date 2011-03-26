@@ -57,8 +57,8 @@
 #define AUTOSCALEDFLT   YES
 #define SHRINKBDFLT     NO 
 #define TBNLDFLT        NO
-#define TBNIDFLT        NO
-#define TBHIDFLT        NO
+//#define TBNIDFLT        NO
+//#define TBHIDFLT        NO
 #define GRAPHDFLT	    YES
 #define NSWLDFLT        NO
 
@@ -75,11 +75,15 @@
 
 
 @protocol voProtocol
+- (int) getValCap;
+- (NSString*) update:(NSString*)instr;
 - (UIView*) voDisplay:(CGRect)bounds;
 - (UITableViewCell*) voTVCell:(UITableView *)tableView;
 - (NSArray*) voGraphSet;
 - (void) voDrawOptions:(id)ctvovc;
 - (void) loadConfig;
+- (void) setOptDictDflts;
+- (BOOL) cleanOptDictDflts:(NSString*)key;
 - (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID;
 - (void) dataEditVDidLoad:(UIViewController*)vc;
 - (void) dataEditVWAppear:(UIViewController*)vc;
@@ -112,6 +116,7 @@
 
 @property (nonatomic) NSInteger vid;
 @property (nonatomic) NSInteger vtype;
+@property (nonatomic) NSInteger vpriv;
 @property (nonatomic,retain) NSString *valueName;
 @property (nonatomic,retain) NSMutableString *value;
 @property (nonatomic) NSInteger vcolor;
@@ -131,7 +136,8 @@
 		   in_vtype:(NSInteger)in_vtype 
 		   in_vname:(NSString *)in_vname 
 		  in_vcolor:(NSInteger)in_vcolor 
-	  in_vgraphtype:(NSInteger)in_vgraphtype;
+	  in_vgraphtype:(NSInteger)in_vgraphtype
+           in_vpriv:(NSInteger)in_vpriv;
 
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;

@@ -20,3 +20,6 @@
 #define kViewTag2		((NSInteger) 2)
 
 #define TMPUNIQSTART		1000
+
+#define TIMESTAMP_LABEL @"timestamp"
+#define BIGPRIV         1000

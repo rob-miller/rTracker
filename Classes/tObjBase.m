@@ -8,6 +8,7 @@
 
 #import "tObjBase.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 @implementation tObjBase
 
@@ -28,7 +29,7 @@
 
 - (id) init {
 	
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		NSLog(@"tObjBase init: db %@",self.dbName);
 		tDb=nil;
 		//[self getTDb];
@@ -97,7 +98,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	NSLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
 	NSAssert(self.dbName, @"getTDb called with no dbName set");
 	
-	if (sqlite3_open([[self trackerDbFilePath] UTF8String], &tDb) != SQLITE_OK) {
+	if (sqlite3_open([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String], &tDb) != SQLITE_OK) {
 		sqlite3_close(tDb);
 		NSAssert(0, @"error opening rTracker database");
 	} else {
@@ -139,7 +140,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	sqlite3_close(tDb);
 	tDb = nil;
 	NSFileManager *fm = [[NSFileManager alloc] init];
-	BOOL didRemove = [fm removeItemAtPath:[self trackerDbFilePath] error:NULL];
+	BOOL didRemove = [fm removeItemAtPath:[rTracker_resource ioFilePath:self.dbName access:DBACCESS] error:NULL];
 	[fm release];
 	if (! didRemove) {
 		NSLog(@"error removing tDb named %@",dbName);
@@ -309,7 +310,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 }
 
 
-- (void) toQry2AryIISII : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1 i3:(NSMutableArray *)i3 i4:(NSMutableArray *)i4
+- (void) toQry2AryIISIII : (NSMutableArray *) i1 i2: (NSMutableArray *) i2 s1: (NSMutableArray *) s1 i3:(NSMutableArray *)i3 i4:(NSMutableArray *)i4 i5:(NSMutableArray *)i5 
 {
 	
 	
@@ -329,9 +330,10 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			[i3 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 3)]];
 			
 			[i4 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 4)]];
+			[i5 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 5)]];
 			
-			NSLog(@"  rslt: %@ %@ %@ %@ %@",
-				  [i1 lastObject], [i2 lastObject], [s1 lastObject], [i4 lastObject], [i4 lastObject]);
+			NSLog(@"  rslt: %@ %@ %@ %@ %@ %@",
+				  [i1 lastObject], [i2 lastObject], [s1 lastObject], [i4 lastObject], [i4 lastObject], [i5 lastObject]);
 		}
 		if (rslt != SQLITE_DONE) {
 			NSLog(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));

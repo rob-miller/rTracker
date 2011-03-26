@@ -21,11 +21,13 @@
 	trackerObj *tracker;
 	datePickerVC *dpvc;
 	CGRect saveFrame;
+    BOOL needSave;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property (nonatomic, retain) datePickerVC *dpvc;
 @property (nonatomic) CGRect saveFrame;
+@property (nonatomic) BOOL needSave;
 
 // UI element properties 
 
@@ -36,7 +38,10 @@
 @property (nonatomic, retain) UIBarButtonItem *delBtn;
 @property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
 @property (nonatomic, retain) UIBarButtonItem *fixed1SpaceButtonItem;
-@property (nonatomic, retain) UIBarButtonItem *testBtn;
+//@property (nonatomic, retain) UIBarButtonItem *testBtn;
+
+@property (nonatomic,retain) UIBarButtonItem *saveBtn;
+@property (nonatomic,retain) UIBarButtonItem *exportBtn;
 
 //@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 

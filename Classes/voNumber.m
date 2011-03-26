@@ -20,6 +20,8 @@
 - (void)tfvoFinEdit:(UITextField*)tf {
 	tf.textColor = [UIColor blackColor];
 	[self.vo.value setString:tf.text];
+    
+	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
@@ -91,6 +93,36 @@
 	return [voState voGraphSetNum];
 }
 
+#pragma mark -
+#pragma mark options page 
+
+- (void) setOptDictDflts {
+    
+    if (nil == [self.vo.optDict objectForKey:@"nswl"]) 
+        [self.vo.optDict setObject:(NSWLDFLT ? @"1" : @"0") forKey:@"nswll"];
+    
+    if (nil == [self.vo.optDict objectForKey:@"autoscale"]) 
+        [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
+
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    
+    if (([key isEqualToString:@"nswl"] && [val isEqualToString:(NSWLDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
+    return [super cleanOptDictDflts:key];
+}
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 

@@ -19,9 +19,10 @@
 #import "voImage.h"
 #import "voFunction.h"
 
+#define f(x) ((CGFloat) (x))
 @implementation valueObj
 
-@synthesize vid, vtype, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
+@synthesize vid, vtype, vpriv, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
 @synthesize vos, retrievedData;
 
 //extern const NSInteger kViewTag;
@@ -32,7 +33,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 
 
 - (id) init {
-	return [self initWithData:nil in_vid:0 in_vtype:0 in_vname:@"" in_vcolor:0 in_vgraphtype:0];
+	return [self initWithData:nil in_vid:0 in_vtype:0 in_vname:@"" in_vcolor:0 in_vgraphtype:0 in_vpriv:0];
 }
 
 - (id) initWithData:(id)parentTO 
@@ -41,9 +42,10 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
    in_vname:(NSString *)in_vname 
   in_vcolor:(NSInteger)in_vcolor 
 in_vgraphtype:(NSInteger)in_vgraphtype
+in_vpriv:(NSInteger)in_vpriv
 {
 	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
 		self.vid = in_vid;
@@ -63,8 +65,8 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 	//NSLog(@"valuename retain count= %d",[valueName retainCount] );
 	self.valueName = nil;
 	[valueName release];
-	self.value = nil;
-	[value release];
+	//self.value = nil;
+	//[value release];
 	self.display = nil;
 	[display release];
 	
@@ -92,66 +94,78 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 	return optDict;
 }
 
+- (NSMutableString*) value {
+    NSAssert(vos,@"accessing vo.value with nil vos");
+    if (value == nil) {
+        value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
+        //value = [[NSMutableString alloc] init];
+    }
+    [value setString:[self.vos update:value]];
+    return value;
+}
+
 - (void) resetData {
 	[self.value setString:@""];
 	self.retrievedData = NO;
 	self.useVO = NO;
 }
 
-- (void) setVtype:(NSInteger)vt {
+- (void) setVtype:(NSInteger)vt {  // called for setting property vtype
 	vtype = vt;
 	switch (vt) {
 		case VOT_NUMBER:
 			self.vos = [[voNumber alloc] initWithVO:self];
-			value = [[NSMutableString alloc] initWithCapacity:10];
+			//value = [[NSMutableString alloc] initWithCapacity:10];
 			break;
 		case VOT_SLIDER:
 			self.vos = [[voSlider alloc] initWithVO:self];
-			value = [[NSMutableString alloc] initWithCapacity:10];
+			//value = [[NSMutableString alloc] initWithCapacity:10];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_BOOLEAN:
 			self.vos = [[voBoolean alloc] initWithVO:self];
-			value = [[NSMutableString alloc] initWithCapacity:1];
+			//value = [[NSMutableString alloc] initWithCapacity:1];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_CHOICE:
 			self.vos = [[voChoice alloc] initWithVO:self];
-			value = [[NSMutableString alloc] initWithCapacity:1];
+			//value = [[NSMutableString alloc] initWithCapacity:1];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_TEXT:
 			self.vos = [[voText alloc] initWithVO:self];
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:32];
+            //value = [[NSMutableString alloc] initWithCapacity:32];
 			break;
 		case VOT_FUNC:
 			self.vos = [[voFunction alloc] initWithVO:self];
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:32];
+			//value = [[NSMutableString alloc] initWithCapacity:32];
 			//[self.value setString:@""];
 			break;	
 		case VOT_IMAGE:
 			self.vos = [[voImage alloc] initWithVO:self];
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:64];
+			//value = [[NSMutableString alloc] initWithCapacity:64];
 			//[self.value setString:@""];
 			break;
 		case VOT_TEXTB:
 			self.vos = [[voTextBox alloc] initWithVO:self];
-			/*self.*/ value = [[NSMutableString alloc] initWithCapacity:96];
+            //value = [[NSMutableString alloc] initWithCapacity:96];
 			//[self.value setString:@""];
 			break;
 		default:
 			NSAssert1(0,@"valueObj init vtype %d not supported",vt);
 			break;
 	}
+    value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
 	[(id) self.vos release];
 }
+
 
 #pragma mark -
 #pragma mark display fn dispatch
 
 - (UIView *) display:(CGRect)bounds {
-	NSLog(@"vo display %@",self.valueName);
 	if (display == nil) {
+        NSLog(@"vo display %@",self.valueName);
 		self.display = [self.vos voDisplay:bounds];
 	}
 	return display;
@@ -186,7 +200,7 @@ in_vgraphtype:(NSInteger)in_vgraphtype
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
 	//self.useVO = !self.useVO;
 
-	if (self.useVO = !self.useVO) {
+	if ((self.useVO = !self.useVO)) {
 		checkImage = [UIImage imageNamed:@"checked.png"];
 		if (self.vtype == VOT_SLIDER)
 			[self.value setString:[NSString stringWithFormat:@"%f",((UISlider*)self.display).value]];

@@ -24,7 +24,7 @@
 	NSString *trackerName;
 	NSDate *trackerDate;
 	NSMutableDictionary *optDict;
-
+    
 	NSMutableArray *valObjTable;
 	CGSize maxLabel;
 	NSInteger nextColor;
@@ -34,6 +34,8 @@
 	
 	UIControl *activeControl;	// ugly: track currently active text field so can scroll when keyboard shown, resign on background tap
 	UIViewController *vc;		// ugly: vos may need this to present a voEdit page
+    
+    NSDateFormatter *dateFormatter;
 }
 
 //@property (nonatomic) int tid;
@@ -47,29 +49,34 @@
 @property (nonatomic,retain) NSArray *votArray;
 @property (nonatomic,assign) UIControl *activeControl;
 @property (nonatomic,assign) UIViewController *vc;
+@property (nonatomic,retain) NSDateFormatter *dateFormatter;
 
 - (id) init:(int) tid;
 
 - (void) addValObj:(valueObj*)valObj;
 - (void) saveConfig;
 - (void) loadConfig;
+- (void) setToOptDictDflts;
 - (BOOL) loadData:(NSInteger)iDate;
 - (void) saveData;
 - (void) resetData;
-- (void) deleteAllData;
+- (void) deleteTrackerDB;
 - (void) deleteCurrEntry;
+- (void) deleteTrackerRecordsOnly;
 
 - (NSInteger) prevDate;
 - (NSInteger) postDate;
 - (NSInteger) lastDate;
+- (NSInteger) firstDate;
 
-- (valueObj *) voConfigCopy:(valueObj*)srcVO;
+- (valueObj *) copyVoConfig:(valueObj*)srcVO;
 - (valueObj *) getValObj:(NSInteger)vid;
 - (void) describe;
 
 - (BOOL) voHasData:(NSInteger)vid;
 - (BOOL) checkData;
 - (BOOL) hasData;
+- (int) countEntries;
 - (NSString*) voGetNameForVID:(NSInteger)vid;
 
 - (int) noCollideDate:(int)testDate;
@@ -77,8 +84,10 @@
 
 - (void) trackerUpdated:(NSNotification*)n;
 
-- (void) writeTrackerXLS:(NSFileHandle*)nsfh;
+- (void) writeTrackerCSV:(NSFileHandle*)nsfh;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
+
+- (void)receiveRecord:(NSDictionary *)aRecord;
 
 @end

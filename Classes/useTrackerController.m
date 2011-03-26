@@ -10,6 +10,7 @@
 #import "graphTrackerVC.h"
 #import "rTracker-constants.h"
 #import "privacyV.h"
+#import "rTracker-resource.h"
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
@@ -20,8 +21,8 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, saveFrame;
-@synthesize testBtn;  //, activeField;
+@synthesize table, dpvc, needSave, saveFrame;
+@synthesize saveBtn, exportBtn;
 
 BOOL keyboardIsShown;
 
@@ -38,14 +39,17 @@ BOOL keyboardIsShown;
 	self.delBtn = nil;
 	[delBtn release];
 	
-	self.testBtn = nil;
-	[testBtn release];
+	//self.testBtn = nil;
+	//[testBtn release];
 	
 	self.fixed1SpaceButtonItem = nil;
 	[fixed1SpaceButtonItem release];
 	self.flexibleSpaceButtonItem = nil;
 	[flexibleSpaceButtonItem release];
 	
+    self.saveBtn = nil;
+    self.exportBtn = nil;
+    
 	self.dpvc = nil;
 	[dpvc release];
 	
@@ -61,23 +65,23 @@ BOOL keyboardIsShown;
 # pragma mark -
 # pragma mark view support
 
-- (void) showSaveBtn:(BOOL)doit {
-	if (doit && self.navigationItem.rightBarButtonItem == nil) {
-		UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
-									initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-									target:self
-									action:@selector(btnSave)];
-		[self.navigationItem setRightBarButtonItem:saveBtn animated:YES ];
-		[saveBtn release];
-	} else if (!doit && self.navigationItem.rightBarButtonItem != nil) {
-		[self.navigationItem setRightBarButtonItem:nil animated:YES ];
+- (void) showSaveBtn {
+	if (self.needSave && self.navigationItem.rightBarButtonItem != self.saveBtn) {
+		[self.navigationItem setRightBarButtonItem:self.saveBtn animated:YES ];
+	} else if (!self.needSave && self.navigationItem.rightBarButtonItem != self.exportBtn) {
+		[self.navigationItem setRightBarButtonItem:self.exportBtn animated:YES ];
 	}
 }
+
+#pragma mark tracker data updated event handling
+
+// handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
 	NSLog(@"utc update.");
 	[self updateTrackerTableView];
-	[self showSaveBtn:YES];
+    self.needSave=YES;
+	[self showSaveBtn];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -86,7 +90,8 @@ BOOL keyboardIsShown;
 	NSLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
 	self.title = tracker.trackerName;
-	
+	self.needSave = NO;
+    
 	//for (valueObj *vo in self.tracker.valObjTable) {
 	//	[vo display];
 	//}
@@ -200,6 +205,7 @@ BOOL keyboardIsShown;
 											   object:self.view.window];
 	
 
+    [self showSaveBtn];
 	NSLog(@"useTrackerController: viwWillAppear privacy= %d", [privacyV getPrivacyValue]);
 	
 }
@@ -405,6 +411,75 @@ BOOL keyboardIsShown;
 	[self.tracker.activeControl resignFirstResponder];
 }
 
+#pragma mark -
+#pragma mark top toolbar button factories
+//- (void)testAction:(id)sender {
+//	NSLog(@"test button pressed");
+/*
+ *  fn= period[full tank]:(delta[odometer]/postSum[fuel])
+ *
+ *  keywords
+ *      period(x)	x= non-null vo | time interval string : define begin,end timestamps; default if not spec'd is each pair of dates
+ *			-> gen array T0[] and array T1[]
+ *		delta(x)	x= non-null vo : return vo(time1) - vo(time0)
+ *			-> ('select val where id=%id and date=%t1' | vo.value) - 'select val where id=%id and date=%t0'
+ *		postsum(x)	x= vo : return sum of vo(>time0)...vo(=time1)
+ *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... sum
+ *		presum(x)	x= vo : return sum of vo(=time0)...vo(<time1)
+ *			-> 'select val where id=%id and date >= %t0 and date < %t1' ... sum
+ *		sum(x)		x= vo : return sum of vo(=time0)...vo(=time1)
+ *			-> 'select val where id=%id and date >= %t0 and date <= %t1' ... sum
+ *		avg(x)      x= vo : return avg of vo(=time0)...vo(=time1)
+ *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... avg
+ *		
+ * -> vo => convert to vid
+ * -> separately define period: none | event pair | event + (plus,minus,centered) time interval 
+ *                            : event = vo not null or hour / week day / month day
+ *
+ * ... can't do plus/minus/centered, value will be plotted on T1
+ */
+//NSString *myfn = @"period[full tank]:(delta[odometer]/postSum[fuel])";
+//	
+//}
+
+/*
+ - (UIBarButtonItem*)testBtn {
+ if (testBtn == nil) {
+ testBtn = [[UIBarButtonItem alloc]
+ initWithTitle:@"test"
+ style:UIBarButtonItemStyleBordered
+ target:self
+ action:@selector(testAction:)];
+ }
+ 
+ return testBtn;
+ 
+ }
+ */
+
+- (UIBarButtonItem*) saveBtn {
+    if (saveBtn == nil) {
+        saveBtn =[[UIBarButtonItem alloc]
+                  initWithBarButtonSystemItem:UIBarButtonSystemItemSave 
+                  target:self 
+                  action:@selector(btnSave)];
+    }
+    return saveBtn;
+}
+
+- (UIBarButtonItem*) exportBtn {
+    if (exportBtn == nil) {
+        exportBtn = [[UIBarButtonItem alloc]
+                     initWithTitle:@"Export"
+                     style:UIBarButtonItemStyleBordered
+                     target:self
+                     action:@selector(btnExport)];
+    }
+    return  exportBtn;
+}
+
+
+
 
 #pragma mark -
 #pragma mark datepicker support
@@ -413,54 +488,15 @@ BOOL keyboardIsShown;
 	NSLog(@"utc: updateTrackerTableView");
 	
 	for (valueObj *vo in self.tracker.valObjTable) {
-		vo.display = nil;
+        //if (vo.vtype == VOT_FUNC)
+            vo.display = nil;  // always redisplay
 	}
 	
-		[self.table reloadData];
+    [self.table reloadData];
+    
+    
 	//[(UITableView *) self.view reloadData];
 	//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller
-}
-
-- (void)testAction:(id)sender {
-	NSLog(@"test button pressed");
-	/*
-	 *  fn= period[full tank]:(delta[odometer]/postSum[fuel])
-	 *
-	 *  keywords
-	 *      period(x)	x= non-null vo | time interval string : define begin,end timestamps; default if not spec'd is each pair of dates
-	 *			-> gen array T0[] and array T1[]
-	 *		delta(x)	x= non-null vo : return vo(time1) - vo(time0)
-	 *			-> ('select val where id=%id and date=%t1' | vo.value) - 'select val where id=%id and date=%t0'
-	 *		postsum(x)	x= vo : return sum of vo(>time0)...vo(=time1)
-	 *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... sum
-	 *		presum(x)	x= vo : return sum of vo(=time0)...vo(<time1)
-	 *			-> 'select val where id=%id and date >= %t0 and date < %t1' ... sum
-	 *		sum(x)		x= vo : return sum of vo(=time0)...vo(=time1)
-	 *			-> 'select val where id=%id and date >= %t0 and date <= %t1' ... sum
-	 *		avg(x)      x= vo : return avg of vo(=time0)...vo(=time1)
-	 *			-> 'select val where id=%id and date > %t0 and date <= %t1' ... avg
-	 *		
-	 * -> vo => convert to vid
-	 * -> separately define period: none | event pair | event + (plus,minus,centered) time interval 
-	 *                            : event = vo not null or hour / week day / month day
-	 *
-	 * ... can't do plus/minus/centered, value will be plotted on T1
-	 */
-	//NSString *myfn = @"period[full tank]:(delta[odometer]/postSum[fuel])";
-	
-}
-
-- (UIBarButtonItem*)testBtn {
-	if (testBtn == nil) {
-		testBtn = [[UIBarButtonItem alloc]
-				   initWithTitle:@"test"
-				   style:UIBarButtonItemStyleBordered
-				   target:self
-				   action:@selector(testAction:)];
-	}
-	
-	return testBtn;
-	
 }
 
 - (void) updateToolBar {
@@ -490,7 +526,7 @@ BOOL keyboardIsShown;
 		[tbi addObject:self.delBtn];
 	}
 
-	[tbi addObject:[self testBtn]];
+	//[tbi addObject:[self testBtn]];
 	 
 	[self setToolbarItems:tbi animated:YES];
 	[tbi release];
@@ -507,8 +543,8 @@ BOOL keyboardIsShown;
 		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)targD]);
 		[self.tracker loadData:targD];
 	}
-	
-	[self showSaveBtn:NO];
+	self.needSave=NO;  // dumping anything not saved by going to another date.
+	[self showSaveBtn];
 	[self updateToolBar];
 	[self updateTrackerTableView];
 }
@@ -521,7 +557,7 @@ BOOL keyboardIsShown;
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)btnSave {
+- (void)btnSave {
 	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 	[self.tracker saveData];
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
@@ -529,10 +565,41 @@ BOOL keyboardIsShown;
 			[self.tracker resetData];
 		[self updateToolBar];
 		[self updateTrackerTableView];
-		[self showSaveBtn:NO];
+        self.needSave=NO;
+		[self showSaveBtn];
 	} else {
 		[self.navigationController popViewControllerAnimated:YES];
 	}
+}
+
+/*
+- (NSString *) ioFilePath:(NSString*)fname {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
+	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
+	NSString *docsDir = [paths objectAtIndex:0];
+	
+	NSLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
+	
+	return [docsDir stringByAppendingPathComponent:fname];
+}
+*/
+
+- (IBAction)btnExport {
+	NSLog(@"btnExport was pressed!");
+    //NSString *fname = [[NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName]
+    //                   stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    NSString *fname = [NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName];
+
+	NSString *fpath = [rTracker_resource ioFilePath:fname access:YES];
+	[[NSFileManager defaultManager] createFileAtPath:fpath contents:nil attributes:nil];
+	NSFileHandle *nsfh = [NSFileHandle fileHandleForWritingAtPath:fpath];
+	
+	//[nsfh writeData:[@"hello, world." dataUsingEncoding:NSUTF8StringEncoding]];
+    
+	[self.tracker writeTrackerCSV:nsfh];
+	[nsfh closeFile];
+	//[nsfh release];
+    
 }
 
 - (void) btnPrevDate {

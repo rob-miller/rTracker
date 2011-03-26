@@ -14,6 +14,7 @@
 #import "rTracker-constants.h"
 
 #define MyTracker ((trackerObj*) self.vo.parentTracker)
+#define f(x) ((CGFloat) (x))
 
 @interface voState : NSObject <voProtocol> {
 
@@ -25,6 +26,9 @@
 - (id) init;
 - (id) initWithVO:(valueObj*)valo;
 - (void) loadConfig;
+- (void) setOptDictDflts;
+- (BOOL) cleanOptDictDflts:(NSString*)key;
+
 - (UITableViewCell*) voTVEnabledCell:(UITableView *)tableView;
 + (NSArray*) voGraphSetNum;
 

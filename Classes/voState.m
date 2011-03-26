@@ -10,6 +10,7 @@
 #import "rTracker-constants.h"
 #import "configTVObjVC.h"
 
+
 @implementation voState
 
 @synthesize vo;
@@ -19,7 +20,7 @@
 }
 
 - (id) initWithVO:(valueObj *)valo {
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		self.vo = valo;
 	}
 	return self;
@@ -31,8 +32,78 @@
 	[super dealloc];
 }
 
+- (int) getValCap {  // NSMutableString size for value
+    return 10;
+}
+
+- (NSString*) update:(NSString*)instr {   // place holder so fn can update on access
+    return instr;
+}
+
 - (void) loadConfig {
 }
+
+
+- (void) setOptDictDflts {
+    
+    if (nil == [self.vo.optDict objectForKey:@"graph"]) 
+        [self.vo.optDict setObject:(GRAPHDFLT ? @"1" : @"0") forKey:@"autoscale"];
+    if (nil == [self.vo.optDict objectForKey:@"privacy"]) 
+        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
+    
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    
+    if (([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
+    return NO;
+    
+    //if ( 
+        //([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"nswl"] && [val isEqualToString:(NSWLDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"func"] && [val isEqualToString:@""])
+        //||
+        //([key isEqualToString:@"smin"] && ([val floatValue] == f(SLIDRMINDFLT)))
+        //||
+        //([key isEqualToString:@"smax"] && ([val floatValue] == f(SLIDRMAXDFLT)))
+        //||
+        //([key isEqualToString:@"sdflt"] && ([val floatValue] == f(SLIDRDFLTDFLT)))
+        //||
+        //([key isEqualToString:@"frep0"] && ([val intValue] == FREPDFLT))
+        //||
+        //([key isEqualToString:@"frep1"] && ([val intValue] == FREPDFLT))
+        //||
+        //([key isEqualToString:@"fnddp"] && ([val intValue] == FDDPDFLT))
+        //||
+        //([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))
+     //   ) {
+    //}
+    
+    //return [self.vos cleanOptDictDflts:key];
+}
+
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
@@ -97,7 +168,7 @@
 	} else {
 		// the cell is being recycled, remove old embedded controls
 		UIView *viewToRemove = nil;
-		while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
+		while ((viewToRemove = [cell.contentView viewWithTag:kViewTag]))
 			[viewToRemove removeFromSuperview];
 	}
 	
@@ -117,13 +188,13 @@
 	self.vo.checkButtonUseVO.tag = kViewTag;
 	self.vo.checkButtonUseVO.backgroundColor = cell.backgroundColor;
 	
-	if (! self.vo.retrievedData) {  // only show enable checkbox if this is data entry mode (not show historical)
-		
+	//if (! self.vo.retrievedData) {  // only show enable checkbox if this is data entry mode (not show historical)  
+		// 26 mar 2011 -- why not show for historical ?
 		UIImage *image = (self.vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
 		UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
 		[self.vo.checkButtonUseVO setImage:newImage forState:UIControlStateNormal];
 		[cell.contentView addSubview:self.vo.checkButtonUseVO];
-	}
+	//}
 	
 	// cell label top row right 
 	
@@ -168,7 +239,7 @@
 	} else {
 		// the cell is being recycled, remove old embedded controls
 		UIView *viewToRemove = nil;
-		while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
+		while ((viewToRemove = [cell.contentView viewWithTag:kViewTag]))
 			[viewToRemove removeFromSuperview];
 	}
 

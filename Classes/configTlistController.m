@@ -43,7 +43,7 @@ UITableView *deleteTableView;
 - (void)viewDidLoad {
 	
 	self.title = @"configure trackers";
-
+    /*
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"export"
 								  style:UIBarButtonItemStyleBordered
@@ -54,7 +54,7 @@ UITableView *deleteTableView;
 	
 	self.toolbarItems = tbArray;
 	[exportBtn release];
-	
+	*/
 	
 	[super viewDidLoad];
 }
@@ -104,7 +104,8 @@ UITableView *deleteTableView;
 #pragma mark -
 #pragma mark button press action methods
 
-- (NSString *) ioFilePath:(NSString*)fname {
+/*
+ - (NSString *) ioFilePath:(NSString*)fname {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
 	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
 	NSString *docsDir = [paths objectAtIndex:0];
@@ -127,6 +128,7 @@ UITableView *deleteTableView;
 	[nsfh closeFile];
 	//[nsfh release];
 }
+*/
 
 - (IBAction) modeChoice:(id)sender {
 
@@ -164,6 +166,12 @@ UITableView *deleteTableView;
 	[self.tlist reloadFromTLT];	
 }
 
+- (void) delTrackerRecords {
+	NSUInteger row = [deleteIndexPath row];
+	NSLog(@"checkTrackerDelete: will delete row %d ",row);
+	[self.tlist deleteTrackerRecordsRow:row];
+	[self.tlist reloadFromTLT];	
+}
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
@@ -171,9 +179,11 @@ UITableView *deleteTableView;
 	
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
 		[self delTracker];
+	} else if (buttonIndex == checkTrackerDelete.cancelButtonIndex) {
+		NSLog(@"cancelled tracker delete");
 	} else {
-		NSLog(@"cancelled");
-	}
+        [self delTrackerRecords];
+    }
 	
 }
 					 
@@ -237,26 +247,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	deleteIndexPath = indexPath;
 	deleteTableView = tableView;
 	
+    NSString *acTitle;
+    NSString *tname = [self.tlist.topLayoutNames objectAtIndex:[indexPath row]];
+    
 	int toid = [self.tlist getTIDfromIndex:[indexPath row]];
 	trackerObj *to = [[trackerObj alloc] init:toid];
-	BOOL haveData = [to checkData];
-	[to release];
-	
-	if (haveData) {
-		UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
-											 initWithTitle:[NSString stringWithFormat:
-															@"Really delete all data for %@?",
-															[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]]
-											 delegate:self 
-											 cancelButtonTitle:@"Cancel"
-											 destructiveButtonTitle:@"Yes, delete"
-											 otherButtonTitles:nil];
-		//[checkTrackerDelete showInView:self.view];
+	int entries = [to countEntries];
+    [to release];
+    NSString *delRecTitle;
+    if (entries==0) {
+        acTitle = [NSString stringWithFormat:@"Tracker %@ has no records.",tname];
+        delRecTitle=nil;
+    } else {
+        delRecTitle = @"Remove records only";
+        if (entries==1) 
+            acTitle = [NSString stringWithFormat:@"Tracker %@ has 1 record.",tname];
+        else 
+            acTitle = [NSString stringWithFormat:@"Tracker %@ has %d records.",tname,entries];
+	}
+    
+    UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
+                                         initWithTitle:acTitle
+                                         delegate:self 
+                                         cancelButtonTitle:@"Cancel"
+                                         destructiveButtonTitle:@"Delete tracker"
+                                         otherButtonTitles:delRecTitle,nil];
 		[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
 		[checkTrackerDelete release];
-	} else {
-		[self delTracker];
-	}
 }
 
 // Override to support row selection in the table view.
@@ -285,7 +302,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		NSLog(@"will copy toid %d",toid);
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
-		trackerObj *nTO = [self.tlist toConfigCopy:oTO];
+		trackerObj *nTO = [self.tlist copyToConfig:oTO];
 		[self.tlist confirmTopLayoutEntry:nTO];
 		[oTO release];
 		[nTO release];

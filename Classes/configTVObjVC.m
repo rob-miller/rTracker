@@ -289,14 +289,14 @@ BOOL keyboardIsShown;
 		} else {
 			[self addGraphMinMax];
 		}
-	} else if ( btn == [self.wDict objectForKey:@"csBtn"] ) {
+	} else if ( btn == [self.wDict objectForKey:@"csbBtn"] ) {  
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
-		okey = @"tbni"; dfltState=TBNIDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
-		okey = @"tbhi"; dfltState=TBHIDFLT;
+	//} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
+	//	okey = @"tbni"; dfltState=TBNIDFLT;
+	//} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
+	//	okey = @"tbhi"; dfltState=TBHIDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
 		okey = @"graph"; dfltState=GRAPHDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"swlBtn"] ) {

@@ -13,13 +13,18 @@
 
 @implementation voChoice
 
-@synthesize ctvovcp;
+@synthesize ctvovcp,segmentedControl;
 
 - (void) dealloc {
 	// ctvovcp is not retained
+    self.segmentedControl = nil;
+    [segmentedControl release];
 	[super dealloc];
 }
 
+- (int) getValCap {  // NSMutableString size for value
+    return 1;
+}
 
 - (UITableViewCell*) voTVCell:(UITableView *)tableView {
 	return [super voTVEnabledCell:tableView];
@@ -36,7 +41,7 @@
 		int i;
 		[self.vo enableVO];
 		// user may leave an intermediate choice title blank, must get their choice number not just seg ndx
-		NSString *ch = [(UISegmentedControl*) self.vo.display titleForSegmentAtIndex:[sender selectedSegmentIndex]];
+		NSString *ch = [(UISegmentedControl*) sender titleForSegmentAtIndex:[sender selectedSegmentIndex]];
 		for (i=0; i<CHOICES;i++) {
 			NSString *key = [NSString stringWithFormat:@"c%d",i];
 			NSString *val = [self.vo.optDict objectForKey:key];
@@ -46,54 +51,75 @@
 			}
 		}
 		NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");
+        
+        //self.vo.display = nil; // so will redraw this cell only  rtm testing
+        
 		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 	}
 }
 
+- (UISegmentedControl*) segmentedControl {
+    if (nil == segmentedControl) {
+        //NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
+        
+        int i;
+        NSMutableArray *segmentTextContent = [[NSMutableArray alloc] init];
+        for (i=0;i<CHOICES;i++) {
+            NSString *key = [NSString stringWithFormat:@"c%d",i];
+            NSString *s = [self.vo.optDict objectForKey:key];
+            if ((s != nil) && (![s isEqualToString:@""])) 
+                [segmentTextContent addObject:s];
+        }
+        //[segmentTextContent addObject:nil];
+        
+        //CGRect frame = bounds;
+        segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+        
+        if ([self.vo.optDict objectForKey:@"shrinkb"]) {  // default is NO, so a defined result means yes
+            int j=0;
+            for (NSString *s in segmentTextContent) {
+                CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+                [segmentedControl setWidth:siz.width forSegmentAtIndex:j];
+                j++;
+            }
+        }
+        [segmentTextContent release];
+        
+        //segmentedControl.frame = frame;
+        [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        
+//        segmentedControl.tag = kViewTag;
+        
+//        if ([self.vo.value isEqualToString:@""]) {
+//            self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+//            [self.vo disableVO];
+//        } else {
+//            self.segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
+//        }
+    }
+    
+    return segmentedControl;
+}
+
 - (UIView*) voDisplay:(CGRect)bounds {
 
-	//NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
+	self.segmentedControl.frame = bounds;
+    self.segmentedControl.tag = kViewTag;
+    
 	
-	int i;
-	NSMutableArray *segmentTextContent = [[NSMutableArray alloc] init];
-	for (i=0;i<CHOICES;i++) {
-		NSString *key = [NSString stringWithFormat:@"c%d",i];
-		NSString *s = [self.vo.optDict objectForKey:key];
-		if ((s != nil) && (![s isEqualToString:@""])) 
-			[segmentTextContent addObject:s];
-	}
-	//[segmentTextContent addObject:nil];
-	
-	CGRect frame = bounds;
-	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-	
-	if ([self.vo.optDict objectForKey:@"shrinkb"]) {  // default is NO, so a defined result means yes
-		int j=0;
-		for (NSString *s in segmentTextContent) {
-			CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
-			[segmentedControl setWidth:siz.width forSegmentAtIndex:j];
-			j++;
-		}
-	}
-	[segmentTextContent release];
-	
-	segmentedControl.frame = frame;
-	[segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
-	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-	
-	if ([self.vo.value isEqualToString:@""]) {
-		segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
-		[self.vo disableVO];
-	} else {
-		segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
-	}
-	
+    if ([self.vo.value isEqualToString:@""]) {
+        self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+        [self.vo disableVO];
+    } else {
+        self.segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
+    }
 	//[segmentedControl setWidth:20.0f forSegmentAtIndex:0];
 	//segmentedControl.tintColor = [UIColor colorWithRed:0.70 green:0.171 blue:0.1 alpha:70.0];
 	//segmentedControl.alpha = 20.0f;
 	
-	segmentedControl.tag = kViewTag;
-	return [segmentedControl autorelease];
+	//return [segmentedControl autorelease];
+	return self.segmentedControl;
 }
 
 - (NSArray*) voGraphSet {
@@ -161,6 +187,33 @@
 	}
 	
 }
+
+#pragma mark -
+#pragma mark options page 
+
+- (void) setOptDictDflts {
+    
+    if (nil == [self.vo.optDict objectForKey:@"shrinkb"]) 
+        [self.vo.optDict setObject:(SHRINKBDFLT ? @"1" : @"0") forKey:@"shrinkb"];
+
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    if (([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
+    return [super cleanOptDictDflts:key];
+}
+
+
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	self.ctvovcp = ctvovc;

@@ -62,10 +62,23 @@
 	}
 }
 
+#pragma mark protocol: getValCap
+
+- (int) getValCap {  // NSMutableString size for value
+    return 32;
+}
+
 #pragma mark protocol: loadConfig
 
 - (void) loadConfig {
 	[self loadFnArray];
+    if ((nil == [self.vo.optDict valueForKey:@"frep0"])) {
+        [self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep0"];
+    }
+    if ((nil == [self.vo.optDict valueForKey:@"frep1"])) {
+        [self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
+    }
+    
 }
 
 #pragma mark protocol: updateVORefs
@@ -372,10 +385,12 @@
 }
 
 
-- (NSNumber*) currFunctionValue {
+//- (NSString*) currFunctionValue {
+- (NSString*) update:(NSString*)instr {
+    instr = @"";
 	int ep0date = [self getEpDate:0 maxdate:(int)[MyTracker.trackerDate timeIntervalSince1970]];
 	if (ep0date == 0)
-		return nil;
+		return instr;
 	NSInteger ep1 = [[self.vo.optDict valueForKey:@"frep1"] integerValue];
 	if (ep1 >= 0) {  // if ep1 is a valueObj
 		valueObj *valo = [MyTracker getValObj:ep1];
@@ -383,30 +398,33 @@
 			|| valo.value == nil
 			|| [valo.value isEqualToString:@""] 
 			/*|| (valo.vtype == VOT_BOOLEAN && [valo.value isEqualToString:@"0"])*/ )
-			return nil;
+			return instr;
 	}
 	
 	self.currFnNdx=0;
 	
-	return [self calcFunctionValueWithCurrent:ep0date];
+	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
 	
+    if (val != nil) {
+        NSNumber *nddp = [self.vo.optDict objectForKey:@"fnddp"];
+        int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
+        return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
+    }
+    NSLog(@"fn update returning: %@",instr);
+    
+    return instr;
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
-	NSLog(@"func not implemented");
-	
+		
 	//trackerObj *to = (trackerObj*) parentTracker;
 	
 	UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
 	rlab.textAlignment = UITextAlignmentRight;
-	NSNumber *val = [self currFunctionValue];
-	if (val != nil) {
+	NSString *valstr = self.vo.value;  // evaluated on read so make copy
+	if (![valstr isEqualToString:@""]) {
 		rlab.backgroundColor = [UIColor whiteColor];
-		NSNumber *nddp = [self.vo.optDict objectForKey:@"fnddp"];
-		int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
-		rlab.text = [NSString stringWithFormat:
-					 [NSString stringWithFormat:@"%%0.%df",ddp],
-					 [val floatValue]];
+        rlab.text = valstr;
 	} else {
 		rlab.backgroundColor = [UIColor lightGrayColor];
 		rlab.text = @"-";
@@ -772,9 +790,9 @@
 
 		// frep0 and 1 not set if user did not click on range picker
 		if ([self.vo.optDict objectForKey:@"frep0"] == nil) 
-			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:@"frep0"];
+			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep0"];
 		if ([self.vo.optDict objectForKey:@"frep1"] == nil) 
-			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:@"frep1"];
+			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
 		
 		NSLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
 		
@@ -847,6 +865,46 @@
 }
 
 #pragma mark protocol: voDrawOptions page 
+
+- (void) setOptDictDflts {
+    if (nil == [self.vo.optDict objectForKey:@"frep0"]) 
+        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FREPDFLT] forKey:@"frep0"];
+    if (nil == [self.vo.optDict objectForKey:@"frep1"]) 
+        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FREPDFLT] forKey:@"frep1"];
+    if (nil == [self.vo.optDict objectForKey:@"fnddp"]) 
+        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FDDPDFLT] forKey:@"fnddp"];
+    if (nil == [self.vo.optDict objectForKey:@"func"]) 
+        [self.vo.optDict setObject:@"" forKey:@"func"];
+    if (nil == [self.vo.optDict objectForKey:@"autoscale"]) 
+        [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
+    
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    
+    if (([key isEqualToString:@"frep0"] && ([val intValue] == FREPDFLT))
+        ||
+        ([key isEqualToString:@"frep1"] && ([val intValue] == FREPDFLT))
+        ||
+        ([key isEqualToString:@"fnddp"] && ([val intValue] == FDDPDFLT))
+        ||
+        ([key isEqualToString:@"func"] && ([val isEqualToString:@""]))
+        ||
+        ([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
+    return [super cleanOptDictDflts:key];
+}
+
+
 
 - (void) voDrawOptions:(configTVObjVC *)ctvovc {
 	self.ctvovcp = ctvovc;

@@ -11,13 +11,15 @@
 #import "addTrackerController.h"
 #import "configTlistController.h"
 #import "useTrackerController.h"
-
+#import "rTracker-resource.h"
 #import "privacyV.h"
+
+#import "CSVParser.h"
 
 @implementation RootViewController
 
 @synthesize tlist;
-@synthesize privateBtn, multiGraphBtn,payBtn, privacyObj;
+@synthesize privateBtn, privacyObj;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -40,6 +42,96 @@
 */
 
 #pragma mark -
+#pragma mark load CSV files waiting for input
+
+//
+// original code:
+//-------------------
+//  Created by Matt Gallagher on 2009/11/30.
+//  Copyright 2009 Matt Gallagher. All rights reserved.
+//
+//  Permission is given to use this source code file, free of charge, in any
+//  project, commercial or otherwise, entirely at your risk, with the condition
+//  that any redistribution (in part or whole) of source code must retain
+//  this copyright and permission notice. Attribution in compiled projects is
+//  appreciated but not required.
+//-------------------
+//
+// receiveRecord:
+//
+// Receives a row from the CSVParser
+//
+// Parameters:
+//    aRecord - the row
+//
+/*
+- (void)receiveRecord:(NSDictionary *)aRecord
+{
+	for (NSString *key in aRecord)
+	{
+        NSLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
+	}
+}
+*/
+
+- (void) loadInputFiles {
+    NSLog(@"loadInputFiles");
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    NSFileManager *localFileManager=[[NSFileManager alloc] init];
+    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+
+    [self.tlist loadTopLayoutTable];
+	//[self.tableView reloadData];
+    
+    NSString *file;
+    while ((file = [dirEnum nextObject])) {
+        if ([[file pathExtension] isEqualToString: @"csv"]) {
+            NSString *fname = [file lastPathComponent];
+            NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
+            NSLog(@"consider input: %@",fname);
+            
+            if (inmatch.location == NSNotFound) {
+                
+            } else if (inmatch.length == 7) {
+                NSString *tname = [fname substringToIndex:inmatch.location];
+                NSLog(@"load input: %@ as %@",fname,tname);
+                int ndx=0;
+                for (NSString *tracker in self.tlist.topLayoutNames) {
+                    if ([tracker isEqualToString:tname]) {
+                        NSLog(@"match to: %@",tracker);
+                        NSString *target = [docsDir stringByAppendingPathComponent:file];
+                        //NSError *error = nil;
+                        NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
+                        
+                        /*
+                        if (!csvString)
+                        {
+                         NSLog(@"Couldn't read file at path %s\n. Error: %s",
+                                   [file UTF8String],
+                                   [[error localizedDescription] ? [error localizedDescription] : [error description] UTF8String]);
+                            NSAssert(0,@"file issue.");
+                        }
+                        */
+                        if (csvString)
+                        {
+                            trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
+
+                            CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
+                            [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)];
+                            
+                            [to release];
+                        }
+                        ndx++;
+                    }
+                }
+            }
+            
+        }
+    }
+    [localFileManager release];    
+}
+
+#pragma mark -
 #pragma mark view support
 
 - (void)viewDidLoad {
@@ -55,17 +147,21 @@
 	
 	[self setToolbarItems:[NSArray arrayWithObjects: 
 						   //self.flexibleSpaceButtonItem,
-						   self.payBtn, self.privateBtn, self.multiGraphBtn, 
+						   //self.payBtn, 
+                           self.privateBtn, 
+                           //self.multiGraphBtn, 
 						   //self.flexibleSpaceButtonItem, 
 						   nil] 
 				 animated:NO];
 	
-	[payBtn release];
+	//[payBtn release];
 	[privateBtn release];
-	[multiGraphBtn release];
+	//[multiGraphBtn release];
 
 	self.tlist = [[trackerList alloc] init];
 
+    [self loadInputFiles];
+    
 	/*
 	UIApplication *app = [UIApplication sharedApplication];
 	[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -82,7 +178,7 @@
 - (void) refreshView {
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
-
+    
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			self.navigationItem.leftBarButtonItem = nil;
@@ -140,7 +236,8 @@
 #pragma mark -
 #pragma mark button accessor getters
 
-- (UIBarButtonItem *) payBtn {
+/*
+ - (UIBarButtonItem *) payBtn {
 	if (payBtn == nil) {
 		payBtn = [[UIBarButtonItem alloc]
 					  initWithTitle:@"$"
@@ -150,6 +247,7 @@
 	}
 	return payBtn;
 }
+*/
 
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
@@ -162,7 +260,8 @@
 	return privateBtn;
 }
 
-- (UIBarButtonItem *) multiGraphBtn {
+/*
+ - (UIBarButtonItem *) multiGraphBtn {
 	if (multiGraphBtn == nil) {
 		multiGraphBtn = [[UIBarButtonItem alloc]
 					  initWithTitle:@"Multi-Graph"
@@ -172,6 +271,7 @@
 	}
 	return multiGraphBtn;
 }
+*/
 
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {

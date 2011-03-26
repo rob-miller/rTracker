@@ -30,6 +30,10 @@ BOOL keyboardIsShown;
 	return [super initWithVO:nil];
 }
 
+- (int) getValCap {  // NSMutableString size for value
+    return 96;
+}
+
 - (id) initWithVO:(valueObj *)valo {
 	NSLog(@"voTextBox init for %@",valo.valueName);
 	return [super initWithVO:valo];
@@ -227,6 +231,8 @@ BOOL keyboardIsShown;
 	
 	if (! [self.vo.value isEqualToString:self.textView.text]) {
 		[self.vo.value setString:self.textView.text];
+
+        //self.vo.display = nil; // so will redraw this cell only        
 		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 	}
 }
@@ -296,6 +302,35 @@ BOOL keyboardIsShown;
 	}
 }
 
+
+#pragma mark -
+#pragma mark options page 
+
+- (void) setOptDictDflts {
+    
+    if (nil == [self.vo.optDict objectForKey:@"tbnl"]) 
+        [self.vo.optDict setObject:(TBNLDFLT ? @"1" : @"0") forKey:@"tbnl"];
+    
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    
+    if (([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
+        //([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
+        //||
+        //([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
+    return [super cleanOptDictDflts:key];
+}
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
@@ -370,7 +405,7 @@ BOOL keyboardIsShown;
 	if (nil == peopleDictionary) {
 		ABAddressBookRef addressBook = ABAddressBookCreate();
 		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
-		// /*
+		/ / / *
 		CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
 																   kCFAllocatorDefault,
 																   CFArrayGetCount(people),

@@ -11,8 +11,10 @@
 
 @interface voChoice : voState {
 	configTVObjVC *ctvovcp;
+    UISegmentedControl *segmentedControl;
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
+@property (nonatomic,retain) UISegmentedControl *segmentedControl;
 
 @end

@@ -31,11 +31,12 @@
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
-@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
-@property (nonatomic, retain) UIBarButtonItem *payBtn;
+//@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
+//@property (nonatomic, retain) UIBarButtonItem *payBtn;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
+- (void) loadInputFiles;
 - (void) refreshView;
 
 

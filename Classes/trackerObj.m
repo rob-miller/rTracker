@@ -14,15 +14,15 @@
 #import "valueObj.h"
 #import "rTracker-constants.h"
 
-#import "voState.h";
-#import "privacyV.h";
+#import "voState.h"
+#import "privacyV.h"
 
 @implementation trackerObj
 
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
 @synthesize nextColor, colorSet, votArray;
-@synthesize maxLabel,activeControl,vc;
+@synthesize maxLabel,activeControl,vc, dateFormatter;
 
 #define f(x) ((CGFloat) (x))
 
@@ -62,6 +62,7 @@
  *    field='cc%d'		: graph color for for choice %d
  *	  field='frep%d'    : function range endpoint 0 or 1: -constant or valobj vid
  *    field='frv%d'     : function range endpoint 0 or 1 value if frep is offset like hours, months, ... (%d=1 not used)
+ *    field='fnddp'     : function display decimal pt: number of digits to show in output format
  *
  *  trkrData: date(int,unique)
  *		entry indicates there will be corresponding voData items
@@ -90,7 +91,7 @@
 		[self toExecSql];
 		self.sql = @"create index if not exists vodndx on voData (date);";
 		[self toExecSql];
-		self.sql = @"create table if not exists trkrData (date int unique on conflict replace);";
+		self.sql = @"create table if not exists trkrData (date int unique on conflict replace, minpriv int);";
 		[self toExecSql];
 		
 	}
@@ -110,8 +111,9 @@
 
 - (id)init {
 	
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		self.trackerDate = nil;
+
 		//self.valObjTable = [[NSMutableArray alloc] init];
 		valObjTable = [[NSMutableArray alloc] init];
 		nextColor=0;
@@ -128,7 +130,7 @@
 }
 
 - (id)init:(int) tid {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		NSLog(@"configure trackerObj id: %d",tid);
 		self.toid = tid;
 		[self confirmDb];
@@ -158,6 +160,9 @@
 	self.vc = nil;
 	self.activeControl = nil;
 	
+    self.dateFormatter =nil;
+    [dateFormatter release];
+    
 	//unregister for value updated notices
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:rtValueUpdatedNotification
@@ -193,6 +198,8 @@
 		[self.optDict setObject:[e2 nextObject] forKey:key];
 	}
 	
+    [self setToOptDictDflts];
+    
 	self.trackerName = [self.optDict objectForKey:@"name"];
 	CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
 	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
@@ -203,24 +210,27 @@
 	[s1 removeAllObjects];
 	NSMutableArray *i3 = [[NSMutableArray alloc] init];
 	NSMutableArray *i4 = [[NSMutableArray alloc] init];
+	NSMutableArray *i5 = [[NSMutableArray alloc] init];
 	//self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
-	self.sql = [NSString stringWithFormat:@"select id, type, name, color, graphtype from voConfig where priv <= %i order by rank;",
+	self.sql = [NSString stringWithFormat:@"select id, type, name, color, graphtype, priv from voConfig where priv <= %i order by rank;",
 				[privacyV getPrivacyValue]];
-	[self toQry2AryIISII :i1 i2:i2 s1:s1 i3:i3 i4:i4];
+	[self toQry2AryIISIII:i1 i2:i2 s1:s1 i3:i3 i4:i4 i5:i5];
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
 	e2 = [i2 objectEnumerator];
 	NSEnumerator *e3 = [s1 objectEnumerator];
 	NSEnumerator *e4 = [i3 objectEnumerator];
 	NSEnumerator *e5 = [i4 objectEnumerator];
+	NSEnumerator *e6 = [i5 objectEnumerator];
 	int vid;
-	while ( vid = (int) [[e1 nextObject] intValue]) {
+	while ( (vid = (int) [[e1 nextObject] intValue]) ) {
 		valueObj *vo = [[valueObj alloc] initWithData:(id)self
 										in_vid:vid 
 									  in_vtype:(int)[[e2 nextObject] intValue] 
 									  in_vname: (NSString *) [e3 nextObject] 
 									 in_vcolor:(int)[[e4 nextObject] intValue] 
 								 in_vgraphtype:(int)[[e5 nextObject] intValue] 
+                                      in_vpriv:(int)[[e6 nextObject] intValue] 
 						];
 		[self.valObjTable addObject:(id) vo];
 		[vo release];
@@ -230,7 +240,8 @@
 	[i2 release];
 	[i3 release];
 	[i4 release];
-
+	[i5 release];
+    
 	for (valueObj *vo in self.valObjTable) {
 		[s1 removeAllObjects];
 		[s2 removeAllObjects];
@@ -247,6 +258,7 @@
 		if (vo.vcolor > self.nextColor)
 			nextColor = vo.vcolor;
 		
+        [vo.vos setOptDictDflts];
 		[vo.vos loadConfig];
 	}
 	
@@ -272,50 +284,30 @@
 	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%d;",vo.vid];
 	[self toQry2AryS:s1];
 	
-	NSString *key, *val;
+	NSString *key;
 
 	for (key in s1) {
-		val = [vo.optDict objectForKey:key];
 		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
-		
-		if (val == nil) {
+
+		if (([vo.vos cleanOptDictDflts:key])) {
 			[self toExecSql];
-		} else if (([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"nswl"] && [val isEqualToString:(NSWLDFLT ? @"1" : @"0")])
-				   ||
-				   ([key isEqualToString:@"func"] && [val isEqualToString:@""])
-				   ||
-				   ([key isEqualToString:@"smin"] && ([val floatValue] == f(SLIDRMINDFLT)))
-				   ||
-				   ([key isEqualToString:@"smax"] && ([val floatValue] == f(SLIDRMAXDFLT)))
-				   ||
-				   ([key isEqualToString:@"sdflt"] && ([val floatValue] == f(SLIDRDFLTDFLT)))
-				   ||
-				   ([key isEqualToString:@"frep0"] && ([val intValue] == f(FREPDFLT)))
-				   ||
-				   ([key isEqualToString:@"frep1"] && ([val intValue] == f(FREPDFLT)))
-				   ||
-				   ([key isEqualToString:@"fnddp"] && ([val intValue] == f(FDDPDFLT)))
-				   ||
-				   ([key isEqualToString:@"privacy"] && ([val floatValue] == f(PRIVDFLT)))) {
-			[self toExecSql];
-			[vo.optDict removeObjectForKey:key];
 		}
 	}
 	
 	[s1 release];
 	self.sql=nil;
+}
+
+#pragma mark tracker obj default set and vacuum routines together
+
+- (void) setToOptDictDflts {
+    if ((nil == [self.optDict objectForKey:@"savertn"])) {
+        [self.optDict setObject:(SAVERTNDFLT ? @"1" : @"0") forKey:@"savertn"];
+    }
+    if ((nil == [self.optDict objectForKey:@"privacy"])) {
+        [self.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
+    }
+    
 }
 
 - (void) clearToOptDict {
@@ -333,7 +325,7 @@
 			[self toExecSql];
 		} else if (([key isEqualToString:@"savertn"] && [val isEqualToString:(SAVERTNDFLT ? @"1" : @"0")])
 				   ||
-				   ([key isEqualToString:@"privacy"] && ([val floatValue] == f(PRIVDFLT)))) {
+				   ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))) {
 			[self toExecSql];
 			[self.optDict removeObjectForKey:key];
 		}
@@ -424,7 +416,7 @@
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
 	[self resetData];
-	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d;",iDate];
+	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d and minpriv <= %d;",iDate, [privacyV getPrivacyValue]];
 	int c = [self toQry2Int];
 	if (c) {
 		self.trackerDate = qDate; // from convenience method above, so do the retain
@@ -436,11 +428,11 @@
 		NSEnumerator *e1 = [i1 objectEnumerator];
 		NSEnumerator *e3 = [s1 objectEnumerator];
 		NSInteger vid;
-		while ( vid = (NSInteger) [[e1 nextObject] intValue]) {			
+		while ( (vid = (NSInteger) [[e1 nextObject] intValue]) ) {			
 			valueObj *vo = [self getValObj:vid];
 			//NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
-				[vo.value setString:(NSString *) [e3 nextObject]];
+				[vo.value setString:(NSString *) [e3 nextObject]];  // results not saved for func
 				vo.retrievedData = YES;
 			}
 		}
@@ -466,7 +458,8 @@
 
 	BOOL haveData=NO;
 	int tdi = [self.trackerDate timeIntervalSince1970];
-	
+	NSInteger minPriv=BIGPRIV;
+    
 	for (valueObj *vo in self.valObjTable) {
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
@@ -476,6 +469,7 @@
 				self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
 			} else {
 				haveData = YES;
+                minPriv = MIN(vo.vpriv,minPriv);
 				self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
 							vo.vid, tdi, vo.value];
 			}
@@ -484,7 +478,7 @@
 	}
 	
 	if (haveData) {
-		self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date) values (%d);", tdi];
+		self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date,minpriv) values (%d,%d);", tdi,minPriv];
 		[self toExecSql];
 	} else {
 		self.sql = [NSString stringWithFormat:@"select count(*) from voData where date=%d;",tdi];
@@ -499,24 +493,149 @@
 }
 
 #pragma mark -
-#pragma mark write tracker as xls file
+#pragma mark write tracker as csv to already open file
 
-- (void) writeTrackerXLS:(NSFileHandle*)nsfh {
-	
-	//[nsfh writeData:[self.trackerName dataUsingEncoding:NSUnicodeStringEncoding]];
-	[nsfh writeData:[self.trackerName dataUsingEncoding:NSUTF8StringEncoding]];
-	
-	for (valueObj *vo in self.valObjTable) {
-		
-		NSAssert((vo.vid >= 0),@"tObj writeTrackerXLS vo.vid <= 0");
-		if (vo.vtype != VOT_FUNC) { // no fn results data kept
-			NSLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
-			//[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
-			[nsfh writeData:[vo.valueName dataUsingEncoding:NSUTF8StringEncoding]];
-		} 
-	}
-	
+- (NSString*) csvSafe:(NSString*)instr {
+    //instr = [instr stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    instr = [instr stringByReplacingOccurrencesOfString:@"\n" withString:@"\r"];
+    instr = [instr stringByReplacingOccurrencesOfString:@"\"" withString:@"\"\""];
+    instr = [NSString stringWithFormat:@"\"%@\"",instr];
+    return instr;
 }
+
+
+- (NSDateFormatter*) dateFormatter {
+    if (nil == dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeStyle:NSDateFormatterLongStyle];
+        [dateFormatter setDateStyle:NSDateFormatterLongStyle];  
+    }
+    return dateFormatter;
+}
+
+- (NSDate*) strToDate:(NSString*)str {
+        
+    return [[self dateFormatter] dateFromString:str];
+        
+}
+
+- (NSString*) dateToStr:(NSDate*)dat {
+    
+    return [[self dateFormatter] stringFromDate:dat ];
+    
+}
+
+- (void) writeTrackerCSV:(NSFileHandle*)nsfh {
+	
+	//[nsfh writeData:[self.trackerName dataUsingEncoding:NSUTF8StringEncoding]];
+
+    // write column titles
+	
+    NSString *outString= [NSString stringWithFormat:@"\"%@\"",TIMESTAMP_LABEL];
+	for (valueObj *vo in self.valObjTable) {
+		NSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
+        //NSLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+        //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
+        outString = [outString stringByAppendingString:@","];
+        outString = [outString stringByAppendingString:[self csvSafe:vo.valueName]];
+	}
+    outString = [outString stringByAppendingString:@"\n"];
+    [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    // save current trackerDate (NSDate->int)
+    int currDate = (int) [self.trackerDate timeIntervalSince1970];
+    int nextDate = [self firstDate];
+    
+    do {
+        [self loadData:nextDate];
+        // write data - each vo gets routine to write itself -- function results too?
+        outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
+        for (valueObj *vo in self.valObjTable) {
+            outString = [outString stringByAppendingString:@","];
+            outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+        }
+        outString = [outString stringByAppendingString:@"\n"];
+        [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+    } while ((nextDate = [self postDate]));    // iterate through dates
+    
+    // restore current date
+	[self loadData:currDate];
+}
+
+#pragma mark -
+#pragma mark read in from export
+
+- (void)receiveRecord:(NSDictionary *)aRecord
+{
+    
+    NSDate *ts = [self strToDate:[aRecord objectForKey:TIMESTAMP_LABEL]];
+    if (nil == ts) {
+        for (NSString *key in aRecord)
+        {
+            NSLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
+        }
+        NSLog(@"skipping record as no %@ key",TIMESTAMP_LABEL);
+        return;
+    } else {
+        NSLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
+    }
+    
+    NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
+    
+    int mp = BIGPRIV;
+	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
+	{
+        if ((! [key isEqualToString:TIMESTAMP_LABEL]) /* not timestamp */
+            && (![@"" isEqualToString:[aRecord objectForKey:key]])) {    // only fields with data
+            
+            self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
+            int valobjID,valobjPriv;
+            [self toQry2IntInt:&valobjID i2:&valobjPriv];
+            NSLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            
+            [idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
+            if (valobjPriv < mp)
+                mp = valobjPriv;
+        }
+    }
+    
+    
+    int its = [ts timeIntervalSince1970];
+    
+	for (NSString *key in aRecord)
+	{
+        if (! [key isEqualToString:TIMESTAMP_LABEL]) { /* not timestamp */
+            //&& (nil != [aRecord objectForKey:key])) {    // accept fields with data if updating
+
+            // update value data
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
+                        [[idDict objectForKey:key] intValue],its,[aRecord objectForKey:key]];
+            [self toExecSql];
+            
+            // update trkrData - date easy, need mipriv
+            self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
+            int currMinPriv = [self toQry2Int];
+            
+            if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
+                // assume not found, new entry minpriv is mp for this record
+            } else if (currMinPriv < mp) {
+                mp = currMinPriv;   // data already present and < mp
+            }
+            // default mp < currMinPriv
+            
+            self.sql = [NSString stringWithFormat:@"insert or replace into trKrData (date, minpriv) values (%d,%d);",its,mp];  
+            [self toExecSql];
+            
+           // self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
+           // int rslt= (NSInteger) [self toQry2Int];
+            
+        }
+        
+	}
+    
+    
+}
+
 
 #pragma mark -
 #pragma mark modify tracker object <-> db 
@@ -585,8 +704,16 @@
 }
 
 
-- (void) deleteAllData {
+- (void) deleteTrackerDB {
 	[self deleteTDb];
+}
+
+- (void) deleteTrackerRecordsOnly {
+    self.sql = @"delete from trkrData;";
+    [self toExecSql];
+    self.sql = @"delete from voData;";
+    [self toExecSql];
+	self.sql = nil;
 }
 
 - (void) deleteCurrEntry {
@@ -603,27 +730,35 @@
 #pragma mark query tracker methods
 
 - (int) prevDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;", 
-		   (int) [self.trackerDate timeIntervalSince1970] ];
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;", 
+		   (int) [self.trackerDate timeIntervalSince1970], (int) [privacyV getPrivacyValue] ];
 	int rslt= [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
 
 - (int) postDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d order by date asc limit 1;", 
-		   (int) [self.trackerDate timeIntervalSince1970] ];
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date asc limit 1;", 
+                (int) [self.trackerDate timeIntervalSince1970],(int) [privacyV getPrivacyValue]  ];
 	int rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
 
 - (int) lastDate {
-	self.sql = @"select date from trkrData order by date desc limit 1;";
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
 	int rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
+
+- (int) firstDate {
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc limit 1;",(int) [privacyV getPrivacyValue]];
+	int rslt= (NSInteger) [self toQry2Int];
+	self.sql = nil;
+	return rslt;
+}
+
 
 - (NSString*) voGetNameForVID:(NSInteger)vid {
 	for (valueObj *vo in self.valObjTable) {
@@ -660,6 +795,13 @@
 	return (r!=0);
 }
 
+- (int) countEntries {
+	self.sql = @"select count(*) from trkrData;";
+	int r = [self toQry2Int];
+	self.sql = nil;
+	return (r);
+}
+
 - (int) noCollideDate:(int)testDate {
 	BOOL going=YES;
 	
@@ -686,7 +828,10 @@
 	self.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)ndi]; // might have changed to avoid collision
 }
 
-#pragma mark tracker data updated event handling
+#pragma mark value data updated event handling
+
+// handle rtValueUpdatedNotification
+// sends rtTrackerUpdatedNotification
 
 - (void) trackerUpdated:(NSNotification*)n {
 	id obj = [n object];
@@ -704,8 +849,8 @@
 #pragma mark -
 #pragma mark manipulate tracker's valObjs
 
-- (valueObj *) voConfigCopy: (valueObj *) srcVO {
-	NSLog(@"voConfigCopy: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
+- (valueObj *) copyVoConfig: (valueObj *) srcVO {
+	NSLog(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];
 	newVO.vid = [self getUnique];
@@ -764,5 +909,7 @@
 	
 	return votArray;
 }
+
+
 
 @end

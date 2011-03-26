@@ -45,7 +45,7 @@
 - (id) init {
 	NSLog(@"init trackerList");
 	
-	if (self = [super init]) {
+	if ((self = [super init])) {
 		topLayoutNames = [[NSMutableArray alloc] init];
 		//self.topLayoutNames = [[NSMutableArray alloc] init];
 		topLayoutIDs = [[NSMutableArray alloc] init];
@@ -118,7 +118,7 @@
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
 		NSLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\");",nrank,tid,tracker, priv];
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank,tid,tracker, priv];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -129,7 +129,19 @@
 	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
 }
 
+- (int) getTIDfromName:(NSString *)str {
+    int ndx=0;
+    for (NSString *tname in self.topLayoutNames) {
+        if ([tname isEqualToString:str])
+            return [self getTIDfromIndex:ndx];
+        ndx++;
+    }
+    return 0;
+}
 
+/*
+ // discard for now, write each tracker as csv ile
+ 
 #pragma mark -
 #pragma mark write tracker list xls file
 
@@ -141,6 +153,7 @@
 		[to release];
 	}
 }
+*/
 
 #pragma mark -
 #pragma mark tracker manipulation methods
@@ -161,8 +174,8 @@
 	[tID release];
 }
 
-- (trackerObj *) toConfigCopy : (trackerObj *) srcTO {
-	NSLog(@"toConfigCopy: src id= %d %@",srcTO.toid,srcTO.trackerName);
+- (trackerObj *) copyToConfig : (trackerObj *) srcTO {
+	NSLog(@"copyToConfig: src id= %d %@",srcTO.toid,srcTO.trackerName);
 	trackerObj *newTO = [trackerObj alloc];
 	newTO.toid = [self getUnique];
 	newTO = [newTO init];
@@ -177,13 +190,13 @@
 	//valueObj *vo;
 	//while (vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in srcTO.valObjTable) {
-		valueObj *newVO = [newTO voConfigCopy:vo];
+		valueObj *newVO = [newTO copyVoConfig:vo];
 		[newTO addValObj:newVO];
 		[newVO release];
 	}
 	
 	[newTO saveConfig];
-	NSLog(@"toConfigCopy: copy id= %d %@",newTO.toid,newTO.trackerName);
+	NSLog(@"copyToConfig: copy id= %d %@",newTO.toid,newTO.trackerName);
 	
 	return newTO;
 }
@@ -192,10 +205,19 @@
 {
 	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
-	[to deleteAllData];
+	[to deleteTrackerDB];
 	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];
 	[self.topLayoutIDs removeObjectAtIndex:row];
 }
+
+- (void) deleteTrackerRecordsRow:(NSUInteger)row
+{
+	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
+	trackerObj *to = [[trackerObj alloc] init:tid];
+	[to deleteTrackerRecordsOnly];
+	[to release];
+}
+
 
 @end

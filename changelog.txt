@@ -23,4 +23,36 @@
   
 --- check in ---
 
-  
+21 Mar 2011
+  - switch to xcode 4
+  - instead of .xls implement .csv
+  - moved export button from configTList to useTracker when save not pending
+  - minor refactoring to fix 'analyze' issues
+
+22 Mar 2011
+  - refactored so access of vo.value triggers [vos update] causing function update, result string set
+  - initial csv output working, need to check formatting for input
+
+23 Mar 2011
+  - testing, minor bug fixes
+
+24 Mar 2011
+  - found bug where fn ep not set to default after load, refactored to make vos' handle clean and set default for optdict
+  - optdict defaults now handled in voState objs
+  - added voState update(), only active for fn to re-calc .value on read
+
+25 Mar 2011
+  - factored out doc, db path creation to (new) rtracker-resource.m
+  - option on del tracker to just del data
+  - added CSVParser class from Matt Gallagher
+  - csv input working -- can't yet save/restore schema
+  - default privacy = 1 or can't differentiate priv=0 / not found on load csv
+  - TrkrData store min privacy level for date valobjs
+  - trying to fix flicker on updatetableview; fixed choice ok, slider broken
+
+26 Mar 2011
+  - reverted flicker changes (*check in more often!!*) except for choice 
+  - show historical actively would not have enable checkbox on slider, choice; why not? changed
+
+--- check in ---
+

@@ -13,6 +13,9 @@
 
 
 
+- (int) getValCap {  // NSMutableString size for value
+    return 1;
+}
 
 - (UIImage *) boolBtnImage {
 	// default is not checked
@@ -28,6 +31,8 @@
 		[self.vo.value setString:@"1"];
 		[imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];		
 	}
+
+	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 

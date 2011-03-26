@@ -11,6 +11,10 @@
 
 @implementation voText
 
+- (int) getValCap {  // NSMutableString size for value
+    return 32;
+}
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	NSLog(@"tf begin editing");
@@ -21,6 +25,8 @@
 - (void)tfvoFinEdit:(UITextField*)tf {
 	[self.vo.value setString:tf.text];
 	tf.textColor = [UIColor blackColor];
+    
+	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
@@ -38,6 +44,7 @@
 	[textField resignFirstResponder];
 	return YES;
 }
+
 
 - (UIView*)voDisplay:(CGRect)bounds {
 	CGRect frame = bounds;
@@ -70,6 +77,29 @@
 	return [dtf autorelease];
 }
 
+
+#pragma mark -
+#pragma mark options page 
+
+- (void) setOptDictDflts {
+    
+    
+    return [super setOptDictDflts];
+}
+
+- (BOOL) cleanOptDictDflts:(NSString*)key {
+    /*
+    NSString *val = [self.vo.optDict objectForKey:key];
+    if (nil == val) 
+        return YES;
+    if (([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    */
+    return [super cleanOptDictDflts:key];
+}
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect labframe = [ctvovc configLabel:@"Options:" 
