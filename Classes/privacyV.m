@@ -18,7 +18,7 @@
 #pragma mark -
 #pragma mark singleton privacyValue support
 
-static int privacyValue=1;
+static int privacyValue=PRIVDFLT;
 
 + (int)getPrivacyValue {
 	return privacyValue;
@@ -386,8 +386,8 @@ static int privacyValue=1;
 										
 		showSlider = [[UISlider alloc] initWithFrame:sframe];
 		showSlider.backgroundColor = [UIColor clearColor];
-		showSlider.minimumValue = 1;
-		showSlider.maximumValue = 100;
+		showSlider.minimumValue = MINPRIV+1;
+		showSlider.maximumValue = MAXPRIV;
 		//showSlider.continuous = FALSE;
 		[showSlider addTarget:self action:@selector(ssAction:) forControlEvents:UIControlEventValueChanged];
 		[showSlider setHidden:TRUE];

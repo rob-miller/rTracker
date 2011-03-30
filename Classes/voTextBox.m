@@ -18,7 +18,7 @@
 
 @implementation voTextBox
 
-@synthesize textView,devc,saveFrame,accessoryView,addButton,segControl;
+@synthesize tbButton,textView,devc,saveFrame,accessoryView,addButton,segControl;
 @synthesize alphaArray,peopleArray,historyArray;
 //@synthesize peopleDictionary,historyDictionary;
 @synthesize pv,showNdx;
@@ -41,7 +41,10 @@ BOOL keyboardIsShown;
 
 - (void) dealloc {
 	NSLog(@"dealloc voTextBox");
-	
+    
+    //NSLog(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
+	//self.tbButton = nil;  // convenience constructor, do not own (enven tho retained???)
+    //[tbButton release];
 	self.textView = nil;
 	[textView release];
 	self.addButton = nil;
@@ -232,7 +235,7 @@ BOOL keyboardIsShown;
 	if (! [self.vo.value isEqualToString:self.textView.text]) {
 		[self.vo.value setString:self.textView.text];
 
-        //self.vo.display = nil; // so will redraw this cell only        
+        self.vo.display = nil; // so will redraw this cell only        
 		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 	}
 }
@@ -275,23 +278,29 @@ BOOL keyboardIsShown;
 #pragma mark -
 #pragma mark voState display
 
-- (UIView*) voDisplay:(CGRect)bounds {
+- (UIButton*) tbButton {
+    if (nil == tbButton) {
+        tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        tbButton.frame = self.voFrame; //CGRectZero;
+        tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        [tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];		
+        tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+    }
+    return tbButton;
+}
 
-	UIButton *tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	tbButton.frame = bounds; //CGRectZero;
-	tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-	tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-	[tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];		
-	//[tbButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
+- (UIView*) voDisplay:(CGRect)bounds {
+    self.voFrame = bounds;
+    
 	if ([self.vo.value isEqualToString:@""]) {
-		[tbButton setTitle:@"<add text>" forState:UIControlStateNormal];
+		[self.tbButton setTitle:@"<add text>" forState:UIControlStateNormal];
 	} else {
-		[tbButton setTitle:self.vo.value forState:UIControlStateNormal];
+		[self.tbButton setTitle:self.vo.value forState:UIControlStateNormal];
 	}
 	
-	tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+	return self.tbButton;
 	
-	return tbButton;
 }
 
 - (NSArray*) voGraphSet {

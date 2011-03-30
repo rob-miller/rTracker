@@ -22,4 +22,9 @@
 #define TMPUNIQSTART		1000
 
 #define TIMESTAMP_LABEL @"timestamp"
+
+#define MINPRIV         1
+#define MAXPRIV         100
 #define BIGPRIV         1000
+#define PRIVDFLT		MINPRIV
+

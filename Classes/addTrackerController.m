@@ -360,7 +360,7 @@ NSLog(@"btnAddValue was pressed!");
 		} else {
 			// the cell is being recycled, remove old embedded controls
 			UIView *viewToRemove = nil;
-			while (viewToRemove = [cell.contentView viewWithTag:kViewTag])
+			while ((viewToRemove = [cell.contentView viewWithTag:kViewTag]))
 				[viewToRemove removeFromSuperview];
 		}
 		

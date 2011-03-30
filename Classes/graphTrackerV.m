@@ -170,7 +170,7 @@
 	sd = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.lastDate];
 	datestr = [NSDateFormatter localizedStringFromDate:sd dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
 	dta = [datestr componentsSeparatedByString:@" "];
-	/*
+	/ *
 	ds = [(NSString *) [dta objectAtIndex:0] UTF8String];
 	ts = [(NSString *) [dta objectAtIndex:1] UTF8String];
 	

@@ -19,9 +19,12 @@
 @interface voState : NSObject <voProtocol> {
 
 	valueObj *vo;
+    CGRect voFrame;
+    
 }
 
 @property (nonatomic,assign) valueObj *vo;
+@property (nonatomic) CGRect voFrame;
 
 - (id) init;
 - (id) initWithVO:(valueObj*)valo;

@@ -123,7 +123,7 @@
 													 name:rtValueUpdatedNotification 
 												   object:nil];
 		
-		NSLog(@"init trackerObj New");
+		//NSLog(@"init trackerObj New");
 	}
 	
 	return self;
@@ -131,7 +131,7 @@
 
 - (id)init:(int) tid {
 	if ((self = [self init])) {
-		NSLog(@"configure trackerObj id: %d",tid);
+		//NSLog(@"init trackerObj id: %d",tid);
 		self.toid = tid;
 		[self confirmDb];
 		[self loadConfig];
@@ -184,7 +184,7 @@
 #pragma mark load/save db<->object 
 
 - (void) loadConfig {
-	NSLog(@"tObj loadConfig: %d",self.toid);
+	
 	NSAssert(self.toid,@"tObj load toid=0");
 	
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
@@ -201,7 +201,10 @@
     [self setToOptDictDflts];
     
 	self.trackerName = [self.optDict objectForKey:@"name"];
-	CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
+
+    NSLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
+	
+    CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
 	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
 	self.maxLabel = (CGSize) {w,h};
 	
@@ -415,6 +418,7 @@
 - (BOOL) loadData: (int) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
+    NSLog(@"trackerObj loadData for date %@",qDate);
 	[self resetData];
 	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d and minpriv <= %d;",iDate, [privacyV getPrivacyValue]];
 	int c = [self toQry2Int];
@@ -432,8 +436,10 @@
 			valueObj *vo = [self getValObj:vid];
 			//NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
-				[vo.value setString:(NSString *) [e3 nextObject]];  // results not saved for func
-				vo.retrievedData = YES;
+                NSString *newVal = (NSString *) [e3 nextObject];
+                vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
+				[vo.value setString:newVal];  // results not saved for func so not in db table to be read
+				//vo.retrievedData = YES;
 			}
 		}
 		
@@ -632,7 +638,7 @@
         }
         
 	}
-    
+    [idDict release];
     
 }
 

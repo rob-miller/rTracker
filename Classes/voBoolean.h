@@ -10,7 +10,9 @@
 #import "voState.h"
 
 @interface voBoolean : voState {
-
+    UIButton *imageButton;
 }
+
+@property (nonatomic,retain) UIButton *imageButton;
 
 @end

@@ -11,6 +11,8 @@
 
 @implementation voNumber
 
+@synthesize dtf;
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
 	NSLog(@"tf begin editing");
     //*activeField = textField;
@@ -20,6 +22,7 @@
 - (void)tfvoFinEdit:(UITextField*)tf {
 	tf.textColor = [UIColor blackColor];
 	[self.vo.value setString:tf.text];
+    tf.backgroundColor = [UIColor whiteColor];
     
 	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
@@ -40,52 +43,67 @@
 	return YES;
 }
 
+- (UITextField*) dtf {
+    if (nil == dtf) {
+        dtf = [[UITextField alloc] initWithFrame:self.voFrame];
+        
+        dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
+        dtf.textColor = [UIColor blackColor];
+        dtf.font = [UIFont systemFontOfSize:17.0];
+        dtf.backgroundColor = [UIColor whiteColor];
+        dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+        
+        dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+        dtf.placeholder = @"<enter number>";
+        dtf.textAlignment = UITextAlignmentRight;
+        //[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
+        
+        dtf.returnKeyType = UIReturnKeyDone;
+        
+        dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+        
+        dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
+        dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
+        
+        // Add an accessibility label that describes what the text field is for.
+        [dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
+        
+    }
+    //NSLog(@"num dtf rc= %d",[dtf retainCount]);
+    return dtf;
+}
+
 - (UIView*)voDisplay:(CGRect)bounds {
-	CGRect frame = bounds;
-	UITextField * dtf = [[UITextField alloc] initWithFrame:frame];
-	
-	dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-	dtf.textColor = [UIColor blackColor];
-	dtf.font = [UIFont systemFontOfSize:17.0];
-	dtf.backgroundColor = [UIColor whiteColor];
-	dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
-	
-	dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-	dtf.placeholder = @"<enter number>";
-	dtf.textAlignment = UITextAlignmentRight;
-	//[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
-	trackerObj *to = (trackerObj*)self.vo.parentTracker;
-	if ([self.vo.value isEqualToString:@""]) {
-		if ([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]
-			/* && ![to hasData] */) {  // only if new entry
-			to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d",self.vo.vid];
-			int v = [to toQry2Int];
-			if (v>0) {
-				to.sql = [NSString stringWithFormat:@"select val from voData where id=%d order by date desc limit 1;",self.vo.vid];
-				NSString *r = [to toQry2Str];
-				dtf.textColor = [UIColor grayColor];
-				dtf.text = r;
-			}
-			to.sql = nil;
-		}
-	} else {
-		dtf.text = self.vo.value;
-	}
-	
-	
-	dtf.returnKeyType = UIReturnKeyDone;
-	
-	dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
-	
-	dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
-	dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
-	
-	// Add an accessibility label that describes what the text field is for.
-	[dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
-	
-	NSLog(@"dtf: vo val= %@", self.vo.value);
-	
-	return [dtf autorelease];
+	self.voFrame = bounds;
+
+	//if (![self.vo.value isEqualToString:dtf.text]) {
+        
+        if ([self.vo.value isEqualToString:@""]) {
+            if ([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"] /* && ![to hasData] */) {  // only if new entry
+                trackerObj *to = (trackerObj*)self.vo.parentTracker;
+                to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d and date<%d",
+                          self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                int v = [to toQry2Int];
+                if (v>0) {
+                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<%d order by date desc limit 1;",
+                              self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                    NSString *r = [to toQry2Str];
+                    self.dtf.textColor = [UIColor redColor]; //[UIColor lightGrayColor];
+                    self.dtf.backgroundColor = [UIColor grayColor];
+                    self.dtf.text = r;
+                }
+                to.sql = nil;
+            }
+        } else {
+            self.dtf.backgroundColor = [UIColor whiteColor];
+            self.dtf.textColor = [UIColor blackColor];
+            self.dtf.text = self.vo.value;
+        }
+        
+        NSLog(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
+	//}
+    
+    return self.dtf;
 }
 
 

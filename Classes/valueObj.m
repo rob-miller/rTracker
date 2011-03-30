@@ -23,7 +23,7 @@
 @implementation valueObj
 
 @synthesize vid, vtype, vpriv, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
-@synthesize vos, retrievedData;
+@synthesize vos;  //, retrievedData;
 
 //extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
@@ -65,8 +65,8 @@ in_vpriv:(NSInteger)in_vpriv
 	//NSLog(@"valuename retain count= %d",[valueName retainCount] );
 	self.valueName = nil;
 	[valueName release];
-	//self.value = nil;
-	//[value release];
+	//self.value = nil;  //?? why not ??
+	//[value release];   //??
 	self.display = nil;
 	[display release];
 	
@@ -99,6 +99,7 @@ in_vpriv:(NSInteger)in_vpriv
     if (value == nil) {
         value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
         //value = [[NSMutableString alloc] init];
+        [value setString:@""];
     }
     [value setString:[self.vos update:value]];
     return value;
@@ -106,11 +107,12 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) resetData {
 	[self.value setString:@""];
-	self.retrievedData = NO;
-	self.useVO = NO;
+    //self.retrievedData = NO;
+	self.useVO = NO;  // disableVO
 }
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
+    NSLog(@"setVtype - allocating vos");
 	vtype = vt;
 	switch (vt) {
 		case VOT_NUMBER:
@@ -165,7 +167,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (UIView *) display:(CGRect)bounds {
 	if (display == nil) {
-        NSLog(@"vo display %@",self.valueName);
+        NSLog(@"vo new display %@",self.valueName);
 		self.display = [self.vos voDisplay:bounds];
 	}
 	return display;
@@ -200,12 +202,12 @@ in_vpriv:(NSInteger)in_vpriv
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
 	//self.useVO = !self.useVO;
 
-	if ((self.useVO = !self.useVO)) {
+	if ((self.useVO = !self.useVO)) { // if new state=TRUE (toggle useVO and set)   // enableVO ... disableVO
 		checkImage = [UIImage imageNamed:@"checked.png"];
-		if (self.vtype == VOT_SLIDER)
+        //   do in update():
+		if (self.vtype == VOT_SLIDER) 
 			[self.value setString:[NSString stringWithFormat:@"%f",((UISlider*)self.display).value]];
-		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];		
-	} else {
+	} else {          // new state = FALSE
 		checkImage = [UIImage imageNamed:@"unchecked.png"];
 		if (self.vtype == VOT_CHOICE)
 			((UISegmentedControl *) self.display).selectedSegmentIndex =  UISegmentedControlNoSegment;
@@ -216,6 +218,7 @@ in_vpriv:(NSInteger)in_vpriv
 		}
 	}
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];		
 	[checkButtonUseVO setImage:checkImage forState:UIControlStateNormal];
 	
 }

@@ -6,6 +6,8 @@
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //
 
+// implements textbox editor
+
 #import "voDataEdit.h"
 
 

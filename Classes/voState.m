@@ -13,7 +13,7 @@
 
 @implementation voState
 
-@synthesize vo;
+@synthesize vo,voFrame;
 
 - (id) init {
 	return [self initWithVO:nil];
@@ -29,6 +29,7 @@
 - (void) dealloc {
 
 	NSLog(@"voState default dealloc");
+    // *vo is assigned not retained
 	[super dealloc];
 }
 
@@ -190,6 +191,7 @@
 	
 	//if (! self.vo.retrievedData) {  // only show enable checkbox if this is data entry mode (not show historical)  
 		// 26 mar 2011 -- why not show for historical ?
+        // 30 mar 2011 -- seems like checkbuttonusevo should be correct state if use enablevo everywhere; else don't use it
 		UIImage *image = (self.vo.useVO) ? checkImage : [UIImage imageNamed:@"unchecked.png"];
 		UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
 		[self.vo.checkButtonUseVO setImage:newImage forState:UIControlStateNormal];
@@ -219,6 +221,7 @@
 	bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
 	bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
 	
+    NSLog(@"votvenabledcell adding subview");
 	[cell.contentView addSubview:[self.vo display:bounds]];
     return cell;
 	

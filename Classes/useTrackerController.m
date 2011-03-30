@@ -14,6 +14,7 @@
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
+- (void) updateTableCells;
 @end
 
 @implementation useTrackerController
@@ -73,13 +74,35 @@ BOOL keyboardIsShown;
 	}
 }
 
-#pragma mark tracker data updated event handling
+#pragma mark -
+#pragma mark tracker data updated event handling -- rtTrackerUpdatedNotification
+
+- (void) updateTableCells {
+	//NSLog(@"utc: updateTableCells");
+	NSMutableArray *iparr = [[NSMutableArray alloc] init];
+    int n=0;
+    
+	for (valueObj *vo in self.tracker.valObjTable) {
+        if (vo.vtype == VOT_FUNC) {
+            vo.display = nil;  // always redisplay
+            [iparr addObject:[[NSIndexPath indexPathWithIndex:0] indexPathByAddingIndex:n]];
+        } else if (vo.display == nil) {
+            [iparr addObject:[[NSIndexPath indexPathWithIndex:0] indexPathByAddingIndex:n]];
+        }
+        n++;
+	}
+    // n.b. we hardcode we hardcode number of sections in a tracker tableview here
+    [self.table reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
+    
+    [iparr release];
+}
+
 
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
 	NSLog(@"utc update.");
-	[self updateTrackerTableView];
+    [self updateTableCells];
     self.needSave=YES;
 	[self showSaveBtn];
 }
@@ -87,7 +110,7 @@ BOOL keyboardIsShown;
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
-	NSLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
+	//NSLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
 	self.title = tracker.trackerName;
 	self.needSave = NO;
@@ -206,7 +229,7 @@ BOOL keyboardIsShown;
 	
 
     [self showSaveBtn];
-	NSLog(@"useTrackerController: viwWillAppear privacy= %d", [privacyV getPrivacyValue]);
+	//NSLog(@"useTrackerController: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
 	
 }
 
@@ -479,12 +502,11 @@ BOOL keyboardIsShown;
 }
 
 
-
-
 #pragma mark -
 #pragma mark datepicker support
 
 - (void) updateTrackerTableView {
+    // see related updateTableCells above
 	NSLog(@"utc: updateTrackerTableView");
 	
 	for (valueObj *vo in self.tracker.valObjTable) {
@@ -561,6 +583,7 @@ BOOL keyboardIsShown;
 	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 	[self.tracker saveData];
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
+        // do not return to tracker list after save, so generate clear form
 		if (![self.toolbarItems containsObject:postDateBtn])
 			[self.tracker resetData];
 		[self updateToolBar];
@@ -726,13 +749,13 @@ BOOL keyboardIsShown;
 }
 
 - (UIBarButtonItem *) currDateBtn {
-	NSLog(@"currDateBtn called");
+	//NSLog(@"currDateBtn called");
 	NSString *datestr = [NSDateFormatter localizedStringFromDate:tracker.trackerDate 
 													   dateStyle:NSDateFormatterShortStyle 
 													   timeStyle:NSDateFormatterShortStyle];
 
 	if (currDateBtn == nil) {
-		NSLog(@"creating button");
+		//NSLog(@"creating button");
 		currDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:datestr
 					   style:UIBarButtonItemStyleBordered
@@ -825,7 +848,7 @@ BOOL keyboardIsShown;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-    //NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
+    NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
 	return [vo.vos voTVCell:tableView];
 }

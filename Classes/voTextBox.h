@@ -12,6 +12,7 @@
 
 @interface voTextBox : voState <UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate>{
 
+    UIButton *tbButton;
 	UITextView *textView;
 	UIView *accessoryView;
 	UIButton *addButton;
@@ -32,8 +33,9 @@
 	
 }
 
-@property (nonatomic, retain) UITextView *textView;
-@property (nonatomic, assign) IBOutlet UIView *accessoryView;
+@property (nonatomic,retain) UIButton *tbButton;
+@property (nonatomic,retain) UITextView *textView;
+@property (nonatomic,assign) IBOutlet UIView *accessoryView;
 @property (nonatomic,retain) IBOutlet UIButton *addButton;
 @property (nonatomic,retain) IBOutlet UISegmentedControl *segControl;
 @property (nonatomic,assign) UIPickerView *pv;

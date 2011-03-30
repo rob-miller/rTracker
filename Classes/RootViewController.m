@@ -118,7 +118,7 @@
 
                             CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
                             [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)];
-                            
+                            [parser release];
                             [to release];
                         }
                         ndx++;
@@ -341,7 +341,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    //NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier = @"Cell";
     
@@ -363,7 +363,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	NSUInteger row = [indexPath row];
-	NSLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	//NSLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromIndex:row]];
 	[to describe];

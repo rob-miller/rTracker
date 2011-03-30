@@ -10,7 +10,10 @@
 #import "voState.h"
 
 @interface voNumber : voState <UITextFieldDelegate> {
-
+    UITextField *dtf;
 }
+
+@property (nonatomic,retain) UITextField *dtf;
+
 
 @end

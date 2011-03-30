@@ -56,3 +56,19 @@
 
 --- check in ---
 
+26 Mar 2011
+  - rationalize min/max/big/default privacy values. min for tictac setting is MINPRIV+1
+
+28 Mar 2011
+  - flicker fix is to not re-alloc vo displays constantly; fixed messed up slider to get spurious val=0 actions on table reload data
+  - changed table reloadData for val changed to just reload fn cells
+  - tweak display of slider value for checkbox dis/enable
+  - choice value +1 so disabled=0, all selections are positive value
+  - voNumber startwithlast picks previous entry by current tracker date, not just last by date
+  - start cleaning up NSLog's - need #if debug control
+
+30 Mar 2011
+  - tracked down problem in slider to check for useVO on [update], caused wipe of data to set useVO
+  + need to clean up either enableVO/disableVO everywhere, or get rid of unused checkbuttonusevo
+
+--- check in ---

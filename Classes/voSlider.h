@@ -10,13 +10,11 @@
 #import "voState.h"
 
 @interface voSlider : voState {
-    //CGRect sliderFrame;
-   // UISlider *sliderCtl;
-    //CGFloat sdflt;
+    UISlider *sliderCtl;
+    CGFloat sdflt;
 }
 
-//@property (nonatomic) CGRect sliderFrame;
-//@property (nonatomic,retain) UISlider *sliderCtl;
-//@property (nonatomic) CGFloat sdflt;
+@property (nonatomic,retain) UISlider *sliderCtl;
+@property (nonatomic) CGFloat sdflt;
 
 @end

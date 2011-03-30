@@ -11,11 +11,11 @@
 
 @implementation voSlider
 
-//@synthesize sliderFrame,sliderCtl,sdflt;
+@synthesize sliderCtl,sdflt;
 
 - (void) dealloc {
-//    self.sliderCtl = nil;
-//    [sliderCtl release];
+    self.sliderCtl = nil;
+    [sliderCtl release];
 	[super dealloc];
 }
 
@@ -25,24 +25,37 @@
 
 - (void)sliderAction:(UISlider *)sender
 { 
-	NSLog(@"slider action value = %f", ((UISlider *)sender).value);
-	[self.vo.value setString:[NSString stringWithFormat:@"%f",sender.value]];
-	//NSLog(@"slider action value = %f valstr= %@ vs dbl= %f", ((UISlider *)sender).value, self.vo.value, [self.vo.value doubleValue]);
+    /*
+	//NSLog(@"slider action value = %f", ((UISlider *)sender).value);
+	//[self.vo.value setString:[NSString stringWithFormat:@"%f",sender.value]];
+    NSLog(@"sender action value: %f",sender.value);
+	NSLog(@"slider action value = %f", self.sliderCtl.value);
+    NSLog(@"prev val= %@",self.vo.value);
+    NSLog(@"tracking= %d  touchinside= %d",[sender isTracking], [sender isTouchInside]);
+    //if (sender.value == 0.0f) {
+    if ((![sender isTracking]) && [sender isTouchInside] && (sender.value == 0.0f)) {
+        NSLog(@"poo...");
+        return;
+    }
+    */
+    
 	if (!self.vo.useVO)
 		[self.vo enableVO];
-    
-	//self.vo.display = nil; // so will redraw this cell only  rtm testing
+
+	[self.vo.value setString:[NSString stringWithFormat:@"%f",self.sliderCtl.value]];
+
+	//NSLog(@"slider action value = %f valstr= %@ vs dbl= %f", ((UISlider *)sender).value, self.vo.value, [self.vo.value doubleValue]);
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
-/*
+
 - (UISlider*) sliderCtl {
     if (nil == sliderCtl) {
-        NSLog(@"create sliderCtl");
+       // NSLog(@"create sliderCtl");
         //CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
         
-        sliderCtl = [[UISlider alloc] initWithFrame:self.sliderFrame];
+        sliderCtl = [[UISlider alloc] initWithFrame:self.voFrame];
         [sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
         
         // in case the parent view draws with a custom color or gradient, use a transparent color
@@ -64,6 +77,7 @@
         
         sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 
+        /*
         if ([self.vo.value isEqualToString:@""]) {
             self.sliderCtl.value = self.sdflt;  
             //[self.sliderCtl setValue:self.sdflt animated:NO];
@@ -71,7 +85,7 @@
             self.sliderCtl.value = [self.vo.value floatValue];
             //[self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
         }
-        
+         */
     }
     
     return sliderCtl;
@@ -79,11 +93,24 @@
 
 - (UIView*) voDisplay:(CGRect) bounds
 {
-    self.sliderFrame = bounds;
+    self.voFrame = bounds;
+    NSString *vals = self.vo.value;
+    CGFloat valf = [self.vo.value floatValue];
+    trackerObj *pto = self.vo.parentTracker;
+    
+    NSLog(@"voDisplay slider vals= %@ valf= %f -> slider.valf= %f",vals,valf,self.sliderCtl.value);
+    NSLog(@"parent tracker date= %@",pto.trackerDate);
+    if ([self.vo.value isEqualToString:@""]) {  // && (self.sliderCtl.value != self.sdflt)) {
+        self.sliderCtl.value = self.sdflt;  
+        //[self.sliderCtl setValue:self.sdflt animated:NO];
+    } else if (self.sliderCtl.value != [self.vo.value floatValue]) {
+        self.sliderCtl.value = [self.vo.value floatValue];
+        //[self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
+    }
 	return self.sliderCtl;
 }
-*/
 
+/*
 - (UIView*) voDisplay:(CGRect) bounds {
     NSLog(@"create sliderCtl");
     //CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
@@ -120,6 +147,8 @@
     
     return [sliderCtl autorelease];
 }
+ */
+
 
 - (NSArray*) voGraphSet {
 	return [voState voGraphSetNum];
@@ -224,6 +253,12 @@
 	
 	ctvovc.lasty = frame.origin.y + labframe.size.height + MARGIN;
 	[super voDrawOptions:ctvovc];
+}
+
+- (NSString*) update:(NSString*)instr {   // place holder so fn can update on access
+    if (self.vo.useVO)
+        return instr;
+    return @"";
 }
 
 

@@ -66,7 +66,7 @@
 #define SLIDRMINDFLT	0.0
 #define SLIDRMAXDFLT	100.0
 #define SLIDRDFLTDFLT	50.0
-#define PRIVDFLT		0
+//#define PRIVDFLT		0
 #define FREPDFLT		-1
 #define FDDPDFLT		2
 
@@ -104,7 +104,7 @@
 	NSInteger vGraphType;
 	UIView *display;
 	BOOL useVO;
-	BOOL retrievedData;
+	//BOOL retrievedData;
 	NSMutableDictionary *optDict;
 	id parentTracker;
 	id <voProtocol> vos;
@@ -126,7 +126,7 @@
 
 @property (nonatomic, retain) UIView *display;
 @property (nonatomic) BOOL useVO;
-@property (nonatomic) BOOL retrievedData;
+//@property (nonatomic) BOOL retrievedData;
 @property (nonatomic,assign) id parentTracker;
 
 @property (nonatomic,retain) UIButton *checkButtonUseVO;

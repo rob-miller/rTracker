@@ -76,6 +76,8 @@
 	NSMutableArray *fnStrs;			// valueObj names or predefined operation names (map to symbols, vids in nfArray)
 
 	NSInteger currFnNdx;			// index as we compute the function
+    
+    UILabel *rlab;
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
@@ -85,6 +87,7 @@
 @property (nonatomic,retain) NSMutableArray *fnStrs;
 @property (nonatomic,retain) NSMutableArray *fnArray;
 @property (nonatomic) NSInteger currFnNdx;
+@property (nonatomic,retain) UILabel *rlab;
 
 - (void) funcDone;
 - (void) funcVDL:(configTVObjVC*)ctvovc donebutton:(UIBarButtonItem*)db ;

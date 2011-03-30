@@ -30,32 +30,39 @@
 	return [super voTVEnabledCell:tableView];
 }
 
+- (NSString*) getValueForSegmentChoice {
+    int i;
+    NSString *rslt = @"";
+    NSUInteger segNdx = [self.segmentedControl selectedSegmentIndex];
+    if (UISegmentedControlNoSegment != segNdx) {
+
+        NSString *chTitle = [self.segmentedControl titleForSegmentAtIndex:segNdx];
+    
+        for (i=0; i<CHOICES;i++) {
+            NSString *key = [NSString stringWithFormat:@"c%d",i];
+            NSString *val = [self.vo.optDict objectForKey:key];
+            if ([val isEqualToString:chTitle]) {
+                rslt = [NSString stringWithFormat:@"%d",i+1];  // disabled = 0 = no selection; all else gives value
+                break;
+            }
+        }
+        NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");    
+    }
+    
+    return rslt;
+}
+
 - (void) segmentAction:(id) sender
 {
 	NSLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
-	
-	if ([sender selectedSegmentIndex] == UISegmentedControlNoSegment) {
-		[self.vo disableVO];
-		[self.vo.value setString:@""];
-	} else {
-		int i;
-		[self.vo enableVO];
-		// user may leave an intermediate choice title blank, must get their choice number not just seg ndx
-		NSString *ch = [(UISegmentedControl*) sender titleForSegmentAtIndex:[sender selectedSegmentIndex]];
-		for (i=0; i<CHOICES;i++) {
-			NSString *key = [NSString stringWithFormat:@"c%d",i];
-			NSString *val = [self.vo.optDict objectForKey:key];
-			if ([val isEqualToString:ch]) {
-				[self.vo.value setString:[NSString stringWithFormat:@"%d",i]];
-				break;
-			}
-		}
-		NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");
+	[self.vo.value setString:[self getValueForSegmentChoice]];   
+    if (@"" == self.vo.value) {  
+        [self.vo disableVO];
+    } else {
+    	[self.vo enableVO];
+    }
         
-        //self.vo.display = nil; // so will redraw this cell only  rtm testing
-        
-		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
-	}
+    [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
 - (UISegmentedControl*) segmentedControl {
@@ -85,11 +92,11 @@
         }
         [segmentTextContent release];
         
-        //segmentedControl.frame = frame;
+        segmentedControl.frame = self.voFrame;
         [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
-//        segmentedControl.tag = kViewTag;
+        segmentedControl.tag = kViewTag;
         
 //        if ([self.vo.value isEqualToString:@""]) {
 //            self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -104,21 +111,23 @@
 
 - (UIView*) voDisplay:(CGRect)bounds {
 
-	self.segmentedControl.frame = bounds;
-    self.segmentedControl.tag = kViewTag;
+	self.voFrame = bounds;
+    //self.segmentedControl.tag = kViewTag;
     
-	
+	// set displayed segment from self.vo.value
+    
     if ([self.vo.value isEqualToString:@""]) {
-        self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
-        [self.vo disableVO];
+        if (UISegmentedControlNoSegment != self.segmentedControl.selectedSegmentIndex) {
+            self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+            [self.vo disableVO];
+        }
     } else {
-        self.segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
+        if (self.segmentedControl.selectedSegmentIndex != [self.vo.value integerValue]) {
+            self.segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
+            [self.vo enableVO];
+        }
     }
-	//[segmentedControl setWidth:20.0f forSegmentAtIndex:0];
-	//segmentedControl.tintColor = [UIColor colorWithRed:0.70 green:0.171 blue:0.1 alpha:70.0];
-	//segmentedControl.alpha = 20.0f;
-	
-	//return [segmentedControl autorelease];
+
 	return self.segmentedControl;
 }
 
@@ -287,6 +296,7 @@
 	ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
 	[super voDrawOptions:ctvovc];
 }	
+
 
 
 @end

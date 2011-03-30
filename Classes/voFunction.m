@@ -17,7 +17,7 @@
 
 @implementation voFunction
 
-@synthesize epTitles, fnTitles, fnStrs, fnArray, fnSegNdx, ctvovcp, currFnNdx;
+@synthesize epTitles, fnTitles, fnStrs, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -34,6 +34,9 @@
 	self.fnTitles = nil;
 	[fnTitles release];
 	
+    self.rlab = nil;
+    [rlab release];
+    
 	[super dealloc];
 }
 
@@ -415,22 +418,31 @@
     return instr;
 }
 
+- (UILabel*) rlab {
+    if (nil == rlab) {
+        rlab = [[UILabel alloc] initWithFrame:self.voFrame];
+        rlab.textAlignment = UITextAlignmentRight;
+    }
+    return rlab;
+}
 - (UIView*) voDisplay:(CGRect)bounds {
 		
 	//trackerObj *to = (trackerObj*) parentTracker;
-	
-	UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
-	rlab.textAlignment = UITextAlignmentRight;
+	self.voFrame = bounds;
+    
+	//UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
+	//rlab.textAlignment = UITextAlignmentRight;
 	NSString *valstr = self.vo.value;  // evaluated on read so make copy
 	if (![valstr isEqualToString:@""]) {
-		rlab.backgroundColor = [UIColor whiteColor];
-        rlab.text = valstr;
+		self.rlab.backgroundColor = [UIColor whiteColor];
+        self.rlab.text = valstr;
 	} else {
-		rlab.backgroundColor = [UIColor lightGrayColor];
-		rlab.text = @"-";
+		self.rlab.backgroundColor = [UIColor lightGrayColor];
+		self.rlab.text = @"-";
 	}
 	
-	return [rlab autorelease];
+	//return [rlab autorelease];
+    return self.rlab;
 }
 
 - (NSArray*) voGraphSet {

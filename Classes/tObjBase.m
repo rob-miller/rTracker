@@ -63,13 +63,14 @@
 
 #pragma mark -
 #pragma mark total db methods 
-
+/*
 - (NSString *) trackerDbFilePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
 	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
 	NSString *docsDir = [paths objectAtIndex:0];
 	return [docsDir stringByAppendingPathComponent:self.dbName];
 }
+*/
 
 static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const void *strB) 
 {

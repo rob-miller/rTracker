@@ -11,6 +11,8 @@
 
 @implementation voText
 
+@synthesize dtf;
+
 - (int) getValCap {  // NSMutableString size for value
     return 32;
 }
@@ -46,35 +48,44 @@
 }
 
 
+- (UITextField*) dtf {
+    if (nil == dtf) {
+        dtf = [[UITextField alloc] initWithFrame:self.voFrame];
+        
+        dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
+        dtf.textColor = [UIColor blackColor];
+        dtf.font = [UIFont systemFontOfSize:17.0];
+        dtf.backgroundColor = [UIColor whiteColor];
+        dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+        
+        dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard 
+        dtf.placeholder = @"<enter text>";
+        
+        dtf.returnKeyType = UIReturnKeyDone;
+        
+        dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+        
+        dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
+        dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
+        
+        // Add an accessibility label that describes what the text field is for.
+        [dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
+        dtf.text = @"";
+    }
+    
+    return dtf;
+}
+
+
 - (UIView*)voDisplay:(CGRect)bounds {
-	CGRect frame = bounds;
-	UITextField * dtf = [[UITextField alloc] initWithFrame:frame];
-	
-	dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-	dtf.textColor = [UIColor blackColor];
-	dtf.font = [UIFont systemFontOfSize:17.0];
-	dtf.backgroundColor = [UIColor whiteColor];
-	dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
-	
-	dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard 
-	dtf.placeholder = @"<enter text>";
-	
-	dtf.returnKeyType = UIReturnKeyDone;
-	
-	dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
-	
-	dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
-	dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
-	
-	// Add an accessibility label that describes what the text field is for.
-	[dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
-	
-	NSLog(@"dtf: vo val= %@", self.vo.value);
-	if (![self.vo.value isEqualToString:@""]) {
-		dtf.text = self.vo.value;
+	self.voFrame = bounds;
+
+	if (![self.vo.value isEqualToString:self.dtf.text]) {
+		self.dtf.text = self.vo.value;
+        NSLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
 	}
 	
-	return [dtf autorelease];
+	return self.dtf;
 }
 
 
