@@ -8,6 +8,7 @@
 
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
+#import "dbg-defs.h"
 
 @implementation rTrackerAppDelegate
 
@@ -23,14 +24,14 @@
     // Override point for customization after app launch    
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
-	
-	NSLog(@"rt app delegate: app did finish launching");
+
+	DBGLog(@"rt app delegate: app did finish launching");
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
-	NSLog(@"rt app delegate: app will terminate");
+	DBGLog(@"rt app delegate: app will terminate");
 }
 
 
@@ -38,7 +39,7 @@
 #pragma mark Memory management
 
 - (void)dealloc {
-	NSLog(@"rt app delegate: dealloc");
+	DBGLog(@"rt app delegate: dealloc");
 	[navigationController release];
 	[window release];
 	[super dealloc];

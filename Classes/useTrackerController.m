@@ -11,6 +11,7 @@
 #import "rTracker-constants.h"
 #import "privacyV.h"
 #import "rTracker-resource.h"
+#import "dbg-defs.h"
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
@@ -78,7 +79,6 @@ BOOL keyboardIsShown;
 #pragma mark tracker data updated event handling -- rtTrackerUpdatedNotification
 
 - (void) updateTableCells {
-	//NSLog(@"utc: updateTableCells");
 	NSMutableArray *iparr = [[NSMutableArray alloc] init];
     int n=0;
     
@@ -101,7 +101,6 @@ BOOL keyboardIsShown;
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
-	NSLog(@"utc update.");
     [self updateTableCells];
     self.needSave=YES;
 	[self showSaveBtn];
@@ -110,7 +109,7 @@ BOOL keyboardIsShown;
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
-	//NSLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
+	//DBGLog1(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
 	self.title = tracker.trackerName;
 	self.needSave = NO;
@@ -229,7 +228,7 @@ BOOL keyboardIsShown;
 	
 
     [self showSaveBtn];
-	//NSLog(@"useTrackerController: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+	//DBGLog1(@"useTrackerController: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
 	
 }
 
@@ -253,19 +252,19 @@ BOOL keyboardIsShown;
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"utc should rotate to interface orientation portrait?");
+			DBGLog(@"utc should rotate to interface orientation portrait?");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"utc should rotate to interface orientation portrait upside down?");
+			DBGLog(@"utc should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"utc should rotate to interface orientation landscape left?");
+			DBGLog(@"utc should rotate to interface orientation landscape left?");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"utc should rotate to interface orientation landscape right?");
+			DBGLog(@"utc should rotate to interface orientation landscape right?");
 			break;
 		default:
-			NSLog(@"utc rotation query but can't tell to where?");
+			DBGWarn(@"utc rotation query but can't tell to where?");
 			break;			
 	}
 	
@@ -274,38 +273,38 @@ BOOL keyboardIsShown;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"utc did rotate from interface orientation portrait");
+			DBGLog(@"utc did rotate from interface orientation portrait");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"utc did rotate from interface orientation portrait upside down");
+			DBGLog(@"utc did rotate from interface orientation portrait upside down");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"utc did rotate from interface orientation landscape left");
+			DBGLog(@"utc did rotate from interface orientation landscape left");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"utc did rotate from interface orientation landscape right");
+			DBGLog(@"utc did rotate from interface orientation landscape right");
 			break;
 		default:
-			NSLog(@"utc did rotate but can't tell from where");
+			DBGWarn(@"utc did rotate but can't tell from where");
 			break;			
 	}
 }
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"utc will rotate to interface orientation portrait duration: %f sec",duration);
+			DBGLog1(@"utc will rotate to interface orientation portrait duration: %f sec",duration);
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"utc will rotate to interface orientation portrait upside down duration: %f sec", duration);
+			DBGLog1(@"utc will rotate to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
+			DBGLog1(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
+			DBGLog1(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
 			break;
 		default:
-			NSLog(@"utc will rotate but can't tell to where duration: %f sec", duration);
+			DBGWarn1(@"utc will rotate but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
@@ -314,14 +313,14 @@ BOOL keyboardIsShown;
 	graphTrackerVC *gt;
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
+			DBGLog1(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
 			[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"utc will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
+			DBGLog1(@"utc will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"utc will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			DBGLog1(@"utc will animate rotation to interface orientation landscape left duration: %f sec", duration);
 
 			gt = [[graphTrackerVC alloc] init];
 			gt.tracker = self.tracker;
@@ -330,7 +329,7 @@ BOOL keyboardIsShown;
 			
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"utc will animate rotation to interface orientation landscape right duration: %f sec", duration);
+			DBGLog1(@"utc will animate rotation to interface orientation landscape right duration: %f sec", duration);
 
 			gt = [[graphTrackerVC alloc] init];
 			gt.tracker = self.tracker;
@@ -339,16 +338,16 @@ BOOL keyboardIsShown;
 			
 			break;
 		default:
-			NSLog(@"utc will animate rotation but can't tell to where. duration: %f sec", duration);
+			DBGWarn1(@"utc will animate rotation but can't tell to where. duration: %f sec", duration);
 			break;			
 	}
 }
 #else 
 - (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	NSLog(@"utc will animate first half rotation to interface orientation duration: %@",duration);
+	DBGLog1(@"utc will animate first half rotation to interface orientation duration: %@",duration);
 }
 - (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration {
-	NSLog(@"utc will animate second half rotation to interface orientation duration: %@",duration);
+	DBGLog1(@"utc will animate second half rotation to interface orientation duration: %@",duration);
 }
 #endif
 
@@ -360,12 +359,12 @@ BOOL keyboardIsShown;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	NSLog(@"utc: tf begin editing");
+	//DBGLog(@"utc: tf begin editing");
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-	NSLog(@"utc: tf end editing");
+	//DBGLog(@"utc: tf end editing");
 }
 
 //UITextField *activeField;
@@ -376,7 +375,7 @@ BOOL keyboardIsShown;
         return;
     }
 	
-	NSLog(@"handling keyboard will show: %@",[n object]);
+	//DBGLog1(@"handling keyboard will show: %@",[n object]);
 	self.saveFrame = self.view.frame;
 	
     NSDictionary* userInfo = [n userInfo];
@@ -387,14 +386,14 @@ BOOL keyboardIsShown;
 	
 	CGRect viewFrame = self.view.frame;
 	CGPoint coff = self.table.contentOffset;
-	NSLog(@"coff x=%f y=%f",coff.x,coff.y);
-	//NSLog(@"k will show, y= %f",viewFrame.origin.y);
+	//DBGLog2(@"coff x=%f y=%f",coff.x,coff.y);
+	//DBGLog1(@"k will show, y= %f",viewFrame.origin.y);
 	CGFloat boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;  // activeField.superview.superview.frame.origin.y - coff.y ;  //+ activeField.superview.superview.frame.size.height + MARGIN;
 	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
 	if (boty <= topk) {
-		NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+		DBGLog2(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
-		NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
+		DBGLog2(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
 		
 		viewFrame.origin.y -= (boty - topk);
 		//viewFrame.size.height -= self.navigationController.toolbar.frame.size.height;
@@ -413,7 +412,7 @@ BOOL keyboardIsShown;
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
-	//NSLog(@"handling keyboard will hide");
+	//DBGLog(@"handling keyboard will hide");
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -427,17 +426,19 @@ BOOL keyboardIsShown;
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+#if DEBUGLOG
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self.view];
-	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
-	
+	DBGLog2(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+#endif
+    
 	[self.tracker.activeControl resignFirstResponder];
 }
 
 #pragma mark -
 #pragma mark top toolbar button factories
 //- (void)testAction:(id)sender {
-//	NSLog(@"test button pressed");
+//	DBGLog(@"test button pressed");
 /*
  *  fn= period[full tank]:(delta[odometer]/postSum[fuel])
  *
@@ -507,7 +508,7 @@ BOOL keyboardIsShown;
 
 - (void) updateTrackerTableView {
     // see related updateTableCells above
-	NSLog(@"utc: updateTrackerTableView");
+	//DBGLog(@"utc: updateTrackerTableView");
 	
 	for (valueObj *vo in self.tracker.valObjTable) {
         //if (vo.vtype == VOT_FUNC)
@@ -529,10 +530,10 @@ BOOL keyboardIsShown;
 	int lastD = [self.tracker lastDate];
 	int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
 
-	NSLog(@"prevD = %d",prevD);
-	NSLog(@"currD = %d",currD);
-	NSLog(@"postD = %d",postD);
-	NSLog(@"lastD = %d",lastD);
+	DBGLog1(@"prevD = %d",prevD);
+	DBGLog1(@"currD = %d",currD);
+	DBGLog1(@"postD = %d",postD);
+	DBGLog1(@"lastD = %d",lastD);
 	
 	self.currDateBtn = nil;
 	if (prevD ==0) 
@@ -557,12 +558,12 @@ BOOL keyboardIsShown;
 - (void) setTrackerDate:(int) targD {
 	
 	if (targD == 0) {
-		NSLog(@" setTrackerDate: %d = reset to now",targD);
+		DBGLog1(@" setTrackerDate: %d = reset to now",targD);
 		[self.tracker resetData];
 	} else if (targD < 0) {
-		NSLog(@"setTrackerDate: %d = no earlier date", targD);
+		DBGLog1(@"setTrackerDate: %d = no earlier date", targD);
 	} else {
-		NSLog(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)targD]);
+		DBGLog2(@" setTrackerDate: %d = %@",targD, [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)targD]);
 		[self.tracker loadData:targD];
 	}
 	self.needSave=NO;  // dumping anything not saved by going to another date.
@@ -575,12 +576,12 @@ BOOL keyboardIsShown;
 #pragma mark button press action methods
 
 - (IBAction)btnCancel {
-	NSLog(@"btnCancel was pressed!");
+	//DBGLog(@"btnCancel was pressed!");
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)btnSave {
-	NSLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
+	//DBGLog2(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 	[self.tracker saveData];
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
@@ -595,20 +596,8 @@ BOOL keyboardIsShown;
 	}
 }
 
-/*
-- (NSString *) ioFilePath:(NSString*)fname {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
-	NSString *docsDir = [paths objectAtIndex:0];
-	
-	NSLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
-	
-	return [docsDir stringByAppendingPathComponent:fname];
-}
-*/
-
 - (IBAction)btnExport {
-	NSLog(@"btnExport was pressed!");
+	//DBGLog(@"btnExport was pressed!");
     //NSString *fname = [[NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName]
     //                   stringByReplacingOccurrencesOfString:@" " withString:@"_"];
     NSString *fname = [NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName];
@@ -646,7 +635,7 @@ BOOL keyboardIsShown;
 }
 
 - (void) btnCurrDate {
-	NSLog(@"pressed date becuz its a button, should pop up a date picker....");
+	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
 	
 	
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
@@ -749,13 +738,13 @@ BOOL keyboardIsShown;
 }
 
 - (UIBarButtonItem *) currDateBtn {
-	//NSLog(@"currDateBtn called");
+	//DBGLog(@"currDateBtn called");
 	NSString *datestr = [NSDateFormatter localizedStringFromDate:tracker.trackerDate 
 													   dateStyle:NSDateFormatterShortStyle 
 													   timeStyle:NSDateFormatterShortStyle];
 
 	if (currDateBtn == nil) {
-		//NSLog(@"creating button");
+		//DBGLog(@"creating button");
 		currDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:datestr
 					   style:UIBarButtonItemStyleBordered
@@ -805,7 +794,7 @@ BOOL keyboardIsShown;
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerEntryDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+	DBGLog1(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkTrackerEntryDelete.destructiveButtonIndex) {
 		int targD = [self.tracker prevDate];
@@ -815,7 +804,7 @@ BOOL keyboardIsShown;
 		[self.tracker deleteCurrEntry];
 		[self setTrackerDate: targD];
 	} else {
-		NSLog(@"cancelled");
+		DBGLog(@"cancelled");
 	}
 	
 }
@@ -848,7 +837,7 @@ BOOL keyboardIsShown;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-    NSLog(@"uvc table cell at index %d label %@",row,vo.valueName);
+    //DBGLog2(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
 	return [vo.vos voTVCell:tableView];
 }
@@ -870,10 +859,12 @@ BOOL keyboardIsShown;
 	// [self.navigationController pushViewController:anotherViewController animated:YES];
 	// [anotherViewController release];
 	
+#if DEBUGLOG
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-
-	NSLog(@"selected row %d : %@", row, vo.valueName);
+	DBGLog2(@"selected row %d : %@", row, vo.valueName);
+#endif
+    
 }
 
 

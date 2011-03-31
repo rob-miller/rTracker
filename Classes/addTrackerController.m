@@ -12,6 +12,8 @@
 #import "configTVObjVC.h"
 #import "rTracker-constants.h"
 
+#import "dbg-defs.h"
+
 @implementation addTrackerController 
 
 @synthesize tlist;
@@ -27,7 +29,7 @@ NSMutableArray *deleteVOs=nil;
 #pragma mark core object methods and support
 
 - (void) dealloc {
-	NSLog(@"atc: dealloc");
+	DBGLog(@"atc: dealloc");
 	self.nameField = nil;
 	[nameField release];
 	self.tempTrackerObj = nil;
@@ -51,7 +53,7 @@ NSMutableArray *deleteVOs=nil;
 
 - (void) viewDidLoad {
 
-	NSLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
+	DBGLog1(@"atc: vdl tlist dbname= %@",tlist.dbName);
 	
 	// cancel / save buttons on top nav bar
 	
@@ -93,7 +95,7 @@ NSMutableArray *deleteVOs=nil;
 
 - (void)viewWillAppear:(BOOL)animated {
 	
-	NSLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
+	DBGLog1(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
 	
 	[self.table reloadData];
 	if (self.navigationController.toolbarHidden)
@@ -114,8 +116,7 @@ NSMutableArray *deleteVOs=nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-	//NSLog(@"atc: viewWillDisappear, namefield= %@",nameField.text);
-	NSLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
+	DBGLog1(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
 	
 	[super viewWillDisappear:animated];
 }
@@ -123,7 +124,7 @@ NSMutableArray *deleteVOs=nil;
 
 
 - (void) viewDidUnload {
-	NSLog(@"atc: viewdidunload");
+	DBGLog(@"atc: viewdidunload");
 	self.nameField = nil;
 	self.tlist = nil;
 	self.tempTrackerObj = nil;
@@ -148,8 +149,6 @@ NSMutableArray *deleteVOs=nil;
 # pragma mark toolbar support
 
 - (void) btnSetup {
-	NSLog(@"addTObjC: config was pressed!");
-	
 	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
 	ctvovc.to = self.tempTrackerObj;
 	ctvovc.vo = nil;
@@ -220,12 +219,10 @@ static int editMode;
 # pragma mark button press handlers
 /*
 - (IBAction)btnAddValue {
-NSLog(@"btnAddValue was pressed!");
+DBGLog(@"btnAddValue was pressed!");
 }
 */
 - (IBAction)btnCancel {
-	NSLog(@"btnCancel was pressed!");
-
 	if (deleteVOs != nil) {
 		[deleteVOs release];
 		deleteVOs = nil;
@@ -244,7 +241,7 @@ NSLog(@"btnAddValue was pressed!");
 
 
 - (IBAction)btnSave {
-	NSLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, tlist);
+	DBGLog3(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, (unsigned int) tlist);
 
 	if (deleteVOs != nil) {
 		for (valueObj *vo in deleteVOs) {
@@ -304,12 +301,12 @@ NSLog(@"btnAddValue was pressed!");
 
 - (void)actionSheet:(UIActionSheet *)checkValObjDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-	NSLog(@"checkValObjDelete buttonIndex= %d",buttonIndex);
+	//DBGLog1(@"checkValObjDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkValObjDelete.destructiveButtonIndex) {
 		NSUInteger row = [deleteIndexPath row];
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
-		NSLog(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
+		DBGLog3(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
 		//[self delVOdb:vo.vid];
 		if (deleteVOs == nil) {
 			deleteVOs = [[NSMutableArray alloc] init];
@@ -317,7 +314,7 @@ NSLog(@"btnAddValue was pressed!");
 		[deleteVOs addObject:vo];
 		[self delVOlocal:row];
 	} else {
-		NSLog(@"cancelled");
+		//DBGLog(@"check valobjdelete cancelled");
 	}
 	
 }
@@ -448,11 +445,13 @@ NSLog(@"btnAddValue was pressed!");
 	  toIndexPath:(NSIndexPath *) toIndexPath {
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
-	
+
+#if DEBUGLOG	
 	NSUInteger fromSection = [fromIndexPath section];
 	NSUInteger toSection = [toIndexPath section];
-	
-	NSLog(@"atc: move row from %d:%d to %d:%d",fromSection, fromRow, toSection, toRow);
+	DBGLog4(@"atc: move row from %d:%d to %d:%d",fromSection, fromRow, toSection, toRow);
+#endif
+    
 	valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:fromRow];
 	[vo retain];
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:fromRow];
@@ -483,7 +482,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
 	// NSUInteger section = [indexPath section];  // in theory this only called on vals section
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		NSLog(@"atc: delete row %d ",row);
+		DBGLog1(@"atc: delete row %d ",row);
 		deleteIndexPath = indexPath;
 		deleteTableView = tableView;
 		
@@ -506,7 +505,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 			[checkValObjDelete release];
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
-		NSLog(@"atc: insert row %d ",row);
+		DBGLog1(@"atc: insert row %d ",row);
 
 		addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
 		avc.parentTrackerObj = self.tempTrackerObj;
@@ -517,13 +516,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	} // else ??
 }
 
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 
-	NSUInteger row = [indexPath row];
-	NSUInteger section = [indexPath section];
+	//NSUInteger row = [indexPath row];
+	//NSUInteger section = [indexPath section];
 	
-	NSLog(@"selected section %d row %d ", section, row);
+	//DBGLog2(@"selected section %d row %d ", section, row);
 
 }
 
@@ -531,9 +531,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 	NSUInteger row = [indexPath row];
-	NSUInteger section = [indexPath section];
+	//NSUInteger section = [indexPath section];
 	
-	NSLog(@"accessory button tapped for section %d row %d ", section, row);
+	//DBGLog2(@"accessory button tapped for section %d row %d ", section, row);
 
 	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
 	avc.parentTrackerObj = self.tempTrackerObj;

@@ -8,7 +8,7 @@
 
 #import "graphTrackerVC.h"
 #import "graphTrackerV.h"
-
+#import "dbg-defs.h"
 
 @implementation graphTrackerVC
 
@@ -55,19 +55,19 @@
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"gt should rotate to interface orientation portrait?");
+			DBGLog(@"gt should rotate to interface orientation portrait?");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"gt should rotate to interface orientation portrait upside down?");
+			DBGLog(@"gt should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"gt should rotate to interface orientation landscape left?");
+			DBGLog(@"gt should rotate to interface orientation landscape left?");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"gt should rotate to interface orientation landscape right?");
+			DBGLog(@"gt should rotate to interface orientation landscape right?");
 			break;
 		default:
-			NSLog(@"gt rotation query but can't tell to where?");
+			DBGLog(@"gt rotation query but can't tell to where?");
 			break;			
 	}
 	
@@ -78,19 +78,19 @@
 {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"gt did rotate from interface orientation portrait");
+			DBGLog(@"gt did rotate from interface orientation portrait");
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"gt did rotate from interface orientation portrait upside down");
+			DBGLog(@"gt did rotate from interface orientation portrait upside down");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"gt did rotate from interface orientation landscape left");
+			DBGLog(@"gt did rotate from interface orientation landscape left");
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"gt did rotate from interface orientation landscape right");
+			DBGLog(@"gt did rotate from interface orientation landscape right");
 			break;
 		default:
-			NSLog(@"gt did rotate but can't tell from where");
+			DBGLog(@"gt did rotate but can't tell from where");
 			break;			
 	}
 }
@@ -99,19 +99,19 @@
 {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
+			DBGLog1(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);
+			DBGLog1(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"gt will rotate to interface orientation landscape left duration: %f sec", duration);
+			DBGLog1(@"gt will rotate to interface orientation landscape left duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"gt will rotate to interface orientation landscape right duration: %f sec", duration);
+			DBGLog1(@"gt will rotate to interface orientation landscape right duration: %f sec", duration);
 			break;
 		default:
-			NSLog(@"gt will rotate but can't tell to where duration: %f sec", duration);
+			DBGErr1(@"gt will rotate but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
@@ -121,20 +121,20 @@
 {
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
-			NSLog(@"gt will animate rotation to interface orientation portrait duration: %f sec",duration);
+			DBGLog1(@"gt will animate rotation to interface orientation portrait duration: %f sec",duration);
 			[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
-			NSLog(@"gt will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
+			DBGLog1(@"gt will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			NSLog(@"gt will animate rotation to interface orientation landscape left duration: %f sec", duration);
+			DBGLog1(@"gt will animate rotation to interface orientation landscape left duration: %f sec", duration);
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			NSLog(@"gt will animate rotation to interface orientation landscape right duration: %f sec", duration);
+			DBGLog1(@"gt will animate rotation to interface orientation landscape right duration: %f sec", duration);
 			break;
 		default:
-			NSLog(@"gt will animate rotation but can't tell to where duration: %f sec", duration);
+			DBGErr1(@"gt will animate rotation but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
@@ -143,12 +143,12 @@
 
 - (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	NSLog(@"gt will animate first half rotation to interface orientation duration: %@",duration);
+	DBGLog1(@"gt will animate first half rotation to interface orientation duration: %@",duration);
 }
 
 - (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration
 {
-	NSLog(@"gt will animate second half rotation to interface orientation duration: %@",duration);
+	DBGLog1(@"gt will animate second half rotation to interface orientation duration: %@",duration);
 }
 #endif
 

@@ -7,7 +7,7 @@
 //
 
 #import "voImage.h"
-
+#import "dbg-defs.h"
 
 @implementation voImage
 
@@ -32,7 +32,7 @@
 #pragma mark table cell item display
 
 - (void) imgBtnAction:(id)sender {
-	NSLog(@"imgBtn Action.");
+	DBGLog(@"imgBtn Action.");
 	voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
 	vde.vo = self.vo;
 	self.devc = vde; // assign

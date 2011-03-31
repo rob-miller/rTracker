@@ -11,6 +11,7 @@
 #import "addValObjController.h"
 #import "rTracker-constants.h"
 #import "voFunction.h"
+#import "dbg-defs.h"
 
 //  private methods including properties can go here!
 
@@ -62,7 +63,6 @@ BOOL keyboardIsShown;
 
 - (void)btnDone:(UIButton *)btn
 {
-	NSLog(@"configTVObjVC: btnDone pressed.");
 	if (self.vdlConfigVO && self.vo.vtype == VOT_FUNC) {
 		[((voFunction*)self.vo.vos) funcDone];
 	}
@@ -169,10 +169,12 @@ BOOL keyboardIsShown;
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+#if DEBUGLOG
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self.view];
-	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
-	
+	DBGLog2(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+#endif
+    
 	[activeField resignFirstResponder];
 }
 
@@ -181,13 +183,13 @@ BOOL keyboardIsShown;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	NSLog(@"tf begin editing");
+	//DBGLog(@"tf begin editing");
     activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-	NSLog(@"tf end editing");
+	//DBGLog(@"tf end editing");
     activeField = nil;
 }
 
@@ -204,7 +206,7 @@ BOOL keyboardIsShown;
         return;
     }
 	
-	//NSLog(@"handling keyboard will show");
+	//DBGLog(@"handling keyboard will show");
 	self.saveFrame = self.view.frame;
 	
     NSDictionary* userInfo = [n userInfo];
@@ -214,13 +216,13 @@ BOOL keyboardIsShown;
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
 	CGRect viewFrame = self.view.frame;
-	//NSLog(@"k will show, y= %f",viewFrame.origin.y);
+	//DBGLog(@"k will show, y= %f",viewFrame.origin.y);
 	CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
 	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
 	if (boty <= topk) {
-		//NSLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+		//DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
-		//NSLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
+		//DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
 		
 		viewFrame.origin.y -= (boty - topk);
 		viewFrame.size.height -= self.toolBar.frame.size.height - MARGIN;
@@ -239,7 +241,7 @@ BOOL keyboardIsShown;
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
-	//NSLog(@"handling keyboard will hide");
+	//DBGLog(@"handling keyboard will hide");
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -405,10 +407,10 @@ BOOL keyboardIsShown;
 	}
 
 	if (self.vo == nil) {      // tracker config
-		NSLog(@"to set %@: %@", okey, tf.text);    
+		DBGLog2(@"to set %@: %@", okey, tf.text);    
 		[self.to.optDict setObject:tf.text forKey:okey];
 	} else {                   // valobj config
-		NSLog(@"vo set %@: %@", okey, tf.text);
+		DBGLog2(@"vo set %@: %@", okey, tf.text);
 		[self.vo.optDict setObject:tf.text forKey:okey];
 	}
 		
@@ -633,7 +635,7 @@ BOOL keyboardIsShown;
 - (void) removeSVFields 
 {
 	for (NSString *key in self.wDict) {
-		//NSLog(@"removing %@",key);
+		//DBGLog(@"removing %@",key);
 		[(UIView *) [self.wDict valueForKey:key] removeFromSuperview];
 	}
 	[self.wDict removeAllObjects];

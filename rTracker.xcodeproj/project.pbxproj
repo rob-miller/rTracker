@@ -135,6 +135,7 @@
 		D4D2457E12F0AC8000E994C6 /* changelog.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = changelog.txt; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
 		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
+		D4E069A61343C4D7002B42C8 /* dbg-defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dbg-defs.h"; sourceTree = "<group>"; };
 		D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerVC.h; sourceTree = "<group>"; };
 		D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerVC.m; sourceTree = "<group>"; };
 		D4E5FDD7125283B1004BB4EC /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = Resources/xib/graphTracker.xib; sourceTree = "<group>"; };
@@ -177,6 +178,7 @@
 				D43EE365133CBF4100737E76 /* csv support */,
 				D43C494412FA129000B95AB7 /* gfx.h */,
 				D427FD3F126C78D100A8ED9A /* rTracker-constants.h */,
+				D4E069A61343C4D7002B42C8 /* dbg-defs.h */,
 				D40DC28E133BEC2A00023D5D /* rTracker-resource.h */,
 				D40DC28F133BEC3600023D5D /* rTracker-resource.m */,
 			);

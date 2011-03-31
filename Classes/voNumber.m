@@ -7,14 +7,14 @@
 //
 
 #import "voNumber.h"
-
+#import "dbg-defs.h"
 
 @implementation voNumber
 
 @synthesize dtf;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-	NSLog(@"tf begin editing");
+	DBGLog(@"tf begin editing");
     //*activeField = textField;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
@@ -29,7 +29,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	NSLog(@"tf end editing");
+	DBGLog(@"tf end editing");
 	[self tfvoFinEdit:textField];
     //*activeField = nil;
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
@@ -37,7 +37,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	//NSLog(@"textField done: %@", textField.text);
+	//DBGLog1(@"textField done: %@", textField.text);
 	[self tfvoFinEdit:textField];
 	[textField resignFirstResponder];
 	return YES;
@@ -69,7 +69,7 @@
         [dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
         
     }
-    //NSLog(@"num dtf rc= %d",[dtf retainCount]);
+    //DBGLog1(@"num dtf rc= %d",[dtf retainCount]);
     return dtf;
 }
 
@@ -100,7 +100,7 @@
             self.dtf.text = self.vo.value;
         }
         
-        NSLog(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
+        DBGLog2(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
 	//}
     
     return self.dtf;

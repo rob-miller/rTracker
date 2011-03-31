@@ -9,6 +9,7 @@
 #import "privacyV.h"
 #import "rTracker-constants.h"
 #import "privDefs.h"
+#import "dbg-defs.h"
 
 @implementation privacyV
 
@@ -26,7 +27,7 @@ static int privacyValue=PRIVDFLT;
 
 - (void)setPrivacyValue:(int)priv {
 	privacyValue = priv;
-	NSLog(@"updatePrivacy:%d",[privacyV getPrivacyValue]);
+	DBGLog1(@"updatePrivacy:%d",[privacyV getPrivacyValue]);
 	//[self.pvc.tableView reloadData ];
 }
 
@@ -46,7 +47,7 @@ static int privacyValue=PRIVDFLT;
 - (id)initWithParentView:(UIView *)pv {
 	CGSize pfs = pv.frame.size;
 	CGRect frame = CGRectMake(0.0f,pfs.height,pfs.width,(pfs.height * PVH));
-	NSLog(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
+	DBGLog4(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
 		self.pwState = PWNEEDPASS;
@@ -138,7 +139,7 @@ static int privacyValue=PRIVDFLT;
 }
 
 - (void) ppwvResponse {
-	NSLog(@"ppwvResponse: transition to %d",self.ppwv.next);
+	DBGLog1(@"ppwvResponse: transition to %d",self.ppwv.next);
 	
 	self.showing = self.ppwv.next;
 }
@@ -168,7 +169,7 @@ static int privacyValue=PRIVDFLT;
 // state control for what's showing
 
 - (void) setShowing:(unsigned int)newState {
-	NSLog(@"priv: setShowing %d -> %d",showing,newState);
+	DBGLog2(@"priv: setShowing %d -> %d",showing,newState);
 	// (showing == newState)
 	//	return;
 	

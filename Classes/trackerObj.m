@@ -17,6 +17,8 @@
 #import "voState.h"
 #import "privacyV.h"
 
+#import "dbg-defs.h"
+
 @implementation trackerObj
 
 
@@ -123,7 +125,7 @@
 													 name:rtValueUpdatedNotification 
 												   object:nil];
 		
-		//NSLog(@"init trackerObj New");
+		//DBGLog(@"init trackerObj New");
 	}
 	
 	return self;
@@ -131,7 +133,7 @@
 
 - (id)init:(int) tid {
 	if ((self = [self init])) {
-		//NSLog(@"init trackerObj id: %d",tid);
+		//DBGLog1(@"init trackerObj id: %d",tid);
 		self.toid = tid;
 		[self confirmDb];
 		[self loadConfig];
@@ -140,7 +142,7 @@
 }
 
 - (void) dealloc {
-	NSLog(@"dealloc tObj: %@",trackerName);
+	DBGLog1(@"dealloc tObj: %@",trackerName);
 	
 	self.trackerName = nil;
 	[trackerName release];
@@ -202,7 +204,7 @@
     
 	self.trackerName = [self.optDict objectForKey:@"name"];
 
-    NSLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
+    DBGLog2(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
 	
     CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
 	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
@@ -357,7 +359,7 @@
 }
 
 - (void) saveConfig {
-	NSLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
+	DBGLog1(@"tObj saveConfig: trackerName= %@",trackerName) ;
 	
 	[self confirmDb];
 	
@@ -378,7 +380,7 @@
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
 
-		NSLog(@"  vo %@  id %d", vo.valueName, vo.vid);
+		DBGLog2(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
 					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
 		[self toExecSql];
@@ -410,7 +412,7 @@
 	}
 
 	if (rvo == nil) {
-		NSLog(@"tObj getValObj failed to find vid %d",qVid);
+		DBGWarn1(@"tObj getValObj failed to find vid %d",qVid);
 	}
 	return rvo;
 }
@@ -418,7 +420,7 @@
 - (BOOL) loadData: (int) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
-    NSLog(@"trackerObj loadData for date %@",qDate);
+    DBGLog1(@"trackerObj loadData for date %@",qDate);
 	[self resetData];
 	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d and minpriv <= %d;",iDate, [privacyV getPrivacyValue]];
 	int c = [self toQry2Int];
@@ -449,7 +451,7 @@
 		
 		return YES;
 	} else {
-		NSLog(@"tObj loadData: nothing for date %d %@", iDate, qDate);
+		DBGWarn2(@"tObj loadData: nothing for date %d %@", iDate, qDate);
 		return NO;
 	}
 }
@@ -460,7 +462,7 @@
 		trackerDate = [[NSDate alloc] init];
 	}
 	
-	NSLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
+	DBGLog2(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
 
 	BOOL haveData=NO;
 	int tdi = [self.trackerDate timeIntervalSince1970];
@@ -470,7 +472,7 @@
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		if (vo.vtype != VOT_FUNC) { // no fn results data kept
-			NSLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+			DBGLog3(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
 			if ([vo.value isEqualToString:@""]) {
 				self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
 			} else {
@@ -540,7 +542,7 @@
     NSString *outString= [NSString stringWithFormat:@"\"%@\"",TIMESTAMP_LABEL];
 	for (valueObj *vo in self.valObjTable) {
 		NSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
-        //NSLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+        //DBGLog3(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
         outString = [outString stringByAppendingString:@","];
         outString = [outString stringByAppendingString:[self csvSafe:vo.valueName]];
@@ -578,12 +580,12 @@
     if (nil == ts) {
         for (NSString *key in aRecord)
         {
-            NSLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
+            DBGLog2(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
         }
-        NSLog(@"skipping record as no %@ key",TIMESTAMP_LABEL);
+        DBGErr1(@"skipping record as no %@ key",TIMESTAMP_LABEL);
         return;
     } else {
-        NSLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
+        DBGLog2(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
     }
     
     NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
@@ -597,7 +599,7 @@
             self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
             int valobjID,valobjPriv;
             [self toQry2IntInt:&valobjID i2:&valobjPriv];
-            NSLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            DBGLog4(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
             
             [idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
             if (valobjPriv < mp)
@@ -690,7 +692,7 @@
 		}
 	}
 	
-	NSLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
+	DBGLog2(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
 	[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
 	[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
 	
@@ -699,7 +701,7 @@
 
 
 - (void) addValObj:(valueObj *) valObj {
-	NSLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+	DBGLog5(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
 	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
@@ -840,15 +842,18 @@
 // sends rtTrackerUpdatedNotification
 
 - (void) trackerUpdated:(NSNotification*)n {
+#if DEBUGLOG        
 	id obj = [n object];
 	if ([obj isMemberOfClass:[valueObj class]]) {
 		valueObj *vo = (valueObj*) [n object];
-		NSLog(@"tracker %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+		DBGLog4(@"tracker %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
 	
 	} else {
 		voState *vos= (voState*) obj;
-		NSLog(@"tracker %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
+		DBGLog4(@"tracker %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
 	}
+#endif
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtTrackerUpdatedNotification object:self];
 }
 
@@ -856,7 +861,7 @@
 #pragma mark manipulate tracker's valObjs
 
 - (valueObj *) copyVoConfig: (valueObj *) srcVO {
-	NSLog(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
+	DBGLog4(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];
 	newVO.vid = [self getUnique];
@@ -873,7 +878,7 @@
 #pragma mark utility methods
 
 - (void) describe {
-	NSLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
+	DBGLog3(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
 
 	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
 	//valueObj *vo;

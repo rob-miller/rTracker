@@ -7,7 +7,8 @@
 //
 
 #import "rTracker-resource.h"
-
+#import "rTracker-constants.h"
+#import "dbg-defs.h"
 
 @implementation rTracker_resource
 
@@ -20,7 +21,7 @@
     }
 	NSString *docsDir = [paths objectAtIndex:0];
 	
-	NSLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
+	DBGLog1(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
 	
 	return [docsDir stringByAppendingPathComponent:fname];
 }

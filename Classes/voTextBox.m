@@ -10,6 +10,7 @@
 
 #import "voTextBox.h"
 #import "voDataEdit.h"
+#import "dbg-defs.h"
 
 #define SEGPEOPLE	0
 #define SEGHISTORY	1
@@ -26,7 +27,7 @@
 BOOL keyboardIsShown;
 
 - (id) init {
-	NSLog(@"voTextBox default init");
+	DBGLog(@"voTextBox default init");
 	return [super initWithVO:nil];
 }
 
@@ -35,14 +36,14 @@ BOOL keyboardIsShown;
 }
 
 - (id) initWithVO:(valueObj *)valo {
-	NSLog(@"voTextBox init for %@",valo.valueName);
+	DBGLog1(@"voTextBox init for %@",valo.valueName);
 	return [super initWithVO:valo];
 }
 
 - (void) dealloc {
-	NSLog(@"dealloc voTextBox");
+	DBGLog(@"dealloc voTextBox");
     
-    //NSLog(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
+    //DBGLog2(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
 	//self.tbButton = nil;  // convenience constructor, do not own (enven tho retained???)
     //[tbButton release];
 	self.textView = nil;
@@ -65,7 +66,7 @@ BOOL keyboardIsShown;
 }
 
 - (void) tbBtnAction:(id)sender {
-	NSLog(@"tbBtn Action.");
+	DBGLog(@"tbBtn Action.");
 	voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
 	vde.vo = self.vo;
 	self.devc = vde; // assign
@@ -107,7 +108,7 @@ BOOL keyboardIsShown;
 
 - (void) dataEditVWAppear:(UIViewController*)vc {
 	//self.devc = vc;
-	NSLog(@"de view will appear");
+	DBGLog(@"de view will appear");
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
@@ -119,7 +120,7 @@ BOOL keyboardIsShown;
 }
 
 - (void) dataEditVWDisappear {
-	NSLog(@"de view will disappear");
+	DBGLog(@"de view will disappear");
 
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
@@ -194,14 +195,14 @@ BOOL keyboardIsShown;
 		str = [NSString stringWithFormat:@"%@\n",[self.historyArray objectAtIndex:row]];
 	}
 	
-	//NSLog(@"add picker data %@",str);
+	//DBGLog1(@"add picker data %@",str);
 	
 	self.textView.text = [self.textView.text stringByAppendingString:str];
 }
 
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
-	NSLog(@"segment changed: %d",ndx);
+	DBGLog1(@"segment changed: %d",ndx);
 	if (SEGKEYBOARD == ndx) {
 		self.addButton.hidden = YES;
 		self.textView.inputView = nil;
@@ -431,14 +432,14 @@ BOOL keyboardIsShown;
 		CFIndex max = CFArrayGetCount(people);
 		int i;
 		for (i=0; i< max; i++) {
-			//NSLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//NSLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
+			//DBGLog1(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
+			//DBGLog2(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
 			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
 			CFStringRef first,last,full;
 			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
 			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
 			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			NSLog(@"person: %@ -- %@ %@",full,first,last);
+			DBGLog3(@"person: %@ -- %@ %@",full,first,last);
 		}
 		
 		CFRelease(addressBook);
@@ -479,14 +480,14 @@ BOOL keyboardIsShown;
 		CFIndex max = CFArrayGetCount(people);
 		int i;
 		for (i=0; i< max; i++) {
-			//NSLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//NSLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
+			//DBGLog1(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
+			//DBGLog2(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
 			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
 			CFStringRef first,last,full;
 			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
 			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
 			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			NSLog(@"person: %@ -- %@ %@",full,first,last);
+			DBGLog3(@"person: %@ -- %@ %@",full,first,last);
 		}
 		*/
 		
@@ -517,9 +518,9 @@ BOOL keyboardIsShown;
 		[his0 release];
 		[s0 release];	
 		
-		//NSLog(@"his array looks like:");
+		//DBGLog(@"his array looks like:");
 		//for (NSString *s in historyArray) {
-		//	NSLog(s);
+		//	DBGLog(s);
 		//}
 	}
 	return historyArray;

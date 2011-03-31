@@ -9,7 +9,7 @@
 
 
 #import "voChoice.h"
-
+#import "dbg-defs.h"
 
 @implementation voChoice
 
@@ -54,7 +54,7 @@
 
 - (void) segmentAction:(id) sender
 {
-	NSLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
+	DBGLog1(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];   
     if (@"" == self.vo.value) {  
         [self.vo disableVO];
@@ -147,7 +147,7 @@
 		}
 	}
 	
-	NSLog(@"set choice %d: %@",i, tf.text);
+	DBGLog2(@"set choice %d: %@",i, tf.text);
 	[self.vo.optDict setObject:tf.text forKey:[NSString stringWithFormat:@"c%d",i]];
 	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
 	UIButton *b = [self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dbtn",i]];

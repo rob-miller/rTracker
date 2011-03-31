@@ -19,7 +19,10 @@
 #import "voImage.h"
 #import "voFunction.h"
 
+#import "dbg-defs.h"
+
 #define f(x) ((CGFloat) (x))
+
 @implementation valueObj
 
 @synthesize vid, vtype, vpriv, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
@@ -44,7 +47,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 in_vgraphtype:(NSInteger)in_vgraphtype
 in_vpriv:(NSInteger)in_vpriv
 {
-	NSLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	DBGLog3(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
@@ -61,12 +64,12 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) dealloc 
 {
-	//NSLog(@"dealloc valueObj: %@",valueName);
-	//NSLog(@"valuename retain count= %d",[valueName retainCount] );
+	//DBGLog1(@"dealloc valueObj: %@",valueName);
+	//DBGLog1(@"valuename retain count= %d",[valueName retainCount] );
 	self.valueName = nil;
 	[valueName release];
-	//self.value = nil;  //?? why not ??
-	//[value release];   //??
+	self.value = nil;
+	[value release]; 
 	self.display = nil;
 	[display release];
 	
@@ -76,12 +79,12 @@ in_vpriv:(NSInteger)in_vpriv
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
-	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
 	self.vos = nil;
 	[(id)vos release];
-	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
 	//[(voState*)vos release];
-	//NSLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
 	//[vos dealloc];
 	[super dealloc];
 }
@@ -112,7 +115,7 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
-    NSLog(@"setVtype - allocating vos");
+    DBGLog(@"setVtype - allocating vos");
 	vtype = vt;
 	switch (vt) {
 		case VOT_NUMBER:
@@ -157,7 +160,8 @@ in_vpriv:(NSInteger)in_vpriv
 			NSAssert1(0,@"valueObj init vtype %d not supported",vt);
 			break;
 	}
-    value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
+    self.value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];  // causes memory leak
+    [self.value release];   // clear retain count from alloc + retain
 	[(id) self.vos release];
 }
 
@@ -167,7 +171,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (UIView *) display:(CGRect)bounds {
 	if (display == nil) {
-        NSLog(@"vo new display %@",self.valueName);
+        DBGLog1(@"vo new display %@",self.valueName);
 		self.display = [self.vos voDisplay:bounds];
 	}
 	return display;
@@ -196,7 +200,7 @@ in_vpriv:(NSInteger)in_vpriv
 // called when the checkmark button is touched 
 - (void)checkAction:(id)sender
 {
-	NSLog(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
+	DBGLog2(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
 	UIImage *checkImage;
 	
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
@@ -241,7 +245,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) describe 
 {
-	NSLog(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
+	DBGLog4(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
 }
 
 

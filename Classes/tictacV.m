@@ -9,6 +9,7 @@
 #import "tictacV.h"
 #import "gfx.h"
 #import "privDefs.h"
+#import "dbg-defs.h"
 
 @implementation tictacV
 
@@ -22,7 +23,7 @@ static unsigned int theKey;
 	return theKey;
 }
 - (void) setKey:(unsigned int)k {
-	NSLog(@"setKey: %u -> %u",theKey,k);
+	DBGLog2(@"setKey: %u -> %u",theKey,k);
 	theKey = k;
 }
 
@@ -41,7 +42,7 @@ static unsigned int theKey;
 	ttf.origin.y = TICTACVRTFRAC * ttf.size.height;
 	ttf.size.width *= TICTACWIDFRAC;
 	ttf.size.height *= TICTACHGTFRAC;
-	NSLog(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
+	DBGLog4(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
 	if ((self = [super initWithFrame:ttf])) {
 		self.backgroundColor = [UIColor whiteColor];
     }
@@ -133,11 +134,11 @@ static unsigned int theKey;
 	rect.size.width =self.hstep;
 	rect.size.height =self.vstep;
 	self.currRect = rect;
-	//NSLog(@"currPt: %d %d",x,y);
+	//DBGLog(@"currPt: %d %d",x,y);
 }
 
 - (void) setNoCurrPt {
-	//NSLog(@"no curr pt");
+	//DBGLog(@"no curr pt");
 	self.currX = -1;
 	self.currY = -1;
 }
@@ -151,18 +152,18 @@ static unsigned int theKey;
 	[[UIColor blackColor] set];
 	switch (REGIONVAL(self.key, self.currX,self.currY)) {
 		case 0x00:
-			//NSLog(@"00");
+			//DBGLog(@"00");
 			break;
 		case 0x01:
-			//NSLog(@"01");
+			//DBGLog(@"01");
 			[self sDraw:@"X"];
 			break;
 		case 0x02:
-			//NSLog(@"10");
+			//DBGLog(@"10");
 			[self sDraw:@"O"];
 			break;
 		case 0x03:
-			//NSLog(@"11");
+			//DBGLog(@"11");
 			[self sDraw:@"+"];
 			break;
 		default:
@@ -173,11 +174,11 @@ static unsigned int theKey;
 
 - (void) updateTT {
 	if ([self currPt]) {
-		//NSLog(@"updateTT: draw cell %d %d",self.currX,self.currY);
+		//DBGLog2(@"updateTT: draw cell %d %d",self.currX,self.currY);
 		[self drawCell];
 	} else {  
 		int i,j;
-		NSLog(@"updateTT: draw all cells");
+		DBGLog(@"updateTT: draw all cells");
 		for (i=0;i<3;i++) {
 			for (j=0;j<3;j++) {
 				[self setCurrPt:i y:j];
@@ -192,7 +193,7 @@ static unsigned int theKey;
 
 - (void) press:(int) x y:(int)y {
 	[self setCurrPt:x y:y];
-	NSLog(@"press: %d,%d  => %f %f %f %f",x,y,
+	DBGLog6(@"press: %d,%d  => %f %f %f %f",x,y,
 		  self.currRect.origin.x,self.currRect.origin.y,
 		  self.currRect.size.width,self.currRect.size.height);
 	
@@ -257,7 +258,7 @@ static unsigned int theKey;
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
-	NSLog(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
+	DBGLog4(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
 	[self press:[self ttx:touchPoint.x] y:[self tty:touchPoint.y]];
 	[self resignFirstResponder];
 }

@@ -8,6 +8,7 @@
 
 #import "ppwV.h"
 #import "rTracker-constants.h"
+#import "dbg-defs.h"
 
 @implementation ppwV
 
@@ -21,13 +22,13 @@ CGRect saveFrame;
 
 - (id) initWithParentView:(UIView*)pv {
 	CGRect frame = pv.frame;
-	NSLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
+	DBGLog4(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	frame.origin.y = frame.size.height;// - 10.0f;
 	frame.origin.x = frame.size.width * 0.1f;
 	frame.size.width *= 0.8f;
 	frame.size.height *=0.25f;
 	
-	NSLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
+	DBGLog4(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
 		self.backgroundColor = [UIColor blueColor];
@@ -47,7 +48,7 @@ CGRect saveFrame;
 												   object:self.window];	
 		
 */
-		NSLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
+		DBGLog1(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
 		//[pv addSubview:self];
 		[pv insertSubview:self atIndex:[pv.subviews count]-1];
         // Initialization code
@@ -94,7 +95,7 @@ CGRect saveFrame;
 }
 
 - (void) hidePPWVAnimated:(BOOL)animated {
-	NSLog(@"hide ppwv anim=%d",animated);
+	DBGLog1(@"hide ppwv anim=%d",animated);
 	if (animated) {
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationDuration:kAnimationDuration];
@@ -133,7 +134,7 @@ CGRect saveFrame;
 	[UIView commitAnimations];
 }
 - (void) checkPass:(unsigned int)okState cancel:(unsigned int)cancelState {
-	NSLog(@"ppwv check pass");
+	DBGLog(@"ppwv check pass");
 	[self setUpPass:okState cancel:cancelState];
 	self.topLabel.text = @"please enter password:";
 	[self.topTF addTarget:self action:@selector(testp) forControlEvents:UIControlEventEditingDidEnd];
@@ -142,7 +143,7 @@ CGRect saveFrame;
 	[self showPassRqstr];
 }
 - (void) createPass:(unsigned int)okState cancel:(unsigned int)cancelState {
-	NSLog(@"ppwv create pass");
+	DBGLog(@"ppwv create pass");
 	[self setUpPass:okState cancel:cancelState];
 
 	self.topLabel.text = @"please set a password:";
@@ -163,7 +164,7 @@ CGRect saveFrame;
 
 - (void) changePAction {
 	//[self.topTF resignFirstResponder];
-	NSLog(@"change p to .%@.",self.topTF.text);
+	DBGLog1(@"change p to .%@.",self.topTF.text);
 	if (! [self.topTF.text isEqualToString:@""]) {  // no empty passwords
 		[self setp];
 		self.topLabel.text = @"password changed";
@@ -172,7 +173,7 @@ CGRect saveFrame;
 }
 
 - (void) changePass:(unsigned int)okState cancel:(unsigned int)cancelState {
-	NSLog(@"ppwv change pass");
+	DBGLog(@"ppwv change pass");
 	[self setUpPass:okState cancel:cancelState];
 	[self cpSetTopLabel];
 	[self.topTF removeTarget:self action:nil forControlEvents:UIControlEventEditingDidEnd];
@@ -239,7 +240,7 @@ CGRect saveFrame;
 }
 
 - (void) testp {
-	NSLog(@"testp: %@",self.topTF.text);
+	DBGLog1(@"testp: %@",self.topTF.text);
 	if ([self dbTestPass:self.topTF.text]) {
 		self.next = self.ok;
 	} else {
@@ -260,7 +261,7 @@ CGRect saveFrame;
 	f.origin.y = vert * f.size.height;
 	f.size.width *= 0.9f;
 	f.size.height = [@"X" sizeWithFont:[UIFont systemFontOfSize:18]].height;
-	NSLog(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
+	DBGLog4(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 	return f;
 }
 
@@ -300,7 +301,7 @@ CGRect saveFrame;
 		f.origin.y = 0.65f * self.frame.size.height;
 		f.size = [ttl sizeWithFont:[UIFont systemFontOfSize:18]];
 		cancelBtn.frame = f;
-		NSLog(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
+		DBGLog4(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 		[cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 		
 		[self addSubview:cancelBtn];
@@ -315,19 +316,19 @@ CGRect saveFrame;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	NSLog(@"ppwv: tf begin editing");
+	DBGLog(@"ppwv: tf begin editing");
 	activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-	NSLog(@"ppwv: tf end editing");
+	DBGLog(@"ppwv: tf end editing");
 	activeField = nil;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	NSLog(@"textField done: %@", textField.text);
+	DBGLog1(@"textField done: %@", textField.text);
 	//[target ppwvResponse];
 	//[target performSelector:action];
 	
@@ -341,7 +342,7 @@ CGRect saveFrame;
         return;
     }
 	
-	NSLog(@"handling keyboard will show: %@",[n object]);
+	DBGLog1(@"handling keyboard will show: %@",[n object]);
 	saveFrame = self.frame;
 	
     NSDictionary* userInfo = [n userInfo];
@@ -354,13 +355,13 @@ CGRect saveFrame;
 	CGRect viewFrame = self.frame;
 	CGFloat boty= viewFrame.origin.y + viewFrame.size.height;
 	CGFloat topk = kbdFrame.origin.y; 
-	NSLog(@"kybd frame: x: %f  y: %f  w: %f  h: %f",kbdFrame.origin.x,kbdFrame.origin.y,kbdFrame.size.width,kbdFrame.size.height);
-	NSLog(@"ppwv frame: x: %f  y: %f  w: %f  h: %f",viewFrame.origin.x,viewFrame.origin.y,viewFrame.size.width,viewFrame.size.height);
+	DBGLog4(@"kybd frame: x: %f  y: %f  w: %f  h: %f",kbdFrame.origin.x,kbdFrame.origin.y,kbdFrame.size.width,kbdFrame.size.height);
+	DBGLog4(@"ppwv frame: x: %f  y: %f  w: %f  h: %f",viewFrame.origin.x,viewFrame.origin.y,viewFrame.size.width,viewFrame.size.height);
 	if (boty <= topk) {
-		//NSLog(@"ppwv visible, do nothing  boty= %f  topk= %f",boty,topk);
+		//DBGLog2(@"ppwv visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
-		//NSLog(@"ppwv hidden, scroll up  boty= %f  topk= %f",boty,topk);
-		NSLog(@"new ppwv y = %f", viewFrame.origin.y - (boty - topk));
+		//DBGLog2(@"ppwv hidden, scroll up  boty= %f  topk= %f",boty,topk);
+		DBGLog1(@"new ppwv y = %f", viewFrame.origin.y - (boty - topk));
 		
 		viewFrame.origin.y -= (boty - topk + 10.0f);
 		
@@ -378,7 +379,7 @@ CGRect saveFrame;
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
-	NSLog(@"handling keyboard will hide");
+	DBGLog(@"handling keyboard will hide");
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -392,10 +393,12 @@ CGRect saveFrame;
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+#if DEBUGLOG
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
-	NSLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
-	
+	DBGLog2(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+#endif
+    
 	[self resignFirstResponder];
 }
 

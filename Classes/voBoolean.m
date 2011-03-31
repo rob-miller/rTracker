@@ -7,14 +7,14 @@
 //
 
 #import "voBoolean.h"
-
+#import "dbg-defs.h"
 
 @implementation voBoolean
 
 @synthesize imageButton;
 
 - (void) dealloc {
-	NSLog(@"dealloc voBoolean");
+	DBGLog(@"dealloc voBoolean");
 	//self.imageButton = nil;  // convenience constructor
     //[imageButton release];
                          

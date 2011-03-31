@@ -72,3 +72,12 @@
   + need to clean up either enableVO/disableVO everywhere, or get rid of unused checkbuttonusevo
 
 --- check in ---
+
+  - fixed a memory leak - setVtypes
+  + need way to control debug NSLog()s but only option seems to be #if DEBUG wrappers...
+
+31 Mar 2011
+  - converted all NSLog to #if DEBUG... controlled 
+
+--- check in ---
+

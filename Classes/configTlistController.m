@@ -9,7 +9,7 @@
 #import "configTlistController.h"
 #import "trackerList.h"
 #import "addTrackerController.h"
-
+#import "dbg-defs.h"
 
 @implementation configTlistController
 
@@ -25,7 +25,7 @@ UITableView *deleteTableView;
 #pragma mark core object methods and support
 
 - (void)dealloc {
-	NSLog(@"configTlistController dealloc");
+	DBGLog(@"configTlistController dealloc");
 	self.tlist = nil;
 	[tlist release];
 	 
@@ -69,7 +69,7 @@ UITableView *deleteTableView;
 
 - (void)viewDidUnload {
 	
-	NSLog(@"configTlistController view didunload");
+	DBGLog(@"configTlistController view didunload");
 	
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
@@ -85,7 +85,7 @@ UITableView *deleteTableView;
 
 - (void)viewWillAppear:(BOOL)animated {
 	
-	NSLog(@"ctlc: viewWillAppear");
+	DBGLog(@"ctlc: viewWillAppear");
 	
 	[self.table reloadData];
 	selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
@@ -94,7 +94,7 @@ UITableView *deleteTableView;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-	NSLog(@"ctlc: viewWillDisappear");
+	DBGLog(@"ctlc: viewWillDisappear");
 
 	//self.tlist = nil;
 	
@@ -104,45 +104,20 @@ UITableView *deleteTableView;
 #pragma mark -
 #pragma mark button press action methods
 
-/*
- - (NSString *) ioFilePath:(NSString*)fname {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);  // file itunes accessible
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
-	NSString *docsDir = [paths objectAtIndex:0];
-	
-	NSLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
-	
-	return [docsDir stringByAppendingPathComponent:fname];
-}
-
-- (IBAction)btnExport {
-	NSLog(@"btnExport was pressed!");
-
-	NSString *fpath = [self ioFilePath:@"rTracker_out.xls"];
-	[[NSFileManager defaultManager] createFileAtPath:fpath contents:nil attributes:nil];
-	NSFileHandle *nsfh = [NSFileHandle fileHandleForWritingAtPath:fpath];
-	
-	[nsfh writeData:[@"hello, world." dataUsingEncoding:NSUTF8StringEncoding]];
-	 
-	[self.tlist writeTListXLS:nsfh];
-	[nsfh closeFile];
-	//[nsfh release];
-}
-*/
 
 - (IBAction) modeChoice:(id)sender {
 
 	switch (selSegNdx = [sender selectedSegmentIndex]) {
 		case SegmentEdit :
-			NSLog(@"ctlc: set edit mode");
+			//DBGLog(@"ctlc: set edit mode");
 			[self.table setEditing:NO animated:YES];
 			break;
 		case SegmentCopy :
-			NSLog(@"ctlc: set copy mode");
+			//DBGLog(@"ctlc: set copy mode");
 			[self.table setEditing:NO animated:YES];
 			break;
 		case SegmentMoveDelete :
-			NSLog(@"ctlc: set move/delete mode");
+			//DBGLog(@"ctlc: set move/delete mode");
 			[self.table setEditing:YES animated:YES];
 			break;
 		default:
@@ -159,7 +134,7 @@ UITableView *deleteTableView;
 - (void) delTracker
 {
 	NSUInteger row = [deleteIndexPath row];
-	NSLog(@"checkTrackerDelete: will delete row %d ",row);
+	DBGLog1(@"checkTrackerDelete: will delete row %d ",row);
 	[self.tlist deleteTrackerAllRow:row];
 	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
 						   withRowAnimation:UITableViewRowAnimationFade];		
@@ -168,19 +143,19 @@ UITableView *deleteTableView;
 
 - (void) delTrackerRecords {
 	NSUInteger row = [deleteIndexPath row];
-	NSLog(@"checkTrackerDelete: will delete row %d ",row);
+	DBGLog1(@"checkTrackerDelete: will delete records only for row %d ",row);
 	[self.tlist deleteTrackerRecordsRow:row];
 	[self.tlist reloadFromTLT];	
 }
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-	NSLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+	//DBGLog1(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
 		[self delTracker];
 	} else if (buttonIndex == checkTrackerDelete.cancelButtonIndex) {
-		NSLog(@"cancelled tracker delete");
+		DBGLog(@"cancelled tracker delete");
 	} else {
         [self delTrackerRecords];
     }
@@ -205,7 +180,7 @@ UITableView *deleteTableView;
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView 
 		 cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"rvc table cell at index %d label %@",[indexPath row],[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    //DBGLog2(@"rvc table cell at index %d label %@",[indexPath row],[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier;
 	
@@ -236,7 +211,7 @@ UITableView *deleteTableView;
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
 	
-	NSLog(@"ctlc: move row from %d to %d",fromRow, toRow);
+	DBGLog2(@"ctlc: move row from %d to %d",fromRow, toRow);
 	[self.tlist reorderTLT :fromRow toRow:toRow];
 	[self.tlist reorderFromTLT];
 	
@@ -285,11 +260,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// [anotherViewController release];
 	
 	NSUInteger row = [indexPath row];
-	NSLog(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	//DBGLog2(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
 		int toid = [self.tlist getTIDfromIndex:row];
-		NSLog(@"will config toid %d",toid);
+		DBGLog1(@"will config toid %d",toid);
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
@@ -299,7 +274,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[atc release];
 	} else if (selSegNdx == SegmentCopy) {
 		int toid = [self.tlist getTIDfromIndex:row];
-		NSLog(@"will copy toid %d",toid);
+		DBGLog1(@"will copy toid %d",toid);
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];
@@ -310,7 +285,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[self.table reloadData];
 
 	} else if (selSegNdx == SegmentMoveDelete) {
-		NSLog(@"selected for move/delete?");
+		DBGWarn(@"selected for move/delete?");
 	}
 }
 @end

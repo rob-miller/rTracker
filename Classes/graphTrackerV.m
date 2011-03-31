@@ -8,6 +8,7 @@
 
 #import "graphTrackerV.h"
 #import "gfx.h"
+#import "dbg-defs.h"
 
 @implementation graphTrackerV
 
@@ -250,7 +251,7 @@
 
 		NSNumber *nd = [e nextObject];
 		
-		NSLog(@"i: %@  f: %@",ni,nd);
+		DBGLog2(@"i: %@  f: %@",ni,nd);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		double v = [nd doubleValue] ;		// val as float
 		
@@ -262,7 +263,7 @@
 		d+= BORDER;
 		v+= BORDER;
 
-		NSLog(@"num final: %f %f",d,v);
+		DBGLog2(@"num final: %f %f",d,v);
 		[xdat addObject:[NSNumber numberWithDouble:d]];
 		[ydat addObject:[NSNumber numberWithDouble:v]];
 		
@@ -283,7 +284,7 @@
 	
 	for (NSNumber *ni in i1) {
 
-		NSLog(@"i: %@  ",ni);
+		DBGLog1(@"i: %@  ",ni);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		
 		d -= (double) self.firstDate;
@@ -308,7 +309,7 @@
 	
 	for (NSNumber *ni in i1) {
 		
-		NSLog(@"i: %@  ",ni);
+		DBGLog1(@"i: %@  ",ni);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		
 		d -= (double) self.firstDate;
@@ -339,13 +340,13 @@
 			[self transformVO_bool:vo xdat:xdat ydat:ydat];
 			break;
 		case VOT_CHOICE:
-			NSLog(@"transform for mult choice not done yet");
+			DBGWarn(@"transform for mult choice not done yet");
 			break;
 		case VOT_FUNC:
-			NSLog(@"transform for function not done yet");
+			DBGWarn(@"transform for function not done yet");
 			break;
 		default:
-			NSLog(@"transformVO: vtype %d not recognised",vo.vtype);
+			DBGErr1(@"transformVO: vtype %d not recognised",vo.vtype);
 			break;
 	}
 }
@@ -360,10 +361,10 @@
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
 		if (going) {
-			NSLog(@"addline %f %f",x,y);
+			DBGLog2(@"addline %f %f",x,y);
 			AddLineTo(x,y);
 		} else {
-			NSLog(@"moveto %f %f",x,y);
+			DBGLog2(@"moveto %f %f",x,y);
 			MoveTo(x,y);
 			going=1;
 		}
@@ -383,11 +384,11 @@
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
 		if (going) {
-			NSLog(@"addline %f %f",x,y);
+			DBGLog2(@"addline %f %f",x,y);
 			AddLineTo(x,y);
 			AddCircle(x,y);
 		} else {
-			NSLog(@"moveto %f %f",x,y);
+			DBGLog2(@"moveto %f %f",x,y);
 			MoveTo(x,y);
 			AddCircle(x,y);
 			going=1;
@@ -406,7 +407,7 @@
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
 
-		NSLog(@"moveto %f %f",x,y);
+		DBGLog2(@"moveto %f %f",x,y);
 		MoveTo(x,y);
 		AddCircle(x,y);
 	}
@@ -427,7 +428,7 @@
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
 
-		NSLog(@"bar to %f %f",x,y);
+		DBGLog2(@"bar to %f %f",x,y);
 		MoveTo(x,BORDER);
 		AddLineTo(x,y);
 		AddCircle(x,y);
@@ -457,12 +458,12 @@
 			[self plotVO_dotsline:vo xdat:xdat ydat:ydat];
 			break;
 		case VOG_PIE:
-			NSLog(@"pie chart not yet supported");
+			DBGErr(@"pie chart not yet supported");
 			break;
 		case VOG_NONE:  // nothing to do!
 			break;
 		default:
-			NSLog(@"plotVO: vGraphType %d not recognised",vo.vGraphType);
+			DBGErr1(@"plotVO: vGraphType %d not recognised",vo.vGraphType);
 			break;
 	}
 }

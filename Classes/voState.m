@@ -10,6 +10,7 @@
 #import "rTracker-constants.h"
 #import "configTVObjVC.h"
 
+#import "dbg-defs.h"
 
 @implementation voState
 
@@ -28,7 +29,7 @@
 
 - (void) dealloc {
 
-	NSLog(@"voState default dealloc");
+	DBGLog(@"voState default dealloc");
     // *vo is assigned not retained
 	[super dealloc];
 }
@@ -221,7 +222,7 @@
 	bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
 	bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
 	
-    NSLog(@"votvenabledcell adding subview");
+    //DBGLog(@"votvenabledcell adding subview");
 	[cell.contentView addSubview:[self.vo display:bounds]];
     return cell;
 	
@@ -253,10 +254,10 @@
 	bounds.size.width = cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
 	bounds.size.height = maxLabel.height + MARGIN;
 	
-	//NSLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
+	//DBGLog2(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
 	//bounds.origin.y = bounds.size.height;// - BMARGIN;
 	
-	//NSLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
+	//DBGLog4(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[self.vo display:bounds]];
 	return cell;
 }

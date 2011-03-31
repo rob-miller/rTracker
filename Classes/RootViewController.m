@@ -16,6 +16,8 @@
 
 #import "CSVParser.h"
 
+#import "dbg-defs.h"
+
 @implementation RootViewController
 
 @synthesize tlist;
@@ -26,7 +28,7 @@
 
 - (void)dealloc {
 	
-	NSLog(@"rvc dealloc");
+	DBGLog(@"rvc dealloc");
 	self.tlist = nil;
 	[tlist release];
 	
@@ -35,7 +37,7 @@
 
 /*
 - (void)applicationWillTerminate:(NSNotification *)notification {
-	NSLog(@"rvc: app will terminate");
+	DBGLog(@"rvc: app will terminate");
 	// close trackerList
 	
 }
@@ -56,26 +58,9 @@
 //  this copyright and permission notice. Attribution in compiled projects is
 //  appreciated but not required.
 //-------------------
-//
-// receiveRecord:
-//
-// Receives a row from the CSVParser
-//
-// Parameters:
-//    aRecord - the row
-//
-/*
-- (void)receiveRecord:(NSDictionary *)aRecord
-{
-	for (NSString *key in aRecord)
-	{
-        NSLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
-	}
-}
-*/
 
 - (void) loadInputFiles {
-    NSLog(@"loadInputFiles");
+    DBGLog(@"loadInputFiles");
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
@@ -88,17 +73,17 @@
         if ([[file pathExtension] isEqualToString: @"csv"]) {
             NSString *fname = [file lastPathComponent];
             NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
-            NSLog(@"consider input: %@",fname);
+            DBGLog1(@"consider input: %@",fname);
             
             if (inmatch.location == NSNotFound) {
                 
             } else if (inmatch.length == 7) {
                 NSString *tname = [fname substringToIndex:inmatch.location];
-                NSLog(@"load input: %@ as %@",fname,tname);
+                DBGLog2(@"load input: %@ as %@",fname,tname);
                 int ndx=0;
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
-                        NSLog(@"match to: %@",tracker);
+                        //DBGLog(@"match to: %@",tracker);
                         NSString *target = [docsDir stringByAppendingPathComponent:file];
                         //NSError *error = nil;
                         NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
@@ -106,7 +91,7 @@
                         /*
                         if (!csvString)
                         {
-                         NSLog(@"Couldn't read file at path %s\n. Error: %s",
+                         DBGErr(@"Couldn't read file at path %s\n. Error: %s",
                                    [file UTF8String],
                                    [[error localizedDescription] ? [error localizedDescription] : [error description] UTF8String]);
                             NSAssert(0,@"file issue.");
@@ -117,7 +102,7 @@
                             trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
 
                             CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
-                            [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)];
+                            [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
                             [parser release];
                             [to release];
                         }
@@ -135,7 +120,8 @@
 #pragma mark view support
 
 - (void)viewDidLoad {
-	NSLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+	DBGLog1(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+
     self.title = @"rTracker";
 
 	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
@@ -198,7 +184,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	NSLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+	DBGLog1(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
 	[self refreshView];
     [super viewWillAppear:animated];
 }
@@ -206,7 +192,7 @@
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
 	
-	NSLog(@"rvc didReceiveMemoryWarning");
+	DBGWarn(@"rvc didReceiveMemoryWarning");
 	// Release any cached data, images, etc that aren't in use.
 
     [super didReceiveMemoryWarning];
@@ -218,7 +204,7 @@
 	// Release anything that can be recreated in viewDidLoad or on demand.
 	// e.g. self.myOutlet = nil;
 	
-	NSLog(@"rvc viewDidUnload");
+	DBGLog(@"rvc viewDidUnload");
 
 	self.title = nil;
 	self.navigationItem.rightBarButtonItem = nil;
@@ -228,7 +214,7 @@
 	
 	self.tlist = nil;
 	
-	//NSLog(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
+	//DBGLog2(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
 	
 }
 
@@ -285,44 +271,35 @@
 #pragma mark button action methods
 
 - (void) btnAddTracker {
-	//NSLog(@"btnAddTracker was pressed!");
-	
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 	atc.tlist = self.tlist;
 	[self.navigationController pushViewController:atc animated:YES];
 	[atc release];
-	
 }
 
 - (IBAction)btnEdit {
-	//NSLog(@"btnConfig was pressed!");
-	
 	configTlistController *ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
 	[ctlc release];
-	
 }
 	
 - (void)btnMultiGraph {
-	NSLog(@"btnMultiGraph was pressed!");
+	DBGLog(@"btnMultiGraph was pressed!");
 }
 
 - (void)btnPrivate {
-	NSLog(@"btnPrivate was pressed!");
-	
 	[self.privacyObj togglePrivacySetter ];
 	if (0 != self.privacyObj.showing) {
 		self.privateBtn.title = @"dismiss";
 	} else {
 		self.privateBtn.title = @"private";
 		[self refreshView];
-		
 	}
 }
 
 - (void)btnPay {
-	NSLog(@"btnPay was pressed!");
+	DBGLog(@"btnPay was pressed!");
 	
 }
 
@@ -341,7 +318,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //NSLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    //DBGLog2(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier = @"Cell";
     
@@ -363,7 +340,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	NSUInteger row = [indexPath row];
-	//NSLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	//DBGLog2(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromIndex:row]];
 	[to describe];

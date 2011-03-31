@@ -9,7 +9,7 @@
 // implements textbox editor
 
 #import "voDataEdit.h"
-
+#import "dbg-defs.h"
 
 @implementation voDataEdit
 
@@ -31,7 +31,7 @@
 	
     [super viewDidLoad];
 	
-	NSLog(@"vde view did load");
+	DBGLog(@"vde view did load");
 	self.title = self.vo.valueName;
 	[self.vo.vos dataEditVDidLoad:self];
 	
@@ -61,7 +61,7 @@
 }
 
 - (void)viewDidUnload {
-	NSLog(@"vde view did unload");
+	DBGLog(@"vde view did unload");
 	
     [super viewDidUnload];
     // Release any retained subviews of the main view.
@@ -73,7 +73,7 @@
 
 - (void)dealloc {
 	
-	NSLog(@"vde dealloc");
+	DBGLog(@"vde dealloc");
 	self.vo = nil;
 	//[vo release];
 

@@ -9,6 +9,7 @@
 #import "addValObjController.h"
 #import "configTVObjVC.h"
 #import "voState.h"
+#import "dbg-defs.h"
 
 @implementation addValObjController
 
@@ -33,7 +34,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 #pragma mark core object methods and support
 
 - (void)dealloc {
-	NSLog(@"avoc dealloc");
+	DBGLog(@"avoc dealloc");
 	
 	self.votPicker = nil;
 	[votPicker release];
@@ -136,7 +137,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[self.labelField addTarget:self
 				  action:@selector(labelFieldDone:)
 		forControlEvents:UIControlEventEditingDidEndOnExit];
-//	NSLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
+//	DBGLog4(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
 	[super viewDidLoad];
 }
@@ -157,7 +158,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 
-	NSLog(@"avoc didUnload");
+	DBGLog(@"avoc didUnload");
 	
 	self.votPicker = nil;
 	self.labelField = nil;
@@ -176,7 +177,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 - (void)viewWillAppear:(BOOL)animated {
 	
-	NSLog(@"avoc: viewWillAppear");
+    DBGLog(@"avoc: viewWillAppear");
 	
 	if (self.tempValObj) {
 		self.graphTypes = nil;
@@ -196,12 +197,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)btnCancel {
-	NSLog(@"addVObjC: btnCancel was pressed!");
+	//DBGLog(@"addVObjC: btnCancel was pressed!");
 	[self leave];
 }
 
 - (IBAction)btnSave {
-	NSLog(@"addVObjC: btnSave was pressed!");
+	//DBGLog(@"addVObjC: btnSave was pressed!");
 	self.tempValObj.valueName = self.labelField.text;  // in case neglected to 'done' keyboard
 	
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];
@@ -223,9 +224,10 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv1"];
 	
-	
+#if DEBUGLOG	
 	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
-	NSLog(@"label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
+	DBGLog4(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
+#endif
 	
 	[self.parentTrackerObj addValObj:tempValObj];
 	
@@ -234,16 +236,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//[parent.tableView reloadData];
 }
 
-/*
-- (void) myButtonAction:(id)sender
-{
-	NSLog(@"pressed!");
-	[sender removeFromSuperview];
-}
-*/
-
 - (void) btnSetup {
-	NSLog(@"addVObjC: config was pressed!");
+	//DBGLog(@"addVObjC: config was pressed!");
 	
 	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
 	ctvovc.to = self.parentTrackerObj;

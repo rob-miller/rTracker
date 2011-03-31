@@ -8,6 +8,7 @@
 
 #import "trackerList.h"
 #import "privacyV.h"
+#import "dbg-defs.h"
 
 @implementation trackerList
 
@@ -29,7 +30,7 @@
 - (void) initTDb {
 	int c;
 	
-	NSLog(@"Initializing top level dtabase!");
+	DBGLog(@"Initializing top level dtabase!");
 	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
@@ -37,13 +38,13 @@
 	[self toExecSql];
 	self.sql = @"select count(*) from toplevel;";
 	c = [self toQry2Int];
-	NSLog(@"toplevel at open contains %d entries",c);
+	DBGLog1(@"toplevel at open contains %d entries",c);
 	
 	self.sql = nil;	
 }	
 
 - (id) init {
-	NSLog(@"init trackerList");
+	DBGLog(@"init trackerList");
 	
 	if ((self = [super init])) {
 		topLayoutNames = [[NSMutableArray alloc] init];
@@ -56,7 +57,7 @@
 }
 
 - (void) dealloc {
-	NSLog(@"trackerlist dealloc");
+	DBGLog(@"trackerlist dealloc");
 	self.topLayoutNames = nil;
 	[topLayoutNames release];
 	self.topLayoutIDs = nil;
@@ -77,7 +78,7 @@
 	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
 	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
 	self.sql = nil;
-	NSLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutNames);
+	DBGLog1(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutNames);
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
@@ -101,7 +102,7 @@
 - (void) reorderFromTLT {
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
-		NSLog(@" %@ to rank %d",tracker,nrank);
+		DBGLog2(@" %@ to rank %d",tracker,nrank);
 		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
@@ -117,7 +118,7 @@
 		NSInteger tid = [[self.topLayoutIDs objectAtIndex:nrank] intValue];
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
-		NSLog(@" %@ id %d to rank %d",tracker,tid,nrank);
+		DBGLog3(@" %@ id %d to rank %d",tracker,tid,nrank);
 		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank,tid,tracker, priv];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
@@ -175,7 +176,7 @@
 }
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO {
-	NSLog(@"copyToConfig: src id= %d %@",srcTO.toid,srcTO.trackerName);
+	DBGLog2(@"copyToConfig: src id= %d %@",srcTO.toid,srcTO.trackerName);
 	trackerObj *newTO = [trackerObj alloc];
 	newTO.toid = [self getUnique];
 	newTO = [newTO init];
@@ -196,7 +197,7 @@
 	}
 	
 	[newTO saveConfig];
-	NSLog(@"copyToConfig: copy id= %d %@",newTO.toid,newTO.trackerName);
+	DBGLog2(@"copyToConfig: copy id= %d %@",newTO.toid,newTO.trackerName);
 	
 	return newTO;
 }

@@ -8,6 +8,7 @@
 
 #import "voFunction.h"
 #import "rTracker-constants.h"
+#import "dbg-defs.h"
 
 @interface voFunction ()
 - (void) updateFnTitles;
@@ -165,13 +166,13 @@
 		// use last entry
 		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;",maxdate];
 		epDate = [to toQry2Int];
-		NSLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
+		DBGLog2(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
 		to.sql = nil;
 	} else if (ep >= 0) {
 		// ep is vid
 		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d order by date desc limit 1;",ep,maxdate];
 		epDate = [to toQry2Int];
-		NSLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
+		DBGLog3(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
 		to.sql = nil;
 	} else {
 		// ep is (offset * -1)+1 into epTitles, with optDict:frv0 multiplier
@@ -213,7 +214,7 @@
 												  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)maxdate]
 												 options:0];
 		epDate = [targ timeIntervalSince1970];
-		NSLog(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
+		DBGLog4(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
 		
 		[gregorian release];
 		[offsetComponents release];
@@ -413,7 +414,7 @@
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
         return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
     }
-    NSLog(@"fn update returning: %@",instr);
+    DBGLog1(@"fn update returning: %@",instr);
     
     return instr;
 }
@@ -796,9 +797,9 @@
 
 - (void) funcDone {
 	if (fnArray != nil && [self.fnArray count] != 0) {
-		NSLog(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
+		//DBGLog1(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
 		[self saveFnArray];
-		NSLog(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
+		DBGLog1(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
 
 		// frep0 and 1 not set if user did not click on range picker
 		if ([self.vo.optDict objectForKey:@"frep0"] == nil) 
@@ -806,7 +807,7 @@
 		if ([self.vo.optDict objectForKey:@"frep1"] == nil) 
 			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
 		
-		NSLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
+		DBGLog2(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
 		
 	}
 }
@@ -864,7 +865,7 @@
 - (void) fnSegmentAction:(id)sender
 {
 	self.fnSegNdx = [sender selectedSegmentIndex];
-	NSLog(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
+	//DBGLog1(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -1082,7 +1083,7 @@
 			[self.vo.optDict setObject:[NSNumber numberWithInt:(((row - votc) +1) * -1)] forKey:key];
 			[self updateValTF:row component:component];
 		}
-		NSLog(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
+		DBGLog3(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
 	} else {
 	}
 	
