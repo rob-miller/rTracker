@@ -300,6 +300,7 @@ BOOL keyboardIsShown;
 		[self.tbButton setTitle:self.vo.value forState:UIControlStateNormal];
 	}
 	
+    DBGLog1(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
 	return self.tbButton;
 	
 }

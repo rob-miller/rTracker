@@ -22,7 +22,7 @@
 @property (nonatomic) NSInteger toid;
 @property (nonatomic, retain) NSString *sql;
 @property (nonatomic, retain) NSString *dbName;
-//@property (nonatomic, retain) sqlite3 *tDb; // not of object type
+@property (nonatomic) sqlite3 *tDb; 
 @property (nonatomic) NSInteger tuniq;
 
 - (id) init;

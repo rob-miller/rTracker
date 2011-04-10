@@ -8,9 +8,9 @@
 
 #define SQLDEBUG    0
 
-#define DEBUGLOG    0
-#define DEBUGWARN   0
-#define DEBUGERR    0
+#define DEBUGLOG    1
+#define DEBUGWARN   1
+#define DEBUGERR    1
 
 #if SQLDEBUG 
 #define SQLDbg(a) NSLog(a)

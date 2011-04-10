@@ -60,6 +60,8 @@
 - (UIView*) voDisplay:(CGRect)bounds {
     self.voFrame = bounds;
 	[self.imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
+    
+    DBGLog1(@"bool voDisplay: %d", ([self.imageButton imageForState:UIControlStateNormal] == [UIImage imageNamed:@"checked.png"] ? 1 : 0) );
 	return self.imageButton;
 }
 

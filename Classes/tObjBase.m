@@ -13,7 +13,7 @@
 
 @implementation tObjBase
 
-@synthesize toid, dbName, sql, tuniq;
+@synthesize toid, dbName, sql, tuniq, tDb;
 //sqlite3 *tDb;
 
 /******************************
@@ -135,6 +135,15 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		
 	}
 }
+
+/* valid to have as nil
+- (sqlite3*) tDb {
+    if (nil == tDb) {
+        [self getTDb];
+    }
+    return tDb;
+}
+*/
 
 - (void) deleteTDb {
 	DBGLog2(@"deleteTDb dbName= %@ id=%d",self.dbName,self.toid);

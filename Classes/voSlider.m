@@ -25,8 +25,9 @@
 
 - (void)sliderAction:(UISlider *)sender
 { 
+    DBGLog1(@"slider action value = %f", ((UISlider *)sender).value);
     /*
-	//DBGLog1(@"slider action value = %f", ((UISlider *)sender).value);
+	//
 	//[self.vo.value setString:[NSString stringWithFormat:@"%f",sender.value]];
     DBGLog1(@"sender action value: %f",sender.value);
 	DBGLog1(@"slider action value = %f", self.sliderCtl.value);
@@ -110,6 +111,7 @@
         self.sliderCtl.value = [self.vo.value floatValue];
         //[self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
     }
+    DBGLog1(@"sliderCtl voDisplay: %f", self.sliderCtl.value);
 	return self.sliderCtl;
 }
 

@@ -85,6 +85,7 @@
         DBGLog2(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
 	}
 	
+    DBGLog1(@"textfield voDisplay: %@", self.dtf.text);
 	return self.dtf;
 }
 

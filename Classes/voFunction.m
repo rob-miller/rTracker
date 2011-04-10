@@ -392,6 +392,10 @@
 //- (NSString*) currFunctionValue {
 - (NSString*) update:(NSString*)instr {
     instr = @"";
+    trackerObj *pto = self.vo.parentTracker;
+    if (nil == pto.tDb) 
+        return @"";
+        
 	int ep0date = [self getEpDate:0 maxdate:(int)[MyTracker.trackerDate timeIntervalSince1970]];
 	if (ep0date == 0)
 		return instr;
@@ -443,6 +447,7 @@
 	}
 	
 	//return [rlab autorelease];
+    DBGLog1(@"fn voDisplay: %@", self.rlab.text);
     return self.rlab;
 }
 
@@ -840,7 +845,9 @@
 		[segmentedControl release];
 		[scButtonItem release];
 		[flexibleSpaceButtonItem release];
-	}
+	} else {
+        ctvovc.toolBar.items = [NSArray arrayWithObjects: db,nil];
+    }
 }
 
 

@@ -219,8 +219,12 @@ CGRect saveFrame;
 # pragma mark button Actions
 
 - (void) setp {
-	[self dbSetPass:self.topTF.text];
-	self.next = self.ok;
+    if ([@"" isEqualToString:self.topTF.text]) {  // "" not valid password, or cancel
+        self.next = self.cancel;
+    } else {
+        [self dbSetPass:self.topTF.text];
+        self.next = self.ok;
+    }
 	if (![self.topLabel.text isEqualToString:ChangePassTxt]) {
 		[self hide];
 	}
@@ -229,14 +233,7 @@ CGRect saveFrame;
 
 - (void) cancelp {
 	self.topTF.text = @"";
-	self.next = self.cancel;
-
-	if (![self.topLabel.text isEqualToString:ChangePassTxt]) {
-		[self hide];
-	}
-	
-	[self.topTF resignFirstResponder];  // ???
-	[parent performSelector:parentAction];
+	[self.topTF resignFirstResponder];  // closing topTF triggers setp action above
 }
 
 - (void) testp {

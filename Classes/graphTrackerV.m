@@ -10,6 +10,8 @@
 #import "gfx.h"
 #import "dbg-defs.h"
 
+//#define DEBUGLOG 1
+
 @implementation graphTrackerV
 
 @synthesize tracker;
@@ -215,7 +217,8 @@
 	double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
 	double minVal,maxVal;
 
-	if (vo.vtype == VOT_NUMBER && [vo.optDict objectForKey:@"autoscale"]) { // default is autoscale, so any stored val means 'no'
+	if (vo.vtype == VOT_NUMBER && ![vo.optDict objectForKey:@"autoscale"]) { 
+        //DBGLog1(@"autoscale= %@", [vo.optDict objectForKey:@"autoscale"]);
 		minVal = [[vo.optDict objectForKey:@"gmin"] doubleValue];
 		maxVal = [[vo.optDict objectForKey:@"gmax"] doubleValue];
 	} else if (vo.vtype == VOT_SLIDER) {
@@ -262,7 +265,7 @@
 		
 		d+= BORDER;
 		v+= BORDER;
-
+        // TODO: why does this code run again after rotate to portrait?
 		DBGLog2(@"num final: %f %f",d,v);
 		[xdat addObject:[NSNumber numberWithDouble:d]];
 		[ydat addObject:[NSNumber numberWithDouble:v]];

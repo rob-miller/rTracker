@@ -100,9 +100,10 @@
             self.dtf.text = self.vo.value;
         }
         
-        DBGLog2(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
+        //DBGLog2(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
 	//}
     
+    DBGLog1(@"number voDisplay: %@", self.dtf.text);
     return self.dtf;
 }
 

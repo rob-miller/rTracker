@@ -52,8 +52,24 @@
     return rslt;
 }
 
+- (int) getSegmentIndexForValue {
+    return [self.vo.value integerValue]-1;
+}
+
+
+/*
+ - (void) reportscwid {
+    int n;
+    for (n=0; n< [segmentedControl numberOfSegments]; n++) {
+        DBGLog2(@"width of seg %d = %f", n, [segmentedControl widthForSegmentAtIndex:n]);
+    }    
+}
+*/
+
 - (void) segmentAction:(id) sender
 {
+    if ([sender selectedSegmentIndex] == [self getSegmentIndexForValue])
+        return;
 	DBGLog1(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];   
     if (@"" == self.vo.value) {  
@@ -81,20 +97,23 @@
         
         //CGRect frame = bounds;
         segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
-        if ([self.vo.optDict objectForKey:@"shrinkb"]) {  // default is NO, so a defined result means yes
+        if ([self.vo.optDict objectForKey:@"shrinkb"]) {  
             int j=0;
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
                 [segmentedControl setWidth:siz.width forSegmentAtIndex:j];
+                DBGLog2(@"set width for seg %d to %f", j, siz.width);
                 j++;
             }
+            
+            // TODO: need to center control in subview for this
         }
         [segmentTextContent release];
-        
+
         segmentedControl.frame = self.voFrame;
         [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
-        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         segmentedControl.tag = kViewTag;
         
@@ -111,7 +130,8 @@
 
 - (UIView*) voDisplay:(CGRect)bounds {
 
-	self.voFrame = bounds;
+   	
+    self.voFrame = bounds;
     //self.segmentedControl.tag = kViewTag;
     
 	// set displayed segment from self.vo.value
@@ -122,12 +142,14 @@
             [self.vo disableVO];
         }
     } else {
-        if (self.segmentedControl.selectedSegmentIndex != [self.vo.value integerValue]) {
-            self.segmentedControl.selectedSegmentIndex = [self.vo.value integerValue];
+        if (self.segmentedControl.selectedSegmentIndex != [self getSegmentIndexForValue]) {
+            DBGLog2(@"segmentedControl set value int: %d str: %@", [self.vo.value integerValue], self.vo.value);
+            self.segmentedControl.selectedSegmentIndex = [self getSegmentIndexForValue];
             [self.vo enableVO];
         }
     }
-
+    DBGLog1(@"segmentedControl voDisplay: index %d", self.segmentedControl.selectedSegmentIndex);
+    
 	return self.segmentedControl;
 }
 

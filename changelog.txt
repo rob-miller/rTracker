@@ -81,3 +81,17 @@
 
 --- check in ---
 
+09 April 2011
+  - error because choice value +1 => not voDisplay'd correctly : added getSegmentIndexForValue routine
+  --> bug appearance was all subviews buggered after segmentedControl set to invalid index
+  - further complexity: UIControlEventValueCHanged gen'd when val set, not just when user activates -- but slider not this way!
+  - privacy cancel from setpass triggered toptf resignfirstresponder, same as setp -> set pass to ""; fixed by rewrite setp, cancelp
+  - assuming not null autoscale (= not default) meant errors in graph scale - fixed -- TODO: search for more of these
+
+10 April 2011
+  - fixed problem shrinking choice buttons, width was reset when style set.  TODO: seg control needs to be centered in subview in this case
+
+--- check in ---
+
+
+

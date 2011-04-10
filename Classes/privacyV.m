@@ -173,7 +173,7 @@ static int privacyValue=PRIVDFLT;
 	// (showing == newState)
 	//	return;
 	
-	if (PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features
+	if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features
 
 		showing = PVNEEDPASS;
 		[self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
