@@ -12,6 +12,8 @@
 
 @implementation rTracker_resource
 
+BOOL keyboardIsShown=NO;
+
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access {
     NSArray *paths; 
     if (access) {
@@ -25,7 +27,5 @@
 	
 	return [docsDir stringByAppendingPathComponent:fname];
 }
-
-
 
 @end

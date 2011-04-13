@@ -26,7 +26,7 @@
 @synthesize table, dpvc, needSave, saveFrame;
 @synthesize saveBtn, exportBtn;
 
-BOOL keyboardIsShown;
+//BOOL keyboardIsShown=NO;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -101,6 +101,7 @@ BOOL keyboardIsShown;
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
+    DBGLog(@"UTC update notification from tracker");
     [self updateTableCells];
     self.needSave=YES;
 	[self showSaveBtn];
@@ -217,6 +218,9 @@ BOOL keyboardIsShown;
 		[dpvc release];
 	}
 
+    //DBGLog(@"add kybd will show notifcation");
+	keyboardIsShown = NO;
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(keyboardWillShow:) 
 												 name:UIKeyboardWillShowNotification 
@@ -234,6 +238,7 @@ BOOL keyboardIsShown;
 
 - (void) viewWillDisappear :(BOOL)animated
 {
+    //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillShowNotification 
@@ -356,21 +361,23 @@ BOOL keyboardIsShown;
 # pragma mark -
 # pragma mark keyboard notifications
 
-
+/*
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	//DBGLog(@"utc: tf begin editing");
+	DBGLog(@"utc: tf begin editing");
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-	//DBGLog(@"utc: tf end editing");
+	DBGLog(@"utc: tf end editing");
 }
 
 //UITextField *activeField;
+*/
 
 - (void)keyboardWillShow:(NSNotification *)n
 {
+    DBGLog(@"UTC keyboardwillshow");
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }
@@ -412,7 +419,7 @@ BOOL keyboardIsShown;
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
-	//DBGLog(@"handling keyboard will hide");
+	DBGLog(@"handling keyboard will hide");
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];

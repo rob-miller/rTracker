@@ -846,11 +846,11 @@
 	id obj = [n object];
 	if ([obj isMemberOfClass:[valueObj class]]) {
 		valueObj *vo = (valueObj*) [n object];
-		DBGLog4(@"tracker %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+		DBGLog4(@"trackerObj %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
 	
 	} else {
 		voState *vos= (voState*) obj;
-		DBGLog4(@"tracker %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
+		DBGLog4(@"trackerObj %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
 	}
 #endif
     

@@ -93,5 +93,9 @@
 
 --- check in ---
 
+12 April 2011
+  - fixed crash on delete new vo in new tracker - tdb=null
+  - fixed bug where kybd notification listen turned on/off in configtvobjvc viewDid(Un)load -- switched to viewWill(Dis)Appear -- so was handling in 2 places
+  - moved keyboardIsShown to rtracker-resource so just 1
 
-
+--- check in ---

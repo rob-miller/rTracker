@@ -14,11 +14,8 @@
 @interface rTracker_resource : NSObject {
     //int foo;
 }
-
-
-
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
-
-
-
 @end
+
+extern BOOL keyboardIsShown;
+

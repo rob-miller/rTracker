@@ -10,6 +10,7 @@
 
 #import "addValObjController.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 #import "voFunction.h"
 #import "dbg-defs.h"
 
@@ -22,7 +23,7 @@
 @synthesize toolBar, navBar, lasty, saveFrame, LFHeight, vdlConfigVO;
 @synthesize activeField;
 
-BOOL keyboardIsShown;
+//BOOL keyboardIsShown;
 
 //CGFloat LFHeight;  // textfield height based on parent viewcontroller's xib
 
@@ -113,6 +114,11 @@ BOOL keyboardIsShown;
 	}
 	[doneBtn release];
 	
+    [super viewDidLoad];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
 	// register for keyboard notifications
 	keyboardIsShown = NO;
 	[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -124,7 +130,20 @@ BOOL keyboardIsShown;
 												 name:UIKeyboardWillHideNotification 
 											   object:self.view.window];
 	
-    [super viewDidLoad];
+}
+
+- (void) viewWillDisappear :(BOOL)animated
+{
+    //DBGLog(@"remove kybd will show notifcation");
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillShowNotification 
+                                                  object:nil]; 
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:UIKeyboardWillHideNotification 
+                                                  object:nil];  
+	
 }
 
 
@@ -147,17 +166,6 @@ BOOL keyboardIsShown;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-
-	///*
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillShowNotification 
-                                                  object:nil]; 
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillHideNotification 
-                                                  object:nil];  
-	//*/
 	
 	self.wDict = nil;
 	self.to = nil;
@@ -202,6 +210,7 @@ BOOL keyboardIsShown;
 
 - (void)keyboardWillShow:(NSNotification *)n
 {
+    //DBGLog(@"configTVObjVC keyboardwillshow");
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }

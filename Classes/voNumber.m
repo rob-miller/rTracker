@@ -14,7 +14,7 @@
 @synthesize dtf;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-	DBGLog(@"tf begin editing");
+	DBGLog1(@"tf begin editing vid=%d",self.vo.vid);
     //*activeField = textField;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
@@ -29,7 +29,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	DBGLog(@"tf end editing");
+	DBGLog1(@"tf end editing vid=%d",self.vo.vid);
 	[self tfvoFinEdit:textField];
     //*activeField = nil;
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
@@ -37,8 +37,8 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	//DBGLog1(@"textField done: %@", textField.text);
-	[self tfvoFinEdit:textField];
+	//DBGLog2(@"textField done: %@  vid=%d", textField.text,self.vo.vid);
+	// [self tfvoFinEdit:textField];  // textFieldDidEndEditing will be called, just dismiss kybd here
 	[textField resignFirstResponder];
 	return YES;
 }

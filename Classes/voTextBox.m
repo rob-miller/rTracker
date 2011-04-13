@@ -11,6 +11,7 @@
 #import "voTextBox.h"
 #import "voDataEdit.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 #define SEGPEOPLE	0
 #define SEGHISTORY	1
@@ -24,7 +25,7 @@
 //@synthesize peopleDictionary,historyDictionary;
 @synthesize pv,showNdx;
 
-BOOL keyboardIsShown;
+//BOOL keyboardIsShown=NO;
 
 - (id) init {
 	DBGLog(@"voTextBox default init");
@@ -141,6 +142,8 @@ BOOL keyboardIsShown;
 
 - (void)keyboardWillShow:(NSNotification *)aNotification 
 {
+    //DBGLog(@"votb keyboardwillshow");
+    
 	if (keyboardIsShown)
 		return;
 	

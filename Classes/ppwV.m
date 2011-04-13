@@ -8,6 +8,7 @@
 
 #import "ppwV.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 #import "dbg-defs.h"
 
 @implementation ppwV
@@ -17,7 +18,7 @@
 
  
 UITextField *activeField;
-BOOL keyboardIsShown;
+//BOOL keyboardIsShown=NO;
 CGRect saveFrame;
 
 - (id) initWithParentView:(UIView*)pv {
@@ -34,7 +35,7 @@ CGRect saveFrame;
 		self.backgroundColor = [UIColor blueColor];
 		self.parentView = pv;
 		
-		keyboardIsShown = FALSE;
+		//keyboardIsShown = NO;
 		activeField = nil;
 
 /*
@@ -333,8 +334,11 @@ CGRect saveFrame;
 	return YES;
 }
 
+/*
 - (void)keyboardWillShow:(NSNotification *)n
 {
+    DBGLog(@"ppwV keyboardwillshow");
+    
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }
@@ -388,6 +392,7 @@ CGRect saveFrame;
 	
     keyboardIsShown = NO;	
 }
+*/
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 #if DEBUGLOG

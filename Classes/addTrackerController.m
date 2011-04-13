@@ -487,7 +487,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		deleteTableView = tableView;
 		
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
-		if ((! self.tempTrackerObj.toid)   // this tempTrackerObj not written to db yet at all
+		if ((! self.tempTrackerObj.tDb) // no db created yet for this tempTrackerObj
+            || (! self.tempTrackerObj.toid)   // this tempTrackerObj not written to db yet at all
 			|| (! [self.tempTrackerObj voHasData:vo.vid]))  // no actual values stored in db for this valObj
 		{ 
 			[self delVOlocal:row];
