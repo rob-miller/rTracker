@@ -287,7 +287,16 @@
 	NSInteger maxc = [self.fnArray count];
 	NSInteger vid=0;
 	trackerObj *to = MyTracker;
-	
+
+#if DEBUGLOG
+	NSInteger i;
+    NSString *outstr=@"";
+    for (i=0; i< maxc; i++) {
+        outstr = [outstr stringByAppendingFormat:@" %@",[self.fnArray objectAtIndex:i]];
+    }
+    DBGLog1(@"calcFnValueWithCurrent fnArray= %@ ",outstr);
+#endif    
+    
 	int epd1;
 	if (to.trackerDate == nil) {
 		epd1 = (int) [[NSDate date] timeIntervalSince1970];
@@ -379,11 +388,14 @@
 		} else if (currTok == FNPARENCLOSE) {
 			return [NSNumber numberWithDouble:result];
 		} else {
-			result = [[to getValObj:currTok].value doubleValue];
-			self.currFnNdx++;  // on to next
+            valueObj *lvo = [to getValObj:currTok];
+            result = [lvo.value doubleValue];
+			//result = [[to getValObj:currTok].value doubleValue];
+			//self.currFnNdx++;  // on to next  // already there - postinc on read
 		}
 	}
 
+    DBGLog1(@"calcFnValueWithCurrent rtn: %@", [NSNumber numberWithDouble:result]);
 	return [NSNumber numberWithDouble:result];
 
 }

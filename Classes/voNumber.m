@@ -93,6 +93,8 @@
                     self.dtf.text = r;
                 }
                 to.sql = nil;
+            } else {
+                self.dtf.text = @"";
             }
         } else {
             self.dtf.backgroundColor = [UIColor whiteColor];

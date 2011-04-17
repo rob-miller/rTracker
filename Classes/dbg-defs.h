@@ -6,7 +6,7 @@
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
 
-#define SQLDEBUG    0
+#define SQLDEBUG    1
 
 #define DEBUGLOG    1
 #define DEBUGWARN   1
