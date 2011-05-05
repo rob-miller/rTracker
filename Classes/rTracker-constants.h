@@ -28,3 +28,5 @@
 #define BIGPRIV         1000
 #define PRIVDFLT		MINPRIV
 
+#define f(x) ((CGFloat) (x))
+#define d(x) ((double) (x))

@@ -471,7 +471,7 @@
 	for (valueObj *vo in self.valObjTable) {
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
-		if (vo.vtype != VOT_FUNC) { // no fn results data kept
+		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
 			DBGLog3(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
 			if ([vo.value isEqualToString:@""]) {
 				self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
@@ -482,7 +482,7 @@
 							vo.vid, tdi, vo.value];
 			}
 			[self toExecSql];
-		} 
+		//} 
 	}
 	
 	if (haveData) {
@@ -556,7 +556,7 @@
     
     do {
         [self loadData:nextDate];
-        // write data - each vo gets routine to write itself -- function results too?
+        // write data - each vo gets routine to write itself -- function results too
         outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
         for (valueObj *vo in self.valObjTable) {
             outString = [outString stringByAppendingString:@","];
@@ -589,19 +589,27 @@
     }
     
     NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
+    // NSMutableDictionary *typDict = [[NSMutableDictionary alloc] init];
     
     int mp = BIGPRIV;
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
+        DBGLog1(@"pass1 key= %@", key);
         if ((! [key isEqualToString:TIMESTAMP_LABEL]) /* not timestamp */
             && (![@"" isEqualToString:[aRecord objectForKey:key]])) {    // only fields with data
             
-            self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
-            int valobjID,valobjPriv;
-            [self toQry2IntInt:&valobjID i2:&valobjPriv];
-            DBGLog4(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            //self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
+            //int valobjID,valobjPriv;
+            //[self toQry2IntInt:&valobjID i2:&valobjPriv];
+            //DBGLog4(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+
+            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
+            int valobjID,valobjPriv,valobjTyp;
+            [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjTyp];
+            DBGLog5(@"name=%@ val=%@ id=%d priv=%d typ=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjTyp);
             
             [idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
+            //[typDict setObject:[NSNumber numberWithInt:valobjTyp] forKey:key];
             if (valobjPriv < mp)
                 mp = valobjPriv;
         }
@@ -609,11 +617,15 @@
     
     
     int its = [ts timeIntervalSince1970];
+    //NSNumber *vtf = [NSNumber numberWithInt:VOT_FUNC];
     
 	for (NSString *key in aRecord)
 	{
-        if (! [key isEqualToString:TIMESTAMP_LABEL]) { /* not timestamp */
-            //&& (nil != [aRecord objectForKey:key])) {    // accept fields with data if updating
+        DBGLog1(@"pass2 key= %@", key);
+        if ((! [key isEqualToString:TIMESTAMP_LABEL]) //{ /* not timestamp */
+            // && ( ! ((nil != [typDict objectForKey:key]) && [vtf isEqualToNumber:[typDict objectForKey:key]]))  /* ignore calculated function value */
+            ) { 
+            //&& (nil != [aRecord objectForKey:key])) {    // accept fields without data if updating
 
             // update value data
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
@@ -631,7 +643,7 @@
             }
             // default mp < currMinPriv
             
-            self.sql = [NSString stringWithFormat:@"insert or replace into trKrData (date, minpriv) values (%d,%d);",its,mp];  
+            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
             [self toExecSql];
             
            // self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
@@ -641,6 +653,7 @@
         
 	}
     [idDict release];
+    //[typDict release];
     
 }
 

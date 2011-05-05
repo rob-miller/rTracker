@@ -206,20 +206,23 @@
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
 	DBGLog1(@"segment changed: %d",ndx);
+    
+    self.pv = nil;
+    
 	if (SEGKEYBOARD == ndx) {
 		self.addButton.hidden = YES;
 		self.textView.inputView = nil;
 	} else {
 		self.addButton.hidden = NO;
-		if ((SEGPEOPLE == ndx) && ([self.vo.optDict objectForKey:@"tbni"])
-			|| ((SEGHISTORY == ndx) && ([self.vo.optDict objectForKey:@"tbhi"]))
+		if ((SEGPEOPLE == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"1"])
+			|| ((SEGHISTORY == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"]))
 			) {
 				self.showNdx = YES;
 			} else {
 				self.showNdx = NO;
 			}
 		
-		if (nil == self.textView.inputView) 
+		//if (nil == self.textView.inputView) 
 			self.textView.inputView = self.pv;
 	}
 	
@@ -309,7 +312,7 @@
 }
 
 - (NSArray*) voGraphSet {
-	if ([self.vo.optDict objectForKey:@"tbnl"]) { // default is no and thus nil, so any defined val means linecount is a num for graph
+	if ([(NSString*) [self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
 		return [voState voGraphSetNum];
 	} else {
 		return [super voGraphSet];
@@ -355,8 +358,6 @@
 	[ctvovc configCheckButton:frame 
 						key:@"tbnlBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
-	
-	/* TODO: support address book picker in v 2.0 */
 	
 	/*  TODO: support index picker component in v 2.0
 	 
@@ -586,5 +587,15 @@
 	
     return componentWidth;
 }
+
+#pragma mark -
+#pragma mark graph display
+
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+    
+    [self transformVO_note:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
+    
+}
+
 
 @end

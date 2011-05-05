@@ -120,7 +120,7 @@
 - (void) setOptDictDflts {
     
     if (nil == [self.vo.optDict objectForKey:@"nswl"]) 
-        [self.vo.optDict setObject:(NSWLDFLT ? @"1" : @"0") forKey:@"nswll"];
+        [self.vo.optDict setObject:(NSWLDFLT ? @"1" : @"0") forKey:@"nswl"];
     
     if (nil == [self.vo.optDict objectForKey:@"autoscale"]) 
         [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
@@ -169,6 +169,12 @@
 	ctvovc.lasty = frame.origin.y + labframe.size.height + MARGIN;
 
 	[super voDrawOptions:ctvovc];
+}
+
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+    
+    [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
+    
 }
 
 @end

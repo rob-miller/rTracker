@@ -49,7 +49,7 @@
 - (void) setOptDictDflts {
     
     if (nil == [self.vo.optDict objectForKey:@"graph"]) 
-        [self.vo.optDict setObject:(GRAPHDFLT ? @"1" : @"0") forKey:@"autoscale"];
+        [self.vo.optDict setObject:(GRAPHDFLT ? @"1" : @"0") forKey:@"graph"];
     if (nil == [self.vo.optDict objectForKey:@"privacy"]) 
         [self.vo.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
     
@@ -286,6 +286,132 @@
 
 - (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID {
 	// subclass overrides if need to do anything
+}
+
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+    
+}
+
+- (void) transformVO_num:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+	//double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
+	double minVal,maxVal;
+    
+    trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
+    
+	if ((self.vo.vtype == VOT_NUMBER || self.vo.vtype == VOT_FUNC) 
+        && ([(NSString*) [self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"])
+        ) { 
+        //DBGLog1(@"autoscale= %@", [self.vo.optDict objectForKey:@"autoscale"]);
+		minVal = [[self.vo.optDict objectForKey:@"gmin"] doubleValue];
+		maxVal = [[self.vo.optDict objectForKey:@"gmax"] doubleValue];
+	} else if (self.vo.vtype == VOT_SLIDER) {
+		NSNumber *nmin = [self.vo.optDict objectForKey:@"smin"];
+		NSNumber *nmax = [self.vo.optDict objectForKey:@"smax"];
+		minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
+		maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
+	} else if (self.vo.vtype == VOT_CHOICE) {
+		minVal = d(0);
+		maxVal = CHOICES+1;
+	} else {
+		myTracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
+		minVal = [myTracker toQry2Double];
+		myTracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
+		maxVal = [myTracker toQry2Double];
+	}
+	
+	if (minVal == maxVal) {
+		minVal = 0.0f;
+	}
+	if (minVal == maxVal) {
+		minVal = 1.0f;
+	}
+	
+	//double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);
+    double vscale = d(height - (2.0f*border)) / (maxVal - minVal);
+    
+	NSMutableArray *i1 = [[NSMutableArray alloc] init];
+	NSMutableArray *d1 = [[NSMutableArray alloc] init];
+	myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d order by date;",self.vo.vid];
+	[myTracker toQry2AryID:i1 d1:d1];
+	myTracker.sql=nil;
+	
+	NSEnumerator *e = [d1 objectEnumerator];
+	
+	for (NSNumber *ni in i1) {
+        
+		NSNumber *nd = [e nextObject];
+		
+		DBGLog2(@"i: %@  f: %@",ni,nd);
+		double d = [ni doubleValue];		// date as int secs cast to float
+		double v = [nd doubleValue] ;		// val as float
+		
+		d -= (double) firstDate; // self.firstDate;
+		d *= dscale;
+		v -= minVal;
+		v *= vscale;
+		
+		d+= border; //BORDER;
+		v+= border; //BORDER;
+        // TODO: why does this code run again after rotate to portrait?
+		DBGLog2(@"num final: %f %f",d,v);
+		[xdat addObject:[NSNumber numberWithDouble:d]];
+		[ydat addObject:[NSNumber numberWithDouble:v]];
+		
+	}
+	
+	[i1 release];
+	[d1 release];
+}
+
+- (void) transformVO_note:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+
+	//double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
+    trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
+    
+	NSMutableArray *i1 = [[NSMutableArray alloc] init];
+	myTracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val not NULL order by date;",self.vo.vid];
+	[myTracker toQry2AryI:i1];
+	myTracker.sql=nil;
+	
+	for (NSNumber *ni in i1) {
+        
+		DBGLog1(@"i: %@  ",ni);
+		double d = [ni doubleValue];		// date as int secs cast to float
+		
+		d -= (double) firstDate;
+		d *= dscale;
+		d+= border;
+        
+		[xdat addObject:[NSNumber numberWithDouble:d]];
+		[ydat addObject:[NSNumber numberWithFloat:(border + (height/10))]];   // DEFAULT_PT=BORDER+5
+		
+	}
+	[i1 release];
+}
+
+- (void) transformVO_bool:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+	//double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
+    trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
+	
+	NSMutableArray *i1 = [[NSMutableArray alloc] init];
+	myTracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val='1' order by date;",self.vo.vid];
+	[myTracker toQry2AryI:i1];
+	myTracker.sql=nil;
+	
+	for (NSNumber *ni in i1) {
+		
+		DBGLog1(@"i: %@  ",ni);
+		double d = [ni doubleValue];		// date as int secs cast to float
+		
+		d -= (double) firstDate;
+		d *= dscale;
+		d+= border;
+		
+		[xdat addObject:[NSNumber numberWithDouble:d]];
+		[ydat addObject:[NSNumber numberWithFloat:(border + (height/10))]];   // DEFAULT_PT=BORDER+5
+		
+	}
+	[i1 release];
 }
 
 @end

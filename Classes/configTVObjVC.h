@@ -56,7 +56,7 @@
 - (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text;
 - (CGRect) configPicker:(CGRect)frame key:(NSString*)key caller:(id)caller;
 - (CGRect) yAutoscale:(CGRect)frame;
-
+- (void) tfDone:(UITextField *)tf;
 
 - (void) removeGraphMinMax;
 - (void) addGraphMinMax;

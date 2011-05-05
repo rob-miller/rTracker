@@ -7,6 +7,8 @@
  *
  */
 
+#import "rTracker-constants.h"
+
 #define GFXHDEBUG 0
 
 #if GFXHDEBUG 
@@ -22,5 +24,3 @@
 #define DevPt(x,y) CGContextConvertPointToUserSpace(self.context,(CGPoint){(x),(y)})
 #define Stroke CGContextStrokePath(self.context)
 
-#define f(x) ((CGFloat) (x))
-#define d(x) ((double) (x))

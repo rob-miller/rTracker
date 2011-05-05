@@ -90,6 +90,7 @@
 - (void) dataEditVWDisappear;
 - (void) dataEditVDidUnload;
 //- (void) dataEditFinished;
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
 - (void) dealloc;
 @end
 

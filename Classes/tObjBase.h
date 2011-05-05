@@ -43,8 +43,9 @@
 
 - (void) toExecSql;
 
-- (void) toQry2IntInt:(int*)i1 i2:(int*)i2;
 - (int) toQry2Int;
+- (void) toQry2IntInt:(int*)i1 i2:(int*)i2;
+- (void) toQry2IntIntInt:(int*)i1 i2:(int*)i2 i3:(int*)i3;
 - (NSString *) toQry2Str;
 - (float) toQry2Float;
 - (double) toQry2Double;

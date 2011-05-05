@@ -108,3 +108,26 @@
 
 --- check in ---
 
+27 April 2011
+  - (previous) comments, work out pre/post/sum workings
+  - fix problem deleting vo from tracker that had no data stored (e.g. function)
+  - add code to not load csv data for calculated function value
+
+29 April 2011
+  - working on shifting transformVO's into voState's from graphTrackerV, then get voFunction to set its values[]
+
+04 May 2011
+  - changed saveData so always save fn values
+  - added setFnVals to voFunc to set all ; need some 'dirty' test to improve efficiency
+  - fixed bug using ngmin/ngmax not gmin/gmax to display graph min/max in configvo  ??
+
+05 May 2011
+  - configTVO: tfDone sets activeField=nil, if not nil when tf_finishEditing then [tfDone:activeField] (fix tap next field not saving changed val)
+  - voNumber: typo in setOptDictDflts, was setting nswll not nswl
+  - voState: typo in (super) setOptDictDflts, was setting autoscale=dflt if graph==nil (fix autoscale not being saved, was actually set dflt after load)
+  - voState:transformVO_num - fixed bug reading autostate, again assumed @"0" would test correctly as !autoscale
+  - voChoice:segmentedControl - same test error on shrinkb
+  - voTextBox:segmentChanged,voGraphSet - same test error on tbhi,tbni,tbnl
+  - voTextBox:segmentChanged - release picker view so gets rebuilt (fix bugs on people, history pickers incl crash on switch)
+  - added graphTrackerV:doDrawGraph controlling [drawRect] action, so graph not redrawn for return to utc
+  - changed trackerObj so fn results (=value) *are* saved,loaded to speed graphing, but issues remain for updating, saving in db

@@ -77,7 +77,7 @@
             
             if (inmatch.location == NSNotFound) {
                 
-            } else if (inmatch.length == 7) {
+            } else if (inmatch.length == 7) {  // matched all 7 chars of _in.csv at end of file name
                 NSString *tname = [fname substringToIndex:inmatch.location];
                 DBGLog2(@"load input: %@ as %@",fname,tname);
                 int ndx=0;

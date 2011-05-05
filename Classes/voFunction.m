@@ -162,7 +162,7 @@
 	NSInteger epDate;
 	trackerObj *to = MyTracker;
 	
-	if (nep == nil || ep == FREPENTRY) {  // also FREPDFLT
+	if (nep == nil || ep == FREPENTRY) {  // also FREPDFLT  -- no value specified
 		// use last entry
 		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;",maxdate];
 		epDate = [to toQry2Int];
@@ -222,7 +222,7 @@
 	return epDate;
 }
 
-- (NSNumber *) calcFunctionValue:(NSArray*)datePair {  // TODO: finish this
+- (NSNumber *) calcFunctionValue:(NSArray*)datePair {  // TODO: finish this -- not used
 	if (datePair == nil) 
 		return nil;
 	
@@ -313,6 +313,7 @@
 			//valueObj *valo = [to getValObj:vid];
 			NSString *sv1 = [to getValObj:vid].value;
 			double v1 = [sv1 doubleValue];
+            DBGLog1(@"v1= %f", v1);
 			
 			switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
 				case FN1ARGDELTA :
@@ -320,6 +321,7 @@
 						return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
 					to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
 					double v0 = [to toQry2Double];
+                    DBGLog1(@"delta: v0= %f", v0);
 					result = v1 - v0;
 					break;
 				case FN1ARGAVG :
@@ -343,15 +345,21 @@
 				}
 				default:
 					switch (currTok) {
-						case FN1ARGPRESUM :     
-							//to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
+                            // by selecting for not null ep0 using total() these sum over intermediate non-endpoint values
+                            // -- ignoring passed epd0
+						case FN1ARGPRESUM :
+                            // we conditionally add in v1=(date<=%d) below so presum sql query same as sum
+                            
+                            //to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
 							//		  vid,epd0,epd1];
 							//break;
 						case FN1ARGSUM :
+                            // (date<%d) because add in v1 below
 							to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
 									  vid,epd0,epd1];
 							break;
 						case FN1ARGPOSTSUM :
+                            // (date<%d) because add in v1 below
 							to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >%d and date <%d;",vid,epd0,epd1];
 							break;
 					}
@@ -400,27 +408,49 @@
 
 }
 
+- (BOOL) checkEP:(int)ep {
+    NSString *epstr = [NSString stringWithFormat:@"frep%d", ep];
+    NSInteger epval = [[self.vo.optDict valueForKey:epstr] integerValue];
+	if (epval >= 0) {  // if epval is a valueObj
+		valueObj *valo = [MyTracker getValObj:epval];
+		if ( valo == nil
+			|| valo.value == nil
+			|| [valo.value isEqualToString:@""] 
+			|| (valo.vtype == VOT_BOOLEAN && (![valo.value isEqualToString:@"1"])  )
+            )
+            return FALSE;
+    }
+    return TRUE;
+}
 
 //- (NSString*) currFunctionValue {
 - (NSString*) update:(NSString*)instr {
     instr = @"";
     trackerObj *pto = self.vo.parentTracker;
-    if (nil == pto.tDb) 
+
+    if (nil == pto.tDb)   // not set up yet
         return @"";
-        
-	int ep0date = [self getEpDate:0 maxdate:(int)[MyTracker.trackerDate timeIntervalSince1970]];
-	if (ep0date == 0)
+    
+    if (![self checkEP:1])  // current = final endpoint not ok
+        return instr;
+    
+
+    // search back for start endpoint that is ok
+    int ep0start = (int)[MyTracker.trackerDate timeIntervalSince1970];
+	int ep0date = [self getEpDate:0 maxdate:ep0start];  // start with immed prev to curr record set
+/*
+    if (ep0date != 0) {
+        [MyTracker loadData:ep0date];   // set values for initial checkEP test
+        while((ep0date != 0) && (![self checkEP:0])) {
+            ep0date = [self getEpDate:0 maxdate:ep0date];  // not ok, back one more
+            [MyTracker loadData:ep0date];
+        }
+        [MyTracker loadData:ep0start];   // reset from search
+    }
+  */  
+	if (ep0date == 0)  // start endpoint not ok
 		return instr;
-	NSInteger ep1 = [[self.vo.optDict valueForKey:@"frep1"] integerValue];
-	if (ep1 >= 0) {  // if ep1 is a valueObj
-		valueObj *valo = [MyTracker getValObj:ep1];
-		if ( valo == nil
-			|| valo.value == nil
-			|| [valo.value isEqualToString:@""] 
-			/*|| (valo.vtype == VOT_BOOLEAN && [valo.value isEqualToString:@"0"])*/ )
-			return instr;
-	}
-	
+    
 	self.currFnNdx=0;
 	
 	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
@@ -1108,6 +1138,40 @@
 	
 	[self updateForPickerRowSelect:row inComponent:component];
 	
+}
+
+#pragma mark -
+#pragma mark fn value results for graphing
+
+- (void) setFnVals {
+    int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];
+    int nextDate = [MyTracker firstDate];
+    
+    do {
+        [MyTracker loadData:nextDate];
+        //DBGLog2(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
+        if ([self.vo.value isEqualToString:@""]) {
+            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
+        } else {
+            MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+                        self.vo.vid, nextDate, self.vo.value];
+        }
+        [MyTracker toExecSql];
+        
+    } while ((nextDate = [MyTracker postDate]));    // iterate through dates
+    
+    // restore current date
+	[MyTracker loadData:currDate];
+    
+}
+
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+
+    // set val for all dates if dirty
+    //[self setFnVals];
+    
+    [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
+    
 }
 
 

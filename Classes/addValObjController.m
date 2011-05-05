@@ -220,10 +220,22 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	NSInteger v = [[self.tempValObj.optDict objectForKey:@"frep0"] integerValue] ;
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv0"];
+    
 	v = [[self.tempValObj.optDict objectForKey:@"frep1"] integerValue] ;
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv1"];
 	
+    if ([(NSString*) [self.tempValObj.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
+        // disallow no autoscale if gmin, gmax not set and valid
+        double gmn = [(NSString*) [self.tempValObj.optDict objectForKey:@"gmin"] doubleValue];
+        double gmx = [(NSString*) [self.tempValObj.optDict objectForKey:@"gmax"] doubleValue];
+        
+        if (gmn == gmx) {
+            [self.tempValObj.optDict setObject:@"1" forKey:@"autoscale"];
+        }
+        
+    }
+    
 #if DEBUGLOG	
 	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
 	DBGLog4(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);

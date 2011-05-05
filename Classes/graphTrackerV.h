@@ -15,11 +15,13 @@
 	trackerObj *tracker;
 	int firstDate;
 	int lastDate;
+    BOOL doDrawGraph;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property(nonatomic) int firstDate;
 @property(nonatomic) int lastDate;
+@property(nonatomic) BOOL doDrawGraph;
 
 // UI element properties 
 @property(nonatomic) CGContextRef context;

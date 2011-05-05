@@ -425,6 +425,33 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	SQLDbg2(@"  returns %d %d",*i1,*i2);
 }
 
+- (void) toQry2IntIntInt:(int *)i1 i2:(int*)i2 i3:(int*)i3 {
+	
+	SQLDbg2(@"toQry2AryIII: %@ => _%@_",self.dbName,self.sql);
+	NSAssert(tDb,@"toQry2AryIII called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		*i1=0;
+		*i2=0;
+        *i3=0;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			*i1 = sqlite3_column_int(stmt, 0);
+			*i2 = sqlite3_column_int(stmt, 1);
+			*i3 = sqlite3_column_int(stmt, 2);
+			SQLDbg3(@"  rslt: %d %d %d",*i1,*i2,*i3);
+		}
+		if (rslt != SQLITE_DONE) {
+			DBGErr2(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+		}
+	} else {
+		DBGErr2(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
+	}
+	sqlite3_finalize(stmt);
+	SQLDbg3(@"  returns %d %d %d",*i1,*i2,*i3);
+}
+
 - (int) toQry2Int {
 	SQLDbg2(@"toQry2Int: %@ => _%@_",self.dbName,self.sql);
 	NSAssert(tDb,@"toQry2Int called with no tDb");

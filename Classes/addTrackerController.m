@@ -299,6 +299,13 @@ DBGLog(@"btnAddValue was pressed!");
 						   withRowAnimation:UITableViewRowAnimationFade];		
 }
 
+- (void) addDelVO:(valueObj*)vo {
+		if (deleteVOs == nil) {
+			deleteVOs = [[NSMutableArray alloc] init];
+		}
+		[deleteVOs addObject:vo];
+}
+
 - (void)actionSheet:(UIActionSheet *)checkValObjDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
 	//DBGLog1(@"checkValObjDelete buttonIndex= %d",buttonIndex);
@@ -308,10 +315,7 @@ DBGLog(@"btnAddValue was pressed!");
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 		DBGLog3(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
 		//[self delVOdb:vo.vid];
-		if (deleteVOs == nil) {
-			deleteVOs = [[NSMutableArray alloc] init];
-		}
-		[deleteVOs addObject:vo];
+        [self addDelVO:vo];
 		[self delVOlocal:row];
 	} else {
 		//DBGLog(@"check valobjdelete cancelled");
@@ -488,10 +492,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 		if ((! self.tempTrackerObj.tDb) // no db created yet for this tempTrackerObj
-            || (! self.tempTrackerObj.toid)   // this tempTrackerObj not written to db yet at all
-			|| (! [self.tempTrackerObj voHasData:vo.vid]))  // no actual values stored in db for this valObj
+            || (! self.tempTrackerObj.toid))   // this tempTrackerObj not written to db yet at all
 		{ 
-			[self delVOlocal:row];
+            [self delVOlocal:row];
+        } else if (! [self.tempTrackerObj voHasData:vo.vid]) {  // no actual values stored in db for this valObj
+            [self addDelVO:vo];
+            [self delVOlocal:row];
 		} else {
 			UIActionSheet *checkValObjDelete = [[UIActionSheet alloc] 
 												initWithTitle:[NSString stringWithFormat:

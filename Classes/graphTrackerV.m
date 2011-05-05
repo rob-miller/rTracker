@@ -17,7 +17,7 @@
 @synthesize tracker;
 @synthesize context;
 
-@synthesize firstDate,lastDate,myFont;
+@synthesize firstDate,lastDate,myFont, doDrawGraph;
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -212,146 +212,16 @@
 
 }
 
-- (void) transformVO_num:(valueObj *)vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
-{
-	double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
-	double minVal,maxVal;
-
-	if (vo.vtype == VOT_NUMBER && ![vo.optDict objectForKey:@"autoscale"]) { 
-        //DBGLog1(@"autoscale= %@", [vo.optDict objectForKey:@"autoscale"]);
-		minVal = [[vo.optDict objectForKey:@"gmin"] doubleValue];
-		maxVal = [[vo.optDict objectForKey:@"gmax"] doubleValue];
-	} else if (vo.vtype == VOT_SLIDER) {
-		NSNumber *nmin = [vo.optDict objectForKey:@"smin"];
-		NSNumber *nmax = [vo.optDict objectForKey:@"smax"];
-		minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
-		maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
-	} else {
-		tracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
-		minVal = [tracker toQry2Double];
-		tracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",vo.vid];
-		maxVal = [tracker toQry2Double];
-	}
-	
-	if (minVal == maxVal) {
-		minVal = 0.0f;
-	}
-	if (minVal == maxVal) {
-		minVal = 1.0f;
-	}
-	
-	double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);
-		
-	NSMutableArray *i1 = [[NSMutableArray alloc] init];
-	NSMutableArray *d1 = [[NSMutableArray alloc] init];
-	tracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d order by date;",vo.vid];
-	[tracker toQry2AryID:i1 d1:d1];
-	tracker.sql=nil;
-	
-	NSEnumerator *e = [d1 objectEnumerator];
-	
-	for (NSNumber *ni in i1) {
-
-		NSNumber *nd = [e nextObject];
-		
-		DBGLog2(@"i: %@  f: %@",ni,nd);
-		double d = [ni doubleValue];		// date as int secs cast to float
-		double v = [nd doubleValue] ;		// val as float
-		
-		d -= (double) self.firstDate;
-		d *= dscale;
-		v -= minVal;
-		v *= vscale;
-		
-		d+= BORDER;
-		v+= BORDER;
-        // TODO: why does this code run again after rotate to portrait?
-		DBGLog2(@"num final: %f %f",d,v);
-		[xdat addObject:[NSNumber numberWithDouble:d]];
-		[ydat addObject:[NSNumber numberWithDouble:v]];
-		
-	}
-	
-	[i1 release];
-	[d1 release];
-}
-
-- (void) transformVO_note:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
-{
-	double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
-
-	NSMutableArray *i1 = [[NSMutableArray alloc] init];
-	tracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val not NULL order by date;",vo.vid];
-	[tracker toQry2AryI:i1];
-	tracker.sql=nil;
-	
-	for (NSNumber *ni in i1) {
-
-		DBGLog1(@"i: %@  ",ni);
-		double d = [ni doubleValue];		// date as int secs cast to float
-		
-		d -= (double) self.firstDate;
-		d *= dscale;
-		d+= BORDER;
-
-		[xdat addObject:[NSNumber numberWithDouble:d]];
-		[ydat addObject:[NSNumber numberWithFloat:DEFAULT_PT]];
-		
-	}
-	[i1 release];
-}
-
-- (void) transformVO_bool:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
-{
-	double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
-	
-	NSMutableArray *i1 = [[NSMutableArray alloc] init];
-	tracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val='1' order by date;",vo.vid];
-	[tracker toQry2AryI:i1];
-	tracker.sql=nil;
-	
-	for (NSNumber *ni in i1) {
-		
-		DBGLog1(@"i: %@  ",ni);
-		double d = [ni doubleValue];		// date as int secs cast to float
-		
-		d -= (double) self.firstDate;
-		d *= dscale;
-		d+= BORDER;
-		
-		[xdat addObject:[NSNumber numberWithDouble:d]];
-		[ydat addObject:[NSNumber numberWithFloat:DEFAULT_PT]];
-		
-	}
-	[i1 release];
-}
 
 
 - (void) transformVO:(valueObj *) vo xdat:(NSMutableArray *)xdat ydat:(NSMutableArray *) ydat
 {
-	switch (vo.vtype) {
-		case VOT_NUMBER:
-		case VOT_SLIDER:
-			[self transformVO_num:vo xdat:xdat ydat:ydat];
-			break;
-		case VOT_TEXT:
-		case VOT_TEXTB:
-		case VOT_IMAGE:
-			[self transformVO_note:vo xdat:xdat ydat:ydat];
-			break;
-		case VOT_BOOLEAN:
-			[self transformVO_bool:vo xdat:xdat ydat:ydat];
-			break;
-		case VOT_CHOICE:
-			DBGWarn(@"transform for mult choice not done yet");
-			break;
-		case VOT_FUNC:
-			DBGWarn(@"transform for function not done yet");
-			break;
-		default:
-			DBGErr1(@"transformVO: vtype %d not recognised",vo.vtype);
-			break;
-	}
+    [vo.vos transformVO:xdat 
+                   ydat:ydat 
+                 dscale:( d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate) )
+                 height:self.bounds.size.height
+                 border:BORDER 
+              firstDate:self.firstDate];
 }
 
 - (void) plotVO_lines:(valueObj *)vo xdat:(NSArray *)xdat ydat:(NSArray *)ydat
@@ -494,40 +364,42 @@
 #pragma mark drawRect
 
 - (void)drawRect:(CGRect)rect {
-
-	self.context = UIGraphicsGetCurrentContext();
-	CGContextSetLineWidth(self.context, STD_LINE_WIDTH);
-	CGContextSetAlpha(self.context, STD_ALPHA);
-	
-	tracker.sql = @"select min(date) from voData;";
-	self.firstDate = [tracker toQry2Int];
-	tracker.sql = @"select max(date) from voData;";
-	self.lastDate =  [tracker toQry2Int];
-	tracker.sql = nil;
-
-	// transform y to origin at lower left ( -y + height )
-	CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
-	// scale x to date range -- unfortunately buggered because line width is in user coords applied to both x and y
-	//CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
-	CGContextConcatCTM(self.context,tm);
-	// put the text back to normal ... why do they do this?
-	//CGAffineTransform tm2 = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, 0.0f };
-	//CGContextSetTextMatrix(self.context, tm2);
-	/*
-	CGContextSelectFont (self.context, 
-						 "Helvetica-Bold",
-						 FONTSIZE,
-						 kCGEncodingMacRoman);
-    CGContextSetCharacterSpacing (self.context, 1); 
-    CGContextSetTextDrawingMode (self.context, kCGTextFill); 
-	*/
-	self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
-	//self.myFont = [UIFont systemFontOfSize:FONTSIZE];
-	
-	[self drawBackground];
-	[self drawAxes];
-	[self drawGraph];
-		
+    
+    if (self.doDrawGraph) {
+        self.context = UIGraphicsGetCurrentContext();
+        CGContextSetLineWidth(self.context, STD_LINE_WIDTH);
+        CGContextSetAlpha(self.context, STD_ALPHA);
+        
+        tracker.sql = @"select min(date) from voData;";
+        self.firstDate = [tracker toQry2Int];
+        tracker.sql = @"select max(date) from voData;";
+        self.lastDate =  [tracker toQry2Int];
+        tracker.sql = nil;
+        
+        // transform y to origin at lower left ( -y + height )
+        CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
+        // scale x to date range -- unfortunately buggered because line width is in user coords applied to both x and y
+        //CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
+        CGContextConcatCTM(self.context,tm);
+        // put the text back to normal ... why do they do this?
+        //CGAffineTransform tm2 = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, 0.0f };
+        //CGContextSetTextMatrix(self.context, tm2);
+        /*
+         CGContextSelectFont (self.context, 
+         "Helvetica-Bold",
+         FONTSIZE,
+         kCGEncodingMacRoman);
+         CGContextSetCharacterSpacing (self.context, 1); 
+         CGContextSetTextDrawingMode (self.context, kCGTextFill); 
+         */
+        self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
+        //self.myFont = [UIFont systemFontOfSize:FONTSIZE];
+        
+        [self drawBackground];
+        [self drawAxes];
+        [self drawGraph];
+    }
+    
 }
 
 

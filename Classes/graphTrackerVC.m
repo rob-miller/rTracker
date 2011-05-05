@@ -97,6 +97,8 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    ((graphTrackerV*)self.view).doDrawGraph=FALSE;
+    
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog1(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
@@ -106,9 +108,11 @@
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog1(@"gt will rotate to interface orientation landscape left duration: %f sec", duration);
+            ((graphTrackerV*)self.view).doDrawGraph=TRUE;
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog1(@"gt will rotate to interface orientation landscape right duration: %f sec", duration);
+            ((graphTrackerV*)self.view).doDrawGraph=TRUE;
 			break;
 		default:
 			DBGErr1(@"gt will rotate but can't tell to where duration: %f sec", duration);

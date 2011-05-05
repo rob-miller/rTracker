@@ -99,7 +99,7 @@
         segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
         segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
-        if ([self.vo.optDict objectForKey:@"shrinkb"]) {  
+        if ([(NSString*) [self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"]) {  
             int j=0;
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
@@ -154,7 +154,7 @@
 }
 
 - (NSArray*) voGraphSet {
-	return [NSArray arrayWithObjects:@"dots",@"pie", nil];
+	return [NSArray arrayWithObjects:@"dots",@"bar",@"pie", nil];
 }
 
 - (void) ctfDone:(UITextField *)tf
@@ -319,6 +319,11 @@
 	[super voDrawOptions:ctvovc];
 }	
 
+- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+    
+    [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
+    
+}
 
 
 @end

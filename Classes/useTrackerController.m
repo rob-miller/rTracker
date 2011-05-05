@@ -537,10 +537,10 @@
 	int lastD = [self.tracker lastDate];
 	int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
 
-	DBGLog1(@"prevD = %d",prevD);
-	DBGLog1(@"currD = %d",currD);
-	DBGLog1(@"postD = %d",postD);
-	DBGLog1(@"lastD = %d",lastD);
+	DBGLog2(@"prevD = %d %@",prevD,[NSDate dateWithTimeIntervalSince1970:prevD]);
+	DBGLog2(@"currD = %d %@",currD,[NSDate dateWithTimeIntervalSince1970:currD]);
+	DBGLog2(@"postD = %d %@",postD,[NSDate dateWithTimeIntervalSince1970:postD]);
+	DBGLog2(@"lastD = %d %@",lastD,[NSDate dateWithTimeIntervalSince1970:lastD]);
 	
 	self.currDateBtn = nil;
 	if (prevD ==0) 

@@ -198,6 +198,8 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
 	//DBGLog(@"tf end editing");
+    if (nil != activeField)
+        [self tfDone:activeField];
     activeField = nil;
 }
 
@@ -428,6 +430,8 @@
 	} else {
 		[tf resignFirstResponder];
 	}
+    
+    activeField=nil;
 }
 
 
@@ -556,7 +560,7 @@
 				   action:nil
 					  num:YES 
 					place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"ngmin"] 
+					 text:[self.vo.optDict objectForKey:@"gmin"]  //was ngmin
 					addsv:NO ];
 	
 	frame.origin.x += tfWidth + MARGIN;
@@ -572,7 +576,7 @@
 				   action:nil
 					  num:YES 
 					place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"ngmax"]
+					 text:[self.vo.optDict objectForKey:@"gmax"]  // was ngmax
 					addsv:NO ];
 	
 	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) 
