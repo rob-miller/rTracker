@@ -180,7 +180,7 @@
 #if DEBUGLOG
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self.view];
-	DBGLog2(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
+	DBGLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
 #endif
     
 	[activeField resignFirstResponder];
@@ -418,10 +418,10 @@
 	}
 
 	if (self.vo == nil) {      // tracker config
-		DBGLog2(@"to set %@: %@", okey, tf.text);    
+		DBGLog(@"to set %@: %@", okey, tf.text);    
 		[self.to.optDict setObject:tf.text forKey:okey];
 	} else {                   // valobj config
-		DBGLog2(@"vo set %@: %@", okey, tf.text);
+		DBGLog(@"vo set %@: %@", okey, tf.text);
 		[self.vo.optDict setObject:tf.text forKey:okey];
 	}
 		

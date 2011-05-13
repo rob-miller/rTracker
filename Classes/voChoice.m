@@ -61,7 +61,7 @@
  - (void) reportscwid {
     int n;
     for (n=0; n< [segmentedControl numberOfSegments]; n++) {
-        DBGLog2(@"width of seg %d = %f", n, [segmentedControl widthForSegmentAtIndex:n]);
+        DBGLog(@"width of seg %d = %f", n, [segmentedControl widthForSegmentAtIndex:n]);
     }    
 }
 */
@@ -70,7 +70,7 @@
 {
     if ([sender selectedSegmentIndex] == [self getSegmentIndexForValue])
         return;
-	DBGLog1(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
+	DBGLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];   
     if (@"" == self.vo.value) {  
         [self.vo disableVO];
@@ -104,7 +104,7 @@
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
                 [segmentedControl setWidth:siz.width forSegmentAtIndex:j];
-                DBGLog2(@"set width for seg %d to %f", j, siz.width);
+                DBGLog(@"set width for seg %d to %f", j, siz.width);
                 j++;
             }
             
@@ -112,7 +112,7 @@
         }
         [segmentTextContent release];
 
-        segmentedControl.frame = self.voFrame;
+        segmentedControl.frame = self.vosFrame;
         [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
         segmentedControl.tag = kViewTag;
@@ -131,7 +131,7 @@
 - (UIView*) voDisplay:(CGRect)bounds {
 
    	
-    self.voFrame = bounds;
+    self.vosFrame = bounds;
     //self.segmentedControl.tag = kViewTag;
     
 	// set displayed segment from self.vo.value
@@ -143,12 +143,12 @@
         }
     } else {
         if (self.segmentedControl.selectedSegmentIndex != [self getSegmentIndexForValue]) {
-            DBGLog2(@"segmentedControl set value int: %d str: %@", [self.vo.value integerValue], self.vo.value);
+            DBGLog(@"segmentedControl set value int: %d str: %@", [self.vo.value integerValue], self.vo.value);
             self.segmentedControl.selectedSegmentIndex = [self getSegmentIndexForValue];
             [self.vo enableVO];
         }
     }
-    DBGLog1(@"segmentedControl voDisplay: index %d", self.segmentedControl.selectedSegmentIndex);
+    DBGLog(@"segmentedControl voDisplay: index %d", self.segmentedControl.selectedSegmentIndex);
     
 	return self.segmentedControl;
 }
@@ -169,7 +169,7 @@
 		}
 	}
 	
-	DBGLog2(@"set choice %d: %@",i, tf.text);
+	DBGLog(@"set choice %d: %@",i, tf.text);
 	[self.vo.optDict setObject:tf.text forKey:[NSString stringWithFormat:@"c%d",i]];
 	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
 	UIButton *b = [self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dbtn",i]];
@@ -318,12 +318,16 @@
 	ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
 	[super voDrawOptions:ctvovc];
 }	
-
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
 }
+*/
 
+- (id) getVOGD {
+    return [[vogd alloc] initAsNum:self.vo];
+}
 
 @end

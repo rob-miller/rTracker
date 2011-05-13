@@ -41,7 +41,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	//DBGLog1(@"textField done: %@", textField.text);
+	//DBGLog(@"textField done: %@", textField.text);
 	[self tfvoFinEdit:textField];
 	[textField resignFirstResponder];
 	return YES;
@@ -50,7 +50,7 @@
 
 - (UITextField*) dtf {
     if (nil == dtf) {
-        dtf = [[UITextField alloc] initWithFrame:self.voFrame];
+        dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
         dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
         dtf.textColor = [UIColor blackColor];
@@ -78,14 +78,14 @@
 
 
 - (UIView*)voDisplay:(CGRect)bounds {
-	self.voFrame = bounds;
+	self.vosFrame = bounds;
 
 	if (![self.vo.value isEqualToString:self.dtf.text]) {
 		self.dtf.text = self.vo.value;
-        DBGLog2(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
+        DBGLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
 	}
 	
-    DBGLog1(@"textfield voDisplay: %@", self.dtf.text);
+    DBGLog(@"textfield voDisplay: %@", self.dtf.text);
 	return self.dtf;
 }
 
@@ -125,11 +125,16 @@
 
 #pragma mark -
 #pragma mark graph display
-
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_note:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
+}
+*/
+
+- (id) getVOGD {
+    return [[vogd alloc] initAsNote:self.vo];
 }
 
 

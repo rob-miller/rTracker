@@ -10,11 +10,13 @@
 #import "rTracker-constants.h"
 #import "configTVObjVC.h"
 
+#import "vogd.h"
+
 #import "dbg-defs.h"
 
 @implementation voState
 
-@synthesize vo,voFrame;
+@synthesize vo,vosFrame;
 
 - (id) init {
 	return [self initWithVO:nil];
@@ -255,10 +257,10 @@
 	bounds.size.width = cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
 	bounds.size.height = maxLabel.height + MARGIN;
 	
-	//DBGLog2(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
+	//DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
 	//bounds.origin.y = bounds.size.height;// - BMARGIN;
 	
-	//DBGLog4(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
+	//DBGLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[self.vo display:bounds]];
 	return cell;
 }
@@ -288,8 +290,13 @@
 	// subclass overrides if need to do anything
 }
 
+- (id) getVOGD {
+    DBGErr(@"getVOGD with no handler!");
+    return [[vogd alloc] initAsNum:self.vo];
+}
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
-    
+    DBGErr(@"transformVO with no handler!");
 }
 
 - (void) transformVO_num:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
@@ -299,9 +306,9 @@
     trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
     
 	if ((self.vo.vtype == VOT_NUMBER || self.vo.vtype == VOT_FUNC) 
-        && ([(NSString*) [self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"])
+        && ([@"0" isEqualToString:[self.vo.optDict objectForKey:@"autoscale"]])
         ) { 
-        //DBGLog1(@"autoscale= %@", [self.vo.optDict objectForKey:@"autoscale"]);
+        //DBGLog(@"autoscale= %@", [self.vo.optDict objectForKey:@"autoscale"]);
 		minVal = [[self.vo.optDict objectForKey:@"gmin"] doubleValue];
 		maxVal = [[self.vo.optDict objectForKey:@"gmax"] doubleValue];
 	} else if (self.vo.vtype == VOT_SLIDER) {
@@ -341,7 +348,7 @@
         
 		NSNumber *nd = [e nextObject];
 		
-		DBGLog2(@"i: %@  f: %@",ni,nd);
+		DBGLog(@"i: %@  f: %@",ni,nd);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		double v = [nd doubleValue] ;		// val as float
 		
@@ -352,8 +359,8 @@
 		
 		d+= border; //BORDER;
 		v+= border; //BORDER;
-        // TODO: why does this code run again after rotate to portrait?
-		DBGLog2(@"num final: %f %f",d,v);
+        // done by doDrawGraph ?  TODO: why does this code run again after rotate to portrait?
+		DBGLog(@"num final: %f %f",d,v);
 		[xdat addObject:[NSNumber numberWithDouble:d]];
 		[ydat addObject:[NSNumber numberWithDouble:v]];
 		
@@ -375,7 +382,7 @@
 	
 	for (NSNumber *ni in i1) {
         
-		DBGLog1(@"i: %@  ",ni);
+		DBGLog(@"i: %@  ",ni);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		
 		d -= (double) firstDate;
@@ -400,7 +407,7 @@
 	
 	for (NSNumber *ni in i1) {
 		
-		DBGLog1(@"i: %@  ",ni);
+		DBGLog(@"i: %@  ",ni);
 		double d = [ni doubleValue];		// date as int secs cast to float
 		
 		d -= (double) firstDate;
@@ -413,5 +420,6 @@
 	}
 	[i1 release];
 }
+*/
 
 @end

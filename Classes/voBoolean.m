@@ -48,7 +48,7 @@
 - (UIButton*) imageButton {
 	if (nil == imageButton) {
         imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        imageButton.frame = self.voFrame; //CGRectZero;
+        imageButton.frame = self.vosFrame; //CGRectZero;
         imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
         [imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];		
@@ -58,10 +58,10 @@
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
-    self.voFrame = bounds;
+    self.vosFrame = bounds;
 	[self.imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
     
-    DBGLog1(@"bool voDisplay: %d", ([self.imageButton imageForState:UIControlStateNormal] == [UIImage imageNamed:@"checked.png"] ? 1 : 0) );
+    DBGLog(@"bool voDisplay: %d", ([self.imageButton imageForState:UIControlStateNormal] == [UIImage imageNamed:@"checked.png"] ? 1 : 0) );
 	return self.imageButton;
 }
 
@@ -71,12 +71,19 @@
 
 #pragma mark -
 #pragma mark graph display
-
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_bool:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
 }
+*/
+
+- (id) getVOGD {
+    return [[vogd alloc] initAsBool:self.vo];
+}
+
+
 
 
 

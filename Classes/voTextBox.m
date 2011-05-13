@@ -37,14 +37,14 @@
 }
 
 - (id) initWithVO:(valueObj *)valo {
-	DBGLog1(@"voTextBox init for %@",valo.valueName);
+	DBGLog(@"voTextBox init for %@",valo.valueName);
 	return [super initWithVO:valo];
 }
 
 - (void) dealloc {
 	DBGLog(@"dealloc voTextBox");
     
-    //DBGLog2(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
+    //DBGLog(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
 	//self.tbButton = nil;  // convenience constructor, do not own (enven tho retained???)
     //[tbButton release];
 	self.textView = nil;
@@ -198,14 +198,14 @@
 		str = [NSString stringWithFormat:@"%@\n",[self.historyArray objectAtIndex:row]];
 	}
 	
-	//DBGLog1(@"add picker data %@",str);
+	//DBGLog(@"add picker data %@",str);
 	
 	self.textView.text = [self.textView.text stringByAppendingString:str];
 }
 
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
-	DBGLog1(@"segment changed: %d",ndx);
+	DBGLog(@"segment changed: %d",ndx);
     
     self.pv = nil;
     
@@ -241,7 +241,7 @@
 	
 	if (! [self.vo.value isEqualToString:self.textView.text]) {
 		[self.vo.value setString:self.textView.text];
-
+        
         self.vo.display = nil; // so will redraw this cell only        
 		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 	}
@@ -288,7 +288,7 @@
 - (UIButton*) tbButton {
     if (nil == tbButton) {
         tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        tbButton.frame = self.voFrame; //CGRectZero;
+        tbButton.frame = self.vosFrame; //CGRectZero;
         tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];		
@@ -298,7 +298,7 @@
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
-    self.voFrame = bounds;
+    self.vosFrame = bounds;
     
 	if ([self.vo.value isEqualToString:@""]) {
 		[self.tbButton setTitle:@"<add text>" forState:UIControlStateNormal];
@@ -306,7 +306,7 @@
 		[self.tbButton setTitle:self.vo.value forState:UIControlStateNormal];
 	}
 	
-    DBGLog1(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
+    DBGLog(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
 	return self.tbButton;
 	
 }
@@ -437,14 +437,14 @@
 		CFIndex max = CFArrayGetCount(people);
 		int i;
 		for (i=0; i< max; i++) {
-			//DBGLog1(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//DBGLog2(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
+			//DBGLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
+			//DBGLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
 			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
 			CFStringRef first,last,full;
 			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
 			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
 			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			DBGLog3(@"person: %@ -- %@ %@",full,first,last);
+			DBGLog(@"person: %@ -- %@ %@",full,first,last);
 		}
 		
 		CFRelease(addressBook);
@@ -485,14 +485,14 @@
 		CFIndex max = CFArrayGetCount(people);
 		int i;
 		for (i=0; i< max; i++) {
-			//DBGLog1(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//DBGLog2(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
+			//DBGLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
+			//DBGLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
 			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
 			CFStringRef first,last,full;
 			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
 			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
 			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			DBGLog3(@"person: %@ -- %@ %@",full,first,last);
+			DBGLog(@"person: %@ -- %@ %@",full,first,last);
 		}
 		*/
 		
@@ -591,11 +591,23 @@
 #pragma mark -
 #pragma mark graph display
 
-- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
-    
+/*
+ - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+    // TODO: handle case of value=linecount
     [self transformVO_note:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
 }
+*/
+
+- (id) getVOGD {    
+    if ([(NSString*) [self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
+        return [[vogd alloc] initAsTBoxLC:self.vo];
+    } else {   
+        return [[vogd alloc] initAsNote:self.vo];
+    }
+}
+
+
 
 
 @end

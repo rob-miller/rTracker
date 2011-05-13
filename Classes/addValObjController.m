@@ -137,7 +137,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[self.labelField addTarget:self
 				  action:@selector(labelFieldDone:)
 		forControlEvents:UIControlEventEditingDidEndOnExit];
-//	DBGLog4(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
+//	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
 	[super viewDidLoad];
 }
@@ -238,7 +238,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     
 #if DEBUGLOG	
 	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
-	DBGLog4(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
+	DBGLog(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
 #endif
 	
 	[self.parentTrackerObj addValObj:tempValObj];

@@ -90,8 +90,9 @@
 - (void) dataEditVWDisappear;
 - (void) dataEditVDidUnload;
 //- (void) dataEditFinished;
-- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
+//- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
 - (void) dealloc;
+- (id) getVOGD;
 @end
 
 
@@ -109,7 +110,7 @@
 	NSMutableDictionary *optDict;
 	id parentTracker;
 	id <voProtocol> vos;
-	
+	id vogd;
 	UIButton *checkButtonUseVO;
 }
 
@@ -124,6 +125,7 @@
 @property (nonatomic) NSInteger vGraphType;
 @property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,retain) id <voProtocol> vos;
+@property (nonatomic,retain) id <voProtocol> vogd;
 
 @property (nonatomic, retain) UIView *display;
 @property (nonatomic) BOOL useVO;

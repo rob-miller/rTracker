@@ -134,7 +134,7 @@ UITableView *deleteTableView;
 - (void) delTracker
 {
 	NSUInteger row = [deleteIndexPath row];
-	DBGLog1(@"checkTrackerDelete: will delete row %d ",row);
+	DBGLog(@"checkTrackerDelete: will delete row %d ",row);
 	[self.tlist deleteTrackerAllRow:row];
 	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
 						   withRowAnimation:UITableViewRowAnimationFade];		
@@ -143,14 +143,14 @@ UITableView *deleteTableView;
 
 - (void) delTrackerRecords {
 	NSUInteger row = [deleteIndexPath row];
-	DBGLog1(@"checkTrackerDelete: will delete records only for row %d ",row);
+	DBGLog(@"checkTrackerDelete: will delete records only for row %d ",row);
 	[self.tlist deleteTrackerRecordsRow:row];
 	[self.tlist reloadFromTLT];	
 }
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-	//DBGLog1(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+	//DBGLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
 		[self delTracker];
@@ -180,7 +180,7 @@ UITableView *deleteTableView;
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView 
 		 cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //DBGLog2(@"rvc table cell at index %d label %@",[indexPath row],[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    //DBGLog(@"rvc table cell at index %d label %@",[indexPath row],[self.tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier;
 	
@@ -211,7 +211,7 @@ UITableView *deleteTableView;
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
 	
-	DBGLog2(@"ctlc: move row from %d to %d",fromRow, toRow);
+	DBGLog(@"ctlc: move row from %d to %d",fromRow, toRow);
 	[self.tlist reorderTLT :fromRow toRow:toRow];
 	[self.tlist reorderFromTLT];
 	
@@ -260,11 +260,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// [anotherViewController release];
 	
 	NSUInteger row = [indexPath row];
-	//DBGLog2(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	//DBGLog(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
 		int toid = [self.tlist getTIDfromIndex:row];
-		DBGLog1(@"will config toid %d",toid);
+		DBGLog(@"will config toid %d",toid);
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
@@ -274,7 +274,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[atc release];
 	} else if (selSegNdx == SegmentCopy) {
 		int toid = [self.tlist getTIDfromIndex:row];
-		DBGLog1(@"will copy toid %d",toid);
+		DBGLog(@"will copy toid %d",toid);
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];

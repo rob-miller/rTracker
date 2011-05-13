@@ -191,11 +191,19 @@
 #pragma mark -
 #pragma mark graph display
 
-- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
+/*
+ - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_note:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
 }
+*/
+
+- (id) getVOGD {
+    // TODO: need to handle image differently from note
+    return [[vogd alloc] initAsNote:self.vo];
+}
+
 
 
 

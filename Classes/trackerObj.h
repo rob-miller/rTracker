@@ -36,6 +36,8 @@
 	UIViewController *vc;		// ugly: vos may need this to present a voEdit page
     
     NSDateFormatter *dateFormatter;
+    
+    id togd;
 }
 
 //@property (nonatomic) int tid;
@@ -50,6 +52,7 @@
 @property (nonatomic,assign) UIControl *activeControl;
 @property (nonatomic,assign) UIViewController *vc;
 @property (nonatomic,retain) NSDateFormatter *dateFormatter;
+@property (nonatomic,retain) id togd;
 
 - (id) init:(int) tid;
 
@@ -89,5 +92,7 @@
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 
 - (void)receiveRecord:(NSDictionary *)aRecord;
+
+- (void) setTOGD:(CGRect)inRect;
 
 @end

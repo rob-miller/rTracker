@@ -17,6 +17,8 @@
 #import "voState.h"
 #import "privacyV.h"
 
+#import "togd.h"
+
 #import "dbg-defs.h"
 
 @implementation trackerObj
@@ -24,7 +26,7 @@
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
 @synthesize nextColor, colorSet, votArray;
-@synthesize maxLabel,activeControl,vc, dateFormatter;
+@synthesize maxLabel,activeControl,vc, dateFormatter,togd;
 
 #define f(x) ((CGFloat) (x))
 
@@ -39,6 +41,7 @@
  *     field='width'     : max size over all valobj display widgets (num, text, slider, etc)
  *	   field='privacy'   : user specified privacy value for trackerObj
  *     field='savertn'   : bool - save button returns to tracker list (else reset for new tracker data)
+ *     TODO: field='labelwid'  : max size to print over all valobj values
  *
  *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) ; priv(int)
  *         type: rt-types.plist and defs in valueObj.h
@@ -65,6 +68,7 @@
  *	  field='frep%d'    : function range endpoint 0 or 1: -constant or valobj vid
  *    field='frv%d'     : function range endpoint 0 or 1 value if frep is offset like hours, months, ... (%d=1 not used)
  *    field='fnddp'     : function display decimal pt: number of digits to show in output format
+ *    TODO: field='tbmlc'     : textbox max line count for tbnl
  *
  *  trkrData: date(int,unique)
  *		entry indicates there will be corresponding voData items
@@ -133,7 +137,7 @@
 
 - (id)init:(int) tid {
 	if ((self = [self init])) {
-		//DBGLog1(@"init trackerObj id: %d",tid);
+		//DBGLog(@"init trackerObj id: %d",tid);
 		self.toid = tid;
 		[self confirmDb];
 		[self loadConfig];
@@ -142,7 +146,7 @@
 }
 
 - (void) dealloc {
-	DBGLog1(@"dealloc tObj: %@",trackerName);
+	DBGLog(@"dealloc tObj: %@",trackerName);
 	
 	self.trackerName = nil;
 	[trackerName release];
@@ -204,7 +208,7 @@
     
 	self.trackerName = [self.optDict objectForKey:@"name"];
 
-    DBGLog2(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
+    DBGLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
 	
     CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
 	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
@@ -359,7 +363,7 @@
 }
 
 - (void) saveConfig {
-	DBGLog1(@"tObj saveConfig: trackerName= %@",trackerName) ;
+	DBGLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
 	
 	[self confirmDb];
 	
@@ -380,7 +384,7 @@
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
 
-		DBGLog2(@"  vo %@  id %d", vo.valueName, vo.vid);
+		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
 					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
 		[self toExecSql];
@@ -412,7 +416,7 @@
 	}
 
 	if (rvo == nil) {
-		DBGWarn1(@"tObj getValObj failed to find vid %d",qVid);
+		DBGWarn(@"tObj getValObj failed to find vid %d",qVid);
 	}
 	return rvo;
 }
@@ -420,7 +424,7 @@
 - (BOOL) loadData: (int) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
-    DBGLog1(@"trackerObj loadData for date %@",qDate);
+    DBGLog(@"trackerObj loadData for date %@",qDate);
 	[self resetData];
 	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d and minpriv <= %d;",iDate, [privacyV getPrivacyValue]];
 	int c = [self toQry2Int];
@@ -451,7 +455,7 @@
 		
 		return YES;
 	} else {
-		DBGWarn2(@"tObj loadData: nothing for date %d %@", iDate, qDate);
+		DBGWarn(@"tObj loadData: nothing for date %d %@", iDate, qDate);
 		return NO;
 	}
 }
@@ -462,7 +466,7 @@
 		trackerDate = [[NSDate alloc] init];
 	}
 	
-	DBGLog2(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
+	DBGLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
 
 	BOOL haveData=NO;
 	int tdi = [self.trackerDate timeIntervalSince1970];
@@ -472,16 +476,17 @@
 		
 		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
-			DBGLog3(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
-			if ([vo.value isEqualToString:@""]) {
-				self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
-			} else {
-				haveData = YES;
-                minPriv = MIN(vo.vpriv,minPriv);
-				self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-							vo.vid, tdi, vo.value];
-			}
-			[self toExecSql];
+        DBGLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+        if ([vo.value isEqualToString:@""]) {
+            self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
+        } else {
+            haveData = YES;
+            minPriv = MIN(vo.vpriv,minPriv);
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+                        vo.vid, tdi, vo.value];
+        }
+        [self toExecSql];
+                        
 		//} 
 	}
 	
@@ -542,7 +547,7 @@
     NSString *outString= [NSString stringWithFormat:@"\"%@\"",TIMESTAMP_LABEL];
 	for (valueObj *vo in self.valObjTable) {
 		NSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
-        //DBGLog3(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+        //DBGLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
         outString = [outString stringByAppendingString:@","];
         outString = [outString stringByAppendingString:[self csvSafe:vo.valueName]];
@@ -580,12 +585,12 @@
     if (nil == ts) {
         for (NSString *key in aRecord)
         {
-            DBGLog2(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
+            DBGLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
         }
-        DBGErr1(@"skipping record as no %@ key",TIMESTAMP_LABEL);
+        DBGErr(@"skipping record as no %@ key",TIMESTAMP_LABEL);
         return;
     } else {
-        DBGLog2(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
+        DBGLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
     }
     
     NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
@@ -594,19 +599,19 @@
     int mp = BIGPRIV;
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
-        DBGLog1(@"pass1 key= %@", key);
+        DBGLog(@"pass1 key= %@", key);
         if ((! [key isEqualToString:TIMESTAMP_LABEL]) /* not timestamp */
             && (![@"" isEqualToString:[aRecord objectForKey:key]])) {    // only fields with data
             
             //self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
             //int valobjID,valobjPriv;
             //[self toQry2IntInt:&valobjID i2:&valobjPriv];
-            //DBGLog4(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            //DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
 
             self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
             int valobjID,valobjPriv,valobjTyp;
             [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjTyp];
-            DBGLog5(@"name=%@ val=%@ id=%d priv=%d typ=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjTyp);
+            DBGLog(@"name=%@ val=%@ id=%d priv=%d typ=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjTyp);
             
             [idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
             //[typDict setObject:[NSNumber numberWithInt:valobjTyp] forKey:key];
@@ -621,7 +626,7 @@
     
 	for (NSString *key in aRecord)
 	{
-        DBGLog1(@"pass2 key= %@", key);
+        DBGLog(@"pass2 key= %@", key);
         if ((! [key isEqualToString:TIMESTAMP_LABEL]) //{ /* not timestamp */
             // && ( ! ((nil != [typDict objectForKey:key]) && [vtf isEqualToNumber:[typDict objectForKey:key]]))  /* ignore calculated function value */
             ) { 
@@ -705,7 +710,7 @@
 		}
 	}
 	
-	DBGLog2(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
+	DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
 	[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
 	[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
 	
@@ -714,7 +719,7 @@
 
 
 - (void) addValObj:(valueObj *) valObj {
-	DBGLog5(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
 	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
@@ -738,12 +743,12 @@
 }
 
 - (void) deleteCurrEntry {
-	self.sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;",
-				(int) [self.trackerDate timeIntervalSince1970]];
+    int eDate = (int) [self.trackerDate timeIntervalSince1970];
+	self.sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;", eDate];
 	[self toExecSql];
-	self.sql = [NSString stringWithFormat:@"delete from voData where date = %d;",
-				(int) [self.trackerDate timeIntervalSince1970]];
+	self.sql = [NSString stringWithFormat:@"delete from voData where date = %d;", eDate];
 	[self toExecSql];
+    
 	self.sql = nil;
 }
 
@@ -859,11 +864,11 @@
 	id obj = [n object];
 	if ([obj isMemberOfClass:[valueObj class]]) {
 		valueObj *vo = (valueObj*) [n object];
-		DBGLog4(@"trackerObj %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+		DBGLog(@"trackerObj %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
 	
 	} else {
 		voState *vos= (voState*) obj;
-		DBGLog4(@"trackerObj %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
+		DBGLog(@"trackerObj %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
 	}
 #endif
     
@@ -874,7 +879,7 @@
 #pragma mark manipulate tracker's valObjs
 
 - (valueObj *) copyVoConfig: (valueObj *) srcVO {
-	DBGLog4(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
+	DBGLog(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];
 	newVO.vid = [self getUnique];
@@ -891,7 +896,7 @@
 #pragma mark utility methods
 
 - (void) describe {
-	DBGLog3(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
+	DBGLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
 
 	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
 	//valueObj *vo;
@@ -934,6 +939,9 @@
 	return votArray;
 }
 
-
+- (void) setTOGD:(CGRect)inRect {
+    self.togd = [[togd alloc] initWithData:self rect:inRect];
+    [self.togd fillVOGDs];
+}
 
 @end

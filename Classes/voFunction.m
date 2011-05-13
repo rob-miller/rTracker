@@ -166,13 +166,13 @@
 		// use last entry
 		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;",maxdate];
 		epDate = [to toQry2Int];
-		DBGLog2(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
+		DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
 		to.sql = nil;
 	} else if (ep >= 0) {
 		// ep is vid
 		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d order by date desc limit 1;",ep,maxdate];
 		epDate = [to toQry2Int];
-		DBGLog3(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
+		DBGLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
 		to.sql = nil;
 	} else {
 		// ep is (offset * -1)+1 into epTitles, with optDict:frv0 multiplier
@@ -214,7 +214,7 @@
 												  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)maxdate]
 												 options:0];
 		epDate = [targ timeIntervalSince1970];
-		DBGLog4(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
+		DBGLog(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
 		
 		[gregorian release];
 		[offsetComponents release];
@@ -294,7 +294,7 @@
     for (i=0; i< maxc; i++) {
         outstr = [outstr stringByAppendingFormat:@" %@",[self.fnArray objectAtIndex:i]];
     }
-    DBGLog1(@"calcFnValueWithCurrent fnArray= %@ ",outstr);
+    DBGLog(@"calcFnValueWithCurrent fnArray= %@ ",outstr);
 #endif    
     
 	int epd1;
@@ -313,7 +313,7 @@
 			//valueObj *valo = [to getValObj:vid];
 			NSString *sv1 = [to getValObj:vid].value;
 			double v1 = [sv1 doubleValue];
-            DBGLog1(@"v1= %f", v1);
+            DBGLog(@"v1= %f", v1);
 			
 			switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
 				case FN1ARGDELTA :
@@ -321,7 +321,7 @@
 						return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
 					to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
 					double v0 = [to toQry2Double];
-                    DBGLog1(@"delta: v0= %f", v0);
+                    DBGLog(@"delta: v0= %f", v0);
 					result = v1 - v0;
 					break;
 				case FN1ARGAVG :
@@ -403,7 +403,7 @@
 		}
 	}
 
-    DBGLog1(@"calcFnValueWithCurrent rtn: %@", [NSNumber numberWithDouble:result]);
+    DBGLog(@"calcFnValueWithCurrent rtn: %@", [NSNumber numberWithDouble:result]);
 	return [NSNumber numberWithDouble:result];
 
 }
@@ -460,14 +460,14 @@
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
         return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
     }
-    DBGLog1(@"fn update returning: %@",instr);
+    DBGLog(@"fn update returning: %@",instr);
     
     return instr;
 }
 
 - (UILabel*) rlab {
     if (nil == rlab) {
-        rlab = [[UILabel alloc] initWithFrame:self.voFrame];
+        rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
         rlab.textAlignment = UITextAlignmentRight;
     }
     return rlab;
@@ -475,7 +475,7 @@
 - (UIView*) voDisplay:(CGRect)bounds {
 		
 	//trackerObj *to = (trackerObj*) parentTracker;
-	self.voFrame = bounds;
+	self.vosFrame = bounds;
     
 	//UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
 	//rlab.textAlignment = UITextAlignmentRight;
@@ -489,7 +489,7 @@
 	}
 	
 	//return [rlab autorelease];
-    DBGLog1(@"fn voDisplay: %@", self.rlab.text);
+    DBGLog(@"fn voDisplay: %@", self.rlab.text);
     return self.rlab;
 }
 
@@ -844,9 +844,9 @@
 
 - (void) funcDone {
 	if (fnArray != nil && [self.fnArray count] != 0) {
-		//DBGLog1(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
+		//DBGLog(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
 		[self saveFnArray];
-		DBGLog1(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
+		DBGLog(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
 
 		// frep0 and 1 not set if user did not click on range picker
 		if ([self.vo.optDict objectForKey:@"frep0"] == nil) 
@@ -854,7 +854,7 @@
 		if ([self.vo.optDict objectForKey:@"frep1"] == nil) 
 			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
 		
-		DBGLog2(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
+		DBGLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
 		
 	}
 }
@@ -914,7 +914,7 @@
 - (void) fnSegmentAction:(id)sender
 {
 	self.fnSegNdx = [sender selectedSegmentIndex];
-	//DBGLog1(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
+	//DBGLog(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -1132,7 +1132,7 @@
 			[self.vo.optDict setObject:[NSNumber numberWithInt:(((row - votc) +1) * -1)] forKey:key];
 			[self updateValTF:row component:component];
 		}
-		DBGLog3(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
+		DBGLog(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
 	} else {
 	}
 	
@@ -1149,7 +1149,7 @@
     
     do {
         [MyTracker loadData:nextDate];
-        //DBGLog2(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
+        //DBGLog(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
         if ([self.vo.value isEqualToString:@""]) {
             MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
         } else {
@@ -1165,6 +1165,7 @@
     
 }
 
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
 
     // set val for all dates if dirty
@@ -1172,6 +1173,11 @@
     
     [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
+}
+*/
+
+- (id) getVOGD {
+    return [[vogd alloc] initAsNum:self.vo];
 }
 
 

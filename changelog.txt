@@ -131,3 +131,16 @@
   - voTextBox:segmentChanged - release picker view so gets rebuilt (fix bugs on people, history pickers incl crash on switch)
   - added graphTrackerV:doDrawGraph controlling [drawRect] action, so graph not redrawn for return to utc
   - changed trackerObj so fn results (=value) *are* saved,loaded to speed graphing, but issues remain for updating, saving in db
+
+--- check in ---
+
+06 May 2011
+  - added CGRects to divide up graph screen
+
+10 May 2011
+  - replaced dbg-defs defines with args... forms
+
+13 May 2011
+  - finished re-org of graphing to use UIScrollView for zoom etc, separate windows for title, axes.  still need work for axis labels
+
+--- check in ---

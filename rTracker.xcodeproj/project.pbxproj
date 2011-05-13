@@ -13,6 +13,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
@@ -34,6 +35,8 @@
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
 		D4A317B41192B7C800F062AC /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
 		D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A317B31192B7C800F062AC /* configTlistController.xib */; };
+		D4A700CD13798874005E0E23 /* togd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CC13798874005E0E23 /* togd.m */; };
+		D4A700D01379928E005E0E23 /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
 		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
 		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
 		D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
@@ -57,6 +60,10 @@
 		D4E8F90112E8682100A2526B /* privacyV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90012E8682100A2526B /* privacyV.m */; };
 		D4E8F90412E868A300A2526B /* tictacV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90312E868A300A2526B /* tictacV.m */; };
 		D4E8F90712E868B700A2526B /* ppwV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90612E868B700A2526B /* ppwV.m */; };
+		D4F02398137BFF7F0097AC16 /* gtTitleV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F02397137BFF7F0097AC16 /* gtTitleV.m */; };
+		D4F0239B137BFFA10097AC16 /* gtXAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239A137BFFA10097AC16 /* gtXAxV.m */; };
+		D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239D137BFFB30097AC16 /* gtYAxV.m */; };
+		D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +79,7 @@
 		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* rTracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "rTracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
@@ -106,6 +114,10 @@
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTlistController.m; sourceTree = "<group>"; };
 		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
+		D4A700CB13798874005E0E23 /* togd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = togd.h; sourceTree = "<group>"; };
+		D4A700CC13798874005E0E23 /* togd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = togd.m; sourceTree = "<group>"; };
+		D4A700CE1379928D005E0E23 /* vogd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vogd.h; sourceTree = "<group>"; };
+		D4A700CF1379928D005E0E23 /* vogd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = vogd.m; sourceTree = "<group>"; };
 		D4A7B00512FCC28500ABC266 /* privDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privDefs.h; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
@@ -147,6 +159,15 @@
 		D4E8F90312E868A300A2526B /* tictacV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tictacV.m; sourceTree = "<group>"; };
 		D4E8F90512E868B700A2526B /* ppwV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ppwV.h; sourceTree = "<group>"; };
 		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ppwV.m; sourceTree = "<group>"; };
+		D4F02396137BFF7F0097AC16 /* gtTitleV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtTitleV.h; sourceTree = "<group>"; };
+		D4F02397137BFF7F0097AC16 /* gtTitleV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtTitleV.m; sourceTree = "<group>"; };
+		D4F02399137BFFA10097AC16 /* gtXAxV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtXAxV.h; sourceTree = "<group>"; };
+		D4F0239A137BFFA10097AC16 /* gtXAxV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtXAxV.m; sourceTree = "<group>"; };
+		D4F0239C137BFFB30097AC16 /* gtYAxV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtYAxV.h; sourceTree = "<group>"; };
+		D4F0239D137BFFB30097AC16 /* gtYAxV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtYAxV.m; sourceTree = "<group>"; };
+		D4F0239F137BFFD70097AC16 /* gtVONameV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtVONameV.h; sourceTree = "<group>"; };
+		D4F023A0137BFFD80097AC16 /* gtVONameV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtVONameV.m; sourceTree = "<group>"; };
+		D4F023A2137C1D7A0097AC16 /* graphTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "graphTracker-constants.h"; sourceTree = "<group>"; };
 		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -155,6 +176,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
@@ -196,6 +218,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				D40518B613787B5500F001BA /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -284,6 +307,8 @@
 				D4B6AE6C127EC34D00C036ED /* voText.m */,
 				D4B6AE66127EC33500C036ED /* voNumber.h */,
 				D4B6AE67127EC33500C036ED /* voNumber.m */,
+				D4A700CE1379928D005E0E23 /* vogd.h */,
+				D4A700CF1379928D005E0E23 /* vogd.m */,
 			);
 			name = "valueObj classes";
 			sourceTree = "<group>";
@@ -297,6 +322,8 @@
 				D482D271114FEB5E00CE6BC8 /* trackerList.m */,
 				D482D274114FEB7500CE6BC8 /* trackerObj.h */,
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
+				D4A700CB13798874005E0E23 /* togd.h */,
+				D4A700CC13798874005E0E23 /* togd.m */,
 			);
 			name = "trackerObj classes";
 			sourceTree = "<group>";
@@ -308,6 +335,15 @@
 				D4E5FE4512529300004BB4EC /* graphTrackerV.m */,
 				D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */,
 				D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */,
+				D4F02396137BFF7F0097AC16 /* gtTitleV.h */,
+				D4F02397137BFF7F0097AC16 /* gtTitleV.m */,
+				D4F02399137BFFA10097AC16 /* gtXAxV.h */,
+				D4F0239A137BFFA10097AC16 /* gtXAxV.m */,
+				D4F0239C137BFFB30097AC16 /* gtYAxV.h */,
+				D4F0239D137BFFB30097AC16 /* gtYAxV.m */,
+				D4F0239F137BFFD70097AC16 /* gtVONameV.h */,
+				D4F023A0137BFFD80097AC16 /* gtVONameV.m */,
+				D4F023A2137C1D7A0097AC16 /* graphTracker-constants.h */,
 			);
 			name = graphing;
 			sourceTree = "<group>";
@@ -465,6 +501,12 @@
 				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
 				D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */,
 				D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */,
+				D4A700CD13798874005E0E23 /* togd.m in Sources */,
+				D4A700D01379928E005E0E23 /* vogd.m in Sources */,
+				D4F02398137BFF7F0097AC16 /* gtTitleV.m in Sources */,
+				D4F0239B137BFFA10097AC16 /* gtXAxV.m in Sources */,
+				D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */,
+				D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +517,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;
@@ -485,6 +528,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				INFOPLIST_FILE = "rTracker-Info.plist";
 				PRODUCT_NAME = rTracker;
+				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
 			};
 			name = Debug;
 		};
@@ -492,6 +536,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;
@@ -502,6 +547,7 @@
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_NAME = rTracker;
+				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
 			};
 			name = Release;
 		};

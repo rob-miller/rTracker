@@ -11,6 +11,8 @@
 #import "valueObj.h"
 #import "trackerObj.h"
 #import "configTVObjVC.h"
+#import "vogd.h"
+
 #import "rTracker-constants.h"
 
 #define MyTracker ((trackerObj*) self.vo.parentTracker)
@@ -18,12 +20,12 @@
 @interface voState : NSObject <voProtocol> {
 
 	valueObj *vo;
-    CGRect voFrame;
+    CGRect vosFrame;
     
 }
 
 @property (nonatomic,assign) valueObj *vo;
-@property (nonatomic) CGRect voFrame;
+@property (nonatomic) CGRect vosFrame;
 
 - (id) init;
 - (id) initWithVO:(valueObj*)valo;
@@ -33,7 +35,7 @@
 
 - (UITableViewCell*) voTVEnabledCell:(UITableView *)tableView;
 + (NSArray*) voGraphSetNum;
-
+/*
 - (void) transformVO_num:(NSMutableArray *)xdat 
                     ydat:(NSMutableArray *)ydat 
                   dscale:(double)dscale 
@@ -54,5 +56,6 @@
                   height:(CGFloat)height 
                   border:(float)border 
                firstDate:(int)firstDate;
+*/
 
 @end

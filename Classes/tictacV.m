@@ -23,7 +23,7 @@ static unsigned int theKey;
 	return theKey;
 }
 - (void) setKey:(unsigned int)k {
-	DBGLog2(@"setKey: %u -> %u",theKey,k);
+	DBGLog(@"setKey: %u -> %u",theKey,k);
 	theKey = k;
 }
 
@@ -42,7 +42,7 @@ static unsigned int theKey;
 	ttf.origin.y = TICTACVRTFRAC * ttf.size.height;
 	ttf.size.width *= TICTACWIDFRAC;
 	ttf.size.height *= TICTACHGTFRAC;
-	DBGLog4(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
+	DBGLog(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
 	if ((self = [super initWithFrame:ttf])) {
 		self.backgroundColor = [UIColor whiteColor];
     }
@@ -174,7 +174,7 @@ static unsigned int theKey;
 
 - (void) updateTT {
 	if ([self currPt]) {
-		//DBGLog2(@"updateTT: draw cell %d %d",self.currX,self.currY);
+		//DBGLog(@"updateTT: draw cell %d %d",self.currX,self.currY);
 		[self drawCell];
 	} else {  
 		int i,j;
@@ -193,7 +193,7 @@ static unsigned int theKey;
 
 - (void) press:(int) x y:(int)y {
 	[self setCurrPt:x y:y];
-	DBGLog6(@"press: %d,%d  => %f %f %f %f",x,y,
+	DBGLog(@"press: %d,%d  => %f %f %f %f",x,y,
 		  self.currRect.origin.x,self.currRect.origin.y,
 		  self.currRect.size.width,self.currRect.size.height);
 	
@@ -258,7 +258,7 @@ static unsigned int theKey;
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
-	DBGLog4(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
+	DBGLog(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
 	[self press:[self ttx:touchPoint.x] y:[self tty:touchPoint.y]];
 	[self resignFirstResponder];
 }

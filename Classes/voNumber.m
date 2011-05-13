@@ -14,7 +14,7 @@
 @synthesize dtf;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-	DBGLog1(@"tf begin editing vid=%d",self.vo.vid);
+	DBGLog(@"tf begin editing vid=%d",self.vo.vid);
     //*activeField = textField;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
@@ -29,7 +29,7 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	DBGLog1(@"tf end editing vid=%d",self.vo.vid);
+	DBGLog(@"tf end editing vid=%d",self.vo.vid);
 	[self tfvoFinEdit:textField];
     //*activeField = nil;
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
@@ -37,7 +37,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
-	//DBGLog2(@"textField done: %@  vid=%d", textField.text,self.vo.vid);
+	//DBGLog(@"textField done: %@  vid=%d", textField.text,self.vo.vid);
 	// [self tfvoFinEdit:textField];  // textFieldDidEndEditing will be called, just dismiss kybd here
 	[textField resignFirstResponder];
 	return YES;
@@ -45,7 +45,7 @@
 
 - (UITextField*) dtf {
     if (nil == dtf) {
-        dtf = [[UITextField alloc] initWithFrame:self.voFrame];
+        dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
         dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
         dtf.textColor = [UIColor blackColor];
@@ -69,12 +69,12 @@
         [dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
         
     }
-    //DBGLog1(@"num dtf rc= %d",[dtf retainCount]);
+    //DBGLog(@"num dtf rc= %d",[dtf retainCount]);
     return dtf;
 }
 
 - (UIView*)voDisplay:(CGRect)bounds {
-	self.voFrame = bounds;
+	self.vosFrame = bounds;
 
 	//if (![self.vo.value isEqualToString:dtf.text]) {
         
@@ -102,10 +102,10 @@
             self.dtf.text = self.vo.value;
         }
         
-        //DBGLog2(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
+        //DBGLog(@"dtf: vo val= %@  dtf.text= %@", self.vo.value, self.dtf.text);
 	//}
     
-    DBGLog1(@"number voDisplay: %@", self.dtf.text);
+    DBGLog(@"number voDisplay: %@", self.dtf.text);
     return self.dtf;
 }
 
@@ -170,11 +170,16 @@
 
 	[super voDrawOptions:ctvovc];
 }
-
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
+}
+*/
+
+- (id) getVOGD {
+    return [[vogd alloc] initAsNum:self.vo];
 }
 
 @end

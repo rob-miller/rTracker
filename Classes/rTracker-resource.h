@@ -15,6 +15,8 @@
     //int foo;
 }
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
++ (unsigned int) countLines:(NSString*)str;
+
 @end
 
 extern BOOL keyboardIsShown;

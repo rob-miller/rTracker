@@ -73,13 +73,13 @@
         if ([[file pathExtension] isEqualToString: @"csv"]) {
             NSString *fname = [file lastPathComponent];
             NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
-            DBGLog1(@"consider input: %@",fname);
+            DBGLog(@"consider input: %@",fname);
             
             if (inmatch.location == NSNotFound) {
                 
             } else if (inmatch.length == 7) {  // matched all 7 chars of _in.csv at end of file name
                 NSString *tname = [fname substringToIndex:inmatch.location];
-                DBGLog2(@"load input: %@ as %@",fname,tname);
+                DBGLog(@"load input: %@ as %@",fname,tname);
                 int ndx=0;
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
@@ -120,7 +120,7 @@
 #pragma mark view support
 
 - (void)viewDidLoad {
-	DBGLog1(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
 
     self.title = @"rTracker";
 
@@ -184,7 +184,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	DBGLog1(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
 	[self refreshView];
     [super viewWillAppear:animated];
 }
@@ -214,7 +214,7 @@
 	
 	self.tlist = nil;
 	
-	//DBGLog2(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
+	//DBGLog(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
 	
 }
 
@@ -318,7 +318,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //DBGLog2(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
+    //DBGLog(@"rvc table cell at index %d label %@",[indexPath row],[tlist.topLayoutNames objectAtIndex:[indexPath row]]);
 	
     static NSString *CellIdentifier = @"Cell";
     
@@ -340,7 +340,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	NSUInteger row = [indexPath row];
-	//DBGLog2(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromIndex:row]];
 	[to describe];

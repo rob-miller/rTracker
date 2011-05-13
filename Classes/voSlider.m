@@ -25,14 +25,14 @@
 
 - (void)sliderAction:(UISlider *)sender
 { 
-    DBGLog1(@"slider action value = %f", ((UISlider *)sender).value);
+    DBGLog(@"slider action value = %f", ((UISlider *)sender).value);
     /*
 	//
 	//[self.vo.value setString:[NSString stringWithFormat:@"%f",sender.value]];
-    DBGLog1(@"sender action value: %f",sender.value);
-	DBGLog1(@"slider action value = %f", self.sliderCtl.value);
-    DBGLog1(@"prev val= %@",self.vo.value);
-    DBGLog2(@"tracking= %d  touchinside= %d",[sender isTracking], [sender isTouchInside]);
+    DBGLog(@"sender action value: %f",sender.value);
+	DBGLog(@"slider action value = %f", self.sliderCtl.value);
+    DBGLog(@"prev val= %@",self.vo.value);
+    DBGLog(@"tracking= %d  touchinside= %d",[sender isTracking], [sender isTouchInside]);
     //if (sender.value == 0.0f) {
     if ((![sender isTracking]) && [sender isTouchInside] && (sender.value == 0.0f)) {
         DBGLog(@"poo...");
@@ -45,7 +45,7 @@
 
 	[self.vo.value setString:[NSString stringWithFormat:@"%f",self.sliderCtl.value]];
 
-	//DBGLog3(@"slider action value = %f valstr= %@ vs dbl= %f", ((UISlider *)sender).value, self.vo.value, [self.vo.value doubleValue]);
+	//DBGLog(@"slider action value = %f valstr= %@ vs dbl= %f", ((UISlider *)sender).value, self.vo.value, [self.vo.value doubleValue]);
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
@@ -56,7 +56,7 @@
        // DBGLog(@"create sliderCtl");
         //CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
         
-        sliderCtl = [[UISlider alloc] initWithFrame:self.voFrame];
+        sliderCtl = [[UISlider alloc] initWithFrame:self.vosFrame];
         [sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
         
         // in case the parent view draws with a custom color or gradient, use a transparent color
@@ -94,16 +94,16 @@
 
 - (UIView*) voDisplay:(CGRect) bounds
 {
-    self.voFrame = bounds;
+    self.vosFrame = bounds;
 #if DEBUGLOG
     NSString *vals = self.vo.value;
     CGFloat valf = [self.vo.value floatValue];
     //trackerObj *pto = self.vo.parentTracker;
     
-    DBGLog3(@"voDisplay slider vals= %@ valf= %f -> slider.valf= %f",vals,valf,self.sliderCtl.value);
+    DBGLog(@"voDisplay slider vals= %@ valf= %f -> slider.valf= %f",vals,valf,self.sliderCtl.value);
 #endif
     
-    //DBGLog1(@"parent tracker date= %@",pto.trackerDate);
+    //DBGLog(@"parent tracker date= %@",pto.trackerDate);
     if ([self.vo.value isEqualToString:@""]) {  // && (self.sliderCtl.value != self.sdflt)) {
         self.sliderCtl.value = self.sdflt;  
         //[self.sliderCtl setValue:self.sdflt animated:NO];
@@ -111,7 +111,7 @@
         self.sliderCtl.value = [self.vo.value floatValue];
         //[self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
     }
-    DBGLog1(@"sliderCtl voDisplay: %f", self.sliderCtl.value);
+    DBGLog(@"sliderCtl voDisplay: %f", self.sliderCtl.value);
 	return self.sliderCtl;
 }
 
@@ -265,13 +265,16 @@
         return instr;
     return @"";
 }
-
+/*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     
     [self transformVO_num:xdat ydat:ydat dscale:dscale height:height border:border firstDate:firstDate];
     
 }
-
+*/
+- (id) getVOGD {
+    return [[vogd alloc] initAsNum:self.vo];
+}
 
 
 @end

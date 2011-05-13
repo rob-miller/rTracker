@@ -23,9 +23,21 @@ BOOL keyboardIsShown=NO;
     }
 	NSString *docsDir = [paths objectAtIndex:0];
 	
-	DBGLog1(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
+	DBGLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
 	
 	return [docsDir stringByAppendingPathComponent:fname];
+}
+
+// from http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
+// Text Layout Programming Guide: Counting Lines of Text
++ (unsigned int) countLines:(NSString*)str {
+    
+    unsigned int numberOfLines, index, stringLength = [str length];
+    
+    for (index = 0, numberOfLines = 0; index < stringLength; numberOfLines++)
+        index = NSMaxRange([str lineRangeForRange:NSMakeRange(index, 0)]);
+    
+    return numberOfLines;
 }
 
 @end

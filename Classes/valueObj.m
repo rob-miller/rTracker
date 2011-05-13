@@ -26,7 +26,7 @@
 @implementation valueObj
 
 @synthesize vid, vtype, vpriv, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
-@synthesize vos;  //, retrievedData;
+@synthesize vos,vogd;  //, retrievedData;
 
 //extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
@@ -47,7 +47,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 in_vgraphtype:(NSInteger)in_vgraphtype
 in_vpriv:(NSInteger)in_vpriv
 {
-	DBGLog3(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	DBGLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
@@ -64,8 +64,8 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) dealloc 
 {
-	//DBGLog1(@"dealloc valueObj: %@",valueName);
-	//DBGLog1(@"valuename retain count= %d",[valueName retainCount] );
+	//DBGLog(@"dealloc valueObj: %@",valueName);
+	//DBGLog(@"valuename retain count= %d",[valueName retainCount] );
 	self.valueName = nil;
 	[valueName release];
 	self.value = nil;
@@ -79,12 +79,12 @@ in_vpriv:(NSInteger)in_vpriv
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
-	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	self.vos = nil;
 	[(id)vos release];
-	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	//[(voState*)vos release];
-	//DBGLog1(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	//[vos dealloc];
 	[super dealloc];
 }
@@ -171,7 +171,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (UIView *) display:(CGRect)bounds {
 	if (display == nil) {
-        DBGLog1(@"vo new display %@",self.valueName);
+        DBGLog(@"vo new display %@",self.valueName);
 		self.display = [self.vos voDisplay:bounds];
 	}
 	return display;
@@ -200,7 +200,7 @@ in_vpriv:(NSInteger)in_vpriv
 // called when the checkmark button is touched 
 - (void)checkAction:(id)sender
 {
-	DBGLog2(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
+	DBGLog(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
 	UIImage *checkImage;
 	
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
@@ -245,7 +245,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) describe 
 {
-	DBGLog4(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
+	DBGLog(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
 }
 
 
