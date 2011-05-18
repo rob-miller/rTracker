@@ -269,7 +269,10 @@
 }
 
 - (UIColor*) myGraphColor {
-    return( (UIColor *) [((trackerObj*)self.vo.parentTracker).colorSet objectAtIndex:self.vo.vcolor] );
+    if (self.vo.vtype != VOT_CHOICE) 
+        return( (UIColor *) [((trackerObj*)self.vo.parentTracker).colorSet objectAtIndex:self.vo.vcolor] );
+    else
+        return  [UIColor whiteColor];
 }
 
 - (void) dealloc {

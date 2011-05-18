@@ -154,7 +154,7 @@
 }
 
 - (NSArray*) voGraphSet {
-	return [NSArray arrayWithObjects:@"dots",@"bar",@"pie", nil];
+	return [NSArray arrayWithObjects:@"dots",@"bar",/*@"pie",*/ nil];
 }
 
 - (void) ctfDone:(UITextField *)tf
@@ -176,7 +176,7 @@
 	if ([tf.text isEqualToString:@""]) {
 		b.backgroundColor = [UIColor clearColor];
 		[self.vo.optDict removeObjectForKey:cc];
-		// TODO: should offer to delete any stored data
+		//TODO: should offer to delete any stored data
 	} else {
 		NSNumber *ncol = [self.vo.optDict objectForKey:cc];
 		

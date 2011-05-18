@@ -21,6 +21,7 @@
 //#define DEBUGLOG 1
 
 
+#define USELAYER 1
 
 @implementation graphTrackerV
 
@@ -43,11 +44,12 @@
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         
+#if USELAYER        
         //from scrollview programming guide listing 3-3
-        
         CATiledLayer *tempTiledLayer = (CATiledLayer*)self.layer;
         tempTiledLayer.levelsOfDetail = 5;
         tempTiledLayer.levelsOfDetailBias = 2;
+#endif
         self.opaque=NO;
     }
     return self;
@@ -82,7 +84,12 @@
 
 
 
-
+- (void) vtChoiceSetColor:(vogd*)vogd context:(CGContextRef)context val:(CGFloat)val{
+    NSString *cc = [NSString stringWithFormat:@"cc%d",(int)((val-1.0f) / vogd.vScale)];
+    NSInteger col = [[vogd.vo.optDict objectForKey:cc] integerValue];
+    CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:col]).CGColor);
+    CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:col]).CGColor);
+}
 
 #define LXNOTSTARTED -1.0f
 
@@ -169,8 +176,7 @@
 	Stroke;
 }
 
-- (void) plotVO_dots:(vogd *)vogd context:(CGContextRef)context
-{
+- (void) plotVO_dots:(vogd *)vogd context:(CGContextRef)context {
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
 	CGRect bbox = CGContextGetClipBoundingBox(context);
 	CGFloat minX = bbox.origin.x;
@@ -183,10 +189,14 @@
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
+        if (vogd.vo.vtype == VOT_CHOICE)
+            [self vtChoiceSetColor:vogd context:context val:y];
         if (going) {
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,y);
             AddCircle(x,y);
+            if (vogd.vo.vtype == VOT_CHOICE)
+                Stroke;
             if (x > maxX)
                 break; 
         } else if (x < minX) { // not started yet and keep skipping -- save current for next time
@@ -196,13 +206,17 @@
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
                 MoveTo(lastX,lastY);
                 AddCircle(lastX,lastY);
+                if (vogd.vo.vtype == VOT_CHOICE)
+                    Stroke;
             }
             going=YES;    // going, show current
             MoveTo(x,y);
             AddCircle(x,y);
+            if (vogd.vo.vtype == VOT_CHOICE)
+                Stroke;
         }  
     }
-
+    
 	Stroke;
 }
 
@@ -260,12 +274,16 @@
     for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
+        if (vogd.vo.vtype == VOT_CHOICE)
+            [self vtChoiceSetColor:vogd context:context val:y];
         
         if (going) {
             //DBGLog(@"moveto %f %f",x,y);
-            MoveTo(x,BORDER);
+            MoveTo(x,0.0f);
             AddLineTo(x,y);
             AddCircle(x,y);
+            if (vogd.vo.vtype == VOT_CHOICE)
+                Stroke;
             if (x > maxX)
                 break; 
         } else if (x < minX) { // not started yet and keep skipping -- save current for next time
@@ -273,18 +291,24 @@
             lastY = y;
         } else {              // not started yet, start now
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
-                MoveTo(lastX,BORDER);
+                MoveTo(lastX,0.0f);
                 AddLineTo(lastX,lastY);
                 AddCircle(lastX,lastY);
+                if (vogd.vo.vtype == VOT_CHOICE)
+                    Stroke;
             }
             going=YES;    // going, show current
-            MoveTo(x,BORDER);
+            MoveTo(x,0.0f);
             AddLineTo(x,y);
             AddCircle(x,y);
+            if (vogd.vo.vtype == VOT_CHOICE)
+                Stroke;
         }  
     }
     
-	Stroke;
+    if (vogd.vo.vtype != VOT_CHOICE)
+        Stroke;
+	//Stroke;
 	
 	CGContextSetAlpha(context, STD_ALPHA);
 	CGContextSetLineWidth(context, STD_LINE_WIDTH);
@@ -295,8 +319,10 @@
 - (void) plotVO:(valueObj *)vo context:(CGContextRef)context
 {
 	//[(UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor] set];
-    CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
-    CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
+    if (vo.vtype != VOT_CHOICE) {
+        CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
+        CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
+    }
 	switch (vo.vGraphType) {
 		case VOG_DOTS:
             switch (vo.vtype) {
@@ -361,26 +387,30 @@
 #pragma mark -
 #pragma mark drawRect
 
+
+#if USELAYER
+
 +(Class)layerClass {
     return [CATiledLayer class];
 }
 
 // Implement -drawRect: so that the UIView class works correctly
 // Real drawing work is done in -drawLayer:inContext
--(void)drawRect:(CGRect)r
-{
+-(void)drawRect:(CGRect)r {
 //    self.context = UIGraphicsGetCurrentContext();
 //    [self drawLayer:self.layer inContext:self.context];
 }
 
 /// multi-threaded !!!!
--(void)drawLayer:(CALayer*)layer inContext:(CGContextRef)context
-{
+-(void)drawLayer:(CALayer*)layer inContext:(CGContextRef)context {
     //NSLog(@"drawLayer here...");
     
 //- (void)drawRect:(CGRect)rect {
     //((togd*)self.tracker.togd).bbox = CGContextGetClipBoundingBox(context);
-    
+#else
+-(void)drawRect:(CGRect)r {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+#endif
     if (self.doDrawGraph) {
         /*
         if ((CGContextRef)0 == inContext) {

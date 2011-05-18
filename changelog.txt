@@ -151,3 +151,12 @@
   - tap on graph to mark and set tracker date, double tap to clear
   - return to graph with current date marked 
   - factored dpRslt out of datePickerVC to facilitate this
+
+--- check in ---
+
+18 May 2011
+  - changed tf fin edit to not call tfDone -- incompatible with vot_choice ????
+  - fixed graphing for vot_choice colors, implemented y axis labels for vot_choice
+
+
+

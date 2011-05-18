@@ -9,6 +9,8 @@
 #import "gtYAxV.h"
 #import "vogd.h"
 #import "graphTrackerVC.h"
+#import "valueObj.h"
+#import "trackerObj.h"
 
 #import "graphTracker-constants.h"
 #import "gfx.h"
@@ -26,6 +28,12 @@
         // Initialization code
     }
     return self;
+}
+
+- (void) vtChoiceSetColor:(CGContextRef)context val:(CGFloat)val{
+    NSString *cc = [NSString stringWithFormat:@"cc%d",(int)(val-1.0f)];
+    NSInteger col = [[self.vogd.vo.optDict objectForKey:cc] integerValue];
+    [[((trackerObj*)self.vogd.vo.parentTracker).colorSet objectAtIndex:col] set];
 }
 
 
@@ -49,13 +57,30 @@
     CGFloat x1 = x0-TICKLEN;
     CGFloat x2 = x1-3.0f;
     
+    NSInteger vtype = self.vogd.vo.vtype;
+    
 	for (i=YTICKS; i>=1; i--) {
 		CGFloat y = f(i) * step;
 		MoveTo(x0,y);
 		AddLineTo(x1,y);
         
+        
         CGFloat val = startUnit + (f(YTICKS-i) * unitStep);
-        NSString *vstr = [NSString stringWithFormat:@"%0.2f",val];
+        NSString *vstr;
+        if (vtype == VOT_CHOICE) {
+            [self vtChoiceSetColor:context val:val];
+            NSString *ch = [NSString stringWithFormat:@"c%d",(int)(val-1.0f)];
+            vstr = [self.vogd.vo.optDict objectForKey:ch];
+        } else {
+            NSString *fmt;
+            if (vtype == VOT_FUNC) {
+                int fnddp = [[self.vogd.vo.optDict objectForKey:@"fnddp"] intValue];
+                fmt = [NSString stringWithFormat:@"%%0.%df",fnddp];
+            } else {
+                fmt = @"%0.2f";
+            }
+            vstr = [NSString stringWithFormat:fmt,val];
+        }
         CGSize vh = [vstr sizeWithFont:myFont];
         [vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withFont:self.myFont];
 	}

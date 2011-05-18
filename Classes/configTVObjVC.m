@@ -198,8 +198,8 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
 	//DBGLog(@"tf end editing");
-    if (nil != activeField)
-        [self tfDone:activeField];
+    //if (nil != activeField)
+       // [self tfDone:activeField];
     activeField = nil;
 }
 
