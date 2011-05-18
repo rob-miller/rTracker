@@ -33,4 +33,6 @@
 - (vogd*) initAsBool:(valueObj*)vo;
 - (vogd*) initAsTBoxLC:(valueObj*)vo;
 
+- (UIColor*) myGraphColor;
+
 @end

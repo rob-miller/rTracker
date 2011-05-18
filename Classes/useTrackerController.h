@@ -13,19 +13,21 @@
 #import "valueObj.h"
 
 #import "datePickerVC.h"
-
+#import "dpRslt.h"
 
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate>
 //UITableViewController 
 {
 	trackerObj *tracker;
 	datePickerVC *dpvc;
+    dpRslt *dpr;
 	CGRect saveFrame;
     BOOL needSave;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property (nonatomic, retain) datePickerVC *dpvc;
+@property (nonatomic, retain) dpRslt *dpr;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) BOOL needSave;
 

@@ -9,6 +9,7 @@
 #import "graphTrackerVC.h"
 #import "togd.h"
 #import "vogd.h"
+#import "privacyV.h"
 
 #import "graphTracker-constants.h"
 
@@ -23,7 +24,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV;
+@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr;
 
 /*
  - (void) loadView {
@@ -74,21 +75,7 @@
     [[self view] addSubview:self.titleView];
 
     gtvRect.origin.y = rect.size.height;
-    
-    /*
-     // view for voName
-     rect.origin.x = srect.size.width/2.0f;
-     
-     self.voNameView = [[gtVONameV alloc] initWithFrame:rect];
-     self.voNameView.currVO = self.currVO;
-     self.voNameView.myFont = self.myFont;
-     self.voNameView.voColor = (UIColor *) [self.tracker.colorSet objectAtIndex:self.currVO.vcolor];
-     
-     self.voNameView.backgroundColor = [UIColor orangeColor];  // debug
-     [[self view] addSubview:self.voNameView];
-     */
-    
-    
+
     // view for y axis labels
     
     rect.origin.x = 0.0f;
@@ -101,6 +88,7 @@
     self.yAV.myFont = self.myFont;
     //self.yAV.backgroundColor = [UIColor blueColor];  //debug;
     self.yAV.scaleOriginY = 0.0f;
+    self.yAV.parentGTVC = (id) self;
     
     //[[self view] addSubview:self.yAV];  // do after set vogd
     
@@ -127,10 +115,10 @@
     gtvRect.size.height = rect.origin.y - gtvRect.origin.y;
     
     // add scrollview for main graph
-    scrollView = [[UIScrollView alloc] initWithFrame:gtvRect];
-    [scrollView setBackgroundColor:[UIColor blackColor]];
-    [scrollView setDelegate:self];
-    [scrollView setBouncesZoom:YES];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:gtvRect];
+    [self.scrollView setBackgroundColor:[UIColor blackColor]];
+    [self.scrollView setDelegate:self];
+    [self.scrollView setBouncesZoom:YES];
     [[self view] addSubview:scrollView];
     //[[self view] setBackgroundColor:[UIColor yellowColor]];  //debug
 
@@ -150,14 +138,21 @@
     [self nextVO]; // initialize self.currVO
 
     self.yAV.vogd = (vogd*) self.currVO.vogd; 
+    self.yAV.graphSV = self.scrollView;
     [[self view] addSubview:self.yAV];
     self.xAV.togd = self.tracker.togd;
+    self.xAV.graphSV = self.scrollView;
     [[self view] addSubview:self.xAV];
     
     // add main graph view
-    gtv = [[graphTrackerV alloc]initWithFrame:gtvRect];
-	gtv.tracker = self.tracker;
-	[self.scrollView addSubview:gtv];
+    self.gtv = [[graphTrackerV alloc]initWithFrame:gtvRect];
+	self.gtv.tracker = self.tracker;
+    self.gtv.parentGTVC = (id) self;
+    if (DPA_GOTO == self.dpr.action) {
+        int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
+        self.gtv.xMark = ((togd*)self.tracker.togd).firstDate + (targSecs * ((togd*)self.tracker.togd).dateScale);
+    }
+	[self.scrollView addSubview:self.gtv];
     
     //[[self view] addSubview:[[[UIView alloc]initWithFrame:srect] retain]];
     //self.view.multipleTouchEnabled = YES;
@@ -165,19 +160,71 @@
     
 }
 
-/*
+
  - (void) viewWillAppear:(BOOL)animated {
-    
-    self.scrollView.bounds = self.view.bounds;
+     if (DPA_GOTO == self.dpr.action) {
+         int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
+         self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
+     }
 }
-*/
+
 
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return self.gtv;
 }
+/*
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+    CGRect newFrame =  view.frame;
+    DBGLog(@"sv did end zooming scale=%f",scale);
+    DBGLog(@"view frame -- x:%f y:%f w:%f h:%f",newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+    newFrame =  view.bounds;
+    DBGLog(@"view bounds -- x:%f y:%f w:%f h:%f",newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+    DBGLog(@"sv cOffset x:%f y:%f cSize w:%f h:%f cInset t:%f l:%f b:%f r:%f",scrollView.contentOffset.x,scrollView.contentOffset.y,
+           scrollView.contentSize.width,scrollView.contentSize.height,scrollView.contentInset.top,scrollView.contentInset.left,
+           scrollView.contentInset.bottom,scrollView.contentInset.right);
+    
+}
+*/
 
+ - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //DBGLog(@"sv did scroll");
+    //DBGLog(@"sv cOffset x:%f y:%f cSize w:%f h:%f cInset t:%f l:%f b:%f r:%f",self.scrollView.contentOffset.x,self.scrollView.contentOffset.y,
+    //       self.scrollView.contentSize.width,self.scrollView.contentSize.height,self.scrollView.contentInset.top,self.scrollView.contentInset.left,
+    //       self.scrollView.contentInset.bottom,self.scrollView.contentInset.right);
+
+     [self.xAV setNeedsDisplay];
+     [self.yAV setNeedsDisplay];
+     
+}
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    //DBGLog(@"sv did zoom");
+    //DBGLog(@"sv cOffset x:%f y:%f cSize w:%f h:%f cInset t:%f l:%f b:%f r:%f",self.scrollView.contentOffset.x,self.scrollView.contentOffset.y,
+    //       self.scrollView.contentSize.width,self.scrollView.contentSize.height,self.scrollView.contentInset.top,self.scrollView.contentInset.left,
+    //       self.scrollView.contentInset.bottom,self.scrollView.contentInset.right);
+
+    [self.xAV setNeedsDisplay];
+    [self.yAV setNeedsDisplay];
+    
+}
+/*
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    DBGLog(@"sv did end scrolling animation");
+    DBGLog(@"sv cOffset x:%f y:%f cSize w:%f h:%f cInset t:%f l:%f b:%f r:%f",scrollView.contentOffset.x,scrollView.contentOffset.y,
+           scrollView.contentSize.width,scrollView.contentSize.height,scrollView.contentInset.top,scrollView.contentInset.left,
+           scrollView.contentInset.bottom,scrollView.contentInset.right);
+    
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    DBGLog(@"sv did end decelerating");
+    DBGLog(@"sv cOffset x:%f y:%f cSize w:%f h:%f cInset t:%f l:%f b:%f r:%f",scrollView.contentOffset.x,scrollView.contentOffset.y,
+           scrollView.contentSize.width,scrollView.contentSize.height,scrollView.contentInset.top,scrollView.contentInset.left,
+           scrollView.contentInset.bottom,scrollView.contentInset.right);
+    
+}
+ */
 
 #pragma mark -
 #pragma mark close up code
@@ -369,6 +416,41 @@
     return currVO;
 }
 */
+
+#pragma mark -
+#pragma mark handle taps in subviews
+
+- (void) yavTap {
+    //DBGLog(@"yav tapped!");
+    [self nextVO];
+    self.yAV.vogd = (vogd*) currVO.vogd;
+    [self.yAV setNeedsDisplay];
+}
+
+- (void) gtvTap:(NSSet *)touches {
+    //DBGLog(@"gtv tapped!");
+    //int xMarkSecs;
+    UITouch *touch = [touches anyObject];
+    
+    if ((1 == [touch tapCount]) && (1 == [touches count])) {
+        CGPoint touchPoint = [touch locationInView:self.gtv];  // sv=> full zoomed content size ; gtv => gtv frame but zoom/scroll mapped
+        //DBGLog(@"gtv tap at %f, %f.  taps= %d  numTouches= %d",touchPoint.x, touchPoint.y, [touch tapCount],[touches count]);
+        
+        self.gtv.xMark = touchPoint.x;
+        int newDate = ((togd*)self.tracker.togd).firstDate + (touchPoint.x * ((togd*)self.tracker.togd).dateScaleInv );
+        self.dpr.date = [NSDate dateWithTimeIntervalSince1970:newDate];
+        self.dpr.action = DPA_GOTO;        
+    } else if ((2 == [touch tapCount]) && (1 == [touches count])) {
+        DBGLog(@"gtvTap: cancel");
+        self.gtv.xMark = NOXMARK;
+        self.dpr.action = DPA_GOTO;
+        self.dpr.date = nil;  
+    } else {
+        DBGLog(@"gtvTap: null event");
+    }
+    
+    [self.gtv setNeedsDisplay];
+}
 
 #pragma mark -
 #pragma mark private methods

@@ -15,6 +15,7 @@
 #import "valueObj.h"
 
 #import "graphTrackerV.h"
+#import "dpRslt.h"
 
 #import "gtTitleV.h"
 #import "gtVONameV.h"
@@ -33,6 +34,8 @@
     gtVONameV *voNameView;
     gtXAxV *xAV;
     gtYAxV *yAV;
+    
+    dpRslt *dpr;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
@@ -46,5 +49,9 @@
 @property(nonatomic,retain) gtVONameV *voNameView;
 @property(nonatomic,retain) gtXAxV *xAV;
 @property(nonatomic,retain) gtYAxV *yAV;
+@property(nonatomic,retain) dpRslt *dpr;
+
+- (void) yavTap;
+- (void) gtvTap:(NSSet *)touches;
 
 @end

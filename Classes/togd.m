@@ -14,7 +14,7 @@
 #import "dbg-defs.h"
 
 @implementation togd
-@synthesize pto, rect, firstDate, lastDate, dateScale;
+@synthesize pto, rect, bbox, firstDate, lastDate, dateScale, dateScaleInv;
 
 - (id) init {
     return ([self initWithData:nil rect:CGRectZero]);
@@ -24,6 +24,7 @@
     if ((self = [super init])) {
         self.pto = pTracker;
         self.rect = inRect;
+        self.bbox = inRect;
         
         self.pto.sql = @"select min(date) from voData;";
         self.firstDate = [self.pto toQry2Int];
@@ -32,6 +33,7 @@
         self.pto.sql = nil;
         
         self.dateScale = d(rect.size.width) / (d(self.lastDate) - d(self.firstDate));
+        self.dateScaleInv = d(self.lastDate - self.firstDate) / d(rect.size.width);
         
     }
     return self;

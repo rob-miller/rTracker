@@ -7,7 +7,7 @@
 //
 
 #define BORDER 30.0f
-#define XTICKS 10.0f
+#define XTICKS 7.0f
 #define YTICKS 7.0f
 #define TICKLEN 5.0f
 #define SPACE5 5.0f
@@ -20,4 +20,4 @@
 #define BAR_ALPHA 0.5f
 
 #define FONTNAME "Helvetica-Bold"
-#define FONTSIZE 10
+#define FONTSIZE 11

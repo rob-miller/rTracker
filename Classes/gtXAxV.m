@@ -9,12 +9,13 @@
 #import "gtXAxV.h"
 #import "graphTracker-constants.h"
 #import "gfx.h"
+#import "dbg-defs.h"
 
 #import "rTracker-constants.h"
 
 
 @implementation gtXAxV
-@synthesize togd, myFont, scaleOriginX, scaleWidthX;
+@synthesize togd, myFont, scaleOriginX, scaleWidthX,graphSV;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -25,9 +26,14 @@
     return self;
 }
 
+
 - (void)drawRect:(CGRect)rect {
+    
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextClearRect( context , [self bounds] );
+    
     [[UIColor whiteColor] set];
     
     MoveTo(self.scaleOriginX,0.0f);
@@ -38,35 +44,41 @@
 }
 
 
-// TODO: clean up / eliminate flipCTM calls
-- (void) flipCTM:(CGContextRef)context {
-    CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
-    CGContextConcatCTM(context,tm);
-}
 
-#define DOFFST 10.0f
+#define DOFFST 15.0f
 
 - (void) drawXAxis:(CGContextRef)context {
 	int i;
-	CGFloat dateStep = f(self.togd.lastDate - self.togd.firstDate) / XTICKS;  // togd.dateScale is based on togd.rect
+    
+    CGFloat svOffsetX = [self.graphSV contentOffset].x;
+    CGFloat svWidth = [self.graphSV contentSize].width;
+    CGFloat secsPerSVX = f(self.togd.lastDate - self.togd.firstDate) / svWidth;
+    CGFloat startDate = self.togd.firstDate + (svOffsetX * secsPerSVX);
+    CGFloat finDate = self.togd.firstDate + ((svOffsetX + self.scaleWidthX) * secsPerSVX);
+    
+	CGFloat dateStep = (finDate - startDate) / XTICKS;  
 	
 	//CGFloat len = self.bounds.size.width - (CGFloat) (2*BORDER);
-	CGFloat step = (self.scaleWidthX - (2*BORDER)) / XTICKS;
+	CGFloat step = (self.scaleWidthX - (1*BORDER)) / XTICKS;  // ignore scaleOrigin as it is 0
     
 	//[self flipCTM:context];
 	
     CGFloat nextXt= -2* DOFFST ;
     CGFloat nextXd= -2* DOFFST ;
     
-	for (i=0; i<= XTICKS; i++) {
-		CGFloat x = BORDER + (f(i) * step);
+	for (i=1; i<= XTICKS; i++) {
+		CGFloat x = (f(i) * step);
 		CGFloat y = 0.0f; // self.bounds.size.height - BORDER;
 		MoveTo(x,y);
 		y += TICKLEN;
 		//if (i>0)  // from when 1st tick at origin
 			AddLineTo(x,y);
-		y += 1.0f;
-		int date = self.togd.firstDate + (int) ((f(i) * dateStep) +0.5f);
+
+		y += 1.0f;   // skip space to time label
+        CGFloat y2 = y+4.0f;  // hack to lengthen ticks where date label can be drawn
+        CGFloat x2 = x;   
+        
+		int date = (int) (startDate + (f(i) * dateStep) +0.5f);
         
 		NSDate *sd = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) date];
 		NSString *datestr = [NSDateFormatter localizedStringFromDate:sd 
@@ -81,21 +93,24 @@
 		CGSize tsize = [ts sizeWithFont:myFont];
         
 		x-= DOFFST;
-		if ((i == 0
+		if ((i == 1
 			||
 			dateStep < 24*60*60
 			||
              i == XTICKS) && x>nextXt) {
-			[ts drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];
+            [ts drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];
             nextXt = x+tsize.width;
         }
 		
 		y += tsize.height; // + 1.0f;
-		if ((i == 0
+        x-=15.0f;
+		if ((i == 1
 			||
 			dateStep >= 24*60*60
 			||
              i == XTICKS) && x>nextXd) {
+            if ((i != 1) && (i != XTICKS))
+                AddLineTo(x2, y2);
             [ds drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];
             nextXd = x+dsize.width;
         }
@@ -103,49 +118,6 @@
 	}
     
 	Stroke;
-	
-	/*
-     const char *ds = [(NSString *) [dta objectAtIndex:0] UTF8String];
-     const char *ts = [(NSString *) [dta objectAtIndex:1] UTF8String];
-     
-     CGContextShowTextAtPoint (self.context, BORDER, 0, ds, strlen(ds));
-     CGContextShowTextAtPoint (self.context, BORDER, BORDER/2.0f, ts, strlen(ts));
-	 * /
-     
-     
-     CGPoint tpos1,tpos2;
-     tpos1.x = BORDER;
-     tpos2.x = BORDER;
-     tpos1.y = self.bounds.size.height - BORDER + (BORDER - (2*tsize.height));
-     tpos2.y = self.bounds.size.height - BORDER + (BORDER - tsize.height);
-     
-     tsize = [ts sizeWithFont:myFont];
-     [ts drawAtPoint:tpos2 withFont:myFont];
-     
-     sd = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.lastDate];
-     datestr = [NSDateFormatter localizedStringFromDate:sd dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
-     dta = [datestr componentsSeparatedByString:@" "];
-     / *
-     ds = [(NSString *) [dta objectAtIndex:0] UTF8String];
-     ts = [(NSString *) [dta objectAtIndex:1] UTF8String];
-     
-     CGContextShowTextAtPoint (self.context, self.bounds.size.width-(2.0f*BORDER), 0, ds, strlen(ds));
-     CGContextShowTextAtPoint (self.context, self.bounds.size.width-(2.0f*BORDER), BORDER/2.0f, ts, strlen(ts));
-	 * /
-     
-     ds = (NSString *) [dta objectAtIndex:0];
-     ts = (NSString *) [dta objectAtIndex:1];
-     
-     tpos1.x = self.bounds.size.width-(2.0f*BORDER);
-     tpos2.x = self.bounds.size.width-(2.0f*BORDER);
-     
-     [ds drawAtPoint:tpos1 withFont:myFont];
-     [ts drawAtPoint:tpos2 withFont:myFont];
-     
-	 */
-	
-	//[self flipCTM:context];
-	
 }
 
 - (void)dealloc

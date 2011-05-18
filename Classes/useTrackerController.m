@@ -23,7 +23,7 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, needSave, saveFrame;
+@synthesize table, dpvc, dpr, needSave, saveFrame;
 @synthesize saveBtn, exportBtn;
 
 //BOOL keyboardIsShown=NO;
@@ -54,6 +54,8 @@
     
 	self.dpvc = nil;
 	[dpvc release];
+	self.dpr = nil;
+	[dpr release];
 	
 	self.table = nil;
 	[table release];
@@ -156,6 +158,7 @@
 	if (haveView) 
 		[haveView removeFromSuperview];
 	self.dpvc = nil;
+    self.dpr = nil;
 	self.table = nil;
 	
 	self.title = nil;
@@ -171,7 +174,7 @@
 	self.navigationItem.rightBarButtonItem = nil;	
 	self.navigationItem.leftBarButtonItem = nil;
 	
-	self.dpvc.action = DPA_CANCEL;
+	self.dpr.action = DPA_CANCEL;
 	
 	self.tracker.vc = nil;
 	
@@ -180,42 +183,47 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
-	if (dpvc) {
-		switch (self.dpvc.action) {
+	if (self.dpr) {
+		switch (self.dpr.action) {
 			case DPA_NEW:
 				[self.tracker resetData];
-				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpvc.date timeIntervalSince1970]]];
+				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpr.date timeIntervalSince1970]]];
 				//break;
 			case DPA_SET:
 			{
 				if ([self.tracker hasData]) {
-					[self.tracker changeDate:self.dpvc.date];
+					[self.tracker changeDate:self.dpr.date];
 				}  
-				self.tracker.trackerDate = self.dpvc.date;
+				self.tracker.trackerDate = self.dpr.date;
 				[self updateToolBar];
 				break;
 			}
 			case DPA_GOTO:
 			{
-				int targD = (int) [self.dpvc.date timeIntervalSince1970];
-				if (! [self.tracker loadData:targD]) {
-					self.tracker.trackerDate = self.dpvc.date;
-					targD = [self.tracker prevDate];
-					if (!targD) 
-						targD = [self.tracker postDate];
-				}
+                int targD = 0;
+                if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
+                    targD = (int) [self.dpr.date timeIntervalSince1970];
+                    if (! [self.tracker loadData:targD]) {
+                        self.tracker.trackerDate = self.dpr.date;
+                        targD = [self.tracker prevDate];
+                        if (!targD) 
+                            targD = [self.tracker postDate];
+                    }
+                }
 				[self setTrackerDate:targD];
 				break;
 			}
 			case DPA_CANCEL:
 				break;
 			default:
-				NSAssert(0,@"failed to determine dpvc action");
+				NSAssert(0,@"failed to determine dpr action");
 				break;
 		}
-		self.dpvc.date = nil;
+		self.dpr.date = nil;
 		self.dpvc = nil;
 		[dpvc release];
+        self.dpr = nil;
+        [dpr release];
 	}
 
     //DBGLog(@"add kybd will show notifcation");
@@ -313,9 +321,21 @@
 			break;			
 	}
 }
+
+- (void) doGT {
+	graphTrackerVC *gt;
+    gt = [[graphTrackerVC alloc] init];
+    gt.tracker = self.tracker;
+    if ([self.tracker hasData]) {
+        self.dpr.date = self.tracker.trackerDate;
+        self.dpr.action = DPA_GOTO;
+    }
+    gt.dpr = self.dpr;
+    [self presentModalViewController:gt animated:YES];
+    [gt release];
+}
 #if (1) 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
-	graphTrackerVC *gt;
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
@@ -327,19 +347,13 @@
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc will animate rotation to interface orientation landscape left duration: %f sec", duration);
 
-			gt = [[graphTrackerVC alloc] init];
-			gt.tracker = self.tracker;
-			[self presentModalViewController:gt animated:YES];
-			[gt release];
-			
+			[self doGT];
+            
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc will animate rotation to interface orientation landscape right duration: %f sec", duration);
 
-			gt = [[graphTrackerVC alloc] init];
-			gt.tracker = self.tracker;
-			[self presentModalViewController:gt animated:YES];
-			[gt release];
+			[self doGT];
 			
 			break;
 		default:
@@ -641,12 +655,22 @@
 	return dpvc;
 }
 
+- (dpRslt*) dpr
+{ 
+	if (dpr == nil) {
+		dpr = [[dpRslt alloc] init];;
+	}
+	return dpr;
+}
+
 - (void) btnCurrDate {
 	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
 	
 	
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
-	self.dpvc.date = self.tracker.trackerDate;
+	self.dpr.date = self.tracker.trackerDate;
+    self.dpvc.dpr = self.dpr;
+    
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	[self presentModalViewController:self.dpvc animated:YES];
 

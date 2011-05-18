@@ -12,16 +12,20 @@
 @interface togd : NSObject {
     trackerObj *pto;
     CGRect rect;
+    CGRect bbox;
 	int firstDate;
 	int lastDate;
     double dateScale;
+    double dateScaleInv;
 }
 
 @property(nonatomic,retain) trackerObj *pto;
 @property(nonatomic) CGRect rect;
+@property(nonatomic) CGRect bbox;
 @property(nonatomic) int firstDate;
 @property(nonatomic) int lastDate;
 @property(nonatomic) double dateScale;
+@property(nonatomic) double dateScaleInv;
 
 - (id) initWithData:(trackerObj*)pTracker rect:(CGRect) inRect;
 - (void) fillVOGDs;

@@ -14,12 +14,14 @@
     UIFont *myFont;
     CGFloat scaleOriginX;
     CGFloat scaleWidthX;
+    UIScrollView *graphSV;
 }
 
 @property(nonatomic,retain) togd *togd;
 @property(nonatomic,retain) UIFont *myFont;
 @property(nonatomic) CGFloat scaleOriginX;
 @property(nonatomic) CGFloat scaleWidthX;
+@property(nonatomic,retain) UIScrollView *graphSV;
 
 - (void) drawXAxis:(CGContextRef)context;
 @end

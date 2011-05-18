@@ -11,6 +11,8 @@
 #import "graphTrackerV.h"
 #import "gfx.h"
 #import "vogd.h"
+//#import "togd.h"
+#import "graphTrackerVC.h"
 
 #import "graphTracker-constants.h"
 
@@ -22,7 +24,7 @@
 
 @implementation graphTrackerV
 
-@synthesize tracker,doDrawGraph;
+@synthesize tracker,doDrawGraph,xMark,parentGTVC;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -47,7 +49,6 @@
         tempTiledLayer.levelsOfDetail = 5;
         tempTiledLayer.levelsOfDetailBias = 2;
         self.opaque=NO;
-        
     }
     return self;
 }
@@ -63,6 +64,8 @@
 - (void)dealloc {
 	self.tracker = nil;
     [tracker release];
+    self.parentGTVC = nil;
+    [parentGTVC release];
     
     [super dealloc];
 }
@@ -81,25 +84,44 @@
 
 
 
+#define LXNOTSTARTED -1.0f
 
 - (void) plotVO_lines:(vogd *)vogd context:(CGContextRef)context
 {
     
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
-	
+	CGRect bbox = CGContextGetClipBoundingBox(context);
+	CGFloat minX = bbox.origin.x;
+    CGFloat maxX = bbox.origin.x + bbox.size.width;
+    
 	BOOL going=NO;
+    CGFloat lastX=LXNOTSTARTED;
+    CGFloat lastY;
+    
 	for (NSNumber *nx in vogd.xdat) {
-		CGFloat x = [nx floatValue];
-		CGFloat y = [[e nextObject] floatValue];
-		if (going) {
-			//DBGLog(@"addline %f %f",x,y);
-			AddLineTo(x,y);
-		} else {
-			//DBGLog(@"moveto %f %f",x,y);
-			MoveTo(x,y);
-			going=1;
-		}
-	}
+        CGFloat x = [nx floatValue];
+        CGFloat y = [[e nextObject] floatValue];
+        if (going) {
+            //DBGLog(@"addline %f %f",x,y);
+            AddLineTo(x,y);
+            if (x > maxX)
+                break; //going=NO;                
+        } else {  // not started yet
+            if (x<minX) {      // not started, save current for next time
+                lastX = x;
+                lastY = y;
+            } else {           // start drawing
+                if (lastX == LXNOTSTARTED) { // 1st time through, 1st point needs showing
+                    //DBGLog(@"moveto %f %f",x,y);
+                    MoveTo(x,y);
+                } else { // process starting, need to show lastX plus current
+                    MoveTo(lastX, lastY);
+                    AddLineTo(x,y);
+                }  
+                going=YES;
+            } 
+        }
+    }
 	
 	Stroke;
 }
@@ -108,21 +130,40 @@
 - (void) plotVO_dotsline:(vogd*)vogd context:(CGContextRef)context
 {
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
-	
+	CGRect bbox = CGContextGetClipBoundingBox(context);
+	CGFloat minX = bbox.origin.x;
+    CGFloat maxX = bbox.origin.x + bbox.size.width;
+    
 	BOOL going=NO;
+    CGFloat lastX=LXNOTSTARTED;
+    CGFloat lastY;
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
-		if (going) {
-			//DBGLog(@"addline %f %f",x,y);
-			AddLineTo(x,y);
-			AddCircle(x,y);
-		} else {
-			//DBGLog(@"moveto %f %f",x,y);
-			MoveTo(x,y);
-			AddCircle(x,y);
-			going=1;
-		}
+        if (going) {
+            //DBGLog(@"addline %f %f",x,y);
+            AddLineTo(x,y);
+            AddCircle(x,y);
+            if (x > maxX)
+                break; //going=NO;   // done
+        } else {  // not started yet
+            if (x < minX) {  // keep processing until start drawing
+                lastX = x;
+                lastY = y;
+            } else { // start drawing
+                if (lastX == LXNOTSTARTED) { // 1st time through, 1st point needs showing
+                    //DBGLog(@"moveto %f %f",x,y);
+                    MoveTo(x,y);
+                    AddCircle(x,y);
+                } else { // past 1st data point, need to show lastX plus current
+                    MoveTo(lastX, lastY);
+                    AddCircle(lastX,lastY);
+                    AddLineTo(x,y);
+                    AddCircle(x,y);
+                }
+                going=YES;
+            } 
+        }
 	}
 	
 	Stroke;
@@ -130,40 +171,119 @@
 
 - (void) plotVO_dots:(vogd *)vogd context:(CGContextRef)context
 {
-    NSArray *lydat = [[NSArray alloc] initWithArray:vogd.ydat];
-	NSEnumerator *e = [lydat objectEnumerator];
-	NSArray *lxdat = [[NSArray alloc] initWithArray:vogd.xdat];
+	NSEnumerator *e = [vogd.ydat objectEnumerator];
+	CGRect bbox = CGContextGetClipBoundingBox(context);
+	CGFloat minX = bbox.origin.x;
+    CGFloat maxX = bbox.origin.x + bbox.size.width;
     
-	for (NSNumber *nx in lxdat) {
+    CGFloat lastX=LXNOTSTARTED;
+    CGFloat lastY;
+    BOOL going=NO;
+    
+	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
+        if (going) {
+            //DBGLog(@"moveto %f %f",x,y);
+            MoveTo(x,y);
+            AddCircle(x,y);
+            if (x > maxX)
+                break; 
+        } else if (x < minX) { // not started yet and keep skipping -- save current for next time
+            lastX = x;
+            lastY = y;
+        } else {              // not started yet, start now
+            if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
+                MoveTo(lastX,lastY);
+                AddCircle(lastX,lastY);
+            }
+            going=YES;    // going, show current
+            MoveTo(x,y);
+            AddCircle(x,y);
+        }  
+    }
 
-		//DBGLog(@"moveto %f %f",x,y);
-		MoveTo(x,y);
-		AddCircle(x,y);
-	}
-	
+	Stroke;
+}
+
+- (void) plotVO_dotsNoY:(vogd *)vogd context:(CGContextRef)context
+{
+	//NSEnumerator *e = [vogd.ydat objectEnumerator];
+	CGRect bbox = CGContextGetClipBoundingBox(context);
+	CGFloat minX = bbox.origin.x;
+    CGFloat maxX = bbox.origin.x + bbox.size.width;
+    
+    CGFloat lastX=LXNOTSTARTED;
+    CGFloat lastY;
+    BOOL going=NO;
+    
+	for (NSNumber *nx in vogd.xdat) {
+		CGFloat x = [nx floatValue];
+		CGFloat y = 2.0f; //[[e nextObject] floatValue];
+        if (going) {
+            //DBGLog(@"moveto %f %f",x,y);
+            MoveTo(x,y);
+            AddCircle(x,y);
+            if (x > maxX)
+                break; 
+        } else if (x < minX) { // not started yet and keep skipping -- save current for next time
+            lastX = x;
+            lastY = y;
+        } else {              // not started yet, start now
+            if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
+                MoveTo(lastX,lastY);
+                AddCircle(lastX,lastY);
+            }
+            going=YES;    // going, show current
+            MoveTo(x,y);
+            AddCircle(x,y);
+        }  
+    }
+    
 	Stroke;
 }
 
 - (void) plotVO_bar:(vogd *)vogd context:(CGContextRef)context
 {
 	CGContextSetAlpha(context, BAR_ALPHA);
-	
 	CGContextSetLineWidth(context, BAR_LINE_WIDTH);
 	
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
-	
-	for (NSNumber *nx in vogd.xdat) {
+	CGRect bbox = CGContextGetClipBoundingBox(context);
+	CGFloat minX = bbox.origin.x;
+    CGFloat maxX = bbox.origin.x + bbox.size.width + BAR_LINE_WIDTH;
+    
+    CGFloat lastX=LXNOTSTARTED;
+    CGFloat lastY;
+    BOOL going=NO;
+    
+    for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
-
-		DBGLog(@"bar to %f %f",x,y);
-		MoveTo(x,BORDER);
-		AddLineTo(x,y);
-		AddCircle(x,y);
-	}
-	
+        
+        if (going) {
+            //DBGLog(@"moveto %f %f",x,y);
+            MoveTo(x,BORDER);
+            AddLineTo(x,y);
+            AddCircle(x,y);
+            if (x > maxX)
+                break; 
+        } else if (x < minX) { // not started yet and keep skipping -- save current for next time
+            lastX = x;
+            lastY = y;
+        } else {              // not started yet, start now
+            if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
+                MoveTo(lastX,BORDER);
+                AddLineTo(lastX,lastY);
+                AddCircle(lastX,lastY);
+            }
+            going=YES;    // going, show current
+            MoveTo(x,BORDER);
+            AddLineTo(x,y);
+            AddCircle(x,y);
+        }  
+    }
+    
 	Stroke;
 	
 	CGContextSetAlpha(context, STD_ALPHA);
@@ -179,7 +299,26 @@
     CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
 	switch (vo.vGraphType) {
 		case VOG_DOTS:
-			[self plotVO_dots:(vogd*)vo.vogd context:context];
+            switch (vo.vtype) {
+                case VOT_NUMBER:
+                case VOT_SLIDER:
+                case VOT_CHOICE:
+                case VOT_FUNC:
+                    [self plotVO_dots:(vogd*)vo.vogd context:context];
+                    break;
+                case VOT_TEXT:
+                case VOT_BOOLEAN:
+                case VOT_IMAGE:
+                    [self plotVO_dotsNoY:(vogd*)vo.vogd context:context];
+                    break;
+                default:   // VOT_TEXTB
+                    if ([(NSString*) [vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
+                        [self plotVO_dots:(vogd*)vo.vogd context:context];
+                    } else {
+                        [self plotVO_dotsNoY:(vogd*)vo.vogd context:context];
+                    }
+                    break;
+            }
 			break;
 		case VOG_BAR:
 			[self plotVO_bar:(vogd*)vo.vogd context:context];
@@ -209,6 +348,14 @@
         }
 	}
 		
+    if (self.xMark != NOXMARK) {
+        CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
+        CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);
+        MoveTo(self.xMark, 0.0f);
+        AddLineTo(self.xMark,self.frame.size.height);
+        Stroke;
+    }
+     
 }
 
 #pragma mark -
@@ -232,6 +379,7 @@
     //NSLog(@"drawLayer here...");
     
 //- (void)drawRect:(CGRect)rect {
+    //((togd*)self.tracker.togd).bbox = CGContextGetClipBoundingBox(context);
     
     if (self.doDrawGraph) {
         /*
@@ -273,7 +421,7 @@
 
 #pragma mark -
 #pragma mark touch support
-/*
+
 - (NSString*) touchReport:(NSSet*)touches {
     
 #if DEBUGLOG
@@ -285,7 +433,7 @@
     return @"";
 
 }
-
+/*
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     DBGLog(@"touches began: %@", [self touchReport:touches]);
 }
@@ -293,11 +441,14 @@
 - (void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     DBGLog(@"touches cancelled: %@", [self touchReport:touches]);
 }
-
+*/
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    DBGLog(@"touches ended: %@", [self touchReport:touches]);
+    //DBGLog(@"touches ended: %@", [self touchReport:touches]);
+    
+    [(graphTrackerVC*) self.parentGTVC gtvTap:touches];
+    
 }
-
+/*
 - (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     DBGLog(@"touches moved: %@", [self touchReport:touches]);
 }

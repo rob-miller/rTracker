@@ -10,14 +10,19 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
+#define NOXMARK -1.0f
 
 @interface graphTrackerV : UIScrollView {
 	trackerObj *tracker;
     BOOL doDrawGraph;
+    CGFloat xMark;
+    id parentGTVC;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property(nonatomic) BOOL doDrawGraph;
+@property(nonatomic) CGFloat xMark;
+@property(nonatomic,retain) id parentGTVC;
 
 //- (void)setTransform:(CGAffineTransform)newValue;
 

@@ -11,12 +11,12 @@
 
 @implementation datePickerVC
 
-@synthesize myTitle, date,action,setBtn,newBtn,gotoBtn,navBar,toolBar,datePicker;
+@synthesize myTitle, /*date,action,*/ dpr, setBtn,newBtn,gotoBtn,navBar,toolBar,datePicker;
 
 - (IBAction) btnCancel:(UIButton*)btn
 {
-	self.date = self.datePicker.date;
-	self.action = DPA_CANCEL;
+	self.dpr.date = self.datePicker.date;
+	self.dpr.action = DPA_CANCEL;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -34,7 +34,7 @@
 	
 	self.datePicker.locale = [NSLocale currentLocale];
 	self.datePicker.maximumDate = [NSDate date];
-	self.datePicker.date = self.date;
+	self.datePicker.date = self.dpr.date;
 	self.datePicker.minuteInterval = 2;
 	
 }
@@ -81,8 +81,10 @@
 	self.myTitle = nil;
 	[myTitle release];
 	
-	self.date = nil;
-	[date release];
+	//self.date = nil;
+	//[date release];
+    self.dpr = nil;
+    [dpr release];
 	
     [super dealloc];
 }
@@ -92,27 +94,27 @@
 
 - (IBAction) newBtnAction
 {
-	self.date = self.datePicker.date;
-	self.action = DPA_NEW;
+	self.dpr.date = self.datePicker.date;
+	self.dpr.action = DPA_NEW;
 	[self dismissModalViewControllerAnimated:YES];
 }
 - (IBAction) setBtnAction
 {
-	self.date = self.datePicker.date;
-	self.action = DPA_SET;
+	self.dpr.date = self.datePicker.date;
+	self.dpr.action = DPA_SET;
 	[self dismissModalViewControllerAnimated:YES];
 }
 - (IBAction) gotoBtnAction
 {
-	self.date = self.datePicker.date;
-	self.action = DPA_GOTO;
+	self.dpr.date = self.datePicker.date;
+	self.dpr.action = DPA_GOTO;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction) dateModeChoice:(id)sender
 {
 	self.datePicker.maximumDate = [NSDate date];
-	self.datePicker.date = self.date;
+	self.datePicker.date = self.dpr.date;
 	
 	switch ([sender selectedSegmentIndex]) {
 		case SEG_DATE :

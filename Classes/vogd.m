@@ -92,7 +92,9 @@
             //d+= border; //BORDER;
             //v+= border; //BORDER;
             // fixed by doDrawGraph ?  TODONE: why does this code run again after rotate to portrait?
-            DBGLog(@"num final: %f %f",d,v);
+
+            //DBGLog(@"num final: %f %f",d,v);
+            
             [mxdat addObject:[NSNumber numberWithDouble:d]];
             [mydat addObject:[NSNumber numberWithDouble:v]];
             
@@ -264,6 +266,10 @@
     
     return self;
     
+}
+
+- (UIColor*) myGraphColor {
+    return( (UIColor *) [((trackerObj*)self.vo.parentTracker).colorSet objectAtIndex:self.vo.vcolor] );
 }
 
 - (void) dealloc {

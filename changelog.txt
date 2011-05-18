@@ -144,3 +144,10 @@
   - finished re-org of graphing to use UIScrollView for zoom etc, separate windows for title, axes.  still need work for axis labels
 
 --- check in ---
+
+18 May 2011
+  - finished axis labels
+  - tap on y axis label to change vo displayed
+  - tap on graph to mark and set tracker date, double tap to clear
+  - return to graph with current date marked 
+  - factored dpRslt out of datePickerVC to facilitate this
