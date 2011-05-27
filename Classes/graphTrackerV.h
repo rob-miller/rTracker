@@ -14,12 +14,14 @@
 
 @interface graphTrackerV : UIScrollView {
 	trackerObj *tracker;
+    valueObj *currVO;
     BOOL doDrawGraph;
     CGFloat xMark;
     id parentGTVC;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
+@property(nonatomic,retain) valueObj *currVO;
 @property(nonatomic) BOOL doDrawGraph;
 @property(nonatomic) CGFloat xMark;
 @property(nonatomic,retain) id parentGTVC;

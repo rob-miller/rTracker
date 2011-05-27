@@ -21,7 +21,7 @@
 
 @synthesize to, vo, wDict;
 @synthesize toolBar, navBar, lasty, saveFrame, LFHeight, vdlConfigVO;
-@synthesize activeField;
+@synthesize activeField, processingTfDone;
 
 //BOOL keyboardIsShown;
 
@@ -30,6 +30,12 @@
 #pragma mark -
 #pragma mark core object methods and support
 
+- (id) init {
+    if ((self = [super init])) {
+        self.processingTfDone=NO;
+    }
+    return self;
+}
 - (void)dealloc {
 
 	self.to = nil;
@@ -195,14 +201,18 @@
     activeField = textField;
 }
 
+/*
+ choice textfields have custom action
+ 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
 	//DBGLog(@"tf end editing");
-    //if (nil != activeField)
-       // [self tfDone:activeField];
+    if ((nil != activeField) && 
+        (NSOrderedSame == [@"choice" 
+        [self tfDone:activeField];
     activeField = nil;
 }
-
+*/
 
 
 
@@ -306,10 +316,10 @@
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
-	//} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
-	//	okey = @"tbni"; dfltState=TBNIDFLT;
-	//} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
-	//	okey = @"tbhi"; dfltState=TBHIDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
+		okey = @"tbni"; dfltState=TBNIDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
+		okey = @"tbhi"; dfltState=TBHIDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
 		okey = @"graph"; dfltState=GRAPHDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"swlBtn"] ) {
@@ -383,8 +393,11 @@
 	[button release];
 }
 
-- (void) tfDone:(UITextField *)tf
-{
+- (void) tfDone:(UITextField *)tf {
+    if (YES == self.processingTfDone)
+        return;
+    self.processingTfDone = YES;
+    
 	NSString *okey, *nkey;
 	if ( tf == [self.wDict objectForKey:@"nminTF"] ) {
 		okey = @"gmin";
@@ -432,6 +445,9 @@
 	}
     
     activeField=nil;
+    
+    self.processingTfDone = NO;
+    
 }
 
 
@@ -451,7 +467,9 @@
 		target = self;
 	
 	[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEndOnExit];
-	
+    //[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd|UIControlEventEditingDidEndOnExit];
+    [rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd];
+    
 	if (num) {
 		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
 		rtf.textAlignment = UITextAlignmentRight;

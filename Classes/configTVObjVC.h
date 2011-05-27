@@ -27,6 +27,7 @@
 	CGRect saveFrame;
 	CGFloat LFHeight;
 
+    BOOL processingTfDone;
 	
 }
 
@@ -43,6 +44,7 @@
 @property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
 
 @property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
+@property (nonatomic) BOOL processingTfDone;
 
 
 - (void) addVOFields:(NSInteger) vot;

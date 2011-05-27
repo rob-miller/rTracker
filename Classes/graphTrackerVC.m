@@ -140,7 +140,7 @@
     self.yAV.vogd = (vogd*) self.currVO.vogd; 
     self.yAV.graphSV = self.scrollView;
     [[self view] addSubview:self.yAV];
-    self.xAV.togd = self.tracker.togd;
+    self.xAV.mytogd = self.tracker.togd;
     self.xAV.graphSV = self.scrollView;
     [[self view] addSubview:self.xAV];
     
@@ -423,8 +423,10 @@
 - (void) yavTap {
     //DBGLog(@"yav tapped!");
     [self nextVO];
-    self.yAV.vogd = (vogd*) currVO.vogd;
+    self.yAV.vogd = (vogd*) self.currVO.vogd;
     [self.yAV setNeedsDisplay];
+    self.gtv.currVO = self.currVO;
+    [self.gtv setNeedsDisplay];
 }
 
 - (void) gtvTap:(NSSet *)touches {

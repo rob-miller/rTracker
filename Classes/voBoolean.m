@@ -79,7 +79,7 @@
 }
 */
 
-- (id) getVOGD {
+- (id) newVOGD {
     return [[vogd alloc] initAsBool:self.vo];
 }
 

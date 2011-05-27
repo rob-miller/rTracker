@@ -21,7 +21,8 @@
 @implementation voTextBox
 
 @synthesize tbButton,textView,devc,saveFrame,accessoryView,addButton,segControl;
-@synthesize alphaArray,peopleArray,historyArray;
+@synthesize alphaArray,namesArray,historyArray,namesNdx,historyNdx;
+
 //@synthesize peopleDictionary,historyDictionary;
 @synthesize pv,showNdx;
 
@@ -56,10 +57,14 @@
 	self.devc = nil;
 	
 	//self.alphaArray = nil;
-	self.peopleArray = nil;
+	self.namesArray = nil;
+    [namesArray release];
 	self.historyArray = nil;
-	//self.peopleDictionary = nil;
-	//self.historyDictionary = nil;
+    [historyArray release];
+    self.namesNdx = nil;
+    [namesNdx release];
+    self.historyNdx = nil;
+    [historyNdx release];
 	self.pv = nil;
 	
 	[super dealloc];
@@ -193,7 +198,7 @@
 		row = [self.pv selectedRowInComponent:0];
 	}
 	if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-		str = [NSString stringWithFormat:@"%@\n",[(NSString*) ABRecordCopyCompositeName([self.peopleArray objectAtIndex:row])autorelease]];
+		str = [NSString stringWithFormat:@"%@\n",[(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row])autorelease]];
 	} else {
 		str = [NSString stringWithFormat:@"%@\n",[self.historyArray objectAtIndex:row]];
 	}
@@ -251,7 +256,7 @@
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
 	// provide my own Save button to dismiss the keyboard
-	UIBarButtonItem* saveItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+	UIBarButtonItem* saveItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 																			  target:self action:@selector(saveAction:)];
 	self.devc.navigationItem.rightBarButtonItem = saveItem;
 	[saveItem release];
@@ -327,6 +332,10 @@
     
     if (nil == [self.vo.optDict objectForKey:@"tbnl"]) 
         [self.vo.optDict setObject:(TBNLDFLT ? @"1" : @"0") forKey:@"tbnl"];
+    if (nil == [self.vo.optDict objectForKey:@"tbni"]) 
+        [self.vo.optDict setObject:(TBNIDFLT ? @"1" : @"0") forKey:@"tbni"];
+    if (nil == [self.vo.optDict objectForKey:@"tbhi"]) 
+        [self.vo.optDict setObject:(TBHIDFLT ? @"1" : @"0") forKey:@"tbhi"];
     
     return [super setOptDictDflts];
 }
@@ -338,9 +347,10 @@
         return YES;
     
     if (([key isEqualToString:@"tbnl"] && [val isEqualToString:(TBNLDFLT ? @"1" : @"0")])
-        //([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
-        //||
-        //([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"tbni"] && [val isEqualToString:(TBNIDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"tbhi"] && [val isEqualToString:(TBHIDFLT ? @"1" : @"0")])
         ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
@@ -359,7 +369,7 @@
 						key:@"tbnlBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
 	
-	/*  TODO: support index picker component in v 2.0
+    // need now for contacts else unuseable /*  TODO: support index picker component in v 2.0
 	 
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
@@ -367,7 +377,7 @@
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
 						key:@"tbniBtn" 
-					  state:[[self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"1"] ]; // default:0
+					  state:(![[self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"0"]) ]; // default:1
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
@@ -377,7 +387,7 @@
 						key:@"tbhiBtn" 
 					  state:[[self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"] ]; // default:0
 
-	 */
+	 //*/
 	
 	//	frame.origin.x = MARGIN;
 	//	frame.origin.y += MARGIN + frame.size.height;
@@ -407,7 +417,7 @@
 	return pv;
 }
 
-/*
+
 - (NSArray*) alphaArray {
 	if (nil == alphaArray) {
 		alphaArray = [[NSArray alloc] initWithObjects:@"#",@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",
@@ -416,56 +426,9 @@
 	return alphaArray;
 }
 
-- (NSMutableDictionary*) peopleDictionary {
-	if (nil == peopleDictionary) {
-		ABAddressBookRef addressBook = ABAddressBookCreate();
-		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
-		/ / / *
-		CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
-																   kCFAllocatorDefault,
-																   CFArrayGetCount(people),
-																   people
-																   );
-		
-		CFArraySortValues(
-						  peopleMutable,
-						  CFRangeMake(0, CFArrayGetCount(peopleMutable)),
-						  (CFComparatorFunction) ABPersonComparePeopleByName,
-						  (void*) ABPersonGetSortOrdering()
-						  );
 
-		CFIndex max = CFArrayGetCount(people);
-		int i;
-		for (i=0; i< max; i++) {
-			//DBGLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//DBGLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
-			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
-			CFStringRef first,last,full;
-			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
-			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
-			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			DBGLog(@"person: %@ -- %@ %@",full,first,last);
-		}
-		
-		CFRelease(addressBook);
-		CFRelease(people);
-		CFRelease(peopleMutable);
-		
-	}
-	return peopleDictionary;
-}
-
-- (NSMutableDictionary*) historyDictionary {
-	if (nil == historyDictionary) {
-		historyDictionary = [[NSMutableDictionary alloc] init];
-	}
-	return historyDictionary;
-}
-*/
-
-
-- (NSArray*) peopleArray {
-	if (nil == peopleArray) {
+- (NSArray*) namesArray {
+	if (nil == namesArray) {
 		ABAddressBookRef addressBook = ABAddressBookCreate();
 		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
 		// /*
@@ -481,28 +444,14 @@
 						  (CFComparatorFunction) ABPersonComparePeopleByName,
 						  (void*) ABPersonGetSortOrdering()
 						  );
-		/*
-		CFIndex max = CFArrayGetCount(people);
-		int i;
-		for (i=0; i< max; i++) {
-			//DBGLog(@"person: %@",ABRecordCopyCompositeName([people objectAtIndex:i]));
-			//DBGLog(@"person: %@ %@",ABRecordCopyValue([people objectAtIndex:i],kABPersonFirstNameProperty),
-			//	  ABRecordCopyValue([people objectAtIndex:i],kABPersonLastNameProperty));
-			CFStringRef first,last,full;
-			full = ABRecordCopyCompositeName([(NSArray*)peopleMutable objectAtIndex:i]);
-			first = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonFirstNameProperty);
-			last = ABRecordCopyValue([(NSArray*)peopleMutable objectAtIndex:i],kABPersonLastNameProperty);
-			DBGLog(@"person: %@ -- %@ %@",full,first,last);
-		}
-		*/
-		
-		peopleArray = [[NSArray alloc] initWithArray:(NSArray*)peopleMutable];
+
+		namesArray = [[NSArray alloc] initWithArray:(NSArray*)peopleMutable];
 		
 		CFRelease(addressBook);
 		CFRelease(people);
 		CFRelease(peopleMutable);
 	}
-	return peopleArray;
+	return namesArray;
 }
 
 - (NSArray*) historyArray {
@@ -531,6 +480,96 @@
 	return historyArray;
 }
 
+- (ABPropertyID) getABSortTok {
+        if (kABPersonSortByFirstName == ABPersonGetSortOrdering()) {
+            return kABPersonFirstNameProperty;
+        } 
+        return kABPersonLastNameProperty;
+}
+
+- (NSMutableArray *) initNSMA:(id)dflt {
+    int i;
+    int c = [self.alphaArray count];
+    
+    NSMutableArray *tmpNSMA = [[NSMutableArray alloc] initWithCapacity:[self.alphaArray count]];
+    for (i=0;i<c;i++)
+        [tmpNSMA insertObject:dflt atIndex:i];
+    return tmpNSMA;
+}
+
+- (void) enterNSMA:(NSMutableArray*)NSMA c:(unichar)c dflt:(id)dflt ndx:(NSInteger)ndx {
+    NSUInteger aaNdx = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper(c)]];
+    if (NSNotFound == aaNdx) {
+        if (dflt == [NSMA objectAtIndex:0]) {  // is a non-alpha, update index if it is first found
+            [NSMA replaceObjectAtIndex:0 withObject:[NSNumber numberWithInt:ndx]];
+        } 
+    } else if (dflt == [NSMA objectAtIndex:aaNdx]) { // only update if this is first for this letter
+        [NSMA replaceObjectAtIndex:aaNdx withObject:[NSNumber numberWithInt:ndx]];
+    }
+}
+
+- (void) fillNSMA:(NSMutableArray*)NSMA dflt:(id)dflt {
+    
+    NSInteger ndx = [self.alphaArray count] -1;
+    NSNumber *newVal = [NSNumber numberWithInt:[NSMA indexOfObject:[NSMA lastObject]]];
+    while (ndx >= 0) {
+        if (dflt == [NSMA objectAtIndex:ndx]) {
+            [NSMA replaceObjectAtIndex:ndx withObject:newVal];
+        } else {
+            newVal = (NSNumber*) [NSMA objectAtIndex:ndx];
+        }
+        ndx--;
+    }
+}
+
+- (NSArray*) namesNdx {
+    if (nil == namesNdx) {
+        NSInteger ndx=0;
+        ABPropertyID abSortOrderProp = [self getABSortTok];
+        NSNumber *notSet = [NSNumber numberWithInt:-1];
+        NSMutableArray *tmpNamesNdx = [self initNSMA:notSet];
+
+        for (id abrr in self.namesArray) {
+            NSString *name = (NSString*) ABRecordCopyValue((ABRecordRef)abrr, abSortOrderProp);
+            unichar firstc = [name characterAtIndex:0];
+            [name release];
+
+            [self enterNSMA:tmpNamesNdx c:firstc dflt:notSet ndx:ndx];
+            
+            ndx++;
+        }
+        
+        // now set any unfilled indices to 'start of next section' or last item
+        [self fillNSMA:tmpNamesNdx dflt:notSet];
+        
+        namesNdx = [[NSArray alloc] initWithArray:tmpNamesNdx];
+        [tmpNamesNdx release];
+    }
+    
+    return namesNdx;
+}
+
+- (NSArray*) historyNdx {
+    if (nil == historyNdx) {
+        NSInteger ndx=0;
+        NSNumber *notSet = [NSNumber numberWithInt:-1];
+        NSMutableArray *tmpHistoryNdx = [self initNSMA:notSet];
+
+        for (NSString* str in self.historyArray) {
+            unichar firstc = [str characterAtIndex:0];
+            [self enterNSMA:tmpHistoryNdx c:firstc dflt:notSet ndx:ndx];
+            ndx++;
+        }
+        
+        // now set any unfilled indices to 'start of next section' or last item
+        [self fillNSMA:tmpHistoryNdx dflt:notSet];
+        
+        historyNdx = [[NSArray alloc] initWithArray:tmpHistoryNdx];
+        [tmpHistoryNdx release];
+    }
+    return historyNdx;
+}
+
 //- (void) updatePickerArrays:(NSInteger)row {
 //	NSMutableDictionary *foo = self.peopleDictionary;
 //}
@@ -546,7 +585,7 @@
 		return [self.alphaArray count];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			return [self.peopleArray count];
+			return [self.namesArray count];
 		} else {
 			return [self.historyArray count];
 		}
@@ -559,7 +598,7 @@
 		return [self.alphaArray objectAtIndex:row];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			return [(NSString*) ABRecordCopyCompositeName([self.peopleArray objectAtIndex:row]) autorelease];
+			return [(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row]) autorelease];
 		} else {
 			return [self.historyArray objectAtIndex:row];
 		}
@@ -568,9 +607,37 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {	
-	//if (showNdx && 0 == component) {
-	//	[self updatePickerArrays:row];
-	//}
+	if (showNdx) {
+        //NSArray *srcArr,*targArr;
+        NSInteger otherComponent;
+        NSInteger targRow;
+        if (component == 0) {
+            //srcArr = self.alphaArray;
+            otherComponent = 1;
+            if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
+                targRow = [[self.namesNdx objectAtIndex:row] intValue];
+            } else {
+                targRow = [[self.historyNdx objectAtIndex:row] intValue];
+            }
+        } else {
+            otherComponent = 0;
+            if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
+                ABPropertyID abSortOrderProp = [self getABSortTok];
+                NSString *name = (NSString*) ABRecordCopyValue((ABRecordRef)[self.namesArray objectAtIndex:row], abSortOrderProp);
+                //unichar firstc = [name characterAtIndex:0];
+                targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([name characterAtIndex:0])]];
+                [name release];
+                if (NSNotFound == targRow)
+                    targRow=0;
+            } else {
+                targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([[self.historyArray objectAtIndex:row] characterAtIndex:0])]];
+                if (NSNotFound == targRow)
+                    targRow=0;
+            }
+        }
+        
+        [pickerView selectRow:targRow inComponent:otherComponent animated:YES];
+	}
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
@@ -599,7 +666,7 @@
 }
 */
 
-- (id) getVOGD {    
+- (id) newVOGD {    
     if ([(NSString*) [self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
         return [[vogd alloc] initAsTBoxLC:self.vo];
     } else {   

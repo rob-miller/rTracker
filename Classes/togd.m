@@ -41,7 +41,7 @@
 
 - (void) fillVOGDs {
     for (valueObj *vo in self.pto.valObjTable) {
-        vo.vogd = [vo.vos getVOGD];
+        vo.vogd = [vo.vos newVOGD];
     }    
 }
 

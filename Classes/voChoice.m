@@ -13,7 +13,14 @@
 
 @implementation voChoice
 
-@synthesize ctvovcp,segmentedControl;
+@synthesize ctvovcp,segmentedControl,processingTfDone;
+
+- (id) initWithVO:(valueObj *)valo {
+	if ((self = [super initWithVO:valo])) {
+		self.processingTfDone=NO;
+	}
+	return self;
+}
 
 - (void) dealloc {
 	// ctvovcp is not retained
@@ -159,6 +166,10 @@
 
 - (void) ctfDone:(UITextField *)tf
 {
+    if (YES == self.processingTfDone)
+        return;
+    self.processingTfDone = YES;
+    
 	int i=0;
 	NSString *key;
 	for (key in self.ctvovcp.wDict) {
@@ -191,6 +202,9 @@
 	} else {
 		[tf resignFirstResponder];
 	}
+    
+    self.processingTfDone = NO;
+    
 }
 
 - (void) choiceColorButtonAction:(UIButton *)btn
@@ -326,7 +340,7 @@
 }
 */
 
-- (id) getVOGD {
+- (id) newVOGD {
     return [[vogd alloc] initAsNum:self.vo];
 }
 

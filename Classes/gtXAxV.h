@@ -10,14 +10,14 @@
 #import "togd.h"
 
 @interface gtXAxV : UIView {
-    togd *togd;
+    togd *mytogd;
     UIFont *myFont;
     CGFloat scaleOriginX;
     CGFloat scaleWidthX;
     UIScrollView *graphSV;
 }
 
-@property(nonatomic,retain) togd *togd;
+@property(nonatomic,retain) togd *mytogd;
 @property(nonatomic,retain) UIFont *myFont;
 @property(nonatomic) CGFloat scaleOriginX;
 @property(nonatomic) CGFloat scaleWidthX;

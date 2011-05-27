@@ -1176,7 +1176,7 @@
 }
 */
 
-- (id) getVOGD {
+- (id) newVOGD {
     return [[vogd alloc] initAsNum:self.vo];
 }
 

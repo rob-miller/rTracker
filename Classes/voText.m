@@ -133,7 +133,7 @@
 }
 */
 
-- (id) getVOGD {
+- (id) newVOGD {
     return [[vogd alloc] initAsNote:self.vo];
 }
 

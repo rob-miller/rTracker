@@ -13,6 +13,7 @@
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
 #import "rTracker-resource.h"
+#import "graphTracker-constants.h"
 
 @implementation vogd
 
@@ -20,8 +21,8 @@
 
 - (id) init {
     DBGErr(@"vogd: invalid init!");
-    
-    return (self = [super init]);
+    self = [super init];
+    return self;
 }
 
 - (id) initAsNum:(valueObj*)inVO {
@@ -230,7 +231,10 @@
         }
         [s1 release];
         
-        self.vScale = d(myTOGD.rect.size.height) / (maxVal - minVal);
+        if (self.maxVal < d(YTICKS))
+            self.maxVal = d(YTICKS);
+        
+        self.vScale = d(myTOGD.rect.size.height) / (self.maxVal - self.minVal);
         
         NSMutableArray *mxdat = [[NSMutableArray alloc] init];
         NSMutableArray *mydat = [[NSMutableArray alloc] init];

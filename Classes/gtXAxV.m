@@ -15,7 +15,7 @@
 
 
 @implementation gtXAxV
-@synthesize togd, myFont, scaleOriginX, scaleWidthX,graphSV;
+@synthesize mytogd, myFont, scaleOriginX, scaleWidthX,graphSV;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -52,9 +52,9 @@
     
     CGFloat svOffsetX = [self.graphSV contentOffset].x;
     CGFloat svWidth = [self.graphSV contentSize].width;
-    CGFloat secsPerSVX = f(self.togd.lastDate - self.togd.firstDate) / svWidth;
-    CGFloat startDate = self.togd.firstDate + (svOffsetX * secsPerSVX);
-    CGFloat finDate = self.togd.firstDate + ((svOffsetX + self.scaleWidthX) * secsPerSVX);
+    CGFloat secsPerSVX = f(self.mytogd.lastDate - self.mytogd.firstDate) / svWidth;
+    CGFloat startDate = self.mytogd.firstDate + (svOffsetX * secsPerSVX);
+    CGFloat finDate = self.mytogd.firstDate + ((svOffsetX + self.scaleWidthX) * secsPerSVX);
     
 	CGFloat dateStep = (finDate - startDate) / XTICKS;  
 	
@@ -124,8 +124,8 @@
 {
     self.myFont = nil;
     [myFont release];
-    self.togd = nil;
-    [togd release];
+    self.mytogd = nil;
+    [mytogd release];
     
     [super dealloc];
 }

@@ -155,8 +155,23 @@
 --- check in ---
 
 18 May 2011
-  - changed tf fin edit to not call tfDone -- incompatible with vot_choice ????
+  - changed tf fin edit to not call tfDone -- incompatible with vot_choice ????  what was it needed for ????
   - fixed graphing for vot_choice colors, implemented y axis labels for vot_choice
 
+19 May 2011
+  - added currVO to gtv class; double line widths for selected vo
+  - tbox linecount set maxVal to at least YTICKS to get int vals on y axis labels
+  - clean y axis for non-numeric entries
+
+20 May 2011
+  - added processingTfDone flag for voChoices and configTVObjVC so tfDone/ctfDone (see 18 may, 05 may) can process multiple events without recursing inadvertently
+
+25 May 2011
+  - starting history, names picker indices; default on for names
+
+27 May 2011
+  - finished history, names picker indices.
+
+--- check in ---
 
 

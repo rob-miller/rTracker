@@ -199,7 +199,7 @@
 }
 */
 
-- (id) getVOGD {
+- (id) newVOGD {
     // TODO: need to handle image differently from note
     return [[vogd alloc] initAsNote:self.vo];
 }

@@ -21,11 +21,12 @@
 //#define DEBUGLOG 1
 
 
+// use layers to get satisfactory resolution for CGContext drawing after zooming
 #define USELAYER 1
 
 @implementation graphTrackerV
 
-@synthesize tracker,doDrawGraph,xMark,parentGTVC;
+@synthesize tracker,currVO,doDrawGraph,xMark,parentGTVC;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -103,7 +104,7 @@
     
 	BOOL going=NO;
     CGFloat lastX=LXNOTSTARTED;
-    CGFloat lastY;
+    CGFloat lastY=LXNOTSTARTED;
     
 	for (NSNumber *nx in vogd.xdat) {
         CGFloat x = [nx floatValue];
@@ -143,7 +144,7 @@
     
 	BOOL going=NO;
     CGFloat lastX=LXNOTSTARTED;
-    CGFloat lastY;
+    CGFloat lastY=LXNOTSTARTED;
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
 		CGFloat y = [[e nextObject] floatValue];
@@ -183,7 +184,7 @@
     CGFloat maxX = bbox.origin.x + bbox.size.width;
     
     CGFloat lastX=LXNOTSTARTED;
-    CGFloat lastY;
+    CGFloat lastY=LXNOTSTARTED;
     BOOL going=NO;
     
 	for (NSNumber *nx in vogd.xdat) {
@@ -219,17 +220,44 @@
     
 	Stroke;
 }
+// TODO: enable putting text on graph
+/*
+ - complicated by layers and multi-threading
+ - works with USELAYERS=0
+ 
+- (void) addText:(vogd*)vogd context:(CGContextRef)context x:(CGFloat)x y:(CGFloat)y e:(NSEnumerator*)e {
+
+    x+= 3.0f;
+    y+= 3.0f;
+    AddLineTo(x,y);
+    x+= 3.0f;
+    AddLineTo(x, y);
+    NSString *str = [e nextObject];
+    CGContextShowTextAtPoint(context, x, y, [str UTF8String], [str length]);
+    //[str drawAtPoint:(CGPoint) {x,y} withFont:((graphTrackerVC*)self.parentGTVC).myFont];
+    //Stroke;
+}
+*/
 
 - (void) plotVO_dotsNoY:(vogd *)vogd context:(CGContextRef)context
 {
-	//NSEnumerator *e = [vogd.ydat objectEnumerator];
 	CGRect bbox = CGContextGetClipBoundingBox(context);
 	CGFloat minX = bbox.origin.x;
     CGFloat maxX = bbox.origin.x + bbox.size.width;
     
     CGFloat lastX=LXNOTSTARTED;
-    CGFloat lastY;
+    CGFloat lastY=LXNOTSTARTED;
     BOOL going=NO;
+        
+    /*
+	NSEnumerator *e = [vogd.ydat objectEnumerator];
+    BOOL doText=NO;
+    if ((VOT_TEXT == vogd.vo.vtype) && (vogd.vo == self.currVO)) {
+        doText = YES;
+        CGContextSelectFont(context, FONTNAME, FONTSIZE, kCGEncodingMacRoman);
+        CGContextSetTextDrawingMode(context, kCGTextFill);
+    }
+    */
     
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
@@ -238,6 +266,7 @@
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,y);
             AddCircle(x,y);
+            //if (doText) [self addText:vogd context:context x:x y:y e:e];
             if (x > maxX)
                 break; 
         } else if (x < minX) { // not started yet and keep skipping -- save current for next time
@@ -247,10 +276,12 @@
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
                 MoveTo(lastX,lastY);
                 AddCircle(lastX,lastY);
+                //if (doText) [self addText:vogd context:context x:x y:y e:e];
             }
             going=YES;    // going, show current
             MoveTo(x,y);
             AddCircle(x,y);
+            //if (doText) [self addText:vogd context:context x:x y:y e:e];
         }  
     }
     
@@ -268,7 +299,7 @@
     CGFloat maxX = bbox.origin.x + bbox.size.width + BAR_LINE_WIDTH;
     
     CGFloat lastX=LXNOTSTARTED;
-    CGFloat lastY;
+    CGFloat lastY=LXNOTSTARTED;
     BOOL going=NO;
     
     for (NSNumber *nx in vogd.xdat) {
@@ -322,6 +353,11 @@
     if (vo.vtype != VOT_CHOICE) {
         CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
         CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
+    }
+    if (vo == self.currVO) {
+        CGContextSetLineWidth(context, DBL_LINE_WIDTH);
+    } else {
+        CGContextSetLineWidth(context, STD_LINE_WIDTH);
     }
 	switch (vo.vGraphType) {
 		case VOG_DOTS:
@@ -419,7 +455,7 @@
             self.context = inContext;
         }
          */
-        CGContextSetLineWidth(context, STD_LINE_WIDTH);
+        //CGContextSetLineWidth(context, STD_LINE_WIDTH);
         CGContextSetAlpha(context, STD_ALPHA);
         
         

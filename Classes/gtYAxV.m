@@ -58,6 +58,7 @@
     CGFloat x2 = x1-3.0f;
     
     NSInteger vtype = self.vogd.vo.vtype;
+    NSString *fmt = @"%0.2f";
     
 	for (i=YTICKS; i>=1; i--) {
 		CGFloat y = f(i) * step;
@@ -67,19 +68,42 @@
         
         CGFloat val = startUnit + (f(YTICKS-i) * unitStep);
         NSString *vstr;
-        if (vtype == VOT_CHOICE) {
-            [self vtChoiceSetColor:context val:val];
-            NSString *ch = [NSString stringWithFormat:@"c%d",(int)(val-1.0f)];
-            vstr = [self.vogd.vo.optDict objectForKey:ch];
-        } else {
-            NSString *fmt;
-            if (vtype == VOT_FUNC) {
-                int fnddp = [[self.vogd.vo.optDict objectForKey:@"fnddp"] intValue];
-                fmt = [NSString stringWithFormat:@"%%0.%df",fnddp];
-            } else {
-                fmt = @"%0.2f";
-            }
-            vstr = [NSString stringWithFormat:fmt,val];
+        switch (vtype) {
+            case VOT_CHOICE:
+                [self vtChoiceSetColor:context val:val];
+                NSString *ch = [NSString stringWithFormat:@"c%d",(int)(val-1.0f)];
+                vstr = [self.vogd.vo.optDict objectForKey:ch];
+                break;
+            case VOT_TEXT:
+            case VOT_BOOLEAN:
+            case VOT_IMAGE:
+                vstr = @"";
+                break;
+                
+            case VOT_TEXTB:
+                if ([(NSString*) [self.vogd.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
+                    // fall through to default - handle as number
+                } else {
+                    vstr = @"";
+                    break;
+                }
+                
+                //case VOT_NUMBER:
+                //case VOT_SLIDER:
+                //case VOT_FUNC:
+                
+            default:
+                if (vtype == VOT_FUNC) {
+                    int fnddp = [[self.vogd.vo.optDict objectForKey:@"fnddp"] intValue];
+                    fmt = [NSString stringWithFormat:@"%%0.%df",fnddp];
+                } else if (vtype == VOT_TEXTB) {
+                    fmt = @"%0.1f";
+                } else {
+                    fmt = @"%0.2f";
+                }
+                vstr = [NSString stringWithFormat:fmt,val];
+                break;
+                
         }
         CGSize vh = [vstr sizeWithFont:myFont];
         [vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withFont:self.myFont];

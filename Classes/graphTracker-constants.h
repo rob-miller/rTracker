@@ -15,6 +15,7 @@
 //#define DEFAULT_PT (BORDER + 5.0f)
 
 #define STD_LINE_WIDTH 1.0f
+#define DBL_LINE_WIDTH 2.0f
 #define BAR_LINE_WIDTH 6.0f
 #define STD_ALPHA 1.0f
 #define BAR_ALPHA 0.5f

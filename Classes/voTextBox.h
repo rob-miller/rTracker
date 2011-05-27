@@ -20,9 +20,11 @@
 	UIPickerView *pv;
 	
 	NSArray *alphaArray;
-	NSArray *peopleArray;
+	NSArray *namesArray;
 	NSArray *historyArray;
-	
+	NSArray *historyNdx;
+    NSArray *namesNdx;
+    
 	//NSMutableDictionary *peopleDict;
 	//NSMutableDictionary *historyDict;
 	
@@ -41,8 +43,10 @@
 @property (nonatomic,assign) UIPickerView *pv;
 
 @property (nonatomic,readonly) NSArray *alphaArray;
-@property (nonatomic,retain) NSArray *peopleArray;
+@property (nonatomic,retain) NSArray *namesArray;
 @property (nonatomic,retain) NSArray *historyArray;
+@property (nonatomic,retain) NSArray *historyNdx;
+@property (nonatomic,retain) NSArray *namesNdx;
 //@property (nonatomic,retain) NSMutableDictionary *peopleDictionary;
 //@property (nonatomic,retain) NSMutableDictionary *historyDictionary;
 

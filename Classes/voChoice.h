@@ -12,9 +12,11 @@
 @interface voChoice : voState {
 	configTVObjVC *ctvovcp;
     UISegmentedControl *segmentedControl;
+    BOOL processingTfDone;
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
 @property (nonatomic,retain) UISegmentedControl *segmentedControl;
+@property (nonatomic) BOOL processingTfDone;
 
 @end

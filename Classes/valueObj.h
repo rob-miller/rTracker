@@ -57,8 +57,8 @@
 #define AUTOSCALEDFLT   YES
 #define SHRINKBDFLT     NO 
 #define TBNLDFLT        NO
-//#define TBNIDFLT        NO
-//#define TBHIDFLT        NO
+#define TBNIDFLT        YES
+#define TBHIDFLT        NO
 #define GRAPHDFLT	    YES
 #define NSWLDFLT        NO
 
@@ -92,7 +92,7 @@
 //- (void) dataEditFinished;
 //- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
 - (void) dealloc;
-- (id) getVOGD;
+- (id) newVOGD;
 @end
 
 

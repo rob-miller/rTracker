@@ -290,8 +290,8 @@
 	// subclass overrides if need to do anything
 }
 
-- (id) getVOGD {
-    DBGErr(@"getVOGD with no handler!");
+- (id) newVOGD {
+    DBGErr(@"newVOGD with no handler!");
     return [[vogd alloc] initAsNum:self.vo];
 }
 /*
