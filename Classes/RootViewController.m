@@ -129,6 +129,8 @@
 								target:self
 								action:@selector(btnAddTracker)];
 	self.navigationItem.rightBarButtonItem = addBtn;
+    //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 	[addBtn release];
 	
 	[self setToolbarItems:[NSArray arrayWithObjects: 
@@ -139,6 +141,14 @@
 						   //self.flexibleSpaceButtonItem, 
 						   nil] 
 				 animated:NO];
+
+    //self.navigationController.toolbar.translucent = YES;
+    self.navigationController.toolbar.barStyle = UIBarStyleBlack;
+    
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd1-320-460.png"]];
+    self.tableView.backgroundView = bg;
+    [bg release];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	
 	//[payBtn release];
 	[privateBtn release];
@@ -242,7 +252,13 @@
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPrivate)];
-	}
+	} else {
+        if (PVNOSHOW != self.privacyObj.showing) {
+            self.privateBtn.title = @"dismiss";
+        } else {
+            self.privateBtn.title = @"private";
+        }
+    }
 	return privateBtn;
 }
 
@@ -267,6 +283,8 @@
 	return privacyObj;
 }
 
+
+
 #pragma mark -
 #pragma mark button action methods
 
@@ -274,6 +292,8 @@
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 	atc.tlist = self.tlist;
 	[self.navigationController pushViewController:atc animated:YES];
+    //[rTracker_resource myNavPushTransition:self.navigationController vc:atc animOpt:UIViewAnimationOptionTransitionCurlUp];
+    
 	[atc release];
 }
 
@@ -281,6 +301,9 @@
 	configTlistController *ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
+    
+    //[rTracker_resource myNavPushTransition:self.navigationController vc:ctlc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
+    
 	[ctlc release];
 }
 	
@@ -290,12 +313,15 @@
 
 - (void)btnPrivate {
 	[self.privacyObj togglePrivacySetter ];
-	if (0 != self.privacyObj.showing) {
+    /*
+	if (PVNOSHOW != self.privacyObj.showing) {
 		self.privateBtn.title = @"dismiss";
 	} else {
 		self.privateBtn.title = @"private";
 		[self refreshView];
 	}
+     */
+    [self refreshView];
 }
 
 - (void)btnPay {
@@ -325,11 +351,18 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+
+        //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]];
+        //[cell setBackgroundView:bg];
+        //[bg release];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [self.tlist.topLayoutNames objectAtIndex:row];
+	cell.textLabel.text = [NSString stringWithFormat:@"      %@",[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
+    //cell.textLabel.backgroundColor = [UIColor clearColor];
 
     return cell;
 }
@@ -348,6 +381,10 @@
 	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
 	utc.tracker = to;
 	[self.navigationController pushViewController:utc animated:YES];
+    
+    //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
+    
+    
 	[utc release];
 	
 	[to release];

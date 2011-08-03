@@ -417,6 +417,14 @@
 	} else if ( tf == [self.wDict objectForKey:@"gpTF"] ) {
 		okey = @"privacy";
 		nkey = nil;
+        
+        int currPriv = [privacyV getPrivacyValue];
+        int newPriv = [tf.text intValue];
+        if (newPriv > currPriv) {
+            newPriv = currPriv;
+            tf.text = [NSString stringWithFormat:@"%d",currPriv];
+        }
+        
 	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
 		okey = @"frv0";
 		nkey = nil;
@@ -649,6 +657,11 @@
 					place:[NSString stringWithFormat:@"%d",PRIVDFLT] 
 					 text:[self.to.optDict objectForKey:@"privacy"]
 					addsv:YES ];
+   
+    //TODO: privacy values when password not set up....
+    // if password not set could disable privacy setting here but have to pass pwset bool all over
+    //  alternatively, don't allow setting privacy val higher than current?
+    // ((UITextField*) [self.wDict objectForKey:@"gpTF"]).enabled = NO;
 	
 }
 

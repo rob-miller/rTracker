@@ -40,4 +40,36 @@ BOOL keyboardIsShown=NO;
     return numberOfLines;
 }
 
+
+#pragma mark -
+#pragma mark navcontroller view transition
+
+// from http://freelancemadscience.squarespace.com/fmslabs_blog/2010/10/13/changing-the-transition-animation-for-an-uinavigationcontrol.html
+
++ (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt {
+    [UIView 
+     transitionWithView:navc.view
+     duration:1.0
+     options:animOpt
+     animations:^{ 
+         [navc 
+          pushViewController:vc 
+          animated:NO];
+     }
+     completion:NULL];
+}
+
++ (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt {
+    [UIView 
+     transitionWithView:navc.view
+     duration:1.0
+     options:animOpt
+     animations:^{ 
+         [navc 
+          popViewControllerAnimated:NO];
+     }
+     completion:NULL];
+}
+
+
 @end

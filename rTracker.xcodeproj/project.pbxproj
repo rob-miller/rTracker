@@ -16,6 +16,9 @@
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
+		D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
+		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
+		D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D313A2626500268248 /* bkgnd2-320-460.png */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
 		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
@@ -30,6 +33,7 @@
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
 		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
 		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
+		D49F96D113E9EBAF00C382C4 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D49F96D013E9EBAF00C382C4 /* icon.png */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
 		D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A3150C11903F5E00F062AC /* addTrackerController.xib */; };
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
@@ -87,6 +91,9 @@
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
 		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		D43EE367133CBF8D00737E76 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
+		D44386CF13A2216800268248 /* bkgnd1-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd1-320-460.png"; path = "Resources/png/bkgnd1-320-460.png"; sourceTree = "<group>"; };
+		D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd-cell1-320-56.png"; path = "Resources/png/bkgnd-cell1-320-56.png"; sourceTree = "<group>"; };
+		D44386D313A2626500268248 /* bkgnd2-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd2-320-460.png"; path = "Resources/png/bkgnd2-320-460.png"; sourceTree = SOURCE_ROOT; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
@@ -108,6 +115,7 @@
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
+		D49F96D013E9EBAF00C382C4 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = Resources/png/icon.png; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
 		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
@@ -244,6 +252,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D49F96D013E9EBAF00C382C4 /* icon.png */,
 				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
 				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
@@ -258,6 +267,9 @@
 				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
+				D44386CF13A2216800268248 /* bkgnd1-320-460.png */,
+				D44386D313A2626500268248 /* bkgnd2-320-460.png */,
+				D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */,
 				D4C52109123F9DF700554627 /* blueButton.png */,
 			);
 			name = Resources;
@@ -466,6 +478,10 @@
 				D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */,
 				D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */,
 				D4D2457F12F0AC8000E994C6 /* changelog.txt in Resources */,
+				D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */,
+				D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */,
+				D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */,
+				D49F96D113E9EBAF00C382C4 /* icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

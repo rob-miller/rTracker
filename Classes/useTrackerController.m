@@ -121,7 +121,12 @@
 	//	[vo display];
 	//}
 	
-			
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    self.table.backgroundView = bg;
+    [bg release];
+    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    
 	[self updateToolBar];
 	keyboardIsShown = NO;
 	
@@ -596,7 +601,8 @@
 #pragma mark -
 #pragma mark button press action methods
 
-- (IBAction)btnCancel {
+- (IBAction)btnCancel {   // not used 
+    
 	//DBGLog(@"btnCancel was pressed!");
 	[self.navigationController popViewControllerAnimated:YES];
 }
@@ -871,6 +877,14 @@
     //DBGLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
 	return [vo.vos voTVCell:tableView];
+    /*
+    UITableViewCell *tvc = [vo.vos voTVCell:tableView];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]];
+    [tvc setBackgroundView:bg];
+    [bg release];
+
+    return tvc;
+     */
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -531,6 +531,9 @@
 
         for (id abrr in self.namesArray) {
             NSString *name = (NSString*) ABRecordCopyValue((ABRecordRef)abrr, abSortOrderProp);
+            if (nil == name) {
+                name = (NSString*) ABRecordCopyCompositeName(abrr); 
+            }
             unichar firstc = [name characterAtIndex:0];
             [name release];
 
@@ -619,11 +622,15 @@
             } else {
                 targRow = [[self.historyNdx objectAtIndex:row] intValue];
             }
+            //DBGLog(@"showndx on : did sel row targ %d component %d",targRow,component);
         } else {
             otherComponent = 0;
             if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
                 ABPropertyID abSortOrderProp = [self getABSortTok];
-                NSString *name = (NSString*) ABRecordCopyValue((ABRecordRef)[self.namesArray objectAtIndex:row], abSortOrderProp);
+                NSString *name =  (NSString*) ABRecordCopyValue((ABRecordRef)[self.namesArray objectAtIndex:row], abSortOrderProp);
+                if (nil == name) {
+                    name = (NSString*) ABRecordCopyCompositeName((ABRecordRef)[self.namesArray objectAtIndex:row]); 
+                }
                 //unichar firstc = [name characterAtIndex:0];
                 targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([name characterAtIndex:0])]];
                 [name release];

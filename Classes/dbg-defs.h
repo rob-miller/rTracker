@@ -8,7 +8,7 @@
 
 #define SQLDEBUG    0
 
-#define DEBUGLOG    1
+#define DEBUGLOG    0
 #define DEBUGWARN   1
 #define DEBUGERR    1
 

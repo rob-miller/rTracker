@@ -9,6 +9,7 @@
 #import "configTlistController.h"
 #import "trackerList.h"
 #import "addTrackerController.h"
+#import "rTracker-resource.h"
 #import "dbg-defs.h"
 
 @implementation configTlistController
@@ -43,6 +44,10 @@ UITableView *deleteTableView;
 - (void)viewDidLoad {
 	
 	self.title = @"configure trackers";
+    
+    
+    
+    
     /*
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"export"

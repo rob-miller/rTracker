@@ -11,7 +11,7 @@
 #import "addValObjController.h"
 #import "configTVObjVC.h"
 #import "rTracker-constants.h"
-
+#import "rTracker-resource.h"
 #import "dbg-defs.h"
 
 @implementation addTrackerController 
@@ -229,6 +229,8 @@ DBGLog(@"btnAddValue was pressed!");
 	}
 	
 	[self.navigationController popViewControllerAnimated:YES];
+    //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
+    
 }
 
 - (void) delVOdb:(NSInteger)vid 
@@ -260,6 +262,7 @@ DBGLog(@"btnAddValue was pressed!");
 		[self.tlist confirmTopLayoutEntry:tempTrackerObj];
 		[self.tlist loadTopLayoutTable];
 		[self.navigationController popViewControllerAnimated:YES];
+        //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc]
 							  initWithTitle:@"save Tracker" message:@"Please set a name for this tracker to save"

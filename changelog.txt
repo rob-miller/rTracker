@@ -174,4 +174,15 @@
 
 --- check in ---
 
+08 June 2011
+  - modified name picker & ndx to use ABRecordCopyCompositeName if ABRecordCopyValue(sortProp) gets nil result - e.g. sortProp=firstname and record is company
+
+03 August 2011
+  - added icon.png
+  - fixed private/dismiss label on rootview privacy button label not returned to private on cancel from create pass
+  - limit privacy setting for val or tracker to current privacy level: trkrs/valobjs don't disappear, easier than disable priv setting when no password
+  --- seems basically done?
+
+--- check in ---
+
 

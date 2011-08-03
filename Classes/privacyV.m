@@ -131,7 +131,7 @@ static int privacyValue=PRIVDFLT;
 #pragma mark custom ivar setters and getters
 
 - (int) pwState {
-	if (pwState == PWNEEDPASS) {
+	if (PWNEEDPASS == pwState ) {
 		if ([self.ppwv dbExistsPass])
 			pwState = PWQUERYPASS;
 	} 
@@ -207,6 +207,7 @@ static int privacyValue=PRIVDFLT;
 		
 		if (PVNEEDPASS == self.showing) { // if set pass is up, cancelled out of create
 			[self.ppwv hidePPWVAnimated:FALSE];
+            [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
 		} else {
 
 			[self setPrivacyValue:[self dbTestKey:self.ttv.key]];

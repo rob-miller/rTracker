@@ -14,6 +14,7 @@
 
 #import "trackerObj.h"
 #import "valueObj.h"
+#import "privacyV.h"
 
 @interface configTVObjVC : UIViewController <UITextFieldDelegate> {
 
