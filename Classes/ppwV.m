@@ -25,14 +25,14 @@ CGRect saveFrame;
 	CGRect frame = pv.frame;
 	DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	frame.origin.y = frame.size.height;// - 10.0f;
-	frame.origin.x = frame.size.width * 0.1f;
+	frame.origin.x = frame.size.width * 0.2f;
 	frame.size.width *= 0.8f;
 	frame.size.height *=0.25f;
 	
 	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
-		self.backgroundColor = [UIColor blueColor];
+		self.backgroundColor = [UIColor lightGrayColor];   //blueColor
 		self.parentView = pv;
 		
 		//keyboardIsShown = NO;

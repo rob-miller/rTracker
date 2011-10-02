@@ -31,6 +31,7 @@
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
+@property (nonatomic, retain) UIBarButtonItem *helpBtn;
 //@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 //@property (nonatomic, retain) UIBarButtonItem *payBtn;
 

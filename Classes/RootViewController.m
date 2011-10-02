@@ -21,7 +21,7 @@
 @implementation RootViewController
 
 @synthesize tlist;
-@synthesize privateBtn, privacyObj;
+@synthesize privateBtn, helpBtn, privacyObj;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -137,6 +137,7 @@
 						   //self.flexibleSpaceButtonItem,
 						   //self.payBtn, 
                            self.privateBtn, 
+                           self.helpBtn,
                            //self.multiGraphBtn, 
 						   //self.flexibleSpaceButtonItem, 
 						   nil] 
@@ -152,6 +153,7 @@
 	
 	//[payBtn release];
 	[privateBtn release];
+    [helpBtn release];
 	//[multiGraphBtn release];
 
 	self.tlist = [[trackerList alloc] init];
@@ -247,19 +249,32 @@
 
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
-		privateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:@"private"
-					   style:UIBarButtonItemStyleBordered
+        privateBtn = [[UIBarButtonItem alloc]
+					   //initWithTitle:@"private"
+                       initWithImage:[UIImage imageNamed:@"lock-button.png"]
+					   style:UIBarButtonItemStylePlain
 					   target:self
 					   action:@selector(btnPrivate)];
 	} else {
         if (PVNOSHOW != self.privacyObj.showing) {
-            self.privateBtn.title = @"dismiss";
+            //self.privateBtn.title = @"dismiss";
         } else {
-            self.privateBtn.title = @"private";
+            //self.privateBtn.title = @"private";
+            //self.privateBtn.image = [UIImage imageNamed:@"lock-button.png"];
         }
     }
 	return privateBtn;
+}
+
+- (UIBarButtonItem *) helpBtn {
+	if (helpBtn == nil) {
+		helpBtn = [[UIBarButtonItem alloc]
+                      initWithTitle:@"help"
+                      style:UIBarButtonItemStyleBordered
+                      target:self
+                      action:@selector(btnHelp)];
+	} 
+	return helpBtn;
 }
 
 /*
@@ -322,6 +337,10 @@
 	}
      */
     [self refreshView];
+}
+
+- (void) btnHelp {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/userGuide"]];
 }
 
 - (void)btnPay {

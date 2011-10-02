@@ -12,6 +12,7 @@
 #import "ppwV.h"
 
 // password states
+#define PWNEEDPRIVOK -2
 #define PWNEEDPASS  -1
 #define PWQUERYPASS  0
 #define PWKNOWPASS	 1
@@ -23,7 +24,7 @@
 #define PVCHECKPASS ((unsigned int) (1<<2))
 #define PVCONFIG	((unsigned int) (1<<3))
 
-@interface privacyV : UIView {
+@interface privacyV : UIView <UIActionSheetDelegate> {
 	UIView *parentView;
 	tictacV *ttv;
 	ppwV *ppwv;

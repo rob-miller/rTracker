@@ -15,6 +15,14 @@
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
+		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
+		D427446C1438B8250011EFE6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446B1438B8250011EFE6 /* Icon.png */; };
+		D42744711438B84E0011EFE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446D1438B84E0011EFE6 /* Icon-72.png */; };
+		D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */; };
+		D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
+		D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744701438B84E0011EFE6 /* Icon-Small.png */; };
+		D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744751438B86A0011EFE6 /* Icon@2x.png */; };
+		D42744781438C9580011EFE6 /* lock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744771438C9580011EFE6 /* lock-button.png */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
@@ -33,7 +41,6 @@
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
 		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
 		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
-		D49F96D113E9EBAF00C382C4 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D49F96D013E9EBAF00C382C4 /* icon.png */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
 		D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A3150C11903F5E00F062AC /* addTrackerController.xib */; };
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
@@ -83,10 +90,18 @@
 		28C286DF0D94DF7D0034E888 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* rTracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "rTracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
+		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
+		D427446B1438B8250011EFE6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Resources/png/Icon.png; sourceTree = "<group>"; };
+		D427446D1438B84E0011EFE6 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/png/Icon-72.png"; sourceTree = "<group>"; };
+		D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-@2x.png"; path = "Resources/png/Icon-Small-@2x.png"; sourceTree = "<group>"; };
+		D427446F1438B84E0011EFE6 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/png/Icon-Small-50.png"; sourceTree = "<group>"; };
+		D42744701438B84E0011EFE6 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Resources/png/Icon-Small.png"; sourceTree = "<group>"; };
+		D42744751438B86A0011EFE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Resources/png/Icon@2x.png"; sourceTree = "<group>"; };
+		D42744771438C9580011EFE6 /* lock-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "lock-button.png"; path = "Resources/png/lock-button.png"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
 		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
@@ -115,7 +130,6 @@
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
-		D49F96D013E9EBAF00C382C4 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = Resources/png/icon.png; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
 		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
@@ -252,7 +266,14 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D49F96D013E9EBAF00C382C4 /* icon.png */,
+				D42744771438C9580011EFE6 /* lock-button.png */,
+				D42744691438B8090011EFE6 /* iTunesArtwork */,
+				D427446B1438B8250011EFE6 /* Icon.png */,
+				D42744751438B86A0011EFE6 /* Icon@2x.png */,
+				D427446D1438B84E0011EFE6 /* Icon-72.png */,
+				D42744701438B84E0011EFE6 /* Icon-Small.png */,
+				D427446F1438B84E0011EFE6 /* Icon-Small-50.png */,
+				D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */,
 				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
 				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
@@ -264,7 +285,7 @@
 				D4A317B31192B7C800F062AC /* configTlistController.xib */,
 				D487D7731260A77800298C1D /* configTVObjVC.xib */,
 				D4FF224712304E050047518A /* rt-types.plist */,
-				8D1107310486CEB800E47090 /* rTracker-Info.plist */,
+				8D1107310486CEB800E47090 /* Info.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
 				D44386CF13A2216800268248 /* bkgnd1-320-460.png */,
@@ -481,7 +502,14 @@
 				D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */,
 				D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */,
 				D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */,
-				D49F96D113E9EBAF00C382C4 /* icon.png in Resources */,
+				D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */,
+				D427446C1438B8250011EFE6 /* Icon.png in Resources */,
+				D42744711438B84E0011EFE6 /* Icon-72.png in Resources */,
+				D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */,
+				D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */,
+				D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */,
+				D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */,
+				D42744781438C9580011EFE6 /* lock-button.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +576,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				INFOPLIST_FILE = "rTracker-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = rTracker;
 				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
 			};
@@ -565,7 +593,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				INFOPLIST_FILE = "rTracker-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_NAME = rTracker;

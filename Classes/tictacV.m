@@ -230,7 +230,7 @@ static unsigned int theKey;
 #pragma mark api: draw current key
 
 - (void) showKey:(unsigned int)k {
-	self.key = k;
+	self.key = k;  //rtm lskdfjasldfjasdlfjksldfkj
 	[self setNeedsDisplay];
 }
 

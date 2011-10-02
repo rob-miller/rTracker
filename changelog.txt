@@ -185,4 +185,14 @@
 
 --- check in ---
 
+08 August 2011
+  - change colors to gray for privacy stuff; still want some curves
+  - somehow set privacy for blank tt... privacy set to 0 on start priv then quit...
+
+14 September 2011
+  - [setPrivacyValue:tictacvalue] scaled to +MINPRIV to solve problem above
+  - made < and > shift through tictacvalues take to min, max set value if before or after min,max
+
+01 October 2011
+  - renamed rTracker-Info.plist to Info.plist
 

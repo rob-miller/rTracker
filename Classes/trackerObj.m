@@ -637,7 +637,7 @@
                         [[idDict objectForKey:key] intValue],its,[aRecord objectForKey:key]];
             [self toExecSql];
             
-            // update trkrData - date easy, need mipriv
+            // update trkrData - date easy, need minpriv
             self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
             int currMinPriv = [self toQry2Int];
             

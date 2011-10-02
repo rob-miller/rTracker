@@ -50,8 +50,8 @@ static int privacyValue=PRIVDFLT;
 	DBGLog(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
-		self.pwState = PWNEEDPASS;
-		self.backgroundColor = [UIColor brownColor];
+		self.pwState = PWNEEDPRIVOK; //PWNEEDPASS;
+		self.backgroundColor = [UIColor darkGrayColor];
 		showing = PVNOSHOW;
 		[self addSubview:self.ttv];
 		[self addSubview:self.clearBtn];
@@ -97,6 +97,11 @@ static int privacyValue=PRIVDFLT;
 
 }
 
+- (unsigned int) dbGetKey:(int)lvl {
+    self.tob.sql = [NSString stringWithFormat:@"select key from priv1 where lvl=%d;",lvl];
+    return [self.tob toQry2Int];
+}
+
 - (unsigned int) dbGetAdjacentKey:(int*)lvl nxt:(BOOL)nxt {
 	int rval;
 	if (nxt)
@@ -131,7 +136,7 @@ static int privacyValue=PRIVDFLT;
 #pragma mark custom ivar setters and getters
 
 - (int) pwState {
-	if (PWNEEDPASS == pwState ) {
+	if ((PWNEEDPASS == pwState) || (PWNEEDPRIVOK == pwState)) {
 		if ([self.ppwv dbExistsPass])
 			pwState = PWQUERYPASS;
 	} 
@@ -165,16 +170,45 @@ static int privacyValue=PRIVDFLT;
 	}
 }
 
+// make ttv match slider
+- (void) setTTV {
+	int lvl = (int) (self.showSlider.value + 0.5f);
+	unsigned int k;
+    k = [self dbGetKey:lvl];
+	if (lvl > 0) {
+		[self.ttv showKey:k];
+		self.showSlider.value = lvl;
+		self.ssValLab.text = [NSString stringWithFormat:@"%d", (int) lvl];
+	}
+}
+
+// alert to inform privacy limits and use
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    self.pwState = PWNEEDPASS;
+    self.showing = PVQUERY;
+}
+
 
 // state control for what's showing
 
 - (void) setShowing:(unsigned int)newState {
-	DBGLog(@"priv: setShowing %d -> %d",showing,newState);
+	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
 	// (showing == newState)
 	//	return;
 	
-	if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features
-
+	if (PVNOSHOW != newState && PWNEEDPRIVOK == self.pwState) {  // first time if no password set, better warn not secure
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Private but not secure"
+                                                        message:@"This feature can hide trackers and values from display, but the data will not be secure from a determined attacker."
+                                                           delegate:self 
+                                                  cancelButtonTitle:@"I'll remember" 
+                                                  otherButtonTitles:nil];
+        [alert show]; 
+        [alert release];
+        
+        
+                
+    } else if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features        
 		showing = PVNEEDPASS;
 		[self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
 		//[self.ppwv createPass:PVCONFIG cancel:PVNOSHOW]; // need more work // recurse on input newState, config on successful new pass
@@ -210,7 +244,7 @@ static int privacyValue=PRIVDFLT;
             [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
 		} else {
 
-			[self setPrivacyValue:[self dbTestKey:self.ttv.key]];
+			[self setPrivacyValue:(MINPRIV + [self dbTestKey:self.ttv.key])]; // 14.ix.2011 privacy not 0
 			
 			if (PVCONFIG == self.showing) {
 				[self.ppwv hidePPWVAnimated:FALSE];
@@ -239,6 +273,7 @@ static int privacyValue=PRIVDFLT;
 			}
 			[self.ppwv changePass:PVCONFIG cancel:PVCONFIG];
 			[self.configBtn setTitle:@"lock" forState:UIControlStateNormal];
+            [self setTTV];
 			[UIView commitAnimations];
 			showing = PVCONFIG;
 		} else {
@@ -266,24 +301,39 @@ static int privacyValue=PRIVDFLT;
 }
 
 - (void) doClear:(UIButton*)btn {
-	[self.ttv showKey:0];
+	[self.ttv showKey:0]; 
 }
 
 - (void) saveConfig:(UIButton*)btn {
-	[self dbSetKey:self.ttv.key level:(int) (self.showSlider.value + 0.5f)];
+    unsigned int ttvkey;
+    
+    if ((ttvkey=self.ttv.key) != 0) {  // don't allow saving blank tt for a privacy level
+        [self dbSetKey:ttvkey level:(int) (self.showSlider.value + 0.5f)];
+    }
 }
 
 - (void) adjustTTV:(UIButton*)btn {
 	int lvl = (int) (self.showSlider.value + 0.5f);
 	unsigned int k;
+    BOOL dir;
 	if ([btn.currentTitle isEqualToString:@">"]) { // next
-		k = [self dbGetAdjacentKey:&lvl nxt:TRUE];
+        dir = TRUE;
 	} else {  // prev
-		k = [self dbGetAdjacentKey:&lvl nxt:FALSE];
+        dir = FALSE;
 	}
-	if (lvl > 0) {
-		[self.ttv showKey:k];
+    k = [self dbGetAdjacentKey:&lvl nxt:dir];
+    
+    if (k == 0) { // if getAdjacent failed = no next/prev key for curr slider value
+        lvl = (int) (self.showSlider.value + 0.5f); // got wiped so reload
+        if (0 == [self dbGetKey:lvl]) { // and no existing key for curr slider
+            k = [self dbGetAdjacentKey:&lvl nxt:!dir];  // go for prev/next (opposite dir)
+        }
+    }
+	
+    if (lvl > 0) {
 		self.showSlider.value = lvl;
+		//[self.ttv showKey:k];
+        [self setTTV];  // display key if exists for slider value whatever it is now
 		self.ssValLab.text = [NSString stringWithFormat:@"%d", (int) lvl];
 	}
 }
@@ -371,7 +421,7 @@ static int privacyValue=PRIVDFLT;
 		lframe.origin.x -= lframe.size.width/2.0f;
 		ssValLab = [[UILabel alloc] initWithFrame:lframe];
 		ssValLab.textAlignment = UITextAlignmentRight;
-		ssValLab.text = @"1";
+		ssValLab.text = @"2";  // MINPRIV +1
 		[ssValLab setHidden:TRUE];
 		
 	}
