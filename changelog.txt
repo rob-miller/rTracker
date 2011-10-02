@@ -195,4 +195,7 @@
 
 01 October 2011
   - renamed rTracker-Info.plist to Info.plist
+  - several check-ins attempting to fix issues of renamed files
+  - changed 'private' button to lock image
+  - reload toolbar on refresh to change lock/unlock image
 

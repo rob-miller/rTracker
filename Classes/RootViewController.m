@@ -31,7 +31,7 @@
 	DBGLog(@"rvc dealloc");
 	self.tlist = nil;
 	[tlist release];
-	
+	//[privateBtn release]; // saved to change image
     [super dealloc];
 }
 
@@ -173,10 +173,23 @@
 	
 }
 
+- (void) refreshToolBar {
+    DBGLog(@"refresh tool bar");
+	[self setToolbarItems:[NSArray arrayWithObjects: 
+						   //self.flexibleSpaceButtonItem,
+						   //self.payBtn, 
+                           self.privateBtn, 
+                           self.helpBtn,
+                           //self.multiGraphBtn, 
+						   //self.flexibleSpaceButtonItem, 
+						   nil] 
+				 animated:YES];
+}
+
 - (void) refreshView {
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
-    
+
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			self.navigationItem.leftBarButtonItem = nil;
@@ -192,6 +205,9 @@
 			[editBtn release];
 		}
 	}
+    
+    [self refreshToolBar];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -249,18 +265,39 @@
 
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
+        // /*
+        UIButton *pbtn = [[UIButton alloc] init];
+        [pbtn setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
+        [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
         privateBtn = [[UIBarButtonItem alloc]
-					   //initWithTitle:@"private"
-                       initWithImage:[UIImage imageNamed:@"lock-button.png"]
-					   style:UIBarButtonItemStylePlain
+                      initWithCustomView:pbtn];
+        pbtn.frame = CGRectMake(0, 0, pbtn.currentImage.size.width, pbtn.currentImage.size.height);
+        [pbtn release];
+        //*/
+        /*
+        privateBtn = [[UIBarButtonItem alloc]
+					   initWithTitle:@"private"
+                       //initWithImage:[UIImage imageNamed:@"lock-button.png"]
+                      //initWithImage:[UIImage imageNamed:@"checked.png"]
+					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPrivate)];
+         */
+        /* privateBtn.frame = CGRectMake(0, 0, privateBtn.image.size.width, privateBtn.image.size.height);
+         */
 	} else {
         if (PVNOSHOW != self.privacyObj.showing) {
-            //self.privateBtn.title = @"dismiss";
+            //DBGLog(@"unlock btn");
+           // self.privateBtn.title = @"dismiss";
+            //privateBtn.image = [UIImage imageNamed:@"unlock-button.png"];
+            [(UIButton *)privateBtn.customView 
+             setImage:[UIImage imageNamed:@"unlock-button.png"] forState:UIControlStateNormal];
         } else {
+            //DBGLog(@"lock btn");
             //self.privateBtn.title = @"private";
-            //self.privateBtn.image = [UIImage imageNamed:@"lock-button.png"];
+            //privateBtn.image = [UIImage imageNamed:@"lock-button.png"];
+            [(UIButton *)privateBtn.customView 
+             setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
         }
     }
 	return privateBtn;
@@ -293,6 +330,7 @@
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {
 		privacyObj = [[privacyV alloc] initWithParentView:self.view];
+        //privacyObj.parent = self;
 	}
 	privacyObj.tob = (id) self.tlist;  // not set at init
 	return privacyObj;

@@ -10,10 +10,11 @@
 #import "rTracker-constants.h"
 #import "privDefs.h"
 #import "dbg-defs.h"
+#import "RootViewController.h"
 
 @implementation privacyV
 
-@synthesize parentView, ttv, ppwv, showing, pwState, tob;
+@synthesize parentView, /*parent,*/ ttv, ppwv, showing, pwState, tob;
 @synthesize clearBtn, configBtn,saveBtn, showSlider, ssValLab, nextBtn, prevBtn;
 
 #pragma mark -
@@ -194,6 +195,8 @@ static int privacyValue=PRIVDFLT;
 
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
+    //[(RootViewController*) self.parent refreshToolBar];
+    
 	// (showing == newState)
 	//	return;
 	

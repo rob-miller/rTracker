@@ -421,7 +421,7 @@
         int currPriv = [privacyV getPrivacyValue];
         int newPriv = [tf.text intValue];
         if (newPriv > currPriv) {
-            newPriv = currPriv;
+            //newPriv = currPriv;
             tf.text = [NSString stringWithFormat:@"%d",currPriv];
         }
         

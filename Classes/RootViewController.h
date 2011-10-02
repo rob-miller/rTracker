@@ -39,6 +39,6 @@
 
 - (void) loadInputFiles;
 - (void) refreshView;
-
+//- (void) refreshToolBar;
 
 @end
