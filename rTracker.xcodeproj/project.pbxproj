@@ -16,7 +16,6 @@
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
-		D427446C1438B8250011EFE6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446B1438B8250011EFE6 /* Icon.png */; };
 		D42744711438B84E0011EFE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446D1438B84E0011EFE6 /* Icon-72.png */; };
 		D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */; };
 		D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
@@ -95,7 +94,6 @@
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
-		D427446B1438B8250011EFE6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Resources/png/Icon.png; sourceTree = "<group>"; };
 		D427446D1438B84E0011EFE6 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/png/Icon-72.png"; sourceTree = "<group>"; };
 		D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-@2x.png"; path = "Resources/png/Icon-Small-@2x.png"; sourceTree = "<group>"; };
 		D427446F1438B84E0011EFE6 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/png/Icon-Small-50.png"; sourceTree = "<group>"; };
@@ -268,7 +266,6 @@
 			children = (
 				D42744771438C9580011EFE6 /* lock-button.png */,
 				D42744691438B8090011EFE6 /* iTunesArtwork */,
-				D427446B1438B8250011EFE6 /* Icon.png */,
 				D42744751438B86A0011EFE6 /* Icon@2x.png */,
 				D427446D1438B84E0011EFE6 /* Icon-72.png */,
 				D42744701438B84E0011EFE6 /* Icon-Small.png */,
@@ -503,7 +500,6 @@
 				D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */,
 				D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */,
 				D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */,
-				D427446C1438B8250011EFE6 /* Icon.png in Resources */,
 				D42744711438B84E0011EFE6 /* Icon-72.png in Resources */,
 				D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */,
 				D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */,
