@@ -146,11 +146,13 @@ in_vpriv:(NSInteger)in_vpriv
 			//value = [[NSMutableString alloc] initWithCapacity:32];
 			//[self.value setString:@""];
 			break;	
+            /*
 		case VOT_IMAGE:
 			self.vos = [[voImage alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:64];
 			//[self.value setString:@""];
 			break;
+             */
 		case VOT_TEXTB:
 			self.vos = [[voTextBox alloc] initWithVO:self];
             //value = [[NSMutableString alloc] initWithCapacity:96];

@@ -18,16 +18,97 @@
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
 		D42744711438B84E0011EFE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446D1438B84E0011EFE6 /* Icon-72.png */; };
-		D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */; };
 		D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
 		D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744701438B84E0011EFE6 /* Icon-Small.png */; };
 		D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744751438B86A0011EFE6 /* Icon@2x.png */; };
 		D42744781438C9580011EFE6 /* lock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744771438C9580011EFE6 /* lock-button.png */; };
+		D431F37114883A6600E2608A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
+		D431F37314883A6600E2608A /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D431F37514883A6600E2608A /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
+		D431F37614883A6600E2608A /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
+		D431F37B14883A6600E2608A /* changelog.txt in Resources */ = {isa = PBXBuildFile; fileRef = D4D2457E12F0AC8000E994C6 /* changelog.txt */; };
+		D431F37C14883A6600E2608A /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
+		D431F37D14883A6600E2608A /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
+		D431F37E14883A6600E2608A /* bkgnd2-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D313A2626500268248 /* bkgnd2-320-460.png */; };
+		D431F37F14883A6600E2608A /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
+		D431F38014883A6600E2608A /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446D1438B84E0011EFE6 /* Icon-72.png */; };
+		D431F38214883A6600E2608A /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
+		D431F38314883A6600E2608A /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744701438B84E0011EFE6 /* Icon-Small.png */; };
+		D431F38414883A6600E2608A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744751438B86A0011EFE6 /* Icon@2x.png */; };
+		D431F38514883A6600E2608A /* lock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744771438C9580011EFE6 /* lock-button.png */; };
+		D431F38614883A6600E2608A /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D40AB2141438DFBC00C5A5E4 /* Icon.png */; };
+		D431F38714883A6600E2608A /* unlock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D4DA4C321438ED8C004BA928 /* unlock-button.png */; };
+		D431F38814883A6600E2608A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B5E7C314478A1C002E30F2 /* Default.png */; };
+		D431F38A14883A6600E2608A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		D431F38B14883A6600E2608A /* rTrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */; };
+		D431F38C14883A6600E2608A /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		D431F38D14883A6600E2608A /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
+		D431F38E14883A6600E2608A /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
+		D431F38F14883A6600E2608A /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
+		D431F39014883A6600E2608A /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
+		D431F39114883A6600E2608A /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
+		D431F39214883A6600E2608A /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
+		D431F39314883A6600E2608A /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
+		D431F39414883A6600E2608A /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
+		D431F39514883A6600E2608A /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
+		D431F39614883A6600E2608A /* graphTrackerV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FE4512529300004BB4EC /* graphTrackerV.m */; };
+		D431F39714883A6600E2608A /* configTVObjVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D487D7721260A77800298C1D /* configTVObjVC.m */; };
+		D431F39814883A6600E2608A /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
+		D431F39914883A6600E2608A /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
+		D431F39A14883A6600E2608A /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
+		D431F39B14883A6600E2608A /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
+		D431F39C14883A6600E2608A /* voSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE76127EC36E00C036ED /* voSlider.m */; };
+		D431F39D14883A6600E2608A /* voChoice.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE7B127EC38300C036ED /* voChoice.m */; };
+		D431F39E14883A6600E2608A /* voBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE82127EC39800C036ED /* voBoolean.m */; };
+		D431F39F14883A6600E2608A /* voImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE89127EC3AA00C036ED /* voImage.m */; };
+		D431F3A014883A6600E2608A /* voFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE8E127EC3BE00C036ED /* voFunction.m */; };
+		D431F3A114883A6600E2608A /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
+		D431F3A214883A6600E2608A /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
+		D431F3A314883A6600E2608A /* privacyV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90012E8682100A2526B /* privacyV.m */; };
+		D431F3A414883A6600E2608A /* tictacV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90312E868A300A2526B /* tictacV.m */; };
+		D431F3A514883A6600E2608A /* ppwV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90612E868B700A2526B /* ppwV.m */; };
+		D431F3A614883A6600E2608A /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
+		D431F3A714883A6600E2608A /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
+		D431F3A814883A6600E2608A /* togd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CC13798874005E0E23 /* togd.m */; };
+		D431F3A914883A6600E2608A /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
+		D431F3AA14883A6600E2608A /* gtTitleV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F02397137BFF7F0097AC16 /* gtTitleV.m */; };
+		D431F3AB14883A6600E2608A /* gtXAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239A137BFFA10097AC16 /* gtXAxV.m */; };
+		D431F3AC14883A6600E2608A /* gtYAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239D137BFFB30097AC16 /* gtYAxV.m */; };
+		D431F3AD14883A6600E2608A /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
+		D431F3AE14883A6600E2608A /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
+		D431F3B014883A6600E2608A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
+		D431F3B114883A6600E2608A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		D431F3B214883A6600E2608A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		D431F3B314883A6600E2608A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
+		D431F3B414883A6600E2608A /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */; };
+		D431F3B514883A6600E2608A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
+		D431F3B614883A6600E2608A /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
+		D431F3C614883A7E00E2608A /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3BC14883A7E00E2608A /* addTrackerController.xib */; };
+		D431F3C714883A7E00E2608A /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3BD14883A7E00E2608A /* MainWindow.xib */; };
+		D431F3C814883A7E00E2608A /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3BE14883A7E00E2608A /* configTlistController.xib */; };
+		D431F3C914883A7E00E2608A /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3BF14883A7E00E2608A /* addValObjController.xib */; };
+		D431F3CA14883A7E00E2608A /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C014883A7E00E2608A /* useTrackerController.xib */; };
+		D431F3CB14883A7E00E2608A /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C114883A7E00E2608A /* graphTracker.xib */; };
+		D431F3CC14883A7E00E2608A /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C214883A7E00E2608A /* configTVObjVC.xib */; };
+		D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C314883A7E00E2608A /* datePickerVC.xib */; };
+		D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C414883A7E00E2608A /* voDataEdit.xib */; };
+		D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C514883A7E00E2608A /* voTBacc.xib */; };
+		D431F3D014883A7E00E2608A /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3061488396700E2608A /* addTrackerController.xib */; };
+		D431F3D114883A7E00E2608A /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3071488396700E2608A /* MainWindow.xib */; };
+		D431F3D214883A7E00E2608A /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3081488396700E2608A /* configTlistController.xib */; };
+		D431F3D314883A7E00E2608A /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3091488396700E2608A /* addValObjController.xib */; };
+		D431F3D414883A7E00E2608A /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30A1488396700E2608A /* useTrackerController.xib */; };
+		D431F3D514883A7E00E2608A /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30B1488396700E2608A /* graphTracker.xib */; };
+		D431F3D614883A7E00E2608A /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30C1488396700E2608A /* configTVObjVC.xib */; };
+		D431F3D714883A7E00E2608A /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30D1488396700E2608A /* datePickerVC.xib */; };
+		D431F3D814883A7E00E2608A /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30E1488396700E2608A /* voDataEdit.xib */; };
+		D431F3D914883A7E00E2608A /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30F1488396700E2608A /* voTBacc.xib */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
 		D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D313A2626500268248 /* bkgnd2-320-460.png */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
+		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
 		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
 		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
 		D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
@@ -48,6 +129,8 @@
 		D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A317B31192B7C800F062AC /* configTlistController.xib */; };
 		D4A700CD13798874005E0E23 /* togd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CC13798874005E0E23 /* togd.m */; };
 		D4A700D01379928E005E0E23 /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
+		D4AE7C49148C0E290085EB78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4AE7C48148C0E290085EB78 /* Default@2x.png */; };
+		D4B5E7C414478A1C002E30F2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B5E7C314478A1C002E30F2 /* Default.png */; };
 		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
 		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
 		D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
@@ -98,12 +181,32 @@
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
 		D427446D1438B84E0011EFE6 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/png/Icon-72.png"; sourceTree = "<group>"; };
-		D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-@2x.png"; path = "Resources/png/Icon-Small-@2x.png"; sourceTree = "<group>"; };
 		D427446F1438B84E0011EFE6 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/png/Icon-Small-50.png"; sourceTree = "<group>"; };
 		D42744701438B84E0011EFE6 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Resources/png/Icon-Small.png"; sourceTree = "<group>"; };
 		D42744751438B86A0011EFE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Resources/png/Icon@2x.png"; sourceTree = "<group>"; };
 		D42744771438C9580011EFE6 /* lock-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "lock-button.png"; path = "Resources/png/lock-button.png"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
+		D431F3061488396700E2608A /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = "Resources-iPad/Resources/xib/addTrackerController.xib"; sourceTree = "<group>"; };
+		D431F3071488396700E2608A /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = "Resources-iPad/Resources/xib/MainWindow.xib"; sourceTree = "<group>"; };
+		D431F3081488396700E2608A /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = "Resources-iPad/Resources/xib/configTlistController.xib"; sourceTree = "<group>"; };
+		D431F3091488396700E2608A /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = "Resources-iPad/Resources/xib/addValObjController.xib"; sourceTree = "<group>"; };
+		D431F30A1488396700E2608A /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = "Resources-iPad/Resources/xib/useTrackerController.xib"; sourceTree = "<group>"; };
+		D431F30B1488396700E2608A /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = "Resources-iPad/Resources/xib/graphTracker.xib"; sourceTree = "<group>"; };
+		D431F30C1488396700E2608A /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = "Resources-iPad/Resources/xib/configTVObjVC.xib"; sourceTree = "<group>"; };
+		D431F30D1488396700E2608A /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = "Resources-iPad/Resources/xib/datePickerVC.xib"; sourceTree = "<group>"; };
+		D431F30E1488396700E2608A /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = "Resources-iPad/Resources/xib/voDataEdit.xib"; sourceTree = "<group>"; };
+		D431F30F1488396700E2608A /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = "Resources-iPad/Resources/xib/voTBacc.xib"; sourceTree = "<group>"; };
+		D431F3BA14883A6600E2608A /* rTracker-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rTracker-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D431F3BC14883A7E00E2608A /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = "Resources-iPad/Resources/xib/addTrackerController.xib"; sourceTree = "<group>"; };
+		D431F3BD14883A7E00E2608A /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = "Resources-iPad/Resources/xib/MainWindow.xib"; sourceTree = "<group>"; };
+		D431F3BE14883A7E00E2608A /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = "Resources-iPad/Resources/xib/configTlistController.xib"; sourceTree = "<group>"; };
+		D431F3BF14883A7E00E2608A /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = "Resources-iPad/Resources/xib/addValObjController.xib"; sourceTree = "<group>"; };
+		D431F3C014883A7E00E2608A /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = "Resources-iPad/Resources/xib/useTrackerController.xib"; sourceTree = "<group>"; };
+		D431F3C114883A7E00E2608A /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = "Resources-iPad/Resources/xib/graphTracker.xib"; sourceTree = "<group>"; };
+		D431F3C214883A7E00E2608A /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = "Resources-iPad/Resources/xib/configTVObjVC.xib"; sourceTree = "<group>"; };
+		D431F3C314883A7E00E2608A /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = "Resources-iPad/Resources/xib/datePickerVC.xib"; sourceTree = "<group>"; };
+		D431F3C414883A7E00E2608A /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = "Resources-iPad/Resources/xib/voDataEdit.xib"; sourceTree = "<group>"; };
+		D431F3C514883A7E00E2608A /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = "Resources-iPad/Resources/xib/voTBacc.xib"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
 		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		D43EE367133CBF8D00737E76 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
@@ -112,6 +215,7 @@
 		D44386D313A2626500268248 /* bkgnd2-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd2-320-460.png"; path = "Resources/png/bkgnd2-320-460.png"; sourceTree = SOURCE_ROOT; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
+		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
 		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
 		D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
@@ -143,6 +247,8 @@
 		D4A700CE1379928D005E0E23 /* vogd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vogd.h; sourceTree = "<group>"; };
 		D4A700CF1379928D005E0E23 /* vogd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = vogd.m; sourceTree = "<group>"; };
 		D4A7B00512FCC28500ABC266 /* privDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privDefs.h; sourceTree = "<group>"; };
+		D4AE7C48148C0E290085EB78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		D4B5E7C314478A1C002E30F2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
 		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
@@ -213,6 +319,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D431F3AF14883A6600E2608A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D431F3B014883A6600E2608A /* QuartzCore.framework in Frameworks */,
+				D431F3B114883A6600E2608A /* Foundation.framework in Frameworks */,
+				D431F3B214883A6600E2608A /* UIKit.framework in Frameworks */,
+				D431F3B314883A6600E2608A /* CoreGraphics.framework in Frameworks */,
+				D431F3B414883A6600E2608A /* libsqlite3.dylib in Frameworks */,
+				D431F3B514883A6600E2608A /* AddressBook.framework in Frameworks */,
+				D431F3B614883A6600E2608A /* AddressBookUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -238,6 +358,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* rTracker.app */,
+				D431F3BA14883A6600E2608A /* rTracker-iPad.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,10 +366,12 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				D4AE7C48148C0E290085EB78 /* Default@2x.png */,
 				D40518B613787B5500F001BA /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				D431F3051488395D00E2608A /* Resources-iPad */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				D4D2457E12F0AC8000E994C6 /* changelog.txt */,
@@ -268,6 +391,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4786E64148D864C000E144A /* Icon-Small@2x.png */,
+				D4B5E7C314478A1C002E30F2 /* Default.png */,
 				D4DA4C321438ED8C004BA928 /* unlock-button.png */,
 				D42744771438C9580011EFE6 /* lock-button.png */,
 				D42744691438B8090011EFE6 /* iTunesArtwork */,
@@ -276,7 +401,6 @@
 				D427446D1438B84E0011EFE6 /* Icon-72.png */,
 				D42744701438B84E0011EFE6 /* Icon-Small.png */,
 				D427446F1438B84E0011EFE6 /* Icon-Small-50.png */,
-				D427446E1438B84E0011EFE6 /* Icon-Small-@2x.png */,
 				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
 				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
@@ -310,6 +434,33 @@
 				D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D431F3051488395D00E2608A /* Resources-iPad */ = {
+			isa = PBXGroup;
+			children = (
+				D431F3BC14883A7E00E2608A /* addTrackerController.xib */,
+				D431F3BD14883A7E00E2608A /* MainWindow.xib */,
+				D431F3BE14883A7E00E2608A /* configTlistController.xib */,
+				D431F3BF14883A7E00E2608A /* addValObjController.xib */,
+				D431F3C014883A7E00E2608A /* useTrackerController.xib */,
+				D431F3C114883A7E00E2608A /* graphTracker.xib */,
+				D431F3C214883A7E00E2608A /* configTVObjVC.xib */,
+				D431F3C314883A7E00E2608A /* datePickerVC.xib */,
+				D431F3C414883A7E00E2608A /* voDataEdit.xib */,
+				D431F3C514883A7E00E2608A /* voTBacc.xib */,
+				D431F3061488396700E2608A /* addTrackerController.xib */,
+				D431F3071488396700E2608A /* MainWindow.xib */,
+				D431F3081488396700E2608A /* configTlistController.xib */,
+				D431F3091488396700E2608A /* addValObjController.xib */,
+				D431F30A1488396700E2608A /* useTrackerController.xib */,
+				D431F30B1488396700E2608A /* graphTracker.xib */,
+				D431F30C1488396700E2608A /* configTVObjVC.xib */,
+				D431F30D1488396700E2608A /* datePickerVC.xib */,
+				D431F30E1488396700E2608A /* voDataEdit.xib */,
+				D431F30F1488396700E2608A /* voTBacc.xib */,
+			);
+			name = "Resources-iPad";
 			sourceTree = "<group>";
 		};
 		D43EE365133CBF4100737E76 /* csv support */ = {
@@ -454,6 +605,23 @@
 			productReference = 1D6058910D05DD3D006BFB54 /* rTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D431F36B14883A6600E2608A /* rTracker-iPad */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D431F3B714883A6600E2608A /* Build configuration list for PBXNativeTarget "rTracker-iPad" */;
+			buildPhases = (
+				D431F36C14883A6600E2608A /* Resources */,
+				D431F38914883A6600E2608A /* Sources */,
+				D431F3AF14883A6600E2608A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "rTracker-iPad";
+			productName = rTracker;
+			productReference = D431F3BA14883A6600E2608A /* rTracker-iPad.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -478,6 +646,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* rTracker */,
+				D431F36B14883A6600E2608A /* rTracker-iPad */,
 			);
 		};
 /* End PBXProject section */
@@ -507,13 +676,59 @@
 				D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */,
 				D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */,
 				D42744711438B84E0011EFE6 /* Icon-72.png in Resources */,
-				D42744721438B84E0011EFE6 /* Icon-Small-@2x.png in Resources */,
 				D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */,
 				D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */,
 				D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */,
 				D42744781438C9580011EFE6 /* lock-button.png in Resources */,
 				D40AB2151438DFBC00C5A5E4 /* Icon.png in Resources */,
 				D4DA4C331438ED8C004BA928 /* unlock-button.png in Resources */,
+				D4B5E7C414478A1C002E30F2 /* Default.png in Resources */,
+				D4AE7C49148C0E290085EB78 /* Default@2x.png in Resources */,
+				D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D431F36C14883A6600E2608A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D431F37114883A6600E2608A /* rt-types.plist in Resources */,
+				D431F37314883A6600E2608A /* blueButton.png in Resources */,
+				D431F37514883A6600E2608A /* checked.png in Resources */,
+				D431F37614883A6600E2608A /* unchecked.png in Resources */,
+				D431F37B14883A6600E2608A /* changelog.txt in Resources */,
+				D431F37C14883A6600E2608A /* bkgnd1-320-460.png in Resources */,
+				D431F37D14883A6600E2608A /* bkgnd-cell1-320-56.png in Resources */,
+				D431F37E14883A6600E2608A /* bkgnd2-320-460.png in Resources */,
+				D431F37F14883A6600E2608A /* iTunesArtwork in Resources */,
+				D431F38014883A6600E2608A /* Icon-72.png in Resources */,
+				D431F38214883A6600E2608A /* Icon-Small-50.png in Resources */,
+				D431F38314883A6600E2608A /* Icon-Small.png in Resources */,
+				D431F38414883A6600E2608A /* Icon@2x.png in Resources */,
+				D431F38514883A6600E2608A /* lock-button.png in Resources */,
+				D431F38614883A6600E2608A /* Icon.png in Resources */,
+				D431F38714883A6600E2608A /* unlock-button.png in Resources */,
+				D431F38814883A6600E2608A /* Default.png in Resources */,
+				D431F3C614883A7E00E2608A /* addTrackerController.xib in Resources */,
+				D431F3C714883A7E00E2608A /* MainWindow.xib in Resources */,
+				D431F3C814883A7E00E2608A /* configTlistController.xib in Resources */,
+				D431F3C914883A7E00E2608A /* addValObjController.xib in Resources */,
+				D431F3CA14883A7E00E2608A /* useTrackerController.xib in Resources */,
+				D431F3CB14883A7E00E2608A /* graphTracker.xib in Resources */,
+				D431F3CC14883A7E00E2608A /* configTVObjVC.xib in Resources */,
+				D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */,
+				D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */,
+				D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */,
+				D431F3D014883A7E00E2608A /* addTrackerController.xib in Resources */,
+				D431F3D114883A7E00E2608A /* MainWindow.xib in Resources */,
+				D431F3D214883A7E00E2608A /* configTlistController.xib in Resources */,
+				D431F3D314883A7E00E2608A /* addValObjController.xib in Resources */,
+				D431F3D414883A7E00E2608A /* useTrackerController.xib in Resources */,
+				D431F3D514883A7E00E2608A /* graphTracker.xib in Resources */,
+				D431F3D614883A7E00E2608A /* configTVObjVC.xib in Resources */,
+				D431F3D714883A7E00E2608A /* datePickerVC.xib in Resources */,
+				D431F3D814883A7E00E2608A /* voDataEdit.xib in Resources */,
+				D431F3D914883A7E00E2608A /* voTBacc.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,10 +779,143 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D431F38914883A6600E2608A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D431F38A14883A6600E2608A /* main.m in Sources */,
+				D431F38B14883A6600E2608A /* rTrackerAppDelegate.m in Sources */,
+				D431F38C14883A6600E2608A /* RootViewController.m in Sources */,
+				D431F38D14883A6600E2608A /* trackerList.m in Sources */,
+				D431F38E14883A6600E2608A /* trackerObj.m in Sources */,
+				D431F38F14883A6600E2608A /* addTrackerController.m in Sources */,
+				D431F39014883A6600E2608A /* tObjBase.m in Sources */,
+				D431F39114883A6600E2608A /* configTlistController.m in Sources */,
+				D431F39214883A6600E2608A /* valueObj.m in Sources */,
+				D431F39314883A6600E2608A /* addValObjController.m in Sources */,
+				D431F39414883A6600E2608A /* useTrackerController.m in Sources */,
+				D431F39514883A6600E2608A /* graphTrackerVC.m in Sources */,
+				D431F39614883A6600E2608A /* graphTrackerV.m in Sources */,
+				D431F39714883A6600E2608A /* configTVObjVC.m in Sources */,
+				D431F39814883A6600E2608A /* datePickerVC.m in Sources */,
+				D431F39914883A6600E2608A /* voNumber.m in Sources */,
+				D431F39A14883A6600E2608A /* voText.m in Sources */,
+				D431F39B14883A6600E2608A /* voTextBox.m in Sources */,
+				D431F39C14883A6600E2608A /* voSlider.m in Sources */,
+				D431F39D14883A6600E2608A /* voChoice.m in Sources */,
+				D431F39E14883A6600E2608A /* voBoolean.m in Sources */,
+				D431F39F14883A6600E2608A /* voImage.m in Sources */,
+				D431F3A014883A6600E2608A /* voFunction.m in Sources */,
+				D431F3A114883A6600E2608A /* voState.m in Sources */,
+				D431F3A214883A6600E2608A /* voDataEdit.m in Sources */,
+				D431F3A314883A6600E2608A /* privacyV.m in Sources */,
+				D431F3A414883A6600E2608A /* tictacV.m in Sources */,
+				D431F3A514883A6600E2608A /* ppwV.m in Sources */,
+				D431F3A614883A6600E2608A /* rTracker-resource.m in Sources */,
+				D431F3A714883A6600E2608A /* CSVParser.m in Sources */,
+				D431F3A814883A6600E2608A /* togd.m in Sources */,
+				D431F3A914883A6600E2608A /* vogd.m in Sources */,
+				D431F3AA14883A6600E2608A /* gtTitleV.m in Sources */,
+				D431F3AB14883A6600E2608A /* gtXAxV.m in Sources */,
+				D431F3AC14883A6600E2608A /* gtYAxV.m in Sources */,
+				D431F3AD14883A6600E2608A /* gtVONameV.m in Sources */,
+				D431F3AE14883A6600E2608A /* dpRslt.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				PRODUCT_NAME = rTracker;
+				PROVISIONING_PROFILE = "EF64E749-EEB0-4846-9A94-06CF1972E2DB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EF64E749-EEB0-4846-9A94-06CF1972E2DB";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
+			};
+			name = Debug;
+		};
+		1D6058950D05DD3E006BFB54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				OTHER_CODE_SIGN_FLAGS = "";
+				PRODUCT_NAME = rTracker;
+				PROVISIONING_PROFILE = "EF64E749-EEB0-4846-9A94-06CF1972E2DB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EF64E749-EEB0-4846-9A94-06CF1972E2DB";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				"New Setting" = "";
+				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				PREBINDING = NO;
+				PROVISIONING_PROFILE = "BCA92D40-1417-43ED-8777-A554304268C6";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C9A30D51-F3B3-4A48-8B73-010DFBE9633F";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				PREBINDING = NO;
+				PROVISIONING_PROFILE = "BCA92D40-1417-43ED-8777-A554304268C6";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C9A30D51-F3B3-4A48-8B73-010DFBE9633F";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		D431F3B814883A6600E2608A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -581,13 +929,14 @@
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
-				PRODUCT_NAME = rTracker;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				PRODUCT_NAME = "rTracker-iPad";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
 			};
 			name = Debug;
 		};
-		1D6058950D05DD3E006BFB54 /* Release */ = {
+		D431F3B914883A6600E2608A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -599,42 +948,12 @@
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				OTHER_CODE_SIGN_FLAGS = "";
-				PRODUCT_NAME = rTracker;
+				PRODUCT_NAME = "rTracker-iPad";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
-			};
-			name = Release;
-		};
-		C01FCF4F08A954540054247B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
-				"New Setting" = "";
-				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
-				PREBINDING = NO;
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		C01FCF5008A954540054247B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
-				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
-				PREBINDING = NO;
-				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -655,6 +974,15 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D431F3B714883A6600E2608A /* Build configuration list for PBXNativeTarget "rTracker-iPad" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D431F3B814883A6600E2608A /* Debug */,
+				D431F3B914883A6600E2608A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -370,7 +370,7 @@
                     break;
                 case VOT_TEXT:
                 case VOT_BOOLEAN:
-                case VOT_IMAGE:
+                //case VOT_IMAGE:
                     [self plotVO_dotsNoY:(vogd*)vo.vogd context:context];
                     break;
                 default:   // VOT_TEXTB

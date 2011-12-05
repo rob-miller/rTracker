@@ -6,10 +6,13 @@
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "ppwV.h"
 #import "rTracker-constants.h"
 #import "rTracker-resource.h"
 #import "dbg-defs.h"
+
 
 @implementation ppwV
 
@@ -33,6 +36,7 @@ CGRect saveFrame;
 	
     if ((self = [super initWithFrame:frame])) {
 		self.backgroundColor = [UIColor lightGrayColor];   //blueColor
+        self.layer.cornerRadius=8;
 		self.parentView = pv;
 		
 		//keyboardIsShown = NO;
@@ -51,6 +55,7 @@ CGRect saveFrame;
 */
 		DBGLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
 		//[pv addSubview:self];
+
 		[pv insertSubview:self atIndex:[pv.subviews count]-1];
         // Initialization code
     }
@@ -282,6 +287,7 @@ CGRect saveFrame;
 		topTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		topTF.clearButtonMode = UITextFieldViewModeWhileEditing;
 		topTF.delegate = self;
+        topTF.layer.cornerRadius = 4;
 		
 		[self addSubview:topTF];
 	}
@@ -291,7 +297,7 @@ CGRect saveFrame;
 
 - (UIButton*) cancelBtn {
 	if (nil == cancelBtn) {
-		NSString* ttl=@"cancel";
+		NSString* ttl=@" cancel ";
 		cancelBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		[cancelBtn setTitle:ttl forState:UIControlStateNormal];
 		CGRect f = CGRectZero;

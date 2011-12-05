@@ -179,12 +179,18 @@ static int editMode;
 											 initWithCustomView:editToggle];
 	[editToggle release];
 
+    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
+    infoBtn.frame = CGRectMake(0, 0, 44, 44);
+    UIBarButtonItem *setupBtnItem = [[UIBarButtonItem alloc] initWithCustomView:infoBtn];
+    
+    /*
 	UIBarButtonItem *setupBtnItem = [[UIBarButtonItem alloc]
 								 initWithTitle:@"Setup"
 								 style:UIBarButtonItemStyleBordered
 								 target:self
 								 action:@selector(btnSetup)];
-	
+	*/
 	
 	// Set our toolbar items
 	self.toolbarItems = [NSArray arrayWithObjects:

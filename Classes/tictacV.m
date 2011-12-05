@@ -6,6 +6,8 @@
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "tictacV.h"
 #import "gfx.h"
 #import "privDefs.h"
@@ -45,10 +47,9 @@ static unsigned int theKey;
 	DBGLog(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
 	if ((self = [super initWithFrame:ttf])) {
 		self.backgroundColor = [UIColor whiteColor];
+        self.layer.cornerRadius = 8;  // doesn't work, probably overwriting rectangle elsewhere
     }
-	
     return self;
-	
 }
 
 
@@ -117,6 +118,8 @@ static unsigned int theKey;
 - (void) drawBlank {
 	[[UIColor whiteColor] set];	
 	CGContextFillRect(self.context,self.currRect);
+    //self.layer.cornerRadius = 8;
+    
 }
 
 - (void) sDraw:(NSString*)str {

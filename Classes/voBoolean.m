@@ -62,6 +62,7 @@
 	[self.imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
     
     DBGLog(@"bool voDisplay: %d", ([self.imageButton imageForState:UIControlStateNormal] == [UIImage imageNamed:@"checked.png"] ? 1 : 0) );
+    DBGLog(@"bool data= %@",self.vo.value);
 	return self.imageButton;
 }
 

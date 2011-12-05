@@ -105,6 +105,22 @@
                             [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
                             [parser release];
                             [to release];
+                            
+                            /*
+                            NSString *newfile = [file stringByReplacingOccurrencesOfString:@"_in.csv" 
+                                                                                withString:@"_read.csv" 
+                                                                                   options:0 
+                                                                                     range:inmatch];
+                            NSString *newpath = [docsDir stringByAppendingPathComponent:newfile];
+                            DBGLog(@"rename old: %@  to new: %@",target,newpath);
+                             */
+                            NSError *err;
+                            BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
+                            if (!rslt) {
+                                DBGLog(@"Error: %@", err);
+                            }
+                            // apparently cannot rename in but can delete from application's Document folder
+                            //*/
                         }
                         ndx++;
                     }

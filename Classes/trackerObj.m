@@ -438,11 +438,14 @@
 		NSEnumerator *e1 = [i1 objectEnumerator];
 		NSEnumerator *e3 = [s1 objectEnumerator];
 		NSInteger vid;
-		while ( (vid = (NSInteger) [[e1 nextObject] intValue]) ) {			
+        id tid;
+		while ( (tid = [e1 nextObject]) != nil) {	
+            vid = (NSInteger) [tid intValue];
+            NSString *newVal = (NSString *) [e3 nextObject];  // read csv may gen bad id, keep enumerators even
 			valueObj *vo = [self getValObj:vid];
 			//NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
-                NSString *newVal = (NSString *) [e3 nextObject];
+                DBGLog(@"vo id %d newValue: %@",vid,newVal);
                 vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
 				[vo.value setString:newVal];  // results not saved for func so not in db table to be read
 				//vo.retrievedData = YES;
@@ -601,7 +604,7 @@
 	{
         DBGLog(@"pass1 key= %@", key);
         if ((! [key isEqualToString:TIMESTAMP_LABEL]) /* not timestamp */
-            && (![@"" isEqualToString:[aRecord objectForKey:key]])) {    // only fields with data
+             && (![@"" isEqualToString:[aRecord objectForKey:key]]) ) {   // only fields with data
             
             //self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
             //int valobjID,valobjPriv;

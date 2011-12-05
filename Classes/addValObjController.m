@@ -82,12 +82,19 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 	//[self.navigationController setToolbarHidden:YES animated:YES];
 	
-	UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc]
+    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
+    infoBtn.frame = CGRectMake(0, 0, 44, 44);
+    UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc] initWithCustomView:infoBtn];
+
+	/*
+     UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc]
 								initWithTitle:@"Setup"
 								style:UIBarButtonItemStyleBordered
 								target:self
 								action:@selector(btnSetup)];
-
+    */
+    
 	self.toolbarItems = [NSArray arrayWithObjects: setupBtn, nil];
 	[setupBtn release];
 	

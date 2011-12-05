@@ -228,11 +228,16 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			[i1 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,0)]];
-			
-			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
-			
-			SQLDbg(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
+            int li1;
+            char *ls1;
+            li1 = sqlite3_column_int(stmt,0);
+            ls1 = (char *) sqlite3_column_text(stmt, 1);
+            
+            //if (strlen(ls1)) {  // don't report if empty ? - fix problem with csv load...
+                [i1 addObject: [NSNumber numberWithInt: li1]];
+                [s1 addObject: [NSString stringWithUTF8String: ls1]];
+                SQLDbg(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
+            //}
 		}
 		if (rslt != SQLITE_DONE) {
 			DBGErr(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));

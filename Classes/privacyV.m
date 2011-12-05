@@ -6,16 +6,24 @@
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "privacyV.h"
 #import "rTracker-constants.h"
 #import "privDefs.h"
 #import "dbg-defs.h"
 #import "RootViewController.h"
 
+#define CFGBTNCONFIG @" setup "
+#define CFGBTNLOCK   @" lock  "
+
 @implementation privacyV
 
 @synthesize parentView, /*parent,*/ ttv, ppwv, showing, pwState, tob;
 @synthesize clearBtn, configBtn,saveBtn, showSlider, ssValLab, nextBtn, prevBtn;
+
+#define BTNRADIUS 2
+#define LBLRADIUS 4
 
 #pragma mark -
 #pragma mark singleton privacyValue support
@@ -53,6 +61,7 @@ static int privacyValue=PRIVDFLT;
 		self.parentView = pv;
 		self.pwState = PWNEEDPRIVOK; //PWNEEDPASS;
 		self.backgroundColor = [UIColor darkGrayColor];
+        self.layer.cornerRadius = 8;
 		showing = PVNOSHOW;
 		[self addSubview:self.ttv];
 		[self addSubview:self.clearBtn];
@@ -164,7 +173,7 @@ static int privacyValue=PRIVDFLT;
 
 - (void) showPVQ:(BOOL)state {
 	if (state) {
-		[self.configBtn setTitle:@"config" forState:UIControlStateNormal];
+		[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
 		self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
 	} else {
 		self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
@@ -222,6 +231,7 @@ static int privacyValue=PRIVDFLT;
 			self.pwState = PWKNOWPASS;    // just successfully created password so don't ask again
 			[self showPVQ:TRUE];
 			//[self.ppwv hidePPWVAnimated:TRUE];  // don't hide and re-show
+            // crash[(RootViewController*) self.parentView refreshToolBar];
 		} else {
 			[UIView beginAnimations:nil context:NULL];
 			[UIView setAnimationDuration:kAnimationDuration];
@@ -229,7 +239,7 @@ static int privacyValue=PRIVDFLT;
 			if (PVCONFIG == self.showing) {
 				[self.ppwv hidePPWVAnimated:FALSE];
 				[self hideConfigBtns:TRUE];
-				[self.configBtn setTitle:@"config" forState:UIControlStateNormal];
+				[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
 			} else {  // only PVNOSHOW possible ?
 				[self showPVQ:TRUE];
 			}
@@ -275,7 +285,7 @@ static int privacyValue=PRIVDFLT;
 				[self hideConfigBtns:FALSE];
 			}
 			[self.ppwv changePass:PVCONFIG cancel:PVCONFIG];
-			[self.configBtn setTitle:@"lock" forState:UIControlStateNormal];
+			[self.configBtn setTitle:CFGBTNLOCK forState:UIControlStateNormal];
             [self setTTV];
 			[UIView commitAnimations];
 			showing = PVCONFIG;
@@ -296,9 +306,9 @@ static int privacyValue=PRIVDFLT;
 
 - (void) showConfig:(UIButton*)btn {
 	
-	if ([btn.currentTitle isEqualToString:@"config"]) {
+	if ([btn.currentTitle isEqualToString:CFGBTNCONFIG]) {
 		self.showing = PVCONFIG;
-	} else if ([btn.currentTitle isEqualToString:@"lock"]) {
+	} else if ([btn.currentTitle isEqualToString:CFGBTNLOCK]) {
 		self.showing = PVQUERY;
 	}
 }
@@ -359,58 +369,71 @@ static int privacyValue=PRIVDFLT;
 	bframe.origin.x -= bframe.size.width/2.0f;  // center now we know btn title size
 	rbtn.frame = bframe;
 	[rbtn setTitle:btitle forState:UIControlStateNormal];
+    // doesn't work here : rbtn.layer.cornerRadius = BTNRADIUS;
 	return rbtn;
 }
 
 - (UIButton *) clearBtn {
 	if (clearBtn == nil) {
-		clearBtn = [self getBtn:@"clear" 
+		clearBtn = [self getBtn:@" clear " 
 						   borg: (CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), 
 							   self.frame.size.height * TICTACVRTFRAC}];
 		[clearBtn addTarget:self action:@selector(doClear:) forControlEvents:UIControlEventTouchUpInside ];		
+        clearBtn.layer.cornerRadius = BTNRADIUS;
 	}
 	return clearBtn;
 }
 
 - (UIButton *) configBtn {
 	if (configBtn == nil) {
-		configBtn = [self getBtn:@"config"
+        
+		configBtn = [self getBtn:CFGBTNCONFIG
 							borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), 
 								self.frame.size.height * TICTACVRTFRAC}];
-
+         
+        /*
+         // use button title for state info
+        configBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        configBtn.frame = CGRectMake(self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))),
+                                     self.frame.size.height * TICTACVRTFRAC,
+                                     44, 44);
+         */
 		[configBtn addTarget:self action:@selector(showConfig:) forControlEvents:UIControlEventTouchUpInside ];
+        configBtn.layer.cornerRadius = BTNRADIUS;
 	}
 	return configBtn;
 }
 
 - (UIButton *) saveBtn {
 	if (saveBtn == nil) {
-		saveBtn = [self getBtn:@"save"
+		saveBtn = [self getBtn:@" save "
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), 
 							  self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC))}];
-		[saveBtn setHidden:TRUE];
 		[saveBtn addTarget:self action:@selector(saveConfig:) forControlEvents:UIControlEventTouchUpInside ];
-		
+        saveBtn.layer.cornerRadius = BTNRADIUS;
+		[saveBtn setHidden:TRUE];
 	}
 	return saveBtn;
 }
 
 - (UIButton *) prevBtn {
 	if (prevBtn == nil) {
-		prevBtn = [self getBtn:@"<" 
+		prevBtn = [self getBtn:@"  <  " 
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
 		[prevBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
+        prevBtn.layer.cornerRadius = BTNRADIUS;
 		[prevBtn setHidden:TRUE];
 	}
 	return prevBtn;
 }
 - (UIButton *) nextBtn {
 	if (nextBtn == nil) {
-		nextBtn = [self getBtn:@">"
+		nextBtn = [self getBtn:@"  >  "
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), // x= same as saveBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
 		[nextBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
+        nextBtn.layer.cornerRadius = BTNRADIUS;
 		[nextBtn setHidden:TRUE];
 	}
 	return nextBtn;
@@ -425,6 +448,7 @@ static int privacyValue=PRIVDFLT;
 		ssValLab = [[UILabel alloc] initWithFrame:lframe];
 		ssValLab.textAlignment = UITextAlignmentRight;
 		ssValLab.text = @"2";  // MINPRIV +1
+        ssValLab.layer.cornerRadius = LBLRADIUS;
 		[ssValLab setHidden:TRUE];
 		
 	}

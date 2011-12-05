@@ -76,7 +76,7 @@
                 break;
             case VOT_TEXT:
             case VOT_BOOLEAN:
-            case VOT_IMAGE:
+            //case VOT_IMAGE:
                 vstr = @"";
                 break;
                 

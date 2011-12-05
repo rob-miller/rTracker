@@ -726,10 +726,12 @@
 			//[self drawGenOptsOnly];
 			//[self drawGeneralVoOpts];
 			break;
+            /*
 		case VOT_IMAGE:
 			//[self drawImageOpts];
 			[self.vo.vos voDrawOptions:self];
 			break;
+             */
 		case VOT_FUNC:
 			// uitextfield for function, picker or buttons for available valObjs and functions?
 			//[self drawFuncOptsOverview];

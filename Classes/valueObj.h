@@ -18,10 +18,11 @@
 #define VOT_SLIDER	3
 #define VOT_CHOICE	4
 #define VOT_BOOLEAN	5
-#define VOT_IMAGE	6
-#define VOT_FUNC	7
+#define VOT_FUNC	6
+#define VOT_MAX		7
 
-#define VOT_MAX		8
+// image not yet
+// #define VOT_IMAGE	7
 
 // max number of choices for VOT_CHOICE
 #define CHOICES 6

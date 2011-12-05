@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define DBACCESS YES
+// make sqlite db files available from itunes? (perhaps prefs option later)
+#define DBACCESS NO
 
 
 @interface rTracker_resource : NSObject {

@@ -193,9 +193,26 @@
   - [setPrivacyValue:tictacvalue] scaled to +MINPRIV to solve problem above
   - made < and > shift through tictacvalues take to min, max set value if before or after min,max
 
-01 October 2011
+02 October 2011
   - renamed rTracker-Info.plist to Info.plist
   - several check-ins attempting to fix issues of renamed files
   - changed 'private' button to lock image
   - reload toolbar on refresh to change lock/unlock image
 
+--- check in ---
+
+04 October 2011
+  - curved up privacy/password view, buttons, etc.
+  - replaced checkbox png's with own created images
+  - replaced 'setup' buttons with iOS 'i' button
+
+13 October 2011
+  - create, add Default.png initial screen image
+
+24 October 2011
+  - delete _in.csv iput file
+  - trackerobj loadData check for nil [enumerator next] instead of intval=0 -- spurious 0 data from csv load ?
+
+25 October 2011
+  - remove Image from rt-types.plist, valueObj.h - not able to test yet; various VOT_IMAGE comment-out points
+  - set DBACCESS false so can't see sqlite db files from itunes
