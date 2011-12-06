@@ -327,7 +327,7 @@
 	} else if ( btn == [self.wDict objectForKey:@"srBtn"] ) {
 		okey = @"savertn"; dfltState=SAVERTNDFLT;
 	}else {
-		NSAssert(0,@"ckButtonAction cannot identify btn");
+		dbgNSAssert(0,@"ckButtonAction cannot identify btn");
 	}
 	
 	if (dfltState == YES) {
@@ -435,7 +435,7 @@
 		okey = @"fnddp";
 		nkey = nil;
 	} else {
-		NSAssert(0,@"mtfDone cannot identify tf");
+		dbgNSAssert(0,@"mtfDone cannot identify tf");
 	}
 
 	if (self.vo == nil) {      // tracker config

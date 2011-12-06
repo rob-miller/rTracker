@@ -170,7 +170,7 @@ static unsigned int theKey;
 			[self sDraw:@"+"];
 			break;
 		default:
-			NSAssert(0,@"drawCell bad region val");
+			dbgNSAssert(0,@"drawCell bad region val");
 			break;
 	}
 }

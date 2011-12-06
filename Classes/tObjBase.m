@@ -98,11 +98,11 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) getTDb {
 	DBGLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
-	NSAssert(self.dbName, @"getTDb called with no dbName set");
+	dbgNSAssert(self.dbName, @"getTDb called with no dbName set");
 	
 	if (sqlite3_open([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String], &tDb) != SQLITE_OK) {
 		sqlite3_close(tDb);
-		NSAssert(0, @"error opening rTracker database");
+		dbgNSAssert(0, @"error opening rTracker database");
 	} else {
 		DBGLog(@"opened tDb %@",self.dbName);
 		int c;
@@ -147,7 +147,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) deleteTDb {
 	DBGLog(@"deleteTDb dbName= %@ id=%d",self.dbName,self.toid);
-	NSAssert(self.dbName, @"deleteTDb called with no dbName set");
+	dbgNSAssert(self.dbName, @"deleteTDb called with no dbName set");
 	sqlite3_close(tDb);
 	tDb = nil;
 	NSFileManager *fm = [[NSFileManager alloc] init];
@@ -197,7 +197,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 - (void) toQry2AryS : (NSMutableArray *) inAry {
 	
 	SQLDbg(@"toQry2AryS: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryS called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryS called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -222,7 +222,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	
 	
 	SQLDbg(@"toQry2AryIS: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryIS called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryIS called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -252,7 +252,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	
 	
 	SQLDbg(@"toQry2AryISI: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryISI called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryISI called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -277,7 +277,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	
 	
 	SQLDbg(@"toQry2ArySS: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2ArySS called with no tDb");
+	dbgNSAssert(tDb,@"toQry2ArySS called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -302,7 +302,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 // not used
 	
 	SQLDbg(@"toQry2AryIIS: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryIIS called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryIIS called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -331,7 +331,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	
 	
 	SQLDbg(@"toQry2AryIISII: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryIISII called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryIISII called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -363,7 +363,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 - (void) toQry2AryID : (NSMutableArray *)i1 d1:(NSMutableArray *)d1
 {
 	SQLDbg(@"toQry2AryIF: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryIF called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryIF called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -386,7 +386,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 - (void) toQry2AryI : (NSMutableArray *) inAry {
 	
 	SQLDbg(@"toQry2AryI: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryI called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryI called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -408,7 +408,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 - (void) toQry2IntInt:(int *)i1 i2:(int*)i2 {
 	
 	SQLDbg(@"toQry2AryII: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryII called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryII called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -433,7 +433,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 - (void) toQry2IntIntInt:(int *)i1 i2:(int*)i2 i3:(int*)i3 {
 	
 	SQLDbg(@"toQry2AryIII: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2AryIII called with no tDb");
+	dbgNSAssert(tDb,@"toQry2AryIII called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -459,7 +459,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (int) toQry2Int {
 	SQLDbg(@"toQry2Int: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2Int called with no tDb");
+	dbgNSAssert(tDb,@"toQry2Int called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	int irslt=0;
@@ -484,7 +484,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (NSString *) toQry2Str {
 	SQLDbg(@"toQry2StrCopy: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2StrCopy called with no tDb");
+	dbgNSAssert(tDb,@"toQry2StrCopy called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	NSString *srslt=@"";
@@ -511,7 +511,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (float) toQry2Float {
 	SQLDbg(@"toQry2Float: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2Float called with no tDb");
+	dbgNSAssert(tDb,@"toQry2Float called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	float frslt=0.0f;
@@ -536,7 +536,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (double) toQry2Double {
 	SQLDbg(@"toQry2Double: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2Double called with no tDb");
+	dbgNSAssert(tDb,@"toQry2Double called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	double drslt=0.0f;
@@ -562,12 +562,12 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) toExecSql {
 	SQLDbg(@"toExecSql: %@ => _%@_", self.dbName, self.sql);
-	NSAssert(tDb,@"toExecSql called with no tDb");
+	dbgNSAssert(tDb,@"toExecSql called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		if (sqlite3_step(stmt) != SQLITE_DONE) {
-			NSAssert2(0,@"tob error executing _%@_  : %s", self.sql, sqlite3_errmsg(tDb));
+			dbgNSAssert2(0,@"tob error executing _%@_  : %s", self.sql, sqlite3_errmsg(tDb));
 		}
 	} else {
 		DBGErr(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
@@ -578,7 +578,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) toQry2Log {
 	SQLDbg(@"toQry2Log: %@ => _%@_",self.dbName,self.sql);
-	NSAssert(tDb,@"toQry2Log called with no tDb");
+	dbgNSAssert(tDb,@"toQry2Log called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	NSString *srslt;

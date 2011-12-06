@@ -221,7 +221,7 @@
 			case DPA_CANCEL:
 				break;
 			default:
-				NSAssert(0,@"failed to determine dpr action");
+				dbgNSAssert(0,@"failed to determine dpr action");
 				break;
 		}
 		self.dpr.date = nil;

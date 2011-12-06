@@ -53,7 +53,7 @@
                 break;
             }
         }
-        NSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");    
+        dbgNSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");    
     }
     
     return rslt;

@@ -11,6 +11,7 @@
 #define DEBUGLOG    0
 #define DEBUGWARN   1
 #define DEBUGERR    1
+#define RELEASE     1
 
 #if SQLDEBUG 
 #define SQLDbg(args...) NSLog(@"%@",[NSString stringWithFormat: args])
@@ -34,4 +35,14 @@
 #define DBGErr(args...) NSLog(@"%@",[NSString stringWithFormat: args])
 #else
 #define DBGErr(args...)
+#endif
+
+#if RELEASE
+#define dbgNSAssert(x,y) DBGErr(y)
+#define dbgNSAssert1(x,y,z) DBGErr(y,z)
+#define dbgNSAssert2(x,y,z,t) DBGErr(y,z,t)
+#else
+#define dbgNSAssert NSAssert
+#define dbgNSAssert1 NSAssert1
+#define dbgNSAssert2 NSAssert2
 #endif

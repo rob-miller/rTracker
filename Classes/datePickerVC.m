@@ -7,7 +7,7 @@
 //
 
 #import "datePickerVC.h"
-
+#import "dbg-defs.h"
 
 @implementation datePickerVC
 
@@ -124,7 +124,7 @@
 			self.datePicker.datePickerMode = UIDatePickerModeTime;
 			break;
 		default:
-			NSAssert(0,@"dateModeChoice: cannot identify seg index");
+			dbgNSAssert(0,@"dateModeChoice: cannot identify seg index");
 			break;
 	}
 }

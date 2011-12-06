@@ -318,7 +318,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			return [self.graphTypes count];
 			break;
 		default:
-			NSAssert(0,@"bad component for avo picker");
+			dbgNSAssert(0,@"bad component for avo picker");
 			return 0;
 			break;
 	}
@@ -343,7 +343,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			return [self.graphTypes objectAtIndex:row];
 			break;
 		default:
-			NSAssert(0,@"bad component for avo picker");
+			dbgNSAssert(0,@"bad component for avo picker");
 			return @"boo.";
 			break;
 	}
@@ -393,7 +393,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		default:
-			NSAssert(0,@"bad component for avo picker");
+			dbgNSAssert(0,@"bad component for avo picker");
 			break;
 	}
 	[label autorelease];
@@ -415,7 +415,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			return sizeGTLabel.width + (2.0f * FONTSIZE);
 			break;
 		default:
-			NSAssert(0,@"bad component for avo picker");
+			dbgNSAssert(0,@"bad component for avo picker");
 			return 0.0f;
 			break;
 	}

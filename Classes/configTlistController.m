@@ -126,7 +126,7 @@ UITableView *deleteTableView;
 			[self.table setEditing:YES animated:YES];
 			break;
 		default:
-			NSAssert(0,@"ctlc: segment index not handled");
+			dbgNSAssert(0,@"ctlc: segment index not handled");
 			break;
 	}
 			

@@ -90,7 +90,7 @@
 	if (rank == 0) {
 		rank = [self.topLayoutNames count] +1;  // so put at end
 	}
-	NSAssert(tObj.toid,@"confirmTLE: toid=0");
+	dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
 				rank, tObj.toid, tObj.trackerName, [[tObj.optDict valueForKey:@"privacy"] intValue]]; 
 	[self toExecSql];

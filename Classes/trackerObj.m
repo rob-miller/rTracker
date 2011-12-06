@@ -105,7 +105,7 @@
 }
 
 - (void) confirmDb {
-	NSAssert(self.toid,@"tObj confirmDb toid=0");
+	dbgNSAssert(self.toid,@"tObj confirmDb toid=0");
 	if (! self.dbName) {
 		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		//self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
@@ -191,7 +191,7 @@
 
 - (void) loadConfig {
 	
-	NSAssert(self.toid,@"tObj load toid=0");
+	dbgNSAssert(self.toid,@"tObj load toid=0");
 	
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	NSMutableArray *s2 = [[NSMutableArray alloc] init];
@@ -443,7 +443,7 @@
             vid = (NSInteger) [tid intValue];
             NSString *newVal = (NSString *) [e3 nextObject];  // read csv may gen bad id, keep enumerators even
 			valueObj *vo = [self getValObj:vid];
-			//NSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
+			//dbgNSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
                 DBGLog(@"vo id %d newValue: %@",vid,newVal);
                 vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
@@ -477,7 +477,7 @@
     
 	for (valueObj *vo in self.valObjTable) {
 		
-		NSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
+		dbgNSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
         DBGLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         if ([vo.value isEqualToString:@""]) {
@@ -549,7 +549,7 @@
 	
     NSString *outString= [NSString stringWithFormat:@"\"%@\"",TIMESTAMP_LABEL];
 	for (valueObj *vo in self.valObjTable) {
-		NSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
+		dbgNSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
         //DBGLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
         outString = [outString stringByAppendingString:@","];
@@ -794,7 +794,7 @@
 		if (vo.vid == vid)
 			return vo.valueName;
 	}
-	NSAssert(0,@"voGetNameForVID failed");
+	dbgNSAssert(0,@"voGetNameForVID failed");
 	return [NSString stringWithFormat:@"vid %d not found",vid];
 }
 

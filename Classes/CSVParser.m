@@ -13,7 +13,7 @@
 //
 
 #import "CSVParser.h"
-
+#import "dbg-defs.h"
 
 @implementation CSVParser
 
@@ -39,7 +39,7 @@
 		csvString = [aCSVString retain];
 		separator = [aSeparatorString retain];
 		
-		NSAssert([separator length] > 0 &&
+		dbgNSAssert([separator length] > 0 &&
 			[separator rangeOfString:@"\""].location == NSNotFound &&
 			[separator rangeOfCharacterFromSet:[NSCharacterSet newlineCharacterSet]].location == NSNotFound,
 			@"CSV separator string must not be empty and must not contain the double quote character or newline characters.");

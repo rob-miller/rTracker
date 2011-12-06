@@ -94,7 +94,7 @@
                          DBGErr(@"Couldn't read file at path %s\n. Error: %s",
                                    [file UTF8String],
                                    [[error localizedDescription] ? [error localizedDescription] : [error description] UTF8String]);
-                            NSAssert(0,@"file issue.");
+                            dbgNSAssert(0,@"file issue.");
                         }
                         */
                         if (csvString)

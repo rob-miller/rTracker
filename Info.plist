@@ -19,7 +19,7 @@
 		<string>Icon-72.png</string>
 		<string>Icon-Small.png</string>
 		<string>Icon-Small-50.png</string>
-		<string>Icon-Small-@2x.png</string>
+		<string>Icon-Small@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}</string>

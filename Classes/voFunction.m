@@ -206,7 +206,7 @@
 				[offsetComponents setYear:ival];
 				break;
 			default:
-				NSAssert(0,@"getEpDate: failed to identify ep %d",ep);
+				dbgNSAssert1(0,@"getEpDate: failed to identify ep %d",ep);
 				break;
 		}
 	
@@ -906,7 +906,7 @@
 			[self drawFuncOptsDefinition];
 			break;
 		default:
-			NSAssert(0,@"fnSegmentAction bad index!");
+			dbgNSAssert(0,@"fnSegmentAction bad index!");
 			break;
 	}
 }
@@ -1038,7 +1038,7 @@
 		} else if (last == FNPARENOPEN) { // state = after open paren
 			[self ftStartSet];
 		} else {
-			NSAssert(0,@"lost it at updateFnTitles");
+			dbgNSAssert(0,@"lost it at updateFnTitles");
 		}
 	}
 }
@@ -1052,7 +1052,7 @@
 			if (valo.vid == tok)
 				return valo.valueName;
 		}
-		NSAssert(0,@"fnTokenToStr failed to find valObj");
+		dbgNSAssert(0,@"fnTokenToStr failed to find valObj");
 		return @"unknown vid";
 	}
 }

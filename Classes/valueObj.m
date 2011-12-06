@@ -98,7 +98,7 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 - (NSMutableString*) value {
-    NSAssert(vos,@"accessing vo.value with nil vos");
+    dbgNSAssert(vos,@"accessing vo.value with nil vos");
     if (value == nil) {
         value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
         //value = [[NSMutableString alloc] init];
@@ -159,7 +159,7 @@ in_vpriv:(NSInteger)in_vpriv
 			//[self.value setString:@""];
 			break;
 		default:
-			NSAssert1(0,@"valueObj init vtype %d not supported",vt);
+			dbgNSAssert1(0,@"valueObj init vtype %d not supported",vt);
 			break;
 	}
     self.value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];  // causes memory leak
@@ -270,7 +270,7 @@ in_vpriv:(NSInteger)in_vpriv
 	if ([gts isEqual:@"no graph"])
 		return VOG_NONE;
 	
-	NSAssert1(0,@"mapGraphTypes: no match for %@",gts);
+	dbgNSAssert1(0,@"mapGraphTypes: no match for %@",gts);
 	
 	return 0;
 }

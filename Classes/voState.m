@@ -148,7 +148,7 @@
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
-    NSAssert(0,@"viDisplay failed to dispatch");
+    dbgNSAssert(0,@"viDisplay failed to dispatch");
 	return nil;
 }
 
