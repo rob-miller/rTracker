@@ -63,6 +63,9 @@ static int privacyValue=PRIVDFLT;
 		self.backgroundColor = [UIColor darkGrayColor];
         self.layer.cornerRadius = 8;
 		showing = PVNOSHOW;
+        //self.hidden = YES;
+        self.alpha = 0.0;
+
 		[self addSubview:self.ttv];
 		[self addSubview:self.clearBtn];
 		[self addSubview:self.configBtn];
@@ -174,10 +177,12 @@ static int privacyValue=PRIVDFLT;
 - (void) showPVQ:(BOOL)state {
 	if (state) {
 		[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
-		self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
+		//self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
+        self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
 	} else {
-		self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
-	}
+		//self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
+        self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
+    }
 }
 
 // make ttv match slider
@@ -226,7 +231,8 @@ static int privacyValue=PRIVDFLT;
 		//[self.ppwv createPass:PVCONFIG cancel:PVNOSHOW]; // need more work // recurse on input newState, config on successful new pass
 
 	} else if (PVQUERY == newState) {
-
+        //self.hidden = NO;
+        self.alpha = 1.0;
 		if (PVNEEDPASS == self.showing) { // if just created, pass is currently up, set up pvquery behind keyboard
 			self.pwState = PWKNOWPASS;    // just successfully created password so don't ask again
 			[self showPVQ:TRUE];
@@ -267,10 +273,13 @@ static int privacyValue=PRIVDFLT;
 
 		}
 
+        //self.hidden = YES;
+        self.alpha = 0.0;
 		[UIView commitAnimations];
 		
 		showing = PVNOSHOW;
 		
+        
 	} else if (PVCONFIG == newState) {
 		if (PWKNOWPASS == self.pwState || PVCHECKPASS == self.showing) {
 			if (PVCHECKPASS == self.showing) {

@@ -216,3 +216,15 @@
 25 October 2011
   - remove Image from rt-types.plist, valueObj.h - not able to test yet; various VOT_IMAGE comment-out points
   - set DBACCESS false so can't see sqlite db files from itunes
+
+06 December 2011
+  - DbgNAssert to replace NAssert
+  - submit to Apple; 10 Dec accepted   version 1.0.0
+
+11 December 2011
+  - fix DbgNAssert so doesn't log message every time, just when first arg is 0
+  - save valid tracker when create tracker -> save while keyboard still up (skip done) [thanks Pat]
+  - hide privacy view, password view so not at bottom when scroll up long list of trackers -- still need to hook to superview not scroll
+  - submit to apple v 1.0.1
+
+

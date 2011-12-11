@@ -38,9 +38,9 @@
 #endif
 
 #if RELEASE
-#define dbgNSAssert(x,y) DBGErr(y)
-#define dbgNSAssert1(x,y,z) DBGErr(y,z)
-#define dbgNSAssert2(x,y,z,t) DBGErr(y,z,t)
+#define dbgNSAssert(x,y) if (0==x) { DBGErr(y); }
+#define dbgNSAssert1(x,y,z) if (0==x) { DBGErr(y,z); }
+#define dbgNSAssert2(x,y,z,t) if (0==x) { DBGErr(y,z,t); }
 #else
 #define dbgNSAssert NSAssert
 #define dbgNSAssert1 NSAssert1

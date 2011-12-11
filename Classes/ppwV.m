@@ -41,7 +41,7 @@ CGRect saveFrame;
 		
 		//keyboardIsShown = NO;
 		activeField = nil;
-
+        self.hidden=YES;
 /*
  [[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(keyboardWillShow:) 
@@ -90,12 +90,15 @@ CGRect saveFrame;
 
 - (void) hide {
 	CGRect f = self.frame;
-	f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
-	self.frame = f;
+	//f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
+    f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
+    self.frame = f;
+    self.hidden = YES;
 }
 
 - (void) show {
 	CGRect f = self.frame;
+    self.hidden = NO;
 	f.origin.y = self.topy - self.frame.size.height;
 	self.frame = f;
 }

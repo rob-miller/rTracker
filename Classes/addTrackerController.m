@@ -261,6 +261,7 @@ DBGLog(@"btnAddValue was pressed!");
 	
 	if ([self.nameField.text length] > 0) {
 		self.tempTrackerObj.trackerName = self.nameField.text;
+        [self.tempTrackerObj.optDict setObject:nameField.text forKey:@"name"];  // in case skipped keyboard done (for Pat!)
 		if (! self.tempTrackerObj.toid) {
 			self.tempTrackerObj.toid = [self.tlist getUnique];
 		}
