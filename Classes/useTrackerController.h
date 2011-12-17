@@ -23,6 +23,7 @@
     dpRslt *dpr;
 	CGRect saveFrame;
     BOOL needSave;
+    BOOL fwdRotations;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
@@ -30,6 +31,7 @@
 @property (nonatomic, retain) dpRslt *dpr;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) BOOL needSave;
+@property (nonatomic) BOOL fwdRotations;
 
 // UI element properties 
 
@@ -49,7 +51,9 @@
 
 - (void) updateToolBar;
 - (void) setTrackerDate:(int) targD;
+- (void) doGT;
 - (void) returnFromGraph;
+- (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers;
 
 
 @end

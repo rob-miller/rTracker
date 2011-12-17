@@ -23,7 +23,7 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, saveFrame;
+@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations;
 @synthesize saveBtn, exportBtn;
 
 //BOOL keyboardIsShown=NO;
@@ -111,7 +111,7 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	
+	self.fwdRotations = YES;
 	//DBGLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
 	self.title = tracker.trackerName;
@@ -272,18 +272,21 @@
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc should rotate to interface orientation portrait?");
-            //[self returnFromGraph];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc should rotate to interface orientation landscape left?");
-            //[self doGT];
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {//if 5
+                [self doGT];
+            }
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc should rotate to interface orientation landscape right?");
-            //[self doGT];
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) { //if 5
+                [self doGT];
+            }
 			break;
 		default:
 			DBGWarn(@"utc rotation query but can't tell to where?");
@@ -331,7 +334,14 @@
 	}
 }
 
+- (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers {
+    DBGLog(@"autoFwdRot returning %d",self.fwdRotations);
+    //return self.fwdRotations;
+    return YES;
+}
+
 - (void) doGT {
+    DBGLog(@"start present graph");
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
     gt.tracker = self.tracker;
@@ -342,16 +352,20 @@
     gt.dpr = self.dpr;
     gt.parentUTC = self;
     
+    self.fwdRotations = NO;
     [self presentModalViewController:gt animated:YES];
-    
+    //[self addChildViewController:self.modalViewController];
     [gt release];
+    DBGLog(@"graph up");
 }
 
 - (void) returnFromGraph {
+    DBGLog(@"start return from graph");
     //self.view = nil;
+    self.fwdRotations=YES;
     [self dismissModalViewControllerAnimated:YES];
     //[UIViewController attemptRotationToDeviceOrientation];
-
+    DBGLog(@"graph down");
 }
 
 
@@ -359,7 +373,6 @@
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
-			//[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
@@ -367,13 +380,17 @@
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc will animate rotation to interface orientation landscape left duration: %f sec", duration);
 
-			[self doGT];
+            if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) {// if not 5
+                [self doGT];
+            }
             
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc will animate rotation to interface orientation landscape right duration: %f sec", duration);
 
-			[self doGT];
+            if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) { // if not 5
+                [self doGT];
+            }
 			
 			break;
 		default:

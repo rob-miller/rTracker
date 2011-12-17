@@ -232,5 +232,11 @@
   - fix various warnings from migration
   - fix error not retain on deleteindexpath for deleting tracker
   - big problem on rotation, this version works for ios < 5.0
+--- check in ---
+
+17 December 2011
+  - hacked a version that works for both pre and post 5.0
+  - validated for release as 1.0.2
+  --> next step remove changelog from archive
   
 

@@ -45,12 +45,21 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+
+    
     //self.view.backgroundColor = [UIColor blackColor]; 
     CGRect gtvRect;
     
     // get our own frame
     
 	CGRect srect = [[self view] bounds];
+
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {
+        srect.size.width -= 5;  
+        srect.size.height += 20;
+        self.view.bounds = srect;
+    }
+    
     CGFloat tw = srect.size.width;   // swap because landscape only implementation and view not loaded yet
     CGFloat th = srect.size.height;
     srect.size.width = th;
@@ -274,8 +283,9 @@
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt should rotate to interface orientation portrait?");
-
-            [self.parentUTC returnFromGraph];
+            if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) { //if not 5
+                [self.parentUTC returnFromGraph];
+            }
 
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
@@ -309,9 +319,15 @@
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"gt did rotate from interface orientation landscape left");
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
+                [self.parentUTC returnFromGraph];
+            }
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"gt did rotate from interface orientation landscape right");
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
+                [self.parentUTC returnFromGraph];
+            }
 			break;
 		default:
 			DBGLog(@"gt did rotate but can't tell from where");
@@ -326,8 +342,6 @@
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
-            //[parentUTC returnFromGraph];
-            //[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);
@@ -353,7 +367,6 @@
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will animate rotation to interface orientation portrait duration: %f sec",duration);
-			//[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
