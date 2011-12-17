@@ -219,8 +219,10 @@
 		self.textView.inputView = nil;
 	} else {
 		self.addButton.hidden = NO;
-		if ((SEGPEOPLE == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"1"])
-			|| ((SEGHISTORY == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"]))
+		if (
+            ((SEGPEOPLE == ndx)  && ([(NSString*) [self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"1"]))
+			|| 
+            ((SEGHISTORY == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"]))
 			) {
 				self.showNdx = YES;
 			} else {

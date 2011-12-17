@@ -188,6 +188,7 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    DBGLog(@"utc: view will appear");
 	if (self.dpr) {
 		switch (self.dpr.action) {
 			case DPA_NEW:
@@ -271,15 +272,18 @@
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc should rotate to interface orientation portrait?");
+            //[self returnFromGraph];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc should rotate to interface orientation landscape left?");
+            //[self doGT];
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc should rotate to interface orientation landscape right?");
+            //[self doGT];
 			break;
 		default:
 			DBGWarn(@"utc rotation query but can't tell to where?");
@@ -336,15 +340,26 @@
         self.dpr.action = DPA_GOTO;
     }
     gt.dpr = self.dpr;
+    gt.parentUTC = self;
+    
     [self presentModalViewController:gt animated:YES];
+    
     [gt release];
 }
-#if (1) 
+
+- (void) returnFromGraph {
+    //self.view = nil;
+    [self dismissModalViewControllerAnimated:YES];
+    //[UIViewController attemptRotationToDeviceOrientation];
+
+}
+
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc will animate rotation to interface orientation portrait duration: %f sec",duration);
-			[self dismissModalViewControllerAnimated:YES];
+			//[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
@@ -366,15 +381,6 @@
 			break;			
 	}
 }
-#else 
-- (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	DBGLog(@"utc will animate first half rotation to interface orientation duration: %@",duration);
-}
-- (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration {
-	DBGLog(@"utc will animate second half rotation to interface orientation duration: %@",duration);
-}
-#endif
-
 
 
 # pragma mark -

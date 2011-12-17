@@ -93,16 +93,6 @@
 		D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C314883A7E00E2608A /* datePickerVC.xib */; };
 		D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C414883A7E00E2608A /* voDataEdit.xib */; };
 		D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3C514883A7E00E2608A /* voTBacc.xib */; };
-		D431F3D014883A7E00E2608A /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3061488396700E2608A /* addTrackerController.xib */; };
-		D431F3D114883A7E00E2608A /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3071488396700E2608A /* MainWindow.xib */; };
-		D431F3D214883A7E00E2608A /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3081488396700E2608A /* configTlistController.xib */; };
-		D431F3D314883A7E00E2608A /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F3091488396700E2608A /* addValObjController.xib */; };
-		D431F3D414883A7E00E2608A /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30A1488396700E2608A /* useTrackerController.xib */; };
-		D431F3D514883A7E00E2608A /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30B1488396700E2608A /* graphTracker.xib */; };
-		D431F3D614883A7E00E2608A /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30C1488396700E2608A /* configTVObjVC.xib */; };
-		D431F3D714883A7E00E2608A /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30D1488396700E2608A /* datePickerVC.xib */; };
-		D431F3D814883A7E00E2608A /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30E1488396700E2608A /* voDataEdit.xib */; };
-		D431F3D914883A7E00E2608A /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D431F30F1488396700E2608A /* voTBacc.xib */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
@@ -628,6 +618,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Robert T. Miller";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
@@ -719,16 +710,6 @@
 				D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */,
 				D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */,
 				D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */,
-				D431F3D014883A7E00E2608A /* addTrackerController.xib in Resources */,
-				D431F3D114883A7E00E2608A /* MainWindow.xib in Resources */,
-				D431F3D214883A7E00E2608A /* configTlistController.xib in Resources */,
-				D431F3D314883A7E00E2608A /* addValObjController.xib in Resources */,
-				D431F3D414883A7E00E2608A /* useTrackerController.xib in Resources */,
-				D431F3D514883A7E00E2608A /* graphTracker.xib in Resources */,
-				D431F3D614883A7E00E2608A /* configTVObjVC.xib in Resources */,
-				D431F3D714883A7E00E2608A /* datePickerVC.xib in Resources */,
-				D431F3D814883A7E00E2608A /* voDataEdit.xib in Resources */,
-				D431F3D914883A7E00E2608A /* voTBacc.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,9 +811,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv6,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;
@@ -840,12 +824,14 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_NAME = rTracker;
-				PROVISIONING_PROFILE = "BCA92D40-1417-43ED-8777-A554304268C6";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCA92D40-1417-43ED-8777-A554304268C6";
+				PROVISIONING_PROFILE = "018B9FC9-28E6-45D4-B5D6-294B2BEDE88B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
@@ -856,22 +842,26 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv6,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Miller (RYQM87BL43)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Miller (RYQM87BL43)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
-				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_NAME = rTracker;
-				PROVISIONING_PROFILE = "BCA92D40-1417-43ED-8777-A554304268C6";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCA92D40-1417-43ED-8777-A554304268C6";
+				PROVISIONING_PROFILE = "018B9FC9-28E6-45D4-B5D6-294B2BEDE88B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "armv6 armv7 $(ARCHS_STANDARD_32_BIT)";
@@ -885,12 +875,12 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				"New Setting" = "";
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -902,11 +892,11 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -923,7 +913,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "rTracker-iPad";
@@ -942,7 +932,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
@@ -960,11 +950,11 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
 			name = AppStore;
@@ -973,7 +963,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					armv6,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
@@ -981,11 +974,12 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
-				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
+				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_NAME = rTracker;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1006,7 +1000,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";

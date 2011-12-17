@@ -32,13 +32,13 @@
 @property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
 @property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
 @property (nonatomic,retain) IBOutlet UIDatePicker *datePicker;
-@property (nonatomic,retain) IBOutlet UIButton *newBtn;
-@property (nonatomic,retain) IBOutlet UIButton *setBtn;
-@property (nonatomic,retain) IBOutlet UIButton *gotoBtn;
+@property (nonatomic,retain) IBOutlet UIButton *entryNewBtn;
+@property (nonatomic,retain) IBOutlet UIButton *dateSetBtn;
+@property (nonatomic,retain) IBOutlet UIButton *dateGotoBtn;
 
-- (IBAction) newBtnAction;
-- (IBAction) setBtnAction;
-- (IBAction) gotoBtnAction;
+- (IBAction) entryNewBtnAction;
+- (IBAction) dateSetBtnAction;
+- (IBAction) dateGotoBtnAction;
 - (IBAction) dateModeChoice:(id)sender;
 
 

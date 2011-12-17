@@ -56,7 +56,11 @@
 		}
 
 		hasHeader = header;
-		fieldNames = [names retain];
+        if (nil != names) {
+            fieldNames = [[NSMutableArray alloc] initWithArray:names];
+        } else {
+            fieldNames=nil;
+        }
 	}
 	
 	return self;

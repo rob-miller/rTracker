@@ -33,7 +33,7 @@
 - (void) vtChoiceSetColor:(CGContextRef)context val:(CGFloat)val{
     NSString *cc = [NSString stringWithFormat:@"cc%d",(int)(val-1.0f)];
     NSInteger col = [[self.vogd.vo.optDict objectForKey:cc] integerValue];
-    [[((trackerObj*)self.vogd.vo.parentTracker).colorSet objectAtIndex:col] set];
+    [((UIColor *) [((trackerObj*)self.vogd.vo.parentTracker).colorSet objectAtIndex:col]) set];
 }
 
 

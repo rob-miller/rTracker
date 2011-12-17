@@ -24,7 +24,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr;
+@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC;
 
 /*
  - (void) loadView {
@@ -157,7 +157,8 @@
     //[[self view] addSubview:[[[UIView alloc]initWithFrame:srect] retain]];
     //self.view.multipleTouchEnabled = YES;
     
-    
+    //[parentUTC.view addSubview:self.view];
+
 }
 
 
@@ -268,29 +269,34 @@
 #pragma mark -
 # pragma mark view rotation methods
 
-// Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt should rotate to interface orientation portrait?");
+
+            [self.parentUTC returnFromGraph];
+
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt should rotate to interface orientation portrait upside down?");
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"gt should rotate to interface orientation landscape left?");
+            //[self doGT];
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"gt should rotate to interface orientation landscape right?");
+            //[self doGT];
 			break;
 		default:
-			DBGLog(@"gt rotation query but can't tell to where?");
+			DBGWarn(@"utc rotation query but can't tell to where?");
 			break;			
 	}
 	
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
+
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation 
 {
@@ -320,6 +326,8 @@
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
+            //[parentUTC returnFromGraph];
+            //[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);
@@ -338,13 +346,14 @@
 	}
 }
 
-#if (1) 
+
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will animate rotation to interface orientation portrait duration: %f sec",duration);
-			[self dismissModalViewControllerAnimated:YES];
+			//[self dismissModalViewControllerAnimated:YES];
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will animate rotation to interface orientation portrait upside down duration: %f sec", duration);
@@ -361,19 +370,8 @@
 	}
 }
 
-#else 
 
-- (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-	DBGLog(@"gt will animate first half rotation to interface orientation duration: %@",duration);
-}
-
-- (void)willAnimateSecondHalfOfRotationFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation duration:(NSTimeInterval)duration
-{
-	DBGLog(@"gt will animate second half rotation to interface orientation duration: %@",duration);
-}
-#endif
-
+ 
 
 #pragma mark -
 #pragma mark touch support

@@ -302,8 +302,8 @@
 
 - (void) checkBtnAction:(UIButton*)btn
 {
-	NSString *okey, *dflt, *ndflt, *img;
-	BOOL dfltState;
+	NSString *okey=nil, *dflt, *ndflt=nil, *img;
+	BOOL dfltState=AUTOSCALEDFLT;
 	
 	if ( btn == [self.wDict objectForKey:@"nasBtn"] ) {
 		okey = @"autoscale"; dfltState=AUTOSCALEDFLT;
@@ -398,7 +398,7 @@
         return;
     self.processingTfDone = YES;
     
-	NSString *okey, *nkey;
+	NSString *okey=nil, *nkey=nil;
 	if ( tf == [self.wDict objectForKey:@"nminTF"] ) {
 		okey = @"gmin";
 		nkey = @"nmaxTF";

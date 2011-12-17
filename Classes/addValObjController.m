@@ -355,7 +355,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
-	UILabel *label;
+	UILabel *label=0;
 	CGRect frame;
 	
 	

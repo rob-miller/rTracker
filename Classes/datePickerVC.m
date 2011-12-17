@@ -11,7 +11,7 @@
 
 @implementation datePickerVC
 
-@synthesize myTitle, /*date,action,*/ dpr, setBtn,newBtn,gotoBtn,navBar,toolBar,datePicker;
+@synthesize myTitle, /*date,action,*/ dpr, dateSetBtn,entryNewBtn,dateGotoBtn,navBar,toolBar,datePicker;
 
 - (IBAction) btnCancel:(UIButton*)btn
 {
@@ -49,9 +49,9 @@
 
 - (void)viewDidUnload {
 	self.title = nil;
-	self.newBtn = nil;
-	self.setBtn = nil;
-	self.gotoBtn = nil;
+	self.entryNewBtn = nil;
+	self.dateSetBtn = nil;
+	self.dateGotoBtn = nil;
 	self.datePicker = nil;
 	self.navBar = nil;
 	self.toolBar = nil;
@@ -65,12 +65,12 @@
 
 
 - (void)dealloc {
-	self.newBtn = nil;
-	[newBtn release];
-	self.setBtn = nil;
-	[setBtn release];
-	self.gotoBtn = nil;
-	[gotoBtn release];
+	self.entryNewBtn = nil;
+	[entryNewBtn release];
+	self.dateSetBtn = nil;
+	[dateSetBtn release];
+	self.dateGotoBtn = nil;
+	[dateGotoBtn release];
 	self.datePicker = nil;
 	[datePicker release];
 	self.navBar = nil;
@@ -92,19 +92,19 @@
 #pragma mark -
 #pragma mark button actions
 
-- (IBAction) newBtnAction
+- (IBAction) entryNewBtnAction
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_NEW;
 	[self dismissModalViewControllerAnimated:YES];
 }
-- (IBAction) setBtnAction
+- (IBAction) dateSetBtnAction
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_SET;
 	[self dismissModalViewControllerAnimated:YES];
 }
-- (IBAction) gotoBtnAction
+- (IBAction) dateGotoBtnAction
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_GOTO;

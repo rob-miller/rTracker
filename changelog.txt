@@ -227,4 +227,10 @@
   - hide privacy view, password view so not at bottom when scroll up long list of trackers -- still need to hook to superview not scroll
   - submit to apple v 1.0.1
 
+17 December 2011
+  - move to xcode 4.2, ios sdk 5.0
+  - fix various warnings from migration
+  - fix error not retain on deleteindexpath for deleting tracker
+  - big problem on rotation, this version works for ios < 5.0
+  
 

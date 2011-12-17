@@ -164,6 +164,9 @@ UITableView *deleteTableView;
 	} else {
         [self delTrackerRecords];
     }
+
+    [deleteIndexPath release];
+    [deleteTableView release];
 	
 }
 					 
@@ -224,8 +227,8 @@ UITableView *deleteTableView;
 					 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
 forRowAtIndexPath:(NSIndexPath *)indexPath {
-	deleteIndexPath = indexPath;
-	deleteTableView = tableView;
+	deleteIndexPath = [indexPath retain];
+    deleteTableView = [tableView retain];
 	
     NSString *acTitle;
     NSString *tname = [self.tlist.topLayoutNames objectAtIndex:[indexPath row]];

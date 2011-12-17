@@ -336,13 +336,15 @@ static int privacyValue=PRIVDFLT;
 
 - (void) adjustTTV:(UIButton*)btn {
 	int lvl = (int) (self.showSlider.value + 0.5f);
-	unsigned int k;
+    /*
+	//unsigned int k;
     BOOL dir;
 	if ([btn.currentTitle isEqualToString:@">"]) { // next
         dir = TRUE;
 	} else {  // prev
         dir = FALSE;
 	}
+    
     k = [self dbGetAdjacentKey:&lvl nxt:dir];
     
     if (k == 0) { // if getAdjacent failed = no next/prev key for curr slider value
@@ -351,7 +353,8 @@ static int privacyValue=PRIVDFLT;
             k = [self dbGetAdjacentKey:&lvl nxt:!dir];  // go for prev/next (opposite dir)
         }
     }
-	
+	*/
+    
     if (lvl > 0) {
 		self.showSlider.value = lvl;
 		//[self.ttv showKey:k];

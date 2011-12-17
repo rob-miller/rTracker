@@ -49,5 +49,7 @@
 
 - (void) updateToolBar;
 - (void) setTrackerDate:(int) targD;
+- (void) returnFromGraph;
+
 
 @end
