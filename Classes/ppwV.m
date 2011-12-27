@@ -145,7 +145,7 @@ CGRect saveFrame;
 - (void) checkPass:(unsigned int)okState cancel:(unsigned int)cancelState {
 	DBGLog(@"ppwv check pass");
 	[self setUpPass:okState cancel:cancelState];
-	self.topLabel.text = @"please enter password:";
+	self.topLabel.text = @"Please enter password:";
 	[self.topTF addTarget:self action:@selector(testp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -155,7 +155,7 @@ CGRect saveFrame;
 	DBGLog(@"ppwv create pass");
 	[self setUpPass:okState cancel:cancelState];
 
-	self.topLabel.text = @"please set a password:";
+	self.topLabel.text = @"Please set a password:";
 	[self.topTF addTarget:self action:@selector(setp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -165,7 +165,7 @@ CGRect saveFrame;
 
 #pragma change password
 
-#define ChangePassTxt @"replace password:"
+#define ChangePassTxt @"Replace password:"
 
 - (void) cpSetTopLabel {
 	self.topLabel.text = ChangePassTxt;
@@ -300,7 +300,7 @@ CGRect saveFrame;
 
 - (UIButton*) cancelBtn {
 	if (nil == cancelBtn) {
-		NSString* ttl=@" cancel ";
+		NSString* ttl=@" Cancel ";
 		cancelBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		[cancelBtn setTitle:ttl forState:UIControlStateNormal];
 		CGRect f = CGRectZero;

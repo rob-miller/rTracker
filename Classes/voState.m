@@ -112,7 +112,7 @@
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	
-	CGRect labframe = [ctvovc configLabel:@"draw graph:" frame:frame key:@"ggLab" addsv:YES];
+	CGRect labframe = [ctvovc configLabel:@"Draw graph:" frame:frame key:@"ggLab" addsv:YES];
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
@@ -126,7 +126,7 @@
 	
 	frame.origin.x += frame.size.width + MARGIN + SPACE;
 	//frame.origin.y += MARGIN + frame.size.height;
-	labframe = [ctvovc configLabel:@"privacy level:" frame:frame key:@"gpLab" addsv:YES];
+	labframe = [ctvovc configLabel:@"Privacy level:" frame:frame key:@"gpLab" addsv:YES];
 	
 	//-- privacy level textfield
 	

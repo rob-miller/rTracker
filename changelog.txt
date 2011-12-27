@@ -247,3 +247,12 @@
   - date picker buttons: new entry / set date / goto date
   - fix Icon.png svn issue
 --- check in ---
+  - change privacy icon from lock to sunglasses
+  - bugfix: datepicker buttons not acutally working
+  - graph: touch line snap to nearest data point
+  - set default Y axis width for d(99) (y axis labels wrong for textbox)
+  - fix scrollview error for textbox
+  - reset privacy password state on app to background
+  - update toolbar privacy icon on know password
+  - capitalization fixes
+  - addValObj down keyboard on picker select (Pat fix)

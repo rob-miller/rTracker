@@ -83,7 +83,8 @@
 
 - (void) dataEditVDidLoad:(UIViewController*)vc {
 	//self.devc = vc;
-	
+	//CGRect visFrame = vc.view.frame;
+    
 	self.textView = [[[UITextView alloc] initWithFrame:vc.view.frame] autorelease];
 	self.textView.textColor = [UIColor blackColor];
 	self.textView.font = [UIFont fontWithName:@"Arial" size:18];
@@ -118,11 +119,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
-                                               object:self.textView];    //.devc.view.window];
+                                               //object:self.textView];    //.devc.view.window];
+                                               object:self.devc.view.window];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
-                                               object:self.textView];    //.devc.view.window];	
+                                               //object:self.textView];    //.devc.view.window];	
+                                               object:self.devc.view.window];	
 }
 
 - (void) dataEditVWDisappear {
@@ -130,10 +133,12 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
-												  object:self.textView];    // nil]; //self.devc.view.window];
+												  //object:self.textView];    // nil]; //self.devc.view.window];
+    												  object:self.devc.view.window];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
-                                                  object:self.textView];    // nil];   // self.devc.view.window];
+                                                  //object:self.textView];    // nil];   // self.devc.view.window];
+                                                  object:self.devc.view.window];
 }
 
 - (void) dataEditVDidUnload {
@@ -147,7 +152,7 @@
 
 - (void)keyboardWillShow:(NSNotification *)aNotification 
 {
-    //DBGLog(@"votb keyboardwillshow");
+    DBGLog(@"votb keyboardwillshow");
     
 	if (keyboardIsShown)
 		return;
@@ -170,6 +175,8 @@
 
 - (void)keyboardWillHide:(NSNotification *)aNotification
 {
+    DBGLog(@"votb keyboardwillhide");
+
     // the keyboard is hiding reset the table's height
 	//CGRect keyboardRect = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     NSTimeInterval animationDuration =

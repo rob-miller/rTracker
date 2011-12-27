@@ -26,7 +26,7 @@
 
 @interface privacyV : UIView <UIActionSheetDelegate> {
 	UIView *parentView;
-    //void *parent;
+    id *parent;
 	tictacV *ttv;
 	ppwV *ppwv;
 	tObjBase *tob;
@@ -35,7 +35,7 @@
 }
 
 @property (nonatomic,retain) UIView *parentView;
-//@property (nonatomic) void *parent;
+@property (nonatomic) id *parent;
 @property (nonatomic,retain) tictacV *ttv;
 @property (nonatomic,retain) ppwV *ppwv;
 @property (nonatomic,assign) tObjBase *tob;
@@ -60,6 +60,7 @@
 - (id) initWithParentView:(UIView*)pv;
 - (void) togglePrivacySetter;
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg;
+- (void) lockDown;
 
 + (int)getPrivacyValue;
 

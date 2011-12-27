@@ -58,5 +58,7 @@
 - (IBAction) addPickerData:(id)sender;
 - (IBAction) segmentChanged:(id)sender;
 
+- (void)keyboardWillShow:(NSNotification *)aNotification;
+- (void)keyboardWillHide:(NSNotification *)aNotification;
 
 @end

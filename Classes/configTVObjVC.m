@@ -95,7 +95,7 @@
 	
 	if ((name == nil) || [name isEqualToString:@""]) 
 		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:vo.vtype]];
-	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"configure %@",name]];
+	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"Configure %@",name]];
 	name = nil;
 	 
 	self.LFHeight = 31.0f; 
@@ -639,7 +639,7 @@
 	frame.origin.x = MARGIN;
 	//frame.origin.x += frame.size.width + MARGIN + SPACE;
 	frame.origin.y += MARGIN + frame.size.height;
-	labframe = [self configLabel:@"privacy level:" frame:frame key:@"gpLab" addsv:YES];
+	labframe = [self configLabel:@"Privacy level:" frame:frame key:@"gpLab" addsv:YES];
 	
 	//-- privacy level textfield
 	

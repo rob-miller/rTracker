@@ -14,12 +14,12 @@
 #import "dbg-defs.h"
 #import "RootViewController.h"
 
-#define CFGBTNCONFIG @" setup "
-#define CFGBTNLOCK   @" lock  "
+#define CFGBTNCONFIG @" Setup "
+#define CFGBTNLOCK   @" Lock  "
 
 @implementation privacyV
 
-@synthesize parentView, /*parent,*/ ttv, ppwv, showing, pwState, tob;
+@synthesize parentView, parent, ttv, ppwv, showing, pwState, tob;
 @synthesize clearBtn, configBtn,saveBtn, showSlider, ssValLab, nextBtn, prevBtn;
 
 #define BTNRADIUS 2
@@ -42,6 +42,13 @@ static int privacyValue=PRIVDFLT;
 	DBGLog(@"updatePrivacy:%d",[privacyV getPrivacyValue]);
 	//[self.pvc.tableView reloadData ];
 }
+
+- (void) lockDown {
+    DBGLog(@"privObj: lockdown");
+    // needs more -- [self setPrivacyValue:MINPRIV]; 
+    self.pwState = PWQUERYPASS;
+}
+
 
 #pragma mark -
 #pragma mark core UIView object methods and support
@@ -214,7 +221,7 @@ static int privacyValue=PRIVDFLT;
 
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
-    //[(RootViewController*) self.parent refreshToolBar];
+    [(RootViewController*) self.parent refreshToolBar];
     
 	// (showing == newState)
 	//	return;
@@ -303,6 +310,8 @@ static int privacyValue=PRIVDFLT;
             [self setTTV];
 			[UIView commitAnimations];
 			showing = PVCONFIG;
+            [(RootViewController*) self.parent refreshToolBar];
+
 		} else {
 			showing = PVCHECKPASS;
 			[self.ppwv checkPass:PVCONFIG cancel:PVQUERY];
@@ -394,7 +403,7 @@ static int privacyValue=PRIVDFLT;
 
 - (UIButton *) clearBtn {
 	if (clearBtn == nil) {
-		clearBtn = [self getBtn:@" clear " 
+		clearBtn = [self getBtn:@" Clear " 
 						   borg: (CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), 
 							   self.frame.size.height * TICTACVRTFRAC}];
 		[clearBtn addTarget:self action:@selector(doClear:) forControlEvents:UIControlEventTouchUpInside ];		
@@ -425,7 +434,7 @@ static int privacyValue=PRIVDFLT;
 
 - (UIButton *) saveBtn {
 	if (saveBtn == nil) {
-		saveBtn = [self getBtn:@" save "
+		saveBtn = [self getBtn:@" Save "
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), 
 							  self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC))}];
 		[saveBtn addTarget:self action:@selector(saveConfig:) forControlEvents:UIControlEventTouchUpInside ];

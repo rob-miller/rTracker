@@ -430,7 +430,7 @@ DBGLog(@"btnAddValue was pressed!");
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
 			if (0 == row) {
-                cell.detailTextLabel.text = @"add item or value to track";
+                cell.detailTextLabel.text = @"Add an item or value to track";
             } else {
                 cell.detailTextLabel.text = @"add another thing to track";
             }
@@ -537,16 +537,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	} // else ??
 }
 
-
+/*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-
-	NSUInteger row = [indexPath row];
+    NSUInteger row = [indexPath row];
 	NSUInteger section = [indexPath section];
 	
 	DBGLog(@"selected section %d row %d ", section, row);
-
 }
+*/
+
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 

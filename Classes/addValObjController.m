@@ -135,7 +135,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self.votPicker selectRow:row inComponent:2 animated:NO];
 	}
 
-	self.title = @"value";
+	self.title = @"Item";
 	
 	self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
 	self.labelField.clearsOnBeginEditing = NO;
@@ -466,6 +466,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
+    if ([self.labelField isFirstResponder]) {
+        [self.labelField resignFirstResponder];
+    }
 	if (component == 0) {
 		self.tempValObj.vtype = row;
 	} else if (component == 1) {

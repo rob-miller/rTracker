@@ -807,7 +807,7 @@
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	
-	labframe = [self.ctvovcp configLabel:@"result display decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
+	labframe = [self.ctvovcp configLabel:@"Display result decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	CGFloat tfWidth = [[NSString stringWithString:@"999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
@@ -871,7 +871,7 @@
 													initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
 													target:nil action:nil];
 		
-		NSArray *segmentTextContent = [NSArray arrayWithObjects: @"overview", @"range", @"fn definition", nil];
+		NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Overview", @"Range", @"Fn definition", nil];
 		
 		UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
 		//[segmentTextContent release];

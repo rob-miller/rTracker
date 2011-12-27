@@ -758,6 +758,20 @@
 #pragma mark -
 #pragma mark query tracker methods
 
+- (NSInteger) dateNearest:(int)targ {
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date <= %d and minpriv <= %d order by date desc limit 1;", 
+                targ, (int) [privacyV getPrivacyValue] ];
+	int rslt= [self toQry2Int];
+    if (0 == rslt) {
+        self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date desc limit 1;", 
+                    targ, (int) [privacyV getPrivacyValue] ];
+        rslt= [self toQry2Int];
+
+    }
+	self.sql = nil;
+	return rslt;
+}
+
 - (int) prevDate {
 	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;", 
 		   (int) [self.trackerDate timeIntervalSince1970], (int) [privacyV getPrivacyValue] ];

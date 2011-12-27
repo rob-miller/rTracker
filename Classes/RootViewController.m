@@ -13,6 +13,7 @@
 #import "useTrackerController.h"
 #import "rTracker-resource.h"
 #import "privacyV.h"
+#import "rTracker-constants.h"
 
 #import "CSVParser.h"
 
@@ -236,6 +237,11 @@
 	[self refreshView];
     [super viewWillAppear:animated];
 }
+/*
+- (void)viewWillDisappear:(BOOL)animated {
+    DBGLog(@"rvc viewWillDisappear");
+}
+*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -283,16 +289,21 @@
 }
 */
 
+- (void) privBtnSetImg:(UIButton*)pbtn {
+    [pbtn setImage:[UIImage imageNamed: ( [privacyV getPrivacyValue] > MINPRIV ? @"shadeview-button.png" : @"closedview-button.png" )] forState:UIControlStateNormal];
+}
+
 - (UIBarButtonItem *) privateBtn {
 	if (privateBtn == nil) {
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
-        [pbtn setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
+        [pbtn setImage:[UIImage imageNamed:@"closedview-button.png"] forState:UIControlStateNormal];
+        pbtn.frame = CGRectMake(0, 0, pbtn.currentImage.size.width, pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
         privateBtn = [[UIBarButtonItem alloc]
                       initWithCustomView:pbtn];
-        pbtn.frame = CGRectMake(0, 0, pbtn.currentImage.size.width, pbtn.currentImage.size.height);
-        [pbtn release];
+        [self privBtnSetImg:(UIButton*)privateBtn.customView];
+                [pbtn release];
         //*/
         /*
         privateBtn = [[UIBarButtonItem alloc]
@@ -306,18 +317,20 @@
         /* privateBtn.frame = CGRectMake(0, 0, privateBtn.image.size.width, privateBtn.image.size.height);
          */
 	} else {
-        if (PVNOSHOW != self.privacyObj.showing) {
+        if ((PVNOSHOW != self.privacyObj.showing) 
+            && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
            // self.privateBtn.title = @"dismiss";
             //privateBtn.image = [UIImage imageNamed:@"unlock-button.png"];
             [(UIButton *)privateBtn.customView 
-             setImage:[UIImage imageNamed:@"unlock-button.png"] forState:UIControlStateNormal];
+             setImage:[UIImage imageNamed:@"fullview-button.png"] forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
             //self.privateBtn.title = @"private";
             //privateBtn.image = [UIImage imageNamed:@"lock-button.png"];
-            [(UIButton *)privateBtn.customView 
-             setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
+            [self privBtnSetImg:(UIButton *)privateBtn.customView];
+            //[(UIButton *)privateBtn.customView 
+            // setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
         }
     }
 	return privateBtn;
@@ -350,7 +363,7 @@
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {
 		privacyObj = [[privacyV alloc] initWithParentView:self.view];
-        //privacyObj.parent = self;
+        privacyObj.parent = (id*) self;
 	}
 	privacyObj.tob = (id) self.tlist;  // not set at init
 	return privacyObj;

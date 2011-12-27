@@ -34,6 +34,12 @@
 	DBGLog(@"rt app delegate: app will terminate");
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application {
+	// Save data if appropriate
+	DBGLog(@"rt app delegate: app will resign active");
+    [((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).privacyObj lockDown];
+}
+
 
 #pragma mark -
 #pragma mark Memory management

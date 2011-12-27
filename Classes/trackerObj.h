@@ -67,6 +67,7 @@
 - (void) deleteCurrEntry;
 - (void) deleteTrackerRecordsOnly;
 
+- (NSInteger) dateNearest:(int)targ;
 - (NSInteger) prevDate;
 - (NSInteger) postDate;
 - (NSInteger) lastDate;

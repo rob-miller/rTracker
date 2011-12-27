@@ -20,7 +20,6 @@
 		D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
 		D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744701438B84E0011EFE6 /* Icon-Small.png */; };
 		D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744751438B86A0011EFE6 /* Icon@2x.png */; };
-		D42744781438C9580011EFE6 /* lock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744771438C9580011EFE6 /* lock-button.png */; };
 		D431F37114883A6600E2608A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 		D431F37314883A6600E2608A /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D431F37514883A6600E2608A /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
@@ -33,8 +32,6 @@
 		D431F38214883A6600E2608A /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446F1438B84E0011EFE6 /* Icon-Small-50.png */; };
 		D431F38314883A6600E2608A /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744701438B84E0011EFE6 /* Icon-Small.png */; };
 		D431F38414883A6600E2608A /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744751438B86A0011EFE6 /* Icon@2x.png */; };
-		D431F38514883A6600E2608A /* lock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D42744771438C9580011EFE6 /* lock-button.png */; };
-		D431F38714883A6600E2608A /* unlock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D4DA4C321438ED8C004BA928 /* unlock-button.png */; };
 		D431F38814883A6600E2608A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B5E7C314478A1C002E30F2 /* Default.png */; };
 		D431F38A14883A6600E2608A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		D431F38B14883A6600E2608A /* rTrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */; };
@@ -96,6 +93,9 @@
 		D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D313A2626500268248 /* bkgnd2-320-460.png */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
+		D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
+		D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8014A9E2E300CE0547 /* fullview-button.png */; };
+		D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8214A9E2F100CE0547 /* shadeview-button.png */; };
 		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
 		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
 		D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
@@ -134,7 +134,6 @@
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
-		D4DA4C331438ED8C004BA928 /* unlock-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D4DA4C321438ED8C004BA928 /* unlock-button.png */; };
 		D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
 		D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
 		D4E5FDD9125283B1004BB4EC /* graphTracker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4E5FDD7125283B1004BB4EC /* graphTracker.xib */; };
@@ -170,7 +169,6 @@
 		D427446F1438B84E0011EFE6 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/png/Icon-Small-50.png"; sourceTree = "<group>"; };
 		D42744701438B84E0011EFE6 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Resources/png/Icon-Small.png"; sourceTree = "<group>"; };
 		D42744751438B86A0011EFE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Resources/png/Icon@2x.png"; sourceTree = "<group>"; };
-		D42744771438C9580011EFE6 /* lock-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "lock-button.png"; path = "Resources/png/lock-button.png"; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D431F3061488396700E2608A /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = "Resources-iPad/Resources/xib/addTrackerController.xib"; sourceTree = "<group>"; };
 		D431F3071488396700E2608A /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = "Resources-iPad/Resources/xib/MainWindow.xib"; sourceTree = "<group>"; };
@@ -202,6 +200,9 @@
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
+		D47FBB7E14A9E2D700CE0547 /* closedview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button.png"; path = "Resources/png/closedview-button.png"; sourceTree = "<group>"; };
+		D47FBB8014A9E2E300CE0547 /* fullview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button.png"; path = "Resources/png/fullview-button.png"; sourceTree = "<group>"; };
+		D47FBB8214A9E2F100CE0547 /* shadeview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button.png"; path = "Resources/png/shadeview-button.png"; sourceTree = "<group>"; };
 		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
 		D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
@@ -262,7 +263,6 @@
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
 		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
-		D4DA4C321438ED8C004BA928 /* unlock-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "unlock-button.png"; path = "Resources/png/unlock-button.png"; sourceTree = "<group>"; };
 		D4DC23FD138404140086E5F3 /* dpRslt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpRslt.h; sourceTree = "<group>"; };
 		D4DC23FE138404140086E5F3 /* dpRslt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dpRslt.m; sourceTree = "<group>"; };
 		D4E069A61343C4D7002B42C8 /* dbg-defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dbg-defs.h"; sourceTree = "<group>"; };
@@ -352,7 +352,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				D4AE7C48148C0E290085EB78 /* Default@2x.png */,
 				D40518B613787B5500F001BA /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -376,11 +375,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D47FBB8214A9E2F100CE0547 /* shadeview-button.png */,
+				D47FBB8014A9E2E300CE0547 /* fullview-button.png */,
+				D47FBB7E14A9E2D700CE0547 /* closedview-button.png */,
 				D4E6198814A9E16A00025CB2 /* Icon.png */,
 				D4786E64148D864C000E144A /* Icon-Small@2x.png */,
 				D4B5E7C314478A1C002E30F2 /* Default.png */,
-				D4DA4C321438ED8C004BA928 /* unlock-button.png */,
-				D42744771438C9580011EFE6 /* lock-button.png */,
+				D4AE7C48148C0E290085EB78 /* Default@2x.png */,
 				D42744691438B8090011EFE6 /* iTunesArtwork */,
 				D42744751438B86A0011EFE6 /* Icon@2x.png */,
 				D427446D1438B84E0011EFE6 /* Icon-72.png */,
@@ -664,12 +665,13 @@
 				D42744731438B84E0011EFE6 /* Icon-Small-50.png in Resources */,
 				D42744741438B84E0011EFE6 /* Icon-Small.png in Resources */,
 				D42744761438B86A0011EFE6 /* Icon@2x.png in Resources */,
-				D42744781438C9580011EFE6 /* lock-button.png in Resources */,
-				D4DA4C331438ED8C004BA928 /* unlock-button.png in Resources */,
 				D4B5E7C414478A1C002E30F2 /* Default.png in Resources */,
 				D4AE7C49148C0E290085EB78 /* Default@2x.png in Resources */,
 				D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */,
 				D4E6198914A9E16A00025CB2 /* Icon.png in Resources */,
+				D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */,
+				D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */,
+				D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,8 +691,6 @@
 				D431F38214883A6600E2608A /* Icon-Small-50.png in Resources */,
 				D431F38314883A6600E2608A /* Icon-Small.png in Resources */,
 				D431F38414883A6600E2608A /* Icon@2x.png in Resources */,
-				D431F38514883A6600E2608A /* lock-button.png in Resources */,
-				D431F38714883A6600E2608A /* unlock-button.png in Resources */,
 				D431F38814883A6600E2608A /* Default.png in Resources */,
 				D431F3C614883A7E00E2608A /* addTrackerController.xib in Resources */,
 				D431F3C714883A7E00E2608A /* MainWindow.xib in Resources */,

@@ -149,7 +149,7 @@
 
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	
-	CGRect labframe = [ctvovc configLabel:@"start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
+	CGRect labframe = [ctvovc configLabel:@"Start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
 						key:@"swlBtn" 

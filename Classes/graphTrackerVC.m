@@ -449,10 +449,12 @@
         CGPoint touchPoint = [touch locationInView:self.gtv];  // sv=> full zoomed content size ; gtv => gtv frame but zoom/scroll mapped
         //DBGLog(@"gtv tap at %f, %f.  taps= %d  numTouches= %d",touchPoint.x, touchPoint.y, [touch tapCount],[touches count]);
         
-        self.gtv.xMark = touchPoint.x;
-        int newDate = ((togd*)self.tracker.togd).firstDate + (touchPoint.x * ((togd*)self.tracker.togd).dateScaleInv );
+        int nearDate = ((togd*)self.tracker.togd).firstDate + (touchPoint.x * ((togd*)self.tracker.togd).dateScaleInv );
+        int newDate = [self.tracker dateNearest:nearDate];
         self.dpr.date = [NSDate dateWithTimeIntervalSince1970:newDate];
         self.dpr.action = DPA_GOTO;        
+        //self.gtv.xMark = touchPoint.x;
+        self.gtv.xMark = (newDate - ((togd*)self.tracker.togd).firstDate) * ((togd*)self.tracker.togd).dateScale;
     } else if ((2 == [touch tapCount]) && (1 == [touches count])) {
         DBGLog(@"gtvTap: cancel");
         self.gtv.xMark = NOXMARK;
@@ -514,6 +516,7 @@
                     break;
                 }
                 default:
+                    maxw = [self testDblWidth:d(99) max:maxw];
                     break;
             }
         }
