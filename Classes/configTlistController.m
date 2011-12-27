@@ -43,7 +43,7 @@ UITableView *deleteTableView;
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
-	self.title = @"configure trackers";
+	self.title = @"Edit trackers";
     
     
     

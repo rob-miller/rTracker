@@ -56,7 +56,7 @@ NSMutableArray *deleteVOs=nil;
 	DBGLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
 	
 	// cancel / save buttons on top nav bar
-	
+
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
 							   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 							   target:self
@@ -82,9 +82,9 @@ NSMutableArray *deleteVOs=nil;
 		[self.tempTrackerObj init];
 		self.tempTrackerObj.toid = [tlist getUnique];
 		[tempTrackerObj release];
-		self.title = @"add tracker";
+		self.title = @"Add tracker";
 	} else {
-			self.title = @"modify tracker";
+			self.title = @"Modify tracker";
 	}
 	
 	[self.table setEditing:YES animated:YES];
@@ -166,8 +166,8 @@ static int editMode;
 	
 	// Create and configure the segmented control
 	UISegmentedControl *editToggle = [[UISegmentedControl alloc]
-									  initWithItems:[NSArray arrayWithObjects:@"Tracker",
-													 @"Values", nil]];
+									  initWithItems:[NSArray arrayWithObjects:@"Edit tracker",
+													 @"Edit values", nil]];
 	editToggle.segmentedControlStyle = UISegmentedControlStyleBar;
 	editToggle.selectedSegmentIndex = 0;
 	editMode = 0;
@@ -379,7 +379,7 @@ DBGLog(@"btnAddValue was pressed!");
 		//if (row == 0) {
 
 			self.nameField = nil;
-			nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,175,25) ];
+            nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,250,25) ];
 			self.nameField.clearsOnBeginEditing = NO;
 			[self.nameField setDelegate:self];
 			self.nameField.returnKeyType = UIReturnKeyDone;
@@ -392,7 +392,7 @@ DBGLog(@"btnAddValue was pressed!");
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
 			self.nameField.text = self.tempTrackerObj.trackerName;
-			self.nameField.placeholder = @"Tracker Name";
+			self.nameField.placeholder = @"Name this Tracker";
 
 //		} else {   // row = 1
 //			cell.textLabel.text = @"privacy level:";
@@ -429,7 +429,11 @@ DBGLog(@"btnAddValue was pressed!");
 		}
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
-			cell.detailTextLabel.text = @"add value";
+			if (0 == row) {
+                cell.detailTextLabel.text = @"add item or value to track";
+            } else {
+                cell.detailTextLabel.text = @"add another thing to track";
+            }
 			cell.textLabel.text = @"";
 		} else {
 			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
@@ -537,10 +541,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 
-	//NSUInteger row = [indexPath row];
-	//NSUInteger section = [indexPath section];
+	NSUInteger row = [indexPath row];
+	NSUInteger section = [indexPath section];
 	
-	//DBGLog(@"selected section %d row %d ", section, row);
+	DBGLog(@"selected section %d row %d ", section, row);
 
 }
 

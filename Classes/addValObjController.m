@@ -210,6 +210,19 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 - (IBAction)btnSave {
 	//DBGLog(@"addVObjC: btnSave was pressed!");
+    
+    if ([self.labelField.text length] == 0) {
+		UIAlertView *alert = [[UIAlertView alloc]
+							  initWithTitle:@"save Item" message:@"Please set a name for this item to save"
+							  delegate:nil 
+							  cancelButtonTitle:@"Ok"
+							  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+        return;
+    
+    }
+    
 	self.tempValObj.valueName = self.labelField.text;  // in case neglected to 'done' keyboard
 	
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];

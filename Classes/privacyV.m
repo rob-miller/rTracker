@@ -25,6 +25,9 @@
 #define BTNRADIUS 2
 #define LBLRADIUS 4
 
+#define NXTBTNLBL @"  >  "
+#define PRVBTNLBL @"  <  "
+
 #pragma mark -
 #pragma mark singleton privacyValue support
 
@@ -116,13 +119,15 @@ static int privacyValue=PRIVDFLT;
 }
 
 - (unsigned int) dbGetAdjacentKey:(int*)lvl nxt:(BOOL)nxt {
-	int rval;
+	int rkey;
 	if (nxt)
 		self.tob.sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl>%d order by lvl asc limit 1;",*lvl];
 	else
 		self.tob.sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl<%d order by lvl desc limit 1;",*lvl]; 
-	[self.tob toQry2IntInt:&rval i2:lvl];
-	return (unsigned int) rval;
+    DBGLog(@"getAdjacentVal: next=%d in lvl=%d",nxt,*lvl);
+	[self.tob toQry2IntInt:&rkey i2:lvl];
+    DBGLog(@"getAdjacentVal: rtn lvl=%d  key=%d",*lvl,rkey);
+	return (unsigned int) rkey;
 }
 
 
@@ -336,24 +341,26 @@ static int privacyValue=PRIVDFLT;
 
 - (void) adjustTTV:(UIButton*)btn {
 	int lvl = (int) (self.showSlider.value + 0.5f);
-    /*
-	//unsigned int k;
+    ///*
+	unsigned int k;
     BOOL dir;
-	if ([btn.currentTitle isEqualToString:@">"]) { // next
+	if ([btn.currentTitle isEqualToString:NXTBTNLBL]) { // next
         dir = TRUE;
 	} else {  // prev
         dir = FALSE;
 	}
     
-    k = [self dbGetAdjacentKey:&lvl nxt:dir];
+    DBGLog(@"adjustTTv: slider lvl= %d dir=%d",lvl,dir);
     
+    k = [self dbGetAdjacentKey:&lvl nxt:dir];
+
     if (k == 0) { // if getAdjacent failed = no next/prev key for curr slider value
         lvl = (int) (self.showSlider.value + 0.5f); // got wiped so reload
         if (0 == [self dbGetKey:lvl]) { // and no existing key for curr slider
             k = [self dbGetAdjacentKey:&lvl nxt:!dir];  // go for prev/next (opposite dir)
         }
     }
-	*/
+	//*/
     
     if (lvl > 0) {
 		self.showSlider.value = lvl;
@@ -430,7 +437,7 @@ static int privacyValue=PRIVDFLT;
 
 - (UIButton *) prevBtn {
 	if (prevBtn == nil) {
-		prevBtn = [self getBtn:@"  <  " 
+		prevBtn = [self getBtn:PRVBTNLBL 
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
 		[prevBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
@@ -441,7 +448,7 @@ static int privacyValue=PRIVDFLT;
 }
 - (UIButton *) nextBtn {
 	if (nextBtn == nil) {
-		nextBtn = [self getBtn:@"  >  "
+		nextBtn = [self getBtn:NXTBTNLBL
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), // x= same as saveBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
 		[nextBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];

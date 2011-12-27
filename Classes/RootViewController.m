@@ -141,7 +141,9 @@
     self.title = @"rTracker";
 
 	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
-								initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+								//initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                initWithTitle:@"New tracker"
+                                style:UIBarButtonItemStyleBordered 
 								target:self
 								action:@selector(btnAddTracker)];
 	self.navigationItem.rightBarButtonItem = addBtn;
@@ -214,7 +216,9 @@
 		if (self.navigationItem.leftBarButtonItem == nil) {
 			
 			UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
-										initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+										//initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                                        initWithTitle:@"Edit trackers"
+                                        style:UIBarButtonItemStyleBordered 
 										target:self
 										action:@selector(btnEdit)];
 			self.navigationItem.leftBarButtonItem = editBtn;
@@ -322,7 +326,7 @@
 - (UIBarButtonItem *) helpBtn {
 	if (helpBtn == nil) {
 		helpBtn = [[UIBarButtonItem alloc]
-                      initWithTitle:@"help"
+                      initWithTitle:@"Help"
                       style:UIBarButtonItemStyleBordered
                       target:self
                       action:@selector(btnHelp)];

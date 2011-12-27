@@ -777,7 +777,7 @@
 - (UIBarButtonItem *) prevDateBtn {
 	if (prevDateBtn == nil) {
 		prevDateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:@"<"
+					   initWithTitle: @"Previous"    // @"<"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPrevDate)];
@@ -788,7 +788,7 @@
 - (UIBarButtonItem *) postDateBtn {
 	if (postDateBtn == nil) {
 		postDateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:@">"
+					   initWithTitle:@"next"    //@">"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPostDate)];

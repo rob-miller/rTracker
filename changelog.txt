@@ -239,4 +239,11 @@
   - validated for release as 1.0.2
   --> next step remove changelog from archive
   
-
+27 December 2011
+  - bugfix crash on calendar access
+  - 'value' -> 'item'; 'add another thing' on add/edit tracker page
+  - 'new tracker' and 'edit trackers' button labels
+  - don't allow save from add value without a name
+  - date picker buttons: new entry / set date / goto date
+  - fix Icon.png svn issue
+--- check in ---
