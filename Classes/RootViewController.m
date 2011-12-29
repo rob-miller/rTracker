@@ -162,6 +162,7 @@
 						   nil] 
 				 animated:NO];
 
+    
     //self.navigationController.toolbar.translucent = YES;
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
     
@@ -189,6 +190,8 @@
 	 */
 	
 	[super viewDidLoad];
+    
+    //[self.privacyObj initLocation];
 	
 }
 
@@ -362,7 +365,8 @@
 
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {
-		privacyObj = [[privacyV alloc] initWithParentView:self.view];
+		//privacyObj = [[privacyV alloc] initWithParentView:self.view];
+        privacyObj = [[privacyV alloc] initWithParentView:self.view];
         privacyObj.parent = (id*) self;
 	}
 	privacyObj.tob = (id) self.tlist;  // not set at init

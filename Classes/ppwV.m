@@ -139,7 +139,7 @@ CGRect saveFrame;
 
 	[self show];
 
-	[self.topTF becomeFirstResponder];
+	[self.topTF becomeFirstResponder];  //prints warning: @setting the first responder view of the table but we don't know its type (cell/header/footer)@
 	[UIView commitAnimations];
 }
 - (void) checkPass:(unsigned int)okState cancel:(unsigned int)cancelState {
