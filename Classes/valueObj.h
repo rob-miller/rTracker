@@ -88,7 +88,7 @@
 - (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID;
 - (void) dataEditVDidLoad:(UIViewController*)vc;
 - (void) dataEditVWAppear:(UIViewController*)vc;
-- (void) dataEditVWDisappear;
+- (void) dataEditVWDisappear:(UIViewController*)vc;
 - (void) dataEditVDidUnload;
 //- (void) dataEditFinished;
 //- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
@@ -143,6 +143,8 @@
 	  in_vgraphtype:(NSInteger)in_vgraphtype
            in_vpriv:(NSInteger)in_vpriv;
 
+- (id) initWithDict:(id)parentTO dict:(NSDictionary*)dict;
+
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
 //- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
@@ -161,6 +163,7 @@
 + (NSArray*) allGraphs;
 + (NSInteger) mapGraphType:(NSString *)gts;
 
+- (NSDictionary*) dictFromVO;
 
 //- (void) txtDTF:(BOOL)num;
 

@@ -60,14 +60,11 @@
 //  appreciated but not required.
 //-------------------
 
-- (void) loadInputFiles {
-    DBGLog(@"loadInputFiles");
+- (void) loadTrackerCsvFiles {
+    DBGLog(@"loadTrackerCsvFiles");
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
-
-    [self.tlist loadTopLayoutTable];
-	//[self.tableView reloadData];
     
     NSString *file;
     while ((file = [dirEnum nextObject])) {
@@ -133,8 +130,85 @@
     [localFileManager release];    
 }
 
+#pragma mark load plists for input trackers
+- (BOOL) loadTrackerPlistFiles {
+    DBGLog(@"loadTrackerPlistFiles");
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    NSFileManager *localFileManager=[[NSFileManager alloc] init];
+    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+    
+    NSString *file;
+    BOOL didSomething=NO;
+    
+    while ((file = [dirEnum nextObject])) {
+        if ([[file pathExtension] isEqualToString: @"plist"]) {
+            NSString *fname = [file lastPathComponent];
+            NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
+            DBGLog(@"consider input: %@",fname);
+            
+            if (inmatch.location == NSNotFound) {
+                
+            } else if (inmatch.length == 9) {  // matched all 7 chars of _in.csv at end of file name
+                NSString *tname = [fname substringToIndex:inmatch.location];
+                DBGLog(@"load input: %@ as %@",fname,tname);
+                BOOL matchName=NO;
+                
+                for (NSString *tracker in self.tlist.topLayoutNames) {
+                    if ([tracker isEqualToString:tname]) {
+                        DBGLog(@"   match to: %@",tracker);
+                        matchName=YES;
+                    }
+                }
+                if (matchName) { 
+                    DBGLog(@"skipping for now because match");
+                } else {
+                    NSString *target = [docsDir stringByAppendingPathComponent:file];
+                    NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:target];
+                    if ([self.tlist checkTIDexists:[tdict objectForKey:@"tid"]]) {
+                        DBGLog(@" tid exists already: %@",[tdict objectForKey:@"tid"]);
+                        [tdict setValue:[NSNumber numberWithInt:[self.tlist getUnique]] forKey:@"tid"];
+                        DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
+                    }
+                    trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
+                    [newTracker saveConfig];
+                    [self.tlist confirmTopLayoutEntry:newTracker];
+                    DBGLog(@"finished with %@",tname);
+                    NSError *err;
+                    BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
+                    if (!rslt) {
+                        DBGLog(@"Error: %@", err);
+                    }
+                    didSomething = YES;
+                        // apparently cannot rename in but can delete from application's Document folder
+                        
+                }
+            }
+            
+        }
+    }
+    [localFileManager release];    
+    return(didSomething);
+}
+
+- (void) loadInputFiles {
+    if ([self loadTrackerPlistFiles]) {
+        [self.tlist loadTopLayoutTable];
+    };
+    [self loadTrackerCsvFiles];
+}
+
 #pragma mark -
 #pragma mark view support
+
+- (void)scrollState {
+
+ if (self.privacyObj.showing == PVNOSHOW) {
+        self.tableView.scrollEnabled = YES;
+    } else {
+        self.tableView.scrollEnabled = NO;
+    }
+
+ }
 
 - (void)viewDidLoad {
 	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
@@ -178,7 +252,8 @@
 
 	self.tlist = [[trackerList alloc] init];
 
-    [self loadInputFiles];
+    
+    [self.tlist loadTopLayoutTable];  // was loadinputfiles
     
 	/*
 	UIApplication *app = [UIApplication sharedApplication];
@@ -188,7 +263,8 @@
 											   object:app];
 	
 	 */
-	
+    
+	//[self scrollState];
 	[super viewDidLoad];
     
     //[self.privacyObj initLocation];
@@ -212,6 +288,8 @@
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 
+	[self scrollState];
+    
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			self.navigationItem.leftBarButtonItem = nil;
@@ -237,14 +315,19 @@
 - (void)viewWillAppear:(BOOL)animated {
 
 	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+    [self loadInputFiles];  // do this here as restarts are infrequent
 	[self refreshView];
     [super viewWillAppear:animated];
 }
+
 /*
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"rvc viewWillDisappear");
+
+    //self.privacyObj.showing = PVNOSHOW;
 }
 */
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -292,11 +375,18 @@
 }
 */
 
-- (void) privBtnSetImg:(UIButton*)pbtn {
-    [pbtn setImage:[UIImage imageNamed: ( [privacyV getPrivacyValue] > MINPRIV ? @"shadeview-button.png" : @"closedview-button.png" )] forState:UIControlStateNormal];
+- (void) privBtnSetImg:(UIButton*)pbtn noshow:(BOOL)noshow {
+    //BOOL shwng = (self.privacyObj.showing == PVNOSHOW); 
+    BOOL minprv = ( [privacyV getPrivacyValue] > MINPRIV );
+    
+    NSString *btnImg = ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
+                                : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) );
+    
+    [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
 }
 
 - (UIBarButtonItem *) privateBtn {
+    //
 	if (privateBtn == nil) {
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
@@ -305,37 +395,22 @@
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
         privateBtn = [[UIBarButtonItem alloc]
                       initWithCustomView:pbtn];
-        [self privBtnSetImg:(UIButton*)privateBtn.customView];
+        [self privBtnSetImg:(UIButton*)privateBtn.customView noshow:YES];
                 [pbtn release];
-        //*/
-        /*
-        privateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:@"private"
-                       //initWithImage:[UIImage imageNamed:@"lock-button.png"]
-                      //initWithImage:[UIImage imageNamed:@"checked.png"]
-					   style:UIBarButtonItemStyleBordered
-					   target:self
-					   action:@selector(btnPrivate)];
-         */
-        /* privateBtn.frame = CGRectMake(0, 0, privateBtn.image.size.width, privateBtn.image.size.height);
-         */
 	} else {
-        if ((PVNOSHOW != self.privacyObj.showing) 
+        BOOL noshow = (PVNOSHOW == self.privacyObj.showing);
+        if ((! noshow) 
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
-           // self.privateBtn.title = @"dismiss";
-            //privateBtn.image = [UIImage imageNamed:@"unlock-button.png"];
             [(UIButton *)privateBtn.customView 
-             setImage:[UIImage imageNamed:@"fullview-button.png"] forState:UIControlStateNormal];
+             setImage:[UIImage imageNamed:@"fullview-button-blue.png"] forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
-            //self.privateBtn.title = @"private";
-            //privateBtn.image = [UIImage imageNamed:@"lock-button.png"];
-            [self privBtnSetImg:(UIButton *)privateBtn.customView];
-            //[(UIButton *)privateBtn.customView 
-            // setImage:[UIImage imageNamed:@"lock-button.png"] forState:UIControlStateNormal];
+            [self privBtnSetImg:(UIButton *)privateBtn.customView noshow:noshow];
         }
     }
+
+
 	return privateBtn;
 }
 
@@ -379,6 +454,9 @@
 #pragma mark button action methods
 
 - (void) btnAddTracker {
+    if (PVNOSHOW != self.privacyObj.showing) {
+        return;
+    }
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 	atc.tlist = self.tlist;
 	[self.navigationController pushViewController:atc animated:YES];
@@ -388,6 +466,10 @@
 }
 
 - (IBAction)btnEdit {
+    
+    if (PVNOSHOW != self.privacyObj.showing) {
+        return;
+    }
 	configTlistController *ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
@@ -402,6 +484,7 @@
 }
 
 - (void)btnPrivate {
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 	[self.privacyObj togglePrivacySetter ];
     /*
 	if (PVNOSHOW != self.privacyObj.showing) {
@@ -466,6 +549,10 @@
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if (PVNOSHOW != self.privacyObj.showing) {
+        return;
+    }
+    
 	NSUInteger row = [indexPath row];
 	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	

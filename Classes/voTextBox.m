@@ -116,6 +116,7 @@
 - (void) dataEditVWAppear:(UIViewController*)vc {
 	//self.devc = vc;
 	DBGLog(@"de view will appear");
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
@@ -126,20 +127,24 @@
                                                  name:UIKeyboardWillHideNotification
                                                //object:self.textView];    //.devc.view.window];	
                                                object:self.devc.view.window];	
+     
 }
 
-- (void) dataEditVWDisappear {
+- (void) dataEditVWDisappear:(UIViewController*)vc {
 	DBGLog(@"de view will disappear");
 
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
-												  //object:self.textView];    // nil]; //self.devc.view.window];
-    												  object:self.devc.view.window];
+                                                  object:nil];
+												  //--object:self.textView];    // nil]; //self.devc.view.window];
+                                                  //object:self.devc.view.window];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
+                                                  object:nil];
                                                   //object:self.textView];    // nil];   // self.devc.view.window];
-                                                  object:self.devc.view.window];
-}
+                                                  //object:self.devc.view.window];
+
+ }
 
 - (void) dataEditVDidUnload {
 	self.devc = nil;

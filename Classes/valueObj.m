@@ -51,12 +51,34 @@ in_vpriv:(NSInteger)in_vpriv
 	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
-		self.vid = in_vid;
+		self.vid = in_vid ;
 		self.vtype = in_vtype;
 		
 		self.valueName = in_vname;
 		self.vcolor = in_vcolor;
 		self.vGraphType = in_vgraphtype;
+	}
+	
+	return self;
+}
+
+- (id) initWithDict:(id)parentTO dict:(NSDictionary*)dict {
+	DBGLog(@"init vObj with dict vid: %d vtype: %d vname: %@",
+           [(NSNumber*) [dict objectForKey:@"vid"] integerValue],
+           [(NSNumber*) [dict objectForKey:@"vtype"] integerValue],
+           (NSString*) [dict objectForKey:@"valueName"]);
+	if ((self = [super init])) {
+		self.useVO = NO;	
+		self.parentTracker = parentTO;
+		self.vid = [(NSNumber*) [dict objectForKey:@"vid"] integerValue];
+		self.valueName = (NSString*) [dict objectForKey:@"valueName"];
+        self.optDict = (NSMutableDictionary*) [dict objectForKey:@"optDict"];
+        self.vpriv = [(NSNumber*) [dict objectForKey:@"vpriv"] integerValue];
+		self.vtype = [(NSNumber*) [dict objectForKey:@"vtype"] integerValue];
+		
+		self.vcolor = [(NSNumber*) [dict objectForKey:@"vcolor"] integerValue];
+		self.vGraphType = [(NSNumber*) [dict objectForKey:@"vGraphType"] integerValue];
+        
 	}
 	
 	return self;
@@ -88,6 +110,44 @@ in_vpriv:(NSInteger)in_vpriv
 	//[vos dealloc];
 	[super dealloc];
 }
+
+#pragma mark -
+# pragma mark distionary to/from
+
+- (NSDictionary*) dictFromVO {
+    /*
+    NSNumber *myvid = [NSNumber numberWithInteger:self.vid];
+    NSNumber *myvtype = [NSNumber numberWithInteger:self.vtype];
+    NSNumber *myvpriv = [NSNumber numberWithInteger:self.vpriv];
+    NSString *myvaluename = self.valueName;
+    NSNumber *myvcolor = [NSNumber numberWithInteger:self.vcolor];
+    NSNumber *myvgt = [NSNumber numberWithInteger:self.vGraphType];
+    NSDictionary *myoptdict = self.optDict;
+    
+    DBGLog(@"vid %@  vtype %@  vpriv %@  valuename %@  vcolor %@  vgt %@  optdict  %@",
+           myvid, myvtype, myvpriv, myvaluename,myvcolor,myvgt,myoptdict);
+    
+    DBGLog(@"vid %@  vtype %@  vpriv %@  valuename %@  vcolor  %@ vgt  %@ optdict  %@",
+           [NSNumber numberWithInteger:self.vid],
+            [NSNumber numberWithInteger:self.vtype],
+            [NSNumber numberWithInteger:self.vpriv],
+            self.valueName,
+            [NSNumber numberWithInteger:self.vcolor],
+            [NSNumber numberWithInteger:self.vGraphType],
+            self.optDict
+           );
+    */
+     return [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInteger:self.vid],@"vid",
+            [NSNumber numberWithInteger:self.vtype],@"vtype",
+            [NSNumber numberWithInteger:self.vpriv],@"vpriv",
+            self.valueName,@"valueName",
+            [NSNumber numberWithInteger:self.vcolor],@"vcolor",
+            [NSNumber numberWithInteger:self.vGraphType],@"vGraphType",
+            self.optDict,@"optDict",
+            nil];
+}
+
 
 - (NSMutableDictionary *) optDict
 {
@@ -241,6 +301,7 @@ in_vpriv:(NSInteger)in_vpriv
 	}
 	return checkButtonUseVO;
 }
+
 
 #pragma mark -
 #pragma mark utility methods

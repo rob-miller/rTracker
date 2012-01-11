@@ -80,7 +80,7 @@ NSMutableArray *deleteVOs=nil;
 		self.tempTrackerObj = [trackerObj alloc];
 		//tempTrackerObj.trackerName = @"";
 		[self.tempTrackerObj init];
-		self.tempTrackerObj.toid = [tlist getUnique];
+		self.tempTrackerObj.toid = [self.tlist getUnique];
 		[tempTrackerObj release];
 		self.title = @"Add tracker";
 	} else {

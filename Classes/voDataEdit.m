@@ -42,7 +42,7 @@
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
-	[self.vo.vos dataEditVWDisappear];
+	[self.vo.vos dataEditVWDisappear:self];
 }
 
 /*

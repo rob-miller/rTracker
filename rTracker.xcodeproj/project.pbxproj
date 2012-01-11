@@ -91,6 +91,9 @@
 		D44386D013A2216800268248 /* bkgnd1-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386CF13A2216800268248 /* bkgnd1-320-460.png */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
 		D44386D413A2626500268248 /* bkgnd2-320-460.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D313A2626500268248 /* bkgnd2-320-460.png */; };
+		D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */; };
+		D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */; };
+		D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
 		D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
@@ -197,6 +200,9 @@
 		D44386CF13A2216800268248 /* bkgnd1-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd1-320-460.png"; path = "Resources/png/bkgnd1-320-460.png"; sourceTree = "<group>"; };
 		D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd-cell1-320-56.png"; path = "Resources/png/bkgnd-cell1-320-56.png"; sourceTree = "<group>"; };
 		D44386D313A2626500268248 /* bkgnd2-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd2-320-460.png"; path = "Resources/png/bkgnd2-320-460.png"; sourceTree = SOURCE_ROOT; };
+		D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue.png"; path = "Resources/png/closedview-button-blue.png"; sourceTree = "<group>"; };
+		D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button-blue.png"; path = "Resources/png/fullview-button-blue.png"; sourceTree = "<group>"; };
+		D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button-blue.png"; path = "Resources/png/shadeview-button-blue.png"; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
@@ -375,6 +381,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */,
+				D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */,
+				D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */,
 				D47FBB8214A9E2F100CE0547 /* shadeview-button.png */,
 				D47FBB8014A9E2E300CE0547 /* fullview-button.png */,
 				D47FBB7E14A9E2D700CE0547 /* closedview-button.png */,
@@ -672,6 +681,9 @@
 				D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */,
 				D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */,
 				D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */,
+				D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */,
+				D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */,
+				D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

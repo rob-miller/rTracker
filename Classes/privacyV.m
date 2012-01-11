@@ -47,6 +47,10 @@ static int privacyValue=PRIVDFLT;
     DBGLog(@"privObj: lockdown");
     // needs more -- [self setPrivacyValue:MINPRIV]; 
     self.pwState = PWQUERYPASS;
+    //self.showing = PVNOSHOW;
+    if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
+		self.showing = PVQUERY;
+    }
 }
 
 

@@ -145,6 +145,17 @@
 	return self;
 }
 
+- (id)initWithDict:(NSDictionary*) dict {
+	if ((self = [self init])) {
+		//DBGLog(@"init trackerObj from dict id: %d",[dict objectForKey:@"tid"]);
+		self.toid = [(NSNumber*) [dict objectForKey:@"tid"] integerValue];
+		[self confirmDb];
+		[self loadConfigFromDict:dict];
+	}
+	return self;
+}
+
+
 - (void) dealloc {
 	DBGLog(@"dealloc tObj: %@",trackerName);
 	
@@ -172,8 +183,7 @@
 	//unregister for value updated notices
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:rtValueUpdatedNotification
-                                                  object:nil];  
-	
+                                                  object:nil];
 	[super dealloc];
 }
 
@@ -285,6 +295,62 @@
 	trackerDate = [[NSDate alloc] init];
 }
 
+- (void) loadConfigFromDict:(NSDictionary *)dict {
+	
+	dbgNSAssert(self.toid,@"tObj load from dict toid=0");
+	
+    self.optDict = [dict objectForKey:@"optDict"];
+
+    [self setToOptDictDflts];  // probably redundant
+    
+	self.trackerName = [self.optDict objectForKey:@"name"];
+    
+    DBGLog(@"tObj loadConfigFromDict toid:%d name:%@",self.toid,self.trackerName);
+	
+    CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
+	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
+	self.maxLabel = (CGSize) {w,h};
+	
+    NSArray *voda = [dict objectForKey:@"valObjTable"];
+    for (NSDictionary *vod in voda) {
+        valueObj *vo = [[valueObj alloc] initWithDict:(id)self dict:vod];
+        DBGLog(@"add vo %@",vo.valueName);
+        [self.valObjTable addObject:(id) vo];
+		[vo release];
+    }
+
+	for (valueObj *vo in self.valObjTable) {
+        /*
+		[s1 removeAllObjects];
+		[s2 removeAllObjects];
+		
+		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%d;",vo.vid];
+		[self toQry2ArySS :s1 s2:s2];
+		//e1 = [s1 objectEnumerator];
+		e2 = [s2 objectEnumerator];
+		
+		for (NSString *key in s1 ) {
+			[vo.optDict setObject:[e2 nextObject] forKey:key];
+		}
+		*/
+		if (vo.vcolor > self.nextColor)
+			nextColor = vo.vcolor;
+		
+        [vo.vos setOptDictDflts];
+		[vo.vos loadConfig];  // loads from vo optDict
+	}
+	
+	//[self nextColor];  // inc safely past last used color
+	if (nextColor >= [self.colorSet count])
+		nextColor=0;
+	
+	self.sql=nil;
+	
+	self.trackerDate = nil;
+	trackerDate = [[NSDate alloc] init];
+    DBGLog(@"loadConfigFromDict finished loading %@",self.trackerName);
+}
+
 // delete default settings from vo.optDict to save space
 
 - (void) clearVoOptDict:(valueObj *)vo
@@ -306,6 +372,8 @@
 	[s1 release];
 	self.sql=nil;
 }
+
+
 
 #pragma mark tracker obj default set and vacuum routines together
 
@@ -401,6 +469,21 @@
 	self.sql = nil;
 }
 
+- (NSDictionary*) dictFromTO {
+    NSMutableArray *vodma = [[NSMutableArray alloc] init];
+	for (valueObj *vo in self.valObjTable) {
+        [vodma addObject:[vo dictFromVO]];
+	}
+    NSArray *voda = [NSArray arrayWithArray:vodma];
+    [vodma release];
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInt:self.toid],@"tid",
+            self.optDict, @"optDict",
+            voda,@"valObjTable", 
+            nil];
+    
+}
 
 - (valueObj *) getValObj:(NSInteger) qVid {
 	valueObj *rvo=nil;

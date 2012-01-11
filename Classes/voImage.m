@@ -133,7 +133,7 @@
 }
 - (void) dataEditVWAppear:(UIViewController*)vc {
 }
-- (void) dataEditVWDisappear {
+- (void) dataEditVWDisappear:(UIViewController*)vc {
 }
 
 - (void) dataEditVDidUnload {

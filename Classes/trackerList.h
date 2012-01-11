@@ -35,6 +35,7 @@
 - (void)reloadFromTLT;
 
 - (int) getTIDfromIndex:(NSUInteger)ndx;
+- (BOOL)checkTIDexists:(NSNumber*)tid;
 - (int) getTIDfromName:(NSString*)str;
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 

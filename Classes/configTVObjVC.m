@@ -142,14 +142,13 @@
 {
     //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
+    [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification 
                                                   object:nil]; 
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
-	
 }
 
 

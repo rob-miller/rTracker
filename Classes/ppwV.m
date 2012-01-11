@@ -175,9 +175,11 @@ CGRect saveFrame;
 	//[self.topTF resignFirstResponder];
 	DBGLog(@"change p to .%@.",self.topTF.text);
 	if (! [self.topTF.text isEqualToString:@""]) {  // no empty passwords
-		[self setp];
-		self.topLabel.text = @"password changed";
-		[self performSelector:@selector(cpSetTopLabel) withObject:nil afterDelay:1.0];
+        if (! [self dbTestPass:self.topTF.text]) {  // skip if the same (spurious editingdidend event on start)
+            [self setp];
+            self.topLabel.text = @"password changed";
+            [self performSelector:@selector(cpSetTopLabel) withObject:nil afterDelay:1.0];
+        }
 	}
 }
 

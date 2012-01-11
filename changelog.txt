@@ -256,3 +256,29 @@
   - update toolbar privacy icon on know password
   - capitalization fixes
   - addValObj down keyboard on picker select (Pat fix)
+
+29 December 2011
+  - failed attempts to fix so scrolling works with privacy controls up
+  - archive and submit 1.0.3
+--- check in ---
+
+30 December 2011
+  - fix scroll/privacy issue by disable scrolling, other buttons, table select
+  - change button to blue when priv up, to highlight it is only option
+    besides 'help'
+  - fix spurious 'password changed' message when 1st pass password check
+
+09 January 2012
+  - added dictFromVO/TO, initWithDict for vo and to; compiles, no testing or use
+
+10 January 2012
+  - fixed crash from spurious keyboardwillshow message - textbox observer not removed, 
+    fix was to simply remove all observers for that self. Extended to all removeobservers,
+    no longer specify which one being removed just remove all.
+  - write tracker plist appears to work
+
+11 January 2012
+ - put name: back into removeObserver calls, ensured all object:'s set to nil;
+ - initial testing goes through, can load tracker plist & corresponding csv file
+--- check in ---
+ 

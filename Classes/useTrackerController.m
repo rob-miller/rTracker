@@ -158,7 +158,6 @@
                                                     name:rtTrackerUpdatedNotification
                                                   object:nil];  
 	
-	
 	UIView *haveView = [self.view viewWithTag:kViewTag2];
 	if (haveView) 
 		[haveView removeFromSuperview];
@@ -252,6 +251,7 @@
 
 - (void) viewWillDisappear :(BOOL)animated
 {
+    
     //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
@@ -261,7 +261,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
-	
 }
 
 # pragma mark view rotation methods
@@ -660,6 +659,11 @@
     
 	[self.tracker writeTrackerCSV:nsfh];
 	[nsfh closeFile];
+    
+    fname = [NSString stringWithFormat:@"%@_out.plist",self.tracker.trackerName];
+    fpath = [rTracker_resource ioFilePath:fname access:YES];
+    [[self.tracker dictFromTO] writeToFile:fpath atomically:YES];
+    
 	//[nsfh release];
     
 }

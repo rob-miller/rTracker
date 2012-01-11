@@ -130,6 +130,15 @@
 	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
 }
 
+- (BOOL) checkTIDexists:(NSNumber*)tid {
+    for (NSNumber *i in self.topLayoutIDs) {
+        if ([tid isEqualToNumber:i]) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 - (int) getTIDfromName:(NSString *)str {
     int ndx=0;
     for (NSString *tname in self.topLayoutNames) {

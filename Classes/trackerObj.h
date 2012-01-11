@@ -55,10 +55,14 @@
 @property (nonatomic,retain) id togd;
 
 - (id) init:(int) tid;
-
+- (id) initWithDict:(NSDictionary*)dict;
+    
 - (void) addValObj:(valueObj*)valObj;
 - (void) saveConfig;
+- (NSDictionary*) dictFromTO;
 - (void) loadConfig;
+- (void) loadConfigFromDict:(NSDictionary*)dict;
+
 - (void) setToOptDictDflts;
 - (BOOL) loadData:(NSInteger)iDate;
 - (void) saveData;

@@ -42,12 +42,12 @@
 - (void) dealloc {
     DBGLog(@"dealloc tObjBase: %@  id=%d",self.dbName,self.toid);
 	
-	UIApplication *app = [UIApplication sharedApplication];
-	[[NSNotificationCenter defaultCenter] removeObserver:self 
+	//UIApplication *app = [UIApplication sharedApplication];
+	[[NSNotificationCenter defaultCenter] removeObserver:self
 												 name:UIApplicationWillTerminateNotification
-											   object:app];
-		
-	[self closeTDb];
+											   object:nil];
+                                               //object:app];
+    [self closeTDb];
 	self.sql = nil;
 	[sql release];
 	self.dbName = nil;
