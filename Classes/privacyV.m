@@ -216,8 +216,10 @@ static int privacyValue=PRIVDFLT;
 // alert to inform privacy limits and use
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    self.pwState = PWNEEDPASS;
-    self.showing = PVQUERY;
+    if (0 == buttonIndex) {
+        self.pwState = PWNEEDPASS;
+        self.showing = PVQUERY;
+    }
 }
 
 
@@ -225,17 +227,17 @@ static int privacyValue=PRIVDFLT;
 
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
-    [(RootViewController*) self.parent refreshToolBar];
+    //[(RootViewController*) self.parent refreshToolBar:YES];
     
 	// (showing == newState)
 	//	return;
 	
 	if (PVNOSHOW != newState && PWNEEDPRIVOK == self.pwState) {  // first time if no password set, better warn not secure
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Private but not secure"
-                                                        message:@"This feature can hide trackers and values from display, but the data will not be secure from a determined attacker."
+                                                        message:@"Privacy: This feature can hide trackers and values from display, but the data will not be secure from a determined attacker."
                                                            delegate:self 
                                                   cancelButtonTitle:@"I'll remember" 
-                                                  otherButtonTitles:nil];
+                                                  otherButtonTitles:@"Skip for now",nil];
         [alert show]; 
         [alert release];
         
@@ -253,7 +255,7 @@ static int privacyValue=PRIVDFLT;
 			self.pwState = PWKNOWPASS;    // just successfully created password so don't ask again
 			[self showPVQ:TRUE];
 			//[self.ppwv hidePPWVAnimated:TRUE];  // don't hide and re-show
-            // crash[(RootViewController*) self.parentView refreshToolBar];
+            // crash[(RootViewController*) self.parentView refreshToolBar:YES];
 		} else {
 			[UIView beginAnimations:nil context:NULL];
 			[UIView setAnimationDuration:kAnimationDuration];
@@ -275,6 +277,7 @@ static int privacyValue=PRIVDFLT;
 		[UIView setAnimationDuration:kAnimationDuration];
 		
 		if (PVNEEDPASS == self.showing) { // if set pass is up, cancelled out of create
+            //DBGLog(@"cancelled out of create pass");
 			[self.ppwv hidePPWVAnimated:FALSE];
             [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
 		} else {
@@ -314,7 +317,7 @@ static int privacyValue=PRIVDFLT;
             [self setTTV];
 			[UIView commitAnimations];
 			showing = PVCONFIG;
-            [(RootViewController*) self.parent refreshToolBar];
+            [(RootViewController*) self.parent refreshToolBar:YES];
 
 		} else {
 			showing = PVCHECKPASS;
@@ -322,6 +325,8 @@ static int privacyValue=PRIVDFLT;
 		}
 	
 	}
+    [(RootViewController*) self.parent refreshToolBar:YES];
+    //DBGLog(@"leaving setshowing, noshow= %d",(PVNOSHOW == showing));
 }
 
 #pragma mark -

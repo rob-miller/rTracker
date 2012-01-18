@@ -282,3 +282,21 @@
  - initial testing goes through, can load tracker plist & corresponding csv file
 --- check in ---
  
+12 January 2012
+ - modified vos:update() for number and text so textfield value saved if don't done keyboard
+ 
+15 January 2012
+ - initial code to display "<owner>'s tracks" as main title 
+
+17 January 2012
+ - moved help and privacy icons to right so not first thing picked
+ - start on controlling width of owner's name in title, 'rTracker' if too long
+
+18 January 2012
+ - finish handling owner's name
+ - update Default.png
+ - fix bug from vos:update on empty vos-num field -- dtf.text not init to @"" but was for vos-text
+ - fix bug in priv button staying blue after cancel from create pass -- moved refreshTooBar to end of priv:setShowing instead of beginning
+
+--- check in ---
+

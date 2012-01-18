@@ -13,6 +13,7 @@
 
 @synthesize dtf;
 
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
 	DBGLog(@"tf begin editing vid=%d",self.vo.vid);
     //*activeField = textField;
@@ -67,9 +68,11 @@
         
         // Add an accessibility label that describes what the text field is for.
         [dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
+        dtf.text=@"";
         
     }
     //DBGLog(@"num dtf rc= %d",[dtf retainCount]);
+    
     return dtf;
 }
 
@@ -107,6 +110,16 @@
     
     DBGLog(@"number voDisplay: %@", self.dtf.text);
     return self.dtf;
+}
+
+- (NSString*) update:(NSString*)instr {   // confirm textfield not forgotten
+    if ((nil == dtf) // NOT self.dtf as we want to test if is instantiated
+        ||
+        !([instr isEqualToString:@""])
+        ){ 
+        return instr;
+    }
+    return self.dtf.text;
 }
 
 

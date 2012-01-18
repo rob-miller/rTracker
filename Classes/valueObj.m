@@ -112,7 +112,7 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 #pragma mark -
-# pragma mark distionary to/from
+# pragma mark dictionary to/from
 
 - (NSDictionary*) dictFromVO {
     /*

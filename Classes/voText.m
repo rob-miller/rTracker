@@ -90,6 +90,16 @@
 }
 
 
+- (NSString*) update:(NSString*)instr {   // confirm textfield not forgotten
+    if ((nil == dtf) // NOT self.dtf as we want to test if is instantiated
+        ||
+        !([instr isEqualToString:@""])
+        ){ 
+        return instr;
+    }
+    return self.dtf.text;
+}
+
 #pragma mark -
 #pragma mark options page 
 

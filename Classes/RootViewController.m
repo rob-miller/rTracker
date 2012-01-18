@@ -22,7 +22,7 @@
 @implementation RootViewController
 
 @synthesize tlist;
-@synthesize privateBtn, helpBtn, privacyObj;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -33,6 +33,11 @@
 	self.tlist = nil;
 	[tlist release];
 	//[privateBtn release]; // saved to change image
+    self.addBtn = nil;
+    [addBtn release];
+    self.editBtn = nil;
+    [editBtn release];
+    
     [super dealloc];
 }
 
@@ -210,35 +215,96 @@
 
  }
 
-- (void)viewDidLoad {
-	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
-
-    self.title = @"rTracker";
-
-	UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
-								//initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                initWithTitle:@"New tracker"
-                                style:UIBarButtonItemStyleBordered 
-								target:self
-								action:@selector(btnAddTracker)];
-	self.navigationItem.rightBarButtonItem = addBtn;
-    //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-	[addBtn release];
-	
+- (void) refreshToolBar:(BOOL)animated {
+    //DBGLog(@"refresh tool bar, noshow= %d",(PVNOSHOW == self.privacyObj.showing));
+    //DBGLog(@"refresh tool bar");
 	[self setToolbarItems:[NSArray arrayWithObjects: 
-						   //self.flexibleSpaceButtonItem,
+                           //self.addBtn,
+						   self.flexibleSpaceButtonItem,
+                           self.helpBtn,
 						   //self.payBtn, 
                            self.privateBtn, 
-                           self.helpBtn,
                            //self.multiGraphBtn, 
 						   //self.flexibleSpaceButtonItem, 
 						   nil] 
-				 animated:NO];
+				 animated:animated];
+}
 
+- (void) initTitle {
+    
+    // set up the title 
+    
+    NSString *devname = [[UIDevice currentDevice] name];
+    DBGLog(@"name = %@",devname);
+    NSArray *words = [devname componentsSeparatedByString:@" "];
+    
+    NSUInteger i=0;
+    NSUInteger c = [words count];
+    NSString *name=nil;
+    
+    for (i=0;i<c && nil == name;i++) {
+        NSString *w=nil;
+        if (@"" != (w = [words objectAtIndex:i])) {
+            name = w;
+        }
+    }
+    
+    
+    //name= @"aiiiiiiiiiiiiiiiiiiiiii";
+    
+
+    if ((nil == name)
+        || ([name isEqualToString:@"iPhone"])
+        || ([name isEqualToString:@"iPad"])
+        || (0 == [name length])
+        ){
+        self.title = @"rTracker";
+    } else {
+        CGFloat bw1=0.0f;
+        CGFloat bw2=0.0f;
+        UIView *view = [self.editBtn valueForKey:@"view"];
+        bw1 = view ? ([view frame].size.width + [view frame].origin.x) : (CGFloat)0.0;
+        UIView *view2 = [self.addBtn valueForKey:@"view"];
+        bw2 = view2 ? [view2 frame].origin.x : (CGFloat)0.0;
+
+        if ((0.0f == bw1) || (0.0f==bw2)) {
+            self.title = @"rTracker";
+        } else {
+            NSString *tname = [name stringByAppendingString:@"'s tracks"];
+            NSString *tn2 = [name stringByAppendingString:@" 's tracks"];
+            CGFloat maxWidth = (bw2 - bw1)-8; //self.view.bounds.size.width - btnWidths;
+            //DBGLog(@"view wid= %f bw1= %f bw2= %f",self.view.bounds.size.width ,bw1,bw2);
+            CGSize namesize = [tn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
+            CGFloat nameWidth = namesize.width;
+            //DBGLog(@"name wid= %f  maxwid= %f  name= %@",nameWidth,maxWidth,tname);
+            if (nameWidth < maxWidth) {
+                self.title = tname;
+            } else {
+                self.title = @"rTracker";
+            }
+        }
+    }
+}
+
+- (void)viewDidLoad {
+	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
+    
+    self.navigationItem.rightBarButtonItem = self.addBtn;
+	//[self.addBtn release];
+	    
+    self.navigationItem.leftBarButtonItem = self.editBtn;
+	//[self.editBtn release];
+
+    [self initTitle];
+    
+    [self refreshToolBar:NO];
     
     //self.navigationController.toolbar.translucent = YES;
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
+    //self.navigationController.toolbar.translucent = YES;
     
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd1-320-460.png"]];
     self.tableView.backgroundView = bg;
@@ -271,18 +337,6 @@
 	
 }
 
-- (void) refreshToolBar {
-    DBGLog(@"refresh tool bar");
-	[self setToolbarItems:[NSArray arrayWithObjects: 
-						   //self.flexibleSpaceButtonItem,
-						   //self.payBtn, 
-                           self.privateBtn, 
-                           self.helpBtn,
-                           //self.multiGraphBtn, 
-						   //self.flexibleSpaceButtonItem, 
-						   nil] 
-				 animated:YES];
-}
 
 - (void) refreshView {
 	[self.tlist loadTopLayoutTable];
@@ -296,19 +350,12 @@
 		}
 	} else {
 		if (self.navigationItem.leftBarButtonItem == nil) {
-			
-			UIBarButtonItem *editBtn = [[UIBarButtonItem alloc]
-										//initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                        initWithTitle:@"Edit trackers"
-                                        style:UIBarButtonItemStyleBordered 
-										target:self
-										action:@selector(btnEdit)];
-			self.navigationItem.leftBarButtonItem = editBtn;
+			self.navigationItem.leftBarButtonItem = self.editBtn;
 			[editBtn release];
 		}
 	}
     
-    [self refreshToolBar];
+    [self refreshToolBar:YES];
     
 }
 
@@ -423,6 +470,44 @@
                       action:@selector(btnHelp)];
 	} 
 	return helpBtn;
+}
+
+
+- (UIBarButtonItem *) addBtn {
+	if (addBtn == nil) {
+        addBtn = [[UIBarButtonItem alloc]
+                initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                  //initWithTitle:@"New tracker"
+                  //style:UIBarButtonItemStyleBordered 
+                 target:self
+                 action:@selector(btnAddTracker)];
+
+        [addBtn setStyle:UIBarButtonItemStyleDone];
+         
+	} 
+	return addBtn;
+}
+
+- (UIBarButtonItem *) editBtn {
+	if (editBtn == nil) {
+        editBtn = [[UIBarButtonItem alloc]
+                   initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+                   //initWithTitle:@"Edit trackers"
+                   //style:UIBarButtonItemStyleBordered 
+                   target:self
+                   action:@selector(btnEdit)];
+	} 
+	return editBtn;
+}
+
+
+- (UIBarButtonItem *) flexibleSpaceButtonItem {
+	if (flexibleSpaceButtonItem == nil) {
+		flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+                initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                target:nil action:nil];
+	} 
+	return flexibleSpaceButtonItem;
 }
 
 /*

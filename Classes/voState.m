@@ -40,7 +40,7 @@
     return 10;
 }
 
-- (NSString*) update:(NSString*)instr {   // place holder so fn can update on access
+- (NSString*) update:(NSString*)instr {   // place holder so fn can update on access; also confirm textfield updated
     return instr;
 }
 

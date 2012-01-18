@@ -614,13 +614,13 @@
 
 - (NSDate*) strToDate:(NSString*)str {
         
-    return [[self dateFormatter] dateFromString:str];
+    return [self.dateFormatter dateFromString:str];
         
 }
 
 - (NSString*) dateToStr:(NSDate*)dat {
     
-    return [[self dateFormatter] stringFromDate:dat ];
+    return [self.dateFormatter stringFromDate:dat ];
     
 }
 
@@ -673,7 +673,7 @@
         {
             DBGLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
         }
-        DBGErr(@"skipping record as no %@ key",TIMESTAMP_LABEL);
+        DBGErr(@"skipping record as failed reading %@ key",TIMESTAMP_LABEL);
         return;
     } else {
         DBGLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);

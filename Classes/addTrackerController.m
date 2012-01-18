@@ -393,6 +393,7 @@ DBGLog(@"btnAddValue was pressed!");
 		
 			self.nameField.text = self.tempTrackerObj.trackerName;
 			self.nameField.placeholder = @"Name this Tracker";
+        DBGLog(@"loading cell 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
 
 //		} else {   // row = 1
 //			cell.textLabel.text = @"privacy level:";
@@ -528,6 +529,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %d ",row);
 
+        if ([self.nameField.text length] > 0) {
+            self.tempTrackerObj.trackerName = self.nameField.text;
+            DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
+        }
+        
 		addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
 		avc.parentTrackerObj = self.tempTrackerObj;
 		[self.navigationController pushViewController:avc animated:YES];
@@ -554,7 +560,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	//NSUInteger section = [indexPath section];
 	
 	//DBGLog(@"accessory button tapped for section %d row %d ", section, row);
-
+    
 	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
 	avc.parentTrackerObj = self.tempTrackerObj;
 	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
