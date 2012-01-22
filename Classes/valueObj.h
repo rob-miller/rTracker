@@ -95,6 +95,7 @@
 - (void) dealloc;
 - (id) newVOGD;
 - (void) recalculate;
+- (void) resetData;
 @end
 
 

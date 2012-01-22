@@ -178,7 +178,9 @@
      }
 }
 
-
+- (void) viewWillDisappear:(BOOL)animated {
+    [self resignFirstResponder];
+}
 #pragma mark -
 #pragma mark handle shake event
 

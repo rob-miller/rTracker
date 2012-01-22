@@ -170,9 +170,11 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 - (void) resetData {
+    [self.vos resetData];
 	[self.value setString:@""];
     //self.retrievedData = NO;
 	self.useVO = NO;  // disableVO
+    DBGLog(@"vo resetData %@",self.valueName);
 }
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
@@ -234,7 +236,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (UIView *) display:(CGRect)bounds {
 	if (display == nil) {
-        DBGLog(@"vo new display %@",self.valueName);
+        DBGLog(@"vo new display name:  %@ currVal: .%@.",self.valueName,self.value);
 		self.display = [self.vos voDisplay:bounds];
 	}
 	return display;

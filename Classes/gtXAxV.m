@@ -108,7 +108,7 @@
 			||
 			dateStep >= 24*60*60
 			||
-             i == XTICKS) && x>nextXd) {
+             i == XTICKS) && x>(nextXd+10.0f)) {
             if ((i != 1) && (i != XTICKS))
                 AddLineTo(x2, y2);
             [ds drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];

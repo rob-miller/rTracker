@@ -76,6 +76,9 @@
     return dtf;
 }
 
+- (void) resetData {
+    self.dtf.text = @"";
+}
 
 - (UIView*)voDisplay:(CGRect)bounds {
 	self.vosFrame = bounds;

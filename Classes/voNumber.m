@@ -76,6 +76,10 @@
     return dtf;
 }
 
+- (void) resetData {
+    self.dtf.text = @"";
+}
+
 - (UIView*)voDisplay:(CGRect)bounds {
 	self.vosFrame = bounds;
 
@@ -98,6 +102,7 @@
                 to.sql = nil;
             } else {
                 self.dtf.text = @"";
+                //DBGLog(@"reset dtf.txt to empty");
             }
         } else {
             self.dtf.backgroundColor = [UIColor whiteColor];
