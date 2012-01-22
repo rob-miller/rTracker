@@ -94,6 +94,7 @@
 //- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
 - (void) dealloc;
 - (id) newVOGD;
+- (void) recalculate;
 @end
 
 

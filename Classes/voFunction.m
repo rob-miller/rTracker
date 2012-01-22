@@ -282,6 +282,7 @@
 	
 }
 
+// supplied with previous endpoint (endpoint 0), calculate function to current tracker
 - (NSNumber *) calcFunctionValueWithCurrent:(int)epd0 {
 	
 	NSInteger maxc = [self.fnArray count];
@@ -289,6 +290,7 @@
 	trackerObj *to = MyTracker;
 
 #if DEBUGLOG
+    // print our complete function
 	NSInteger i;
     NSString *outstr=@"";
     for (i=0; i< maxc; i++) {
@@ -299,40 +301,47 @@
     
 	int epd1;
 	if (to.trackerDate == nil) {
+        // current tracker entry no date set so epd1=now
 		epd1 = (int) [[NSDate date] timeIntervalSince1970];
 	} else {
+        // set epd1 to date of current (this) tracker entry
 		epd1 = (int) [to.trackerDate timeIntervalSince1970];
 	}
 	
 	double result = 0.0f;
 	
 	while (self.currFnNdx < maxc) {
+        // recursive function, self.currFnNdx holds our current processing position
 		NSInteger currTok = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];
 		if (isFn1Arg(currTok)) {
+            // currTok is function taking 1 argument, so get it
 			vid = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
 			//valueObj *valo = [to getValObj:vid];
 			NSString *sv1 = [to getValObj:vid].value;
 			double v1 = [sv1 doubleValue];
             DBGLog(@"v1= %f", v1);
-			
+			// v1 is value for current tracker entry (epd1) for our arg
 			switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
 				case FN1ARGDELTA :
 					if (sv1 == nil || [sv1 isEqualToString:@""])
 						return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
+                    // epd1 value is ok, get from db value for epd0
 					to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
 					double v0 = [to toQry2Double];
                     DBGLog(@"delta: v0= %f", v0);
+                    // do caclulation
 					result = v1 - v0;
 					break;
 				case FN1ARGAVG :
 				{
-					// this works but need to include any current but unsaved value
+					// below (calculate via sqlite) works but need to include any current but unsaved value
 					//to.sql = [NSString stringWithFormat:@"select avg(val) from voData where id=%d and date >=%d and date <%d;",
 					//		  vid,epd0,epd1];
 					//result = [to toQry2Float];  // --> + v1;
 					
 					double c = [[self.vo.optDict objectForKey:@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
-					if (c == 0.0f) {  // else denom is number of entries
+                    // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
+					if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
 						to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
 								  vid,epd0,epd1];
 						c = [to toQry2Float] + 1.0f;  // +1 for current on screen
@@ -344,6 +353,7 @@
 					break;
 				}
 				default:
+                    // remaining options for fn w/ 1 arg are pre/post/all sum
 					switch (currTok) {
                             // by selecting for not null ep0 using total() these sum over intermediate non-endpoint values
                             // -- ignoring passed epd0
@@ -369,9 +379,11 @@
 					break;
 			}
 		} else if (isFn2ArgOp(currTok)) {
+            // we are processing some combo of previous result and next value, currFnNdx was ++ already so get that result:
 			NSNumber *nrnum = [self calcFunctionValueWithCurrent:epd0]; // currFnNdx now at next place already
 			double nextResult = [nrnum doubleValue];
 			switch (currTok) {
+                    // now just combine with what we have so far
 				case FN2ARGPLUS :
 					result += nextResult;
 					break;
@@ -391,11 +403,29 @@
 					break;
 			} 
 		} else if (currTok == FNPARENOPEN) {
+            // open paren means just recurse and return the result up
 			NSNumber *nrnum = [self calcFunctionValueWithCurrent:epd0]; // currFnNdx now at next place already
 			result = [nrnum doubleValue];
 		} else if (currTok == FNPARENCLOSE) {
+            // close paren means we are there, return what we have
 			return [NSNumber numberWithDouble:result];
+        } else if (isFnTimeOp(currTok)) {
+            result = (double) epd1 - epd0;
+            DBGLog(@" timefn: %f secs",result);
+            switch (currTok) {
+                case FNTIMEWEEKS:
+                    result /= 7;            // 7 days /week
+                case FNTIMEDAYS :
+                    result /= 24;            // 24 hrs / day 
+                case FNTIMEHRS :
+                default:
+                    result /= d( 60 * 60 );  // 60 secs min * 60 secs hr
+                    break;
+            }
+            DBGLog(@" timefn: %f final units",result);
+            
 		} else {
+            // remaining option is we have some vid as currTok, return its value up the chain
             valueObj *lvo = [to getValObj:currTok];
             result = [lvo.value doubleValue];
 			//result = [[to getValObj:currTok].value doubleValue];
@@ -986,6 +1016,13 @@
 	}
 }
 
+- (void) ftAddTimeSet {
+	int i;
+	for (i=FNTIMEFIRST;i>=FNTIMELAST;i--) {
+		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
+	}
+}
+
 - (void) ftAdd2OpSet {
 	int i;
 	for (i=FN2ARGFIRST;i>=FN2ARGLAST;i--) {
@@ -1015,6 +1052,7 @@
 
 - (void) ftStartSet {
 	[self ftAddFnSet];
+    [self ftAddTimeSet];
 	[self.fnTitles addObject:[NSNumber numberWithInt:FNPARENOPEN]];
 	[self ftAddVOs];
 }
@@ -1163,6 +1201,10 @@
     // restore current date
 	[MyTracker loadData:currDate];
     
+}
+
+- (void) recalculate {
+    [self setFnVals];
 }
 
 /*

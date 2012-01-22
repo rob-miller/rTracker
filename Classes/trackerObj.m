@@ -293,6 +293,9 @@
 	
 	self.trackerDate = nil;
 	trackerDate = [[NSDate alloc] init];
+    [self rescanMaxLabel];
+    
+
 }
 
 - (void) loadConfigFromDict:(NSDictionary *)dict {
@@ -781,9 +784,8 @@
 	return NO;
 }
 
-- (void) setMaxLabel 
-{
-	
+- (void) rescanMaxLabel {
+
 	CGSize lsize = { 0.0f, 0.0f };
 	
 	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
@@ -791,9 +793,14 @@
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
 		CGSize tsize = [vo.valueName sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+        DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
 		if (tsize.width > lsize.width) {
 			lsize = tsize;
-		}
+            // bug in xcode 4.2
+            if (lsize.width == lsize.height) {
+                lsize.height = 18.0f;
+            }
+        }
 	}
 	
 	DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
@@ -812,7 +819,7 @@
 		[self.valObjTable addObject:valObj];
 	}
 	
-	[self setMaxLabel];
+	[self rescanMaxLabel];
 }
 
 
@@ -1003,6 +1010,16 @@
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
 		[vo describe];
+	}
+}
+
+- (void) recalculateFns {
+	DBGLog(@"tracker id %d name %@ recalculateFns", self.toid, self.trackerName, self.dbName);
+    
+	for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC == vo.vtype) {
+            [vo.vos recalculate];
+        }
 	}
 }
 

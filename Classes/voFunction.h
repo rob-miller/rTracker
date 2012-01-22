@@ -10,6 +10,7 @@
 #import "voState.h"
 
 //function support
+// values are negative so positive values will be vid's
 #define FNSETVERSION	1
 
 #define FNSTART			-1
@@ -38,14 +39,23 @@
 
 #define FNPARENLAST		FNPARENCLOSE
 
-#define FNFIN			FNPARENLAST
+#define FNTIMEFIRST     (FNPARENCLOSE-1)
+#define FNTIMEWEEKS     (FNTIMEFIRST)
+#define FNTIMEDAYS      (FNTIMEWEEKS-1)
+#define FNTIMEHRS       (FNTIMEDAYS-1)
+#define FNTIMELAST      FNTIMEHRS
+
+#define isFnTimeOp(i)   ((i<=FNTIMEFIRST) && (i>=FNTIMELAST))
+
+#define FNFIN			FNTIMELAST
 
 #define isFn(i)		((i<=FNSTART) && (i>=FNFIN))
 
-#define FnArrStrs	@"delta", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")"
+#define FnArrStrs	@"delta", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")",@"weeks",@"days",@"hours"
 
 #define FN1ARGSET			FN1ARGDELTA,FN1ARGSUM,FN1ARGAVG
 #define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
+//#define FNTIMESET       FNTIMEWEEKS,FNTIMEDAYS,FNTIMEHRS
 
 
 

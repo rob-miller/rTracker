@@ -169,6 +169,8 @@
                 } else {
                     NSString *target = [docsDir stringByAppendingPathComponent:file];
                     NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:target];
+                    [self.tlist minUniquev:[[tdict objectForKey:@"tid"] intValue]];
+                    
                     if ([self.tlist checkTIDexists:[tdict objectForKey:@"tid"]]) {
                         DBGLog(@" tid exists already: %@",[tdict objectForKey:@"tid"]);
                         [tdict setValue:[NSNumber numberWithInt:[self.tlist getUnique]] forKey:@"tid"];

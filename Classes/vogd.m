@@ -54,6 +54,12 @@
             self.minVal = [myTracker toQry2Double];
             myTracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
             self.maxVal = [myTracker toQry2Double];
+
+            if ((0.0f < self.minVal) && (0.0f < self.maxVal)) {   // confusing if no start at 0
+                self.minVal = 0.0f;
+            }
+            
+            self.maxVal += (self.maxVal - self.minVal) *0.10f;   // +10% for visibility
         }
         
         if (self.minVal == self.maxVal) {

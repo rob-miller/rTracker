@@ -300,3 +300,21 @@
 
 --- check in ---
 
+19 January 2012
+ - change setMaxWidth to rescanMaxWidth, put in loadconfig for fix - but turns out is xcode 4.2 bug with 4.2 devices.  used hack.
+ - made checkbox frames slightly bigger in configVT 
+
+20 January 2012
+ - add minUniquev to tObjBase, use for dictionary loads to avoid dup values
+ - set minValue to 0 for autoscale
+ - added shake in graph view to recalculate function values.
+ - added activity indicator while recalculating 
+
+21 January 2012
+ - initial add time funcs : elapsed hours/days/weeks 
+   - initial tests work for hrs
+
+22 January 2012
+ - prep for 1.0.4
+
+--- check in ---

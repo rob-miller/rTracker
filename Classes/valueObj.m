@@ -71,6 +71,7 @@ in_vpriv:(NSInteger)in_vpriv
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
 		self.vid = [(NSNumber*) [dict objectForKey:@"vid"] integerValue];
+        [(trackerObj*) self.parentTracker minUniquev:self.vid];
 		self.valueName = (NSString*) [dict objectForKey:@"valueName"];
         self.optDict = (NSMutableDictionary*) [dict objectForKey:@"optDict"];
         self.vpriv = [(NSNumber*) [dict objectForKey:@"vpriv"] integerValue];

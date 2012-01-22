@@ -62,6 +62,7 @@
 - (NSDictionary*) dictFromTO;
 - (void) loadConfig;
 - (void) loadConfigFromDict:(NSDictionary*)dict;
+- (void) rescanMaxLabel; 
 
 - (void) setToOptDictDflts;
 - (BOOL) loadData:(NSInteger)iDate;
@@ -91,6 +92,7 @@
 - (void) changeDate:(NSDate*)newdate;
 
 - (void) trackerUpdated:(NSNotification*)n;
+- (void) recalculateFns;
 
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
 

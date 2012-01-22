@@ -191,6 +191,17 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	return i;
 }
 
+- (void) minUniquev:(int) minU {
+    int i;
+    self.sql = @"select value from uniquev where id=0;";
+    i = [self toQry2Int];
+    if (i <= minU) {
+		self.sql = [NSString stringWithFormat:@"update uniquev set value = %d where id=0;",minU+1];
+		[self toExecSql];
+		self.sql = nil;
+    }
+}
+
 #pragma mark -
 #pragma mark sql query execute methods
 

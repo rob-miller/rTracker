@@ -179,6 +179,33 @@
 }
 
 
+#pragma mark -
+#pragma mark handle shake event
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self becomeFirstResponder];
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if (event.type == UIEventSubtypeMotionShake) {
+        // It has shaked
+         UIActivityIndicatorView *activityIndicator = 
+        [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+        activityIndicator.center =  self.scrollView.center;
+        [self.scrollView addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+        
+        [self.tracker recalculateFns];
+        
+        [activityIndicator stopAnimating];
+        [activityIndicator release];
+        
+    }
+}
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {

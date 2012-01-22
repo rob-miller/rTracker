@@ -288,11 +288,13 @@
 	Stroke;
 }
 
-- (void) plotVO_bar:(vogd *)vogd context:(CGContextRef)context
+- (void) plotVO_bar:(vogd *)vogd context:(CGContextRef)context barCount:(int)barCount
 {
 	CGContextSetAlpha(context, BAR_ALPHA);
 	CGContextSetLineWidth(context, BAR_LINE_WIDTH);
 	
+    CGFloat barStep = BAR_LINE_WIDTH * (CGFloat) barCount;
+    
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
 	CGRect bbox = CGContextGetClipBoundingBox(context);
 	CGFloat minX = bbox.origin.x;
@@ -303,7 +305,7 @@
     BOOL going=NO;
     
     for (NSNumber *nx in vogd.xdat) {
-		CGFloat x = [nx floatValue];
+		CGFloat x = [nx floatValue] + barStep;
 		CGFloat y = [[e nextObject] floatValue];
         if (vogd.vo.vtype == VOT_CHOICE)
             [self vtChoiceSetColor:vogd context:context val:y];
@@ -347,8 +349,7 @@
 }
 
 
-- (void) plotVO:(valueObj *)vo context:(CGContextRef)context
-{
+- (void) plotVO:(valueObj *)vo context:(CGContextRef)context barCount:(int)barCount {
 	//[(UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor] set];
     if (vo.vtype != VOT_CHOICE) {
         CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
@@ -383,7 +384,7 @@
             }
 			break;
 		case VOG_BAR:
-			[self plotVO_bar:(vogd*)vo.vogd context:context];
+			[self plotVO_bar:(vogd*)vo.vogd context:context barCount:barCount];
 			break;
 		case VOG_LINE:
 			[self plotVO_lines:(vogd*)vo.vogd context:context];
@@ -404,9 +405,22 @@
 
 - (void) drawGraph:(CGContextRef)context
 {
+    int barCount=0;
 	for (valueObj *vo in self.tracker.valObjTable) {
 		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
-			[self plotVO:vo context:context];
+            if (VOG_BAR == vo.vGraphType) {
+                barCount++;
+            }
+        }
+    }
+    barCount /= -2;
+    
+	for (valueObj *vo in self.tracker.valObjTable) {
+		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+			[self plotVO:vo context:context barCount:barCount];
+            if (VOG_BAR == vo.vGraphType) {
+                barCount++;
+            }
         }
 	}
 		

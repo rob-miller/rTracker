@@ -294,6 +294,11 @@
     DBGErr(@"newVOGD with no handler!");
     return [[vogd alloc] initAsNum:self.vo];
 }
+
+- (void) recalculate {
+	// subclass overrides if need to do anything
+}
+
 /*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     DBGErr(@"transformVO with no handler!");

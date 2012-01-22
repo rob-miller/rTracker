@@ -31,6 +31,7 @@
 - (void) closeTDb ;
 
 - (int) getUnique;
+- (void) minUniquev:(int) minU;
 
 - (void) toQry2AryS : (NSMutableArray *) inAry;
 - (void) toQry2AryIS : (NSMutableArray *) i1 s1: (NSMutableArray *) s1;

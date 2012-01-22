@@ -359,7 +359,7 @@
 - (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state
 {
 	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-	imageButton.frame = frame;
+	imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
 	imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 
