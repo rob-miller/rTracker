@@ -20,6 +20,10 @@
 	unsigned int next;
 	
 	UIView *parentView;
+    
+    UITextField *activeField;
+    //CGRect saveFrame;
+    
 }
 
 @property (nonatomic,retain) tObjBase *tob;
@@ -30,6 +34,9 @@
 @property (nonatomic) unsigned int cancel;
 @property (nonatomic) unsigned int next;
 @property (nonatomic,retain) UIView *parentView;
+
+@property (nonatomic,retain) UITextField *activeField;
+//@property (nonatomic) CGRect saveFrame;
 
 // UI elements
 @property (nonatomic,retain) UILabel* topLabel;

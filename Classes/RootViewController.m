@@ -180,6 +180,7 @@
                     [newTracker saveConfig];
                     [self.tlist confirmTopLayoutEntry:newTracker];
                     DBGLog(@"finished with %@",tname);
+                    [newTracker release];  // rtm 05 feb 2012
                     NSError *err;
                     BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
                     if (!rslt) {
@@ -198,10 +199,22 @@
 }
 
 - (void) loadInputFiles {
+    UIActivityIndicatorView *activityIndicator = 
+    [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray ];
+    activityIndicator.center =  self.tableView.center;
+    [[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
+    
     if ([self loadTrackerPlistFiles]) {
         [self.tlist loadTopLayoutTable];
     };
     [self loadTrackerCsvFiles];
+    
+    
+    [activityIndicator stopAnimating];
+    [activityIndicator release];
+
 }
 
 #pragma mark -
@@ -318,9 +331,15 @@
     [helpBtn release];
 	//[multiGraphBtn release];
 
-	self.tlist = [[trackerList alloc] init];
-
+    trackerList *tmptlist = [[trackerList alloc] init];
+	self.tlist = tmptlist;
+    //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
+    [tmptlist release];
+    //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
     
+    //[self.tlist release];  // rtm 05 feb 2012 +1 for alloc, +1 when put in self.tlist
+
+     
     [self.tlist loadTopLayoutTable];  // was loadinputfiles
     
 	/*
@@ -364,9 +383,16 @@
 - (void)viewWillAppear:(BOOL)animated {
 
 	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+    //[self loadInputFiles];  // do this here as restarts are infrequent
+	//[self refreshView];
+    [super viewWillAppear:animated];
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+	DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);	
     [self loadInputFiles];  // do this here as restarts are infrequent
 	[self refreshView];
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
 }
 
 /*

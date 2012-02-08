@@ -502,7 +502,7 @@
 	}
 
 	if (rvo == nil) {
-		DBGWarn(@"tObj getValObj failed to find vid %d",qVid);
+		DBGLog(@"tObj getValObj failed to find vid %d",qVid);
 	}
 	return rvo;
 }
@@ -1057,8 +1057,11 @@
 }
 
 - (void) setTOGD:(CGRect)inRect {
-    self.togd = [[togd alloc] initWithData:self rect:inRect];
+    id ttogd = [[togd alloc] initWithData:self rect:inRect];
+    self.togd = ttogd;
+    [ttogd release];
     [self.togd fillVOGDs];
+    //[self.togd release];  // rtm 05 feb 2012 +1 alloc, +1 self.togd retain
 }
 
 @end

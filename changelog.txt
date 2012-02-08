@@ -321,4 +321,32 @@
 
  - resign first responder from graph on graph disappears, else text boxes stop working
  - update problem for next date -> current, not wiping values; added vos.resetData to handle
+ - submitted to app store
 
+27 January 2012
+ - 1.0.4 in review
+
+28 January 2012
+ - 1.04 approved and in app store
+
+05 February 2012
+ - changed debug messages to show func and line no
+ - commented all DBG messages which might slow display of privacy stuff
+ - crash on 4.3 when 'done' out of set password with no text
+   - moved 'activeField' to ppwV object instead of class global
+   - various release's added in attempt to placate static analyzer
+   - turned out to be keyboard bug in simulator
+ - commented ttv tap response dbg messages which slow tap id - make unable to tap all cells
+ - fixed privacy disappearing on delete records -- had not implemented topLevelPriv completely
+ 
+06 february 2012
+ - added retain / uncommented release in dealloc for bool and tbButton vos to stop crash on scroll tracker
+
+07 february 2012
+ - made so vo/vos resetData did not unintentionally instantiate dtf if
+   not already defined - caused empty number / text fields for historical data
+ - fixed static analyzer complaints by alloc to local var, copy to self.var, release local var
+
+08 february 2012
+ - fixed memory leak in setVType / setVos -- voNumber did not call [super dealloc], voText did not even have dealloc
+ 

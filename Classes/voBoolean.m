@@ -15,8 +15,8 @@
 
 - (void) dealloc {
 	DBGLog(@"dealloc voBoolean");
-	//self.imageButton = nil;  // convenience constructor
-    //[imageButton release];
+	self.imageButton = nil;  // convenience constructor
+    [imageButton release];
                          
 	[super dealloc];
 	
@@ -53,6 +53,7 @@
         imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
         [imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];		
         imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+        [imageButton retain];  // rtm 06 feb 2012
 	}
     return imageButton;
 }

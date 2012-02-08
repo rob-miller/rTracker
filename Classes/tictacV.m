@@ -44,7 +44,7 @@ static unsigned int theKey;
 	ttf.origin.y = TICTACVRTFRAC * ttf.size.height;
 	ttf.size.width *= TICTACWIDFRAC;
 	ttf.size.height *= TICTACHGTFRAC;
-	DBGLog(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
+	//DBGLog(@"ttv: x=%f y=%f w=%f h=%f",ttf.origin.x,ttf.origin.y,ttf.size.width, ttf.size.height);
 	if ((self = [super initWithFrame:ttf])) {
 		self.backgroundColor = [UIColor whiteColor];
         self.layer.cornerRadius = 8;  // doesn't work, probably overwriting rectangle elsewhere
@@ -181,7 +181,7 @@ static unsigned int theKey;
 		[self drawCell];
 	} else {  
 		int i,j;
-		DBGLog(@"updateTT: draw all cells");
+		//DBGLog(@"updateTT: draw all cells");
 		for (i=0;i<3;i++) {
 			for (j=0;j<3;j++) {
 				[self setCurrPt:i y:j];
@@ -196,9 +196,9 @@ static unsigned int theKey;
 
 - (void) press:(int) x y:(int)y {
 	[self setCurrPt:x y:y];
-	DBGLog(@"press: %d,%d  => %f %f %f %f",x,y,
-		  self.currRect.origin.x,self.currRect.origin.y,
-		  self.currRect.size.width,self.currRect.size.height);
+	//DBGLog(@"press: %d,%d  => %f %f %f %f",x,y,
+	//	  self.currRect.origin.x,self.currRect.origin.y,
+	//	  self.currRect.size.width,self.currRect.size.height);
 	
 	//unsigned int rmask = REGIONMASK(x,y);
 	//unsigned int rinc =  REGIONINC(x,y);
@@ -261,7 +261,7 @@ static unsigned int theKey;
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
-	DBGLog(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
+	//DBGLog(@"ttv: I am touched at %f, %f => x:%d y:%d",touchPoint.x, touchPoint.y,[self ttx:touchPoint.x], [self tty:touchPoint.y]);
 	[self press:[self ttx:touchPoint.x] y:[self tty:touchPoint.y]];
 	[self resignFirstResponder];
 }

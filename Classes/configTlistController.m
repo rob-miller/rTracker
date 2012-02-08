@@ -276,9 +276,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
-		atc.tempTrackerObj = [[trackerObj alloc] init:toid];
+        trackerObj *tto = [[trackerObj alloc] init:toid];
+		atc.tempTrackerObj = tto;
+        [tto release];
 	
 		[self.navigationController pushViewController:atc animated:YES];
+        //[atc.tempTrackerObj release]; // rtm 05 feb 2012 +1 alloc/init, +1 atc.temptto retain 
 		[atc release];
 	} else if (selSegNdx == SegmentCopy) {
 		int toid = [self.tlist getTIDfromIndex:row];

@@ -44,8 +44,16 @@
 	return YES;
 }
 
+- (void) dealloc {
+    DBGLog(@"voNumber dealloc");
+    self.dtf = nil;
+    [dtf release];
+    [super dealloc];
+}
+
 - (UITextField*) dtf {
     if (nil == dtf) {
+        DBGLog(@"init %@ : x=%f y=%f w=%f h=%f",self.vo.valueName,self.vosFrame.origin.x,self.vosFrame.origin.y,self.vosFrame.size.width,self.vosFrame.size.height);
         dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
         dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
@@ -77,7 +85,9 @@
 }
 
 - (void) resetData {
-    self.dtf.text = @"";
+    if (nil != dtf) {  // not self as don't want to instantiate prematurely
+        self.dtf.text = @"";
+    }
 }
 
 - (UIView*)voDisplay:(CGRect)bounds {

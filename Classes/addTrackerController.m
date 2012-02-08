@@ -77,11 +77,13 @@ NSMutableArray *deleteVOs=nil;
 	
 	if (! self.tempTrackerObj) {
 		// the temporary tracker obj we work with
-		self.tempTrackerObj = [trackerObj alloc];
+        trackerObj *tto = [[trackerObj alloc] init];
+		self.tempTrackerObj = tto;
+        [tto release];
 		//tempTrackerObj.trackerName = @"";
-		[self.tempTrackerObj init];
+		//[self.tempTrackerObj init];
 		self.tempTrackerObj.toid = [self.tlist getUnique];
-		[tempTrackerObj release];
+		//[self.tempTrackerObj release];  // rtm 05 feb 2012 +1 alloc/init +1 retained self.tempTrackerObj
 		self.title = @"Add tracker";
 	} else {
 			self.title = @"Modify tracker";
@@ -154,7 +156,7 @@ NSMutableArray *deleteVOs=nil;
 	ctvovc.vo = nil;
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:ctvovc animated:YES];
-	//[ctvovc release];
+	[ctvovc release];  // rtm 05 feb 2012 
 }
 
 static int editMode;

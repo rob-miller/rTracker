@@ -47,6 +47,13 @@
 	return YES;
 }
 
+- (void) dealloc {
+    DBGLog(@"voText dealloc");
+    self.dtf = nil;
+    [dtf release];
+    [super dealloc];
+}
+
 
 - (UITextField*) dtf {
     if (nil == dtf) {
@@ -77,7 +84,9 @@
 }
 
 - (void) resetData {
-    self.dtf.text = @"";
+    if (nil != dtf) { // not self, do not instantiate
+        self.dtf.text = @"";   
+    }
 }
 
 - (UIView*)voDisplay:(CGRect)bounds {

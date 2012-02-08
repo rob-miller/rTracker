@@ -41,7 +41,10 @@
 
 - (void) fillVOGDs {
     for (valueObj *vo in self.pto.valObjTable) {
-        vo.vogd = [vo.vos newVOGD];
+        id tvogd = [vo.vos newVOGD];
+        vo.vogd = tvogd;
+        [tvogd release];
+        //[vo.vogd release]; // rtm 05 feb 2012  +1 for new (alloc), +1 for vo retain
     }    
 }
 

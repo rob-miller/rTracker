@@ -102,9 +102,10 @@ in_vpriv:(NSInteger)in_vpriv
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
-	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	self.vos = nil;
 	[(id)vos release];
+	DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );    
 	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	//[(voState*)vos release];
 	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
@@ -179,55 +180,64 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
     DBGLog(@"setVtype - allocating vos");
-	vtype = vt;
+	vtype = vt;  // not self as this is set fn!
+    id tvos=nil;
 	switch (vt) {
 		case VOT_NUMBER:
-			self.vos = [[voNumber alloc] initWithVO:self];
+            tvos = [[voNumber alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:10];
 			break;
 		case VOT_SLIDER:
-			self.vos = [[voSlider alloc] initWithVO:self];
+			tvos = [[voSlider alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:10];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_BOOLEAN:
-			self.vos = [[voBoolean alloc] initWithVO:self];
+			tvos = [[voBoolean alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:1];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_CHOICE:
-			self.vos = [[voChoice alloc] initWithVO:self];
+			tvos = [[voChoice alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:1];
 			//[self.value setString:@"0"];
 			break;
 		case VOT_TEXT:
-			self.vos = [[voText alloc] initWithVO:self];
+			tvos = [[voText alloc] initWithVO:self];
             //value = [[NSMutableString alloc] initWithCapacity:32];
 			break;
 		case VOT_FUNC:
-			self.vos = [[voFunction alloc] initWithVO:self];
+			tvos = [[voFunction alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:32];
 			//[self.value setString:@""];
 			break;	
             /*
 		case VOT_IMAGE:
-			self.vos = [[voImage alloc] initWithVO:self];
+			tvos = [[voImage alloc] initWithVO:self];
 			//value = [[NSMutableString alloc] initWithCapacity:64];
 			//[self.value setString:@""];
 			break;
              */
 		case VOT_TEXTB:
-			self.vos = [[voTextBox alloc] initWithVO:self];
+			tvos = [[voTextBox alloc] initWithVO:self];
             //value = [[NSMutableString alloc] initWithCapacity:96];
 			//[self.value setString:@""];
 			break;
 		default:
 			dbgNSAssert1(0,@"valueObj init vtype %d not supported",vt);
+            tvos = [[voNumber alloc] initWithVO:self]; // to clear analyzer worry 
+            vtype = VOT_NUMBER;  // consistency if we get here
 			break;
 	}
-    self.value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];  // causes memory leak
-    [self.value release];   // clear retain count from alloc + retain
-	[(id) self.vos release];
+    self.vos=nil;
+    self.vos = tvos;
+	[tvos release];
+    NSMutableString *tval;
+    tval = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];  // causes memory leak
+    self.value = nil;
+    self.value = tval;
+    [tval release];
+    //[self.value release];   // clear retain count from alloc + retain
 }
 
 

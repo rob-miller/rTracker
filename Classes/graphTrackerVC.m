@@ -77,12 +77,15 @@
     rect.origin.x = 0.0f;
     rect.size.width = srect.size.width; // /2.0f;
     
-    self.titleView = [[gtTitleV alloc] initWithFrame:rect];
+    gtTitleV *ttv = [[gtTitleV alloc] initWithFrame:rect];
+    self.titleView = ttv;
+    [ttv release];
     self.titleView.tracker = self.tracker;
     self.titleView.myFont = self.myFont;
     //self.titleView.backgroundColor = [UIColor greenColor];  // debug
     [[self view] addSubview:self.titleView];
-
+    //[self.titleView release]; // rtm 05 feb 2012 +1 alloc +1 self. retain
+    
     gtvRect.origin.y = rect.size.height;
 
     // view for y axis labels
@@ -92,13 +95,15 @@
     rect.origin.y = self.titleView.frame.size.height;
     rect.size.height = srect.size.height - labelHeight; // ((2*labelHeight) + (3*SPACE) + TICKLEN);
     
-    self.yAV = [[gtYAxV alloc] initWithFrame:rect];
+    gtYAxV *tyav = [[gtYAxV alloc] initWithFrame:rect];
+    self.yAV = tyav;
+    [tyav release];
     //self.yAV.vogd = (vogd*) self.currVO.vogd;  // do below, not valid yet
     self.yAV.myFont = self.myFont;
     //self.yAV.backgroundColor = [UIColor blueColor];  //debug;
     self.yAV.scaleOriginY = 0.0f;
     self.yAV.parentGTVC = (id) self;
-    
+    //[self.yAV release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] addSubview:self.yAV];  // do after set vogd
     
     gtvRect.origin.x = rect.size.width;
@@ -112,23 +117,28 @@
     
     self.yAV.scaleHeightY = rect.origin.y - self.titleView.frame.size.height;   // set bottom of y scale area
     
-    self.xAV = [[gtXAxV alloc] initWithFrame:rect];
+    gtXAxV *txav = [[gtXAxV alloc] initWithFrame:rect];
+    self.xAV = txav;
+    [txav release];
     self.xAV.myFont = self.myFont;
     // self.xAV.togd = self.tracker.togd;   // not valid yet
     //self.xAV.backgroundColor = [UIColor redColor];  //debug;
     self.xAV.scaleOriginX = 0.0f;
     self.xAV.scaleWidthX = rect.size.width;  // x scale area is full length of subview
-    
+    //[self.xAV release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     // [[self view] addSubview:self.xAV];  // wait for togd
     
     gtvRect.size.height = rect.origin.y - gtvRect.origin.y;
     
     // add scrollview for main graph
-    self.scrollView = [[UIScrollView alloc] initWithFrame:gtvRect];
+    UIScrollView *tsv = [[UIScrollView alloc] initWithFrame:gtvRect];
+    self.scrollView = tsv;
+    [tsv release];
     [self.scrollView setBackgroundColor:[UIColor blackColor]];
     [self.scrollView setDelegate:self];
     [self.scrollView setBouncesZoom:YES];
     [[self view] addSubview:scrollView];
+    //[self.scrollView release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] setBackgroundColor:[UIColor yellowColor]];  //debug
 
     DBGLog(@"did create scrollview");
@@ -154,7 +164,9 @@
     [[self view] addSubview:self.xAV];
     
     // add main graph view
-    self.gtv = [[graphTrackerV alloc]initWithFrame:gtvRect];
+    graphTrackerV *tgtv = [[graphTrackerV alloc]initWithFrame:gtvRect];
+    self.gtv = tgtv;
+    [tgtv release];
 	self.gtv.tracker = self.tracker;
     self.gtv.parentGTVC = (id) self;
     if (DPA_GOTO == self.dpr.action) {
@@ -162,7 +174,7 @@
         self.gtv.xMark = ((togd*)self.tracker.togd).firstDate + (targSecs * ((togd*)self.tracker.togd).dateScale);
     }
 	[self.scrollView addSubview:self.gtv];
-    
+    //[self.gtv release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] addSubview:[[[UIView alloc]initWithFrame:srect] retain]];
     //self.view.multipleTouchEnabled = YES;
     
@@ -194,7 +206,7 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
-        // It has shaked
+        // It has shake d
          UIActivityIndicatorView *activityIndicator = 
         [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
         activityIndicator.center =  self.scrollView.center;

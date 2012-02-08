@@ -28,7 +28,7 @@
 #pragma mark core object methods and support
 
 - (void) initTDb {
-	int c;
+	//int c;
 	
 	DBGLog(@"Initializing top level dtabase!");
 	self.dbName=@"topLevel.sqlite3";
@@ -37,8 +37,8 @@
 	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer);";
 	[self toExecSql];
 	self.sql = @"select count(*) from toplevel;";
-	c = [self toQry2Int];
-	DBGLog(@"toplevel at open contains %d entries",c);
+
+	DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
 	
 	self.sql = nil;	
 }	
@@ -48,9 +48,9 @@
 	
 	if ((self = [super init])) {
 		topLayoutNames = [[NSMutableArray alloc] init];
-		//self.topLayoutNames = [[NSMutableArray alloc] init];
 		topLayoutIDs = [[NSMutableArray alloc] init];
-		//self.topLayoutIDs = [[NSMutableArray alloc] init];
+        topLayoutPriv = [[NSMutableArray alloc] init];
+
 		[self initTDb];
 	} 
 	return self;
@@ -62,6 +62,9 @@
 	[topLayoutNames release];
 	self.topLayoutIDs = nil;
 	[topLayoutIDs release];
+	self.topLayoutPriv = nil;
+	[topLayoutPriv release];
+    
 	[super dealloc];
 }
 
@@ -71,6 +74,7 @@
 - (void) loadTopLayoutTable {
 	[self.topLayoutNames removeAllObjects];
 	[self.topLayoutIDs removeAllObjects];
+    [self.topLayoutPriv removeAllObjects];
 
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
@@ -78,7 +82,7 @@
 	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
 	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
 	self.sql = nil;
-	DBGLog(@"loadTopLayoutTable finished, tlt= %@",self.topLayoutNames);
+	DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
@@ -173,15 +177,19 @@
 	
 	id tName = [[self.topLayoutNames objectAtIndex:fromRow] retain];
 	id tID = [[self.topLayoutIDs objectAtIndex:fromRow] retain];
+    id tPriv = [[self.topLayoutPriv objectAtIndex:fromRow] retain];
 	
 	[self.topLayoutNames removeObjectAtIndex:fromRow];
 	[self.topLayoutIDs removeObjectAtIndex:fromRow];
+	[self.topLayoutPriv removeObjectAtIndex:fromRow];
 	
 	[self.topLayoutNames insertObject:tName atIndex:toRow];
 	[self.topLayoutIDs insertObject:tID atIndex:toRow];
+	[self.topLayoutIDs insertObject:tPriv atIndex:toRow];
 	
 	[tName release];
 	[tID release];
+    [tPriv release];
 }
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO {
@@ -219,6 +227,7 @@
 	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];
 	[self.topLayoutIDs removeObjectAtIndex:row];
+    [self.topLayoutPriv removeObjectAtIndex:row];
 }
 
 - (void) deleteTrackerRecordsRow:(NSUInteger)row

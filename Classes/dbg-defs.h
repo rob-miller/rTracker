@@ -16,7 +16,7 @@
 
 #define SQLDEBUG    0
 
-#define DEBUGLOG    0
+#define DEBUGLOG    1
 #define DEBUGWARN   1
 #define DEBUGERR    1
 #define RELEASE     1
@@ -28,21 +28,25 @@
 #endif
 
 #if DEBUGLOG
-#define DBGLog(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+//#define DBGLog(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+#define DBGLog(args...) NSLog(@"%s%d: %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
+//#define DBGLog (args, ...) NSLog((@"%s [Line %d] " args), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
-#define DBGLog(args...) 
+#define DBGLog(...) 
 #endif
 
 #if DEBUGWARN
-#define DBGWarn(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+//#define DBGWarn(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+#define DBGWarn(args...) NSLog(@"%s%d: **WARNING** %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
 #else
 #define DBGWarn(args...)
 #endif
 
 #if DEBUGERR
-#define DBGErr(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+//#define DBGErr(args...) NSLog(@"%@",[NSString stringWithFormat: args])
+#define DBGErr(args...) 
 #else
-#define DBGErr(args...)
+#define DBGErr(args...) NSLog(@"%s%d: **ERROR** %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
 #endif
 
 #if RELEASE

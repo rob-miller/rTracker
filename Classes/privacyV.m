@@ -375,7 +375,8 @@ static int privacyValue=PRIVDFLT;
     if (k == 0) { // if getAdjacent failed = no next/prev key for curr slider value
         lvl = (int) (self.showSlider.value + 0.5f); // got wiped so reload
         if (0 == [self dbGetKey:lvl]) { // and no existing key for curr slider
-            k = [self dbGetAdjacentKey:&lvl nxt:!dir];  // go for prev/next (opposite dir)
+            //k = 
+            [self dbGetAdjacentKey:&lvl nxt:!dir];  // go for prev/next (opposite dir)
         }
     }
 	//*/

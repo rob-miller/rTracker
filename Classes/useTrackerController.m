@@ -901,7 +901,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-    //DBGLog(@"uvc table cell at index %d label %@",row,vo.valueName);
+    DBGLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
 	return [vo.vos voTVCell:tableView];
     /*
