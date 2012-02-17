@@ -15,7 +15,7 @@
 @implementation configTlistController
 
 @synthesize tlist;
-@synthesize table;
+@synthesize table, activityIndicator;
 
 static int selSegNdx=SegmentEdit;
 
@@ -40,6 +40,29 @@ UITableView *deleteTableView;
 # pragma mark -
 # pragma mark view support
 
+- (void) startExport {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [self.tlist exportAll];
+    [self.activityIndicator stopAnimating];
+    self.activityIndicator = nil;
+    [pool drain];
+}
+
+- (void) finExport {
+    
+}
+
+- (void) btnExport {
+    DBGLog(@"export all");
+    self.activityIndicator = 
+    [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+    self.activityIndicator.center =  self.view.center;
+    [self.view addSubview:self.activityIndicator];
+    [self.activityIndicator startAnimating];
+    
+    [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
@@ -48,18 +71,18 @@ UITableView *deleteTableView;
     
     
     
-    /*
+    
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
-								  initWithTitle:@"export"
+								  initWithTitle:@"Export all"
 								  style:UIBarButtonItemStyleBordered
 								  target:self
 								  action:@selector(btnExport)];
 	
-	NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
-	
-	self.toolbarItems = tbArray;
+	//NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
+	//self.toolbarItems = tbArray;
+    [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
 	[exportBtn release];
-	*/
+	
 	
 	[super viewDidLoad];
 }

@@ -26,6 +26,7 @@
 
 // UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 //- (IBAction) btnExport;
 - (IBAction) modeChoice:(id)sender;

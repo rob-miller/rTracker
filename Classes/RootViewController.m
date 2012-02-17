@@ -22,7 +22,7 @@
 @implementation RootViewController
 
 @synthesize tlist;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, activityIndicator;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -198,23 +198,68 @@
     return(didSomething);
 }
 
-- (void) loadInputFiles {
-    UIActivityIndicatorView *activityIndicator = 
-    [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray ];
-    activityIndicator.center =  self.tableView.center;
-    [[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
-    [activityIndicator startAnimating];
+- (void) doLoadCsvFiles {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [self loadTrackerCsvFiles];
+
+    [self.activityIndicator stopAnimating];
+    [self.activityIndicator release];
     
+    [pool drain];
+    
+}
+
+- (void) doLoadInputfiles {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     if ([self loadTrackerPlistFiles]) {
         [self.tlist loadTopLayoutTable];
+        [self.tableView reloadData];
+        [self.view setNeedsDisplay];
     };
-    [self loadTrackerCsvFiles];
-    
-    
-    [activityIndicator stopAnimating];
-    [activityIndicator release];
 
+    [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
+    
+    /*
+    [self loadTrackerCsvFiles];
+
+    [self.activityIndicator stopAnimating];
+    [self.activityIndicator release];
+     */
+    
+    [pool drain];
+}
+
+- (BOOL) existsCsvInputFiles {
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    NSFileManager *localFileManager=[[NSFileManager alloc] init];
+    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+        
+    NSString *file;
+        
+    while ((file = [dirEnum nextObject])) {
+        NSString *fname = [file lastPathComponent];
+        NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
+        if (inmatch.location != NSNotFound) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+- (void) loadInputFiles {
+    
+    if ([self existsCsvInputFiles]) {  // hope plists fast, csv could be slow
+        ///*
+        self.activityIndicator = 
+        [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+        self.activityIndicator.center =  self.tableView.center;
+        [[[UIApplication sharedApplication] keyWindow] addSubview:self.activityIndicator];
+        [self.activityIndicator startAnimating];
+    
+        [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
+        
+    }
 }
 
 #pragma mark -
@@ -358,8 +403,8 @@
 	
 }
 
-
 - (void) refreshView {
+    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
 
@@ -390,7 +435,6 @@
 
 - (void) viewDidAppear:(BOOL)animated {
 	DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);	
-    [self loadInputFiles];  // do this here as restarts are infrequent
 	[self refreshView];
     [super viewDidAppear:animated];
 }

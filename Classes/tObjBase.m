@@ -588,6 +588,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 
 - (void) toQry2Log {
+#if DEBUGLOG    
 	SQLDbg(@"toQry2Log: %@ => _%@_",self.dbName,self.sql);
 	dbgNSAssert(tDb,@"toQry2Log called with no tDb");
 	
@@ -603,7 +604,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			cols = [cols stringByAppendingString:[NSString stringWithUTF8String:sqlite3_column_name(stmt,i)]];
 			cols = [cols stringByAppendingString:@" "];
 		}
-		SQLDbg(@"%@",cols);
+		NSLog(@"%@",cols);
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
 			cols = @"";
 			for (i=0; i<c; i++) {
@@ -611,7 +612,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 				cols = [cols stringByAppendingString:srslt];
 				cols = [cols stringByAppendingString:@" "];
 			}
-			SQLDbg(@"%@",cols);
+			NSLog(@"%@",cols);
 		}
 		if (rslt != SQLITE_DONE) {
 			DBGErr(@"tob not SQL_DONE executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
@@ -620,6 +621,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		DBGErr(@"tob error preparing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 	}
 	sqlite3_finalize(stmt);
+#endif
 }
 
 @end

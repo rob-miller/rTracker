@@ -72,6 +72,7 @@
 #pragma mark TopLayoutTable <-> db support 
 
 - (void) loadTopLayoutTable {
+    DBGTLIST(self);
 	[self.topLayoutNames removeAllObjects];
 	[self.topLayoutIDs removeAllObjects];
     [self.topLayoutPriv removeAllObjects];
@@ -82,21 +83,26 @@
 	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
 	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
 	self.sql = nil;
-	DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
+	//DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
+    DBGTLIST(self);
 }
 
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
-	
+	DBGTLIST(self);
+    DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
 	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
-	int rank = [self toQry2Int];  // returns 0 if not found
+	int rank = [self toQry2Int];  // returns 0 if not found 
 	if (rank == 0) {
 		rank = [self.topLayoutNames count] +1;  // so put at end
+        DBGLog(@"rank not found, set to %d",rank);
 	}
 	dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
+    int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
+    privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
-				rank, tObj.toid, tObj.trackerName, [[tObj.optDict valueForKey:@"privacy"] intValue]]; 
+				rank, tObj.toid, tObj.trackerName, privVal]; 
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -104,17 +110,20 @@
 }
 
 - (void) reorderFromTLT {
+    DBGTLIST(self);
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
 		DBGLog(@" %@ to rank %d",tracker,nrank);
-		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank,tracker];
+		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,tracker];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
 	self.sql = nil;
+    DBGTLIST(self);
 }
 
 - (void) reloadFromTLT {
+    DBGTLIST(self);
 	int nrank=0;
 	self.sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
 	[self toExecSql];
@@ -123,7 +132,7 @@
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
 		DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank,tid,tracker, priv];
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,tracker, priv];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -174,7 +183,8 @@
 
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow
 {
-	
+	DBGTLIST(self);
+
 	id tName = [[self.topLayoutNames objectAtIndex:fromRow] retain];
 	id tID = [[self.topLayoutIDs objectAtIndex:fromRow] retain];
     id tPriv = [[self.topLayoutPriv objectAtIndex:fromRow] retain];
@@ -185,11 +195,13 @@
 	
 	[self.topLayoutNames insertObject:tName atIndex:toRow];
 	[self.topLayoutIDs insertObject:tID atIndex:toRow];
-	[self.topLayoutIDs insertObject:tPriv atIndex:toRow];
+	[self.topLayoutPriv insertObject:tPriv atIndex:toRow];
 	
 	[tName release];
 	[tID release];
     [tPriv release];
+
+	DBGTLIST(self);
 }
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO {
@@ -223,6 +235,7 @@
 {
 	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
+    DBGLog(@"delete tracker all name:%@ id:%d rowtext= %@", to.trackerName, to.toid, [self.topLayoutNames objectAtIndex:row] );
 	[to deleteTrackerDB];
 	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];
@@ -238,5 +251,12 @@
 	[to release];
 }
 
+- (void) exportAll {
+    for (NSNumber *tid in self.topLayoutIDs) {
+        trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
+        [to export];
+        [to release];
+    }
+}
 
 @end

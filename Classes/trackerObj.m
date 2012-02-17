@@ -20,6 +20,8 @@
 #import "togd.h"
 
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
+
 
 @implementation trackerObj
 
@@ -215,6 +217,8 @@
 	}
 	
     [self setToOptDictDflts];
+    
+    DBGLog(@"to optdict: %@",self.optDict);
     
 	self.trackerName = [self.optDict objectForKey:@"name"];
 
@@ -472,6 +476,26 @@
 	self.sql = nil;
 }
 
+- (void) export {
+    NSString *fname = [NSString stringWithFormat:@"%@_out.csv",self.trackerName];
+    
+	NSString *fpath = [rTracker_resource ioFilePath:fname access:YES];
+	[[NSFileManager defaultManager] createFileAtPath:fpath contents:nil attributes:nil];
+	NSFileHandle *nsfh = [NSFileHandle fileHandleForWritingAtPath:fpath];
+	
+	//[nsfh writeData:[@"hello, world." dataUsingEncoding:NSUTF8StringEncoding]];
+    
+	[self writeTrackerCSV:nsfh];
+	[nsfh closeFile];
+    
+    fname = [NSString stringWithFormat:@"%@_out.plist",self.trackerName];
+    fpath = [rTracker_resource ioFilePath:fname access:YES];
+    [[self dictFromTO] writeToFile:fpath atomically:YES];
+    
+	//[nsfh release];
+    
+    
+}
 - (NSDictionary*) dictFromTO {
     NSMutableArray *vodma = [[NSMutableArray alloc] init];
 	for (valueObj *vo in self.valObjTable) {

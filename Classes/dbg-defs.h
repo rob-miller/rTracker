@@ -31,6 +31,19 @@
 //#define DBGLog(args...) NSLog(@"%@",[NSString stringWithFormat: args])
 #define DBGLog(args...) NSLog(@"%s%d: %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
 //#define DBGLog (args, ...) NSLog((@"%s [Line %d] " args), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+#define DBGTLIST(tl) { \
+    NSUInteger c = [tl.topLayoutNames count]; \
+    NSUInteger i; \
+    DBGLog(@"tlist: %d items",c); \
+    NSLog(@"n  id  priv   name"); \
+    for (i=0;i<c;i++) { \
+        NSLog(@" %d  %@  %@   %@",i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
+    } \
+    tl.sql=@"select rank, id, priv, name from toplevel order by rank"; \
+    [tl toQry2Log]; \
+}
+
 #else
 #define DBGLog(...) 
 #endif
@@ -41,6 +54,7 @@
 #else
 #define DBGWarn(args...)
 #endif
+
 
 #if DEBUGERR
 //#define DBGErr(args...) NSLog(@"%@",[NSString stringWithFormat: args])

@@ -44,5 +44,6 @@
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow;
 
 //- (void) writeTListXLS:(NSFileHandle*)nsfh;
+- (void) exportAll;
 
 @end

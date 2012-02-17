@@ -11,6 +11,7 @@
 
 #import "tObjBase.h"
 #import "valueObj.h"
+#import "rTracker-constants.h"
 
 // to config checkbutton default states
 #define SAVERTNDFLT   YES
@@ -94,6 +95,7 @@
 - (void) trackerUpdated:(NSNotification*)n;
 - (void) recalculateFns;
 
+- (void) export;
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;

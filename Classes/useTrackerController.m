@@ -251,7 +251,9 @@
 
 - (void) viewWillDisappear :(BOOL)animated
 {
-    
+    DBGLog(@"utc view disappearing");
+    //already done [self.tracker.activeControl resignFirstResponder];
+
     //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
@@ -323,9 +325,11 @@
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
+            [self.tracker.activeControl resignFirstResponder];
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
+            [self.tracker.activeControl resignFirstResponder];
 			break;
 		default:
 			DBGWarn(@"utc will rotate but can't tell to where duration: %f sec", duration);
@@ -649,23 +653,9 @@
 	//DBGLog(@"btnExport was pressed!");
     //NSString *fname = [[NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName]
     //                   stringByReplacingOccurrencesOfString:@" " withString:@"_"];
-    NSString *fname = [NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName];
 
-	NSString *fpath = [rTracker_resource ioFilePath:fname access:YES];
-	[[NSFileManager defaultManager] createFileAtPath:fpath contents:nil attributes:nil];
-	NSFileHandle *nsfh = [NSFileHandle fileHandleForWritingAtPath:fpath];
-	
-	//[nsfh writeData:[@"hello, world." dataUsingEncoding:NSUTF8StringEncoding]];
     
-	[self.tracker writeTrackerCSV:nsfh];
-	[nsfh closeFile];
-    
-    fname = [NSString stringWithFormat:@"%@_out.plist",self.tracker.trackerName];
-    fpath = [rTracker_resource ioFilePath:fname access:YES];
-    [[self.tracker dictFromTO] writeToFile:fpath atomically:YES];
-    
-	//[nsfh release];
-    
+    [self.tracker export];
 }
 
 - (void) btnPrevDate {

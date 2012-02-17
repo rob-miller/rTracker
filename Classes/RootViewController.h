@@ -35,6 +35,7 @@
 @property (nonatomic, retain) UIBarButtonItem *addBtn;
 @property (nonatomic, retain) UIBarButtonItem *editBtn;
 @property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 //@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 //@property (nonatomic, retain) UIBarButtonItem *payBtn;

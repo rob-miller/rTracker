@@ -24,7 +24,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC;
+@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,activityIndicator;
 
 /*
  - (void) loadView {
@@ -204,20 +204,31 @@
     [self becomeFirstResponder];
 }
 
+- (void) doRecalculateFns {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [self.tracker recalculateFns];
+        
+    [self.activityIndicator stopAnimating];
+    [self.activityIndicator release];
+    
+    [self.gtv setNeedsDisplay];
+    [self.xAV setNeedsDisplay];
+    [self.yAV setNeedsDisplay];
+
+    [pool drain];
+    
+}
+
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
         // It has shake d
-         UIActivityIndicatorView *activityIndicator = 
+        self.activityIndicator = 
         [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
-        activityIndicator.center =  self.scrollView.center;
+        self.activityIndicator.center =  self.scrollView.center;
         [self.scrollView addSubview:activityIndicator];
-        [activityIndicator startAnimating];
+        [self.activityIndicator startAnimating];
         
-        [self.tracker recalculateFns];
-        
-        [activityIndicator stopAnimating];
-        [activityIndicator release];
-        
+        [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
     }
 }
 

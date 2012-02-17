@@ -350,3 +350,21 @@
 08 february 2012
  - fixed memory leak in setVType / setVos -- voNumber did not call [super dealloc], voText did not even have dealloc
  
+--- commit ---
+
+12 february 2012
+ - fixed keyboard bad state when enter/leave graph on 4.3 ios
+ - moved export fn to trackerObj from useTrackerController
+ - added 'Export all' button on edit page
+ - moved loadInputFiles to refreshView so called after set priv level
+ - implemented thread start for activity indicator tasks so spinner works
+ - -- problem with refresh front screen on file load
+
+13 february 2012
+ - reloadData on rvc tableview after file load works for refresh 
+
+17 february 2012
+ - confirmTopLayoutEntry fix default privacy value to 1 instead of 0 from failed valueForKey:
+ - reorderFromTLT, reloadFromTLT use nrank+1 so db rank always > 0
+ - reorderTLT - crash bug due to copy-paste error: topLayoutPriv field
+ not inserted
