@@ -45,7 +45,8 @@ static int privacyValue=PRIVDFLT;
 
 - (void) lockDown {
     DBGLog(@"privObj: lockdown");
-    // needs more -- [self setPrivacyValue:MINPRIV]; 
+    // needs more -- 
+    [self setPrivacyValue:MINPRIV]; 
     self.pwState = PWQUERYPASS;
     //self.showing = PVNOSHOW;
     if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
@@ -65,11 +66,13 @@ static int privacyValue=PRIVDFLT;
     return self;
 }
 */
-#define PVH 0.45f
 
-- (id)initWithParentView:(UIView *)pv {
-	CGSize pfs = pv.frame.size;
-	CGRect frame = CGRectMake(0.0f,pfs.height,pfs.width,(pfs.height * PVH));
+// pvh hardcodes portrait keyboard height
+#define PVH 0.46f
+
+- (id)initWithParentView:(UIView *)pv  {
+    DBGLog(@"privV enter parent= x=%f y=%f w=%f h=%f",pv.frame.origin.x,pv.frame.origin.y,pv.frame.size.width, pv.frame.size.height);
+    CGRect frame = CGRectMake(0.0f, pv.frame.size.height,pv.frame.size.width,(pv.frame.size.height * PVH));
 	DBGLog(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
@@ -161,6 +164,12 @@ static int privacyValue=PRIVDFLT;
 		self.showing = PVNOSHOW;
 	}
 }
+
+- (void) resetPw {
+    [self.ppwv dbResetPass];
+    self.pwState = PWNEEDPRIVOK;
+}
+     
 #pragma mark -
 #pragma mark custom ivar setters and getters
 
@@ -185,19 +194,25 @@ static int privacyValue=PRIVDFLT;
 		ppwv.tob = self.tob;
 		ppwv.parent = self;
 		ppwv.parentAction = @selector(ppwvResponse);
-		ppwv.topy = self.frame.origin.y - self.frame.size.height;  // why different with ppwv????
+        
+		ppwv.topy = self.parentView.frame.size.height - self.frame.size.height;  
+        DBGLog(@"pv.y = %f  s.h = %f  ty= %f",self.parentView.frame.size.height,self.frame.size.height,ppwv.topy);
 	}
 	return ppwv;
 }
 
 - (void) showPVQ:(BOOL)state {
+    DBGLog(@"parent v h= %f  pvh= %f  prod= %f",self.parentView.frame.size.height,PVH,self.parentView.frame.size.height * PVH );
+    DBGLog(@"x= %f  y= %f  w= %f  h= %f",self.frame.origin.x, self.frame.origin.y, self.frame.size.width,self.frame.size.height);
 	if (state) {
 		[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
 		//self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
-        self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
+        //self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
+        self.transform = CGAffineTransformMakeTranslation(0, -(self.frame.size.height));
 	} else {
 		//self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
-        self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
+        //self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
+        self.transform = CGAffineTransformMakeTranslation(0, (self.frame.size.height));
     }
 }
 
@@ -221,7 +236,6 @@ static int privacyValue=PRIVDFLT;
         self.showing = PVQUERY;
     }
 }
-
 
 // state control for what's showing
 
@@ -257,18 +271,18 @@ static int privacyValue=PRIVDFLT;
 			//[self.ppwv hidePPWVAnimated:TRUE];  // don't hide and re-show
             // crash[(RootViewController*) self.parentView refreshToolBar:YES];
 		} else {
-			[UIView beginAnimations:nil context:NULL];
-			[UIView setAnimationDuration:kAnimationDuration];
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:kAnimationDuration];
 			
-			if (PVCONFIG == self.showing) {
-				[self.ppwv hidePPWVAnimated:FALSE];
-				[self hideConfigBtns:TRUE];
-				[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
-			} else {  // only PVNOSHOW possible ?
-				[self showPVQ:TRUE];
-			}
+            if (PVCONFIG == self.showing) {
+                [self.ppwv hidePPWVAnimated:FALSE];
+                [self hideConfigBtns:TRUE];
+                [self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
+            } else {  // only PVNOSHOW possible ?
+                [self showPVQ:TRUE];
+            }
 			
-			[UIView commitAnimations];	
+            [UIView commitAnimations];	
 		}
 		showing = PVQUERY;
 

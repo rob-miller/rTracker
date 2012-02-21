@@ -39,10 +39,13 @@
 
 - (void) viewWillAppear:(BOOL)animated {
 	[self.vo.vos dataEditVWAppear:self];
+    [super viewWillAppear:animated];
+    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
 	[self.vo.vos dataEditVWDisappear:self];
+    [super viewWillDisappear:animated];
 }
 
 /*

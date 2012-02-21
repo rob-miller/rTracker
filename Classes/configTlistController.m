@@ -43,17 +43,20 @@ UITableView *deleteTableView;
 - (void) startExport {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self.tlist exportAll];
+    [self.navigationItem setHidesBackButton:NO animated:YES];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+    self.view.userInteractionEnabled = YES;
     [self.activityIndicator stopAnimating];
     self.activityIndicator = nil;
     [pool drain];
 }
 
-- (void) finExport {
-    
-}
-
 - (void) btnExport {
     DBGLog(@"export all");
+    self.view.userInteractionEnabled = NO;
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
     self.activityIndicator = 
     [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
     self.activityIndicator.center =  self.view.center;
@@ -82,8 +85,7 @@ UITableView *deleteTableView;
 	//self.toolbarItems = tbArray;
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
 	[exportBtn release];
-	
-	
+	    
 	[super viewDidLoad];
 }
 
@@ -239,6 +241,7 @@ UITableView *deleteTableView;
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *) fromIndexPath 
 	  toIndexPath:(NSIndexPath *) toIndexPath {
+    
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
 	

@@ -16,7 +16,7 @@
 
 #define SQLDEBUG    0
 
-#define DEBUGLOG    1
+#define DEBUGLOG    0
 #define DEBUGWARN   1
 #define DEBUGERR    1
 #define RELEASE     1
@@ -35,7 +35,7 @@
 #define DBGTLIST(tl) { \
     NSUInteger c = [tl.topLayoutNames count]; \
     NSUInteger i; \
-    DBGLog(@"tlist: %d items",c); \
+    DBGLog(@"tlist: %d items  privacy= %d",c,[privacyV getPrivacyValue]); \
     NSLog(@"n  id  priv   name"); \
     for (i=0;i<c;i++) { \
         NSLog(@" %d  %@  %@   %@",i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
@@ -46,6 +46,7 @@
 
 #else
 #define DBGLog(...) 
+#define DBGTLIST(tl) 
 #endif
 
 #if DEBUGWARN

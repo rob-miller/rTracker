@@ -135,7 +135,7 @@
 											 selector:@selector(keyboardWillHide:) 
 												 name:UIKeyboardWillHideNotification 
 											   object:self.view.window];
-	
+	[super viewWillAppear:animated];
 }
 
 - (void) viewWillDisappear :(BOOL)animated

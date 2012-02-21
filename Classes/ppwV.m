@@ -28,13 +28,13 @@
 
 - (id) initWithParentView:(UIView*)pv {
 	CGRect frame = pv.frame;
-	//DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
+	DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	frame.origin.y = frame.size.height;// - 10.0f;
 	frame.origin.x = frame.size.width * 0.2f;
 	frame.size.width *= 0.8f;
 	frame.size.height *=0.25f;
 	
-	//DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
+	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
 		self.backgroundColor = [UIColor lightGrayColor];   //blueColor
@@ -95,14 +95,16 @@
 - (void) hide {
 	CGRect f = self.frame;
 	//f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
-    f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
+    //f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
+    f.origin.y = self.parentView.frame.size.height;  // self.topy + self.frame.size.height;
     self.frame = f;
-    self.hidden = YES;
+    //self.hidden = YES;
 }
 
 - (void) show {
 	CGRect f = self.frame;
     self.hidden = NO;
+    DBGLog(@"show: topy= %f  f= %f %f %f %f",self.topy,f.origin.x,f.origin.y,f.size.width, f.size.height );
 	f.origin.y = self.topy - self.frame.size.height;
 	self.frame = f;
 }
@@ -123,6 +125,7 @@
 	if (animated) {
 		[UIView commitAnimations];
 	}
+    //self.hidden = YES;
 }
 
 #pragma mark -
@@ -208,9 +211,11 @@
 	self.tob.sql = @"create table if not exists priv0 (key integer primary key, val text);";
 	[self.tob toExecSql];
 	self.tob.sql = @"select count(*) from priv0 where key=0;";
-	if ([self.tob toQry2Int])
+	if ([self.tob toQry2Int]) {
+        DBGLog(@"password exists");
 		return TRUE;
-	else {
+	} else {
+        DBGLog(@"password does not exist");
 		self.tob.sql = @"create table if not exists priv1 (key integer primary key, lvl integer unique);";
 		[self.tob toExecSql];
 		
@@ -231,6 +236,11 @@
 	[self.tob toExecSql];
 }
 
+- (void) dbResetPass {
+	self.tob.sql = [NSString stringWithFormat:@"delete from priv0 where key=0;"];
+	[self.tob toExecSql];
+    DBGLog(@"password reset");
+}
 # pragma mark button Actions
 
 - (void) setp {
@@ -287,6 +297,7 @@
 	}
 	return topLabel;
 }
+
 
 - (UITextField*) topTF {
 	if (nil == topTF) {

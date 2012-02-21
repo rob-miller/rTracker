@@ -61,6 +61,7 @@
 - (void) togglePrivacySetter;
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg;
 - (void) lockDown;
+- (void) resetPw;
 
 + (int)getPrivacyValue;
 

@@ -40,6 +40,11 @@
     [((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).privacyObj lockDown];
 }
 
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	// Save data if appropriate
+	DBGLog(@"rt app delegate: app did become active");
+    [(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
+}
 
 #pragma mark -
 #pragma mark Memory management

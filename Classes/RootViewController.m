@@ -202,6 +202,11 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self loadTrackerCsvFiles];
 
+    self.view.userInteractionEnabled = YES;
+
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+    
     [self.activityIndicator stopAnimating];
     [self.activityIndicator release];
     
@@ -215,17 +220,11 @@
     if ([self loadTrackerPlistFiles]) {
         [self.tlist loadTopLayoutTable];
         [self.tableView reloadData];
+        [self refreshEditBtn];
         [self.view setNeedsDisplay];
     };
 
     [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
-    
-    /*
-    [self loadTrackerCsvFiles];
-
-    [self.activityIndicator stopAnimating];
-    [self.activityIndicator release];
-     */
     
     [pool drain];
 }
@@ -250,7 +249,10 @@
 - (void) loadInputFiles {
     
     if ([self existsCsvInputFiles]) {  // hope plists fast, csv could be slow
-        ///*
+        self.view.userInteractionEnabled = NO;
+        self.navigationItem.leftBarButtonItem.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        
         self.activityIndicator = 
         [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
         self.activityIndicator.center =  self.tableView.center;
@@ -267,7 +269,7 @@
 
 - (void)scrollState {
 
- if (self.privacyObj.showing == PVNOSHOW) {
+ if (privacyObj && self.privacyObj.showing == PVNOSHOW) { // don't instantiate if not there
         self.tableView.scrollEnabled = YES;
     } else {
         self.tableView.scrollEnabled = NO;
@@ -403,12 +405,7 @@
 	
 }
 
-- (void) refreshView {
-    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
-	[self.tlist loadTopLayoutTable];
-	[self.tableView reloadData];
-
-	[self scrollState];
+- (void) refreshEditBtn {
     
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
@@ -421,6 +418,39 @@
 		}
 	}
     
+}
+
+- (void) handlePrefs {
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    BOOL resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
+    BOOL reloadSamplesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reload_sample_trackers_pref"];
+    
+    DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+
+    if (resetPassPref) [self.privacyObj resetPw];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reset_password_pref"];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reload_sample_trackers_pref"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
+    reloadSamplesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reload_sample_trackers_pref"];
+    
+    DBGLog(@"exit prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+    
+}
+
+- (void) refreshView {
+    DBGLog(@"refreshView");
+    [self handlePrefs];
+    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
+	[self.tlist loadTopLayoutTable];
+	[self.tableView reloadData];
+
+	[self scrollState];
+    
+    [self refreshEditBtn];
     [self refreshToolBar:YES];
     
 }
@@ -444,6 +474,7 @@
     DBGLog(@"rvc viewWillDisappear");
 
     //self.privacyObj.showing = PVNOSHOW;
+    [super viewWillDisappear:animated];
 }
 */
 
@@ -474,6 +505,8 @@
 	self.tlist = nil;
 	
 	//DBGLog(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
+    
+    [super viewDidUnload];
 	
 }
 
@@ -517,7 +550,9 @@
         [self privBtnSetImg:(UIButton*)privateBtn.customView noshow:YES];
                 [pbtn release];
 	} else {
-        BOOL noshow = (PVNOSHOW == self.privacyObj.showing);
+        BOOL noshow=YES;
+        if (privacyObj)  // don't instantiate unless needed
+            noshow = (PVNOSHOW == self.privacyObj.showing); 
         if ((! noshow) 
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
@@ -597,8 +632,7 @@
 
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {
-		//privacyObj = [[privacyV alloc] initWithParentView:self.view];
-        privacyObj = [[privacyV alloc] initWithParentView:self.view];
+		privacyObj = [[privacyV alloc] initWithParentView:self.view];
         privacyObj.parent = (id*) self;
 	}
 	privacyObj.tob = (id) self.tlist;  // not set at init

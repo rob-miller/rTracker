@@ -188,10 +188,12 @@
          int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
          self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
      }
+     [super viewWillAppear:animated];
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
     [self resignFirstResponder];
+    [super viewWillDisappear:animated];
 }
 #pragma mark -
 #pragma mark handle shake event
@@ -202,6 +204,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [self becomeFirstResponder];
+    [super viewDidAppear:animated];
 }
 
 - (void) doRecalculateFns {

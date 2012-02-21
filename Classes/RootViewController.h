@@ -45,5 +45,6 @@
 - (void) loadInputFiles;
 - (void) refreshView;
 - (void) refreshToolBar:(BOOL)animated;
+- (void) refreshEditBtn;
 
 @end

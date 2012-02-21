@@ -246,6 +246,7 @@
 
     [self showSaveBtn];
 	//DBGLog(@"useTrackerController: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+    [super viewWillAppear:animated];
 	
 }
 
@@ -263,6 +264,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
+    
+    [super viewWillDisappear:animated];
 }
 
 # pragma mark view rotation methods
@@ -654,7 +657,7 @@
     //NSString *fname = [[NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName]
     //                   stringByReplacingOccurrencesOfString:@" " withString:@"_"];
 
-    
+    // not threaded with activity indicator, so not disabling interaction
     [self.tracker export];
 }
 

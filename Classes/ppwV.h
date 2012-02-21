@@ -53,6 +53,7 @@
 - (BOOL) dbExistsPass;
 - (BOOL) dbTestPass:(NSString*)try;
 - (void) dbSetPass:(NSString*)pass;
+- (void) dbResetPass;
 
 - (void) testp;
 - (void) setp;

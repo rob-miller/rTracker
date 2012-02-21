@@ -366,5 +366,26 @@
 17 february 2012
  - confirmTopLayoutEntry fix default privacy value to 1 instead of 0 from failed valueForKey:
  - reorderFromTLT, reloadFromTLT use nrank+1 so db rank always > 0
- - reorderTLT - crash bug due to copy-paste error: topLayoutPriv field
- not inserted
+ - reorderTLT - crash bug due to copy-paste error: topLayoutPriv field not inserted
+
+--- commit ---
+
+17 februrary cont
+ - add tracker plists for Attitude, Car, Exercise, Sleep, Weight\ stats, Menus\ \&\ Guests
+
+18 feburary 2012
+ - disable userinteraction, navbar btns when loading and exporting files
+
+19 february
+ - add preferences bundle for reload sample trackers and reset password
+ - working on privacy view still!
+
+21 february
+ - FINALLY solved problem of privacy / password views all over;
+ problem was race condition between init privacyV and completion of
+ parent UITableViewController layout.  Solution was to delay
+ instantiation of privacy view until needed, then parent frame not
+ changing before frame actually comes up.
+
+--- commit ---
+
