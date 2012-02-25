@@ -6,6 +6,8 @@
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //
 
+#import <libkern/OSAtomic.h>
+
 #import "graphTrackerVC.h"
 #import "togd.h"
 #import "vogd.h"
@@ -24,7 +26,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,activityIndicator;
+@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,activityIndicator,shakeLock;
 
 /*
  - (void) loadView {
@@ -46,6 +48,7 @@
 
     [super viewDidLoad];
 
+    self.shakeLock = 0;
     
     //self.view.backgroundColor = [UIColor blackColor]; 
     CGRect gtvRect;
@@ -217,7 +220,11 @@
     [self.gtv setNeedsDisplay];
     [self.xAV setNeedsDisplay];
     [self.yAV setNeedsDisplay];
-
+    [self.scrollView setNeedsDisplay];   // no effect
+    [self.view setNeedsDisplay];   // no effect
+    
+    self.shakeLock = 0; // release lock
+    
     [pool drain];
     
 }
@@ -225,6 +232,13 @@
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
         // It has shake d
+        if (0 != OSAtomicTestAndSet(0, &(shakeLock))) {
+            // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
+            return;
+        }
+        
+        // we are first one here
+        
         self.activityIndicator = 
         [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
         self.activityIndicator.center =  self.scrollView.center;
@@ -310,6 +324,7 @@
 
 
 - (void)dealloc {
+    DBGLog(@"deallocating graphTrackerVC");
 	self.tracker = nil;
 	[tracker release];
 	self.currVO = nil;

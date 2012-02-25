@@ -6,6 +6,8 @@
 //  Copyright Robert T. Miller 2010. All rights reserved.
 //
 
+#import <libkern/OSAtomic.h>
+
 #import "RootViewController.h"
 #import "rTrackerAppDelegate.h"
 #import "addTrackerController.h"
@@ -21,7 +23,7 @@
 
 @implementation RootViewController
 
-@synthesize tlist;
+@synthesize tlist, refreshLock;
 @synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, activityIndicator;
 
 #pragma mark -
@@ -153,7 +155,7 @@
             
             if (inmatch.location == NSNotFound) {
                 
-            } else if (inmatch.length == 9) {  // matched all 7 chars of _in.csv at end of file name
+            } else if (inmatch.length == 9) {  // matched all 9 chars of _in.plist at end of file name
                 NSString *tname = [fname substringToIndex:inmatch.location];
                 DBGLog(@"load input: %@ as %@",fname,tname);
                 BOOL matchName=NO;
@@ -169,13 +171,7 @@
                 } else {
                     NSString *target = [docsDir stringByAppendingPathComponent:file];
                     NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:target];
-                    [self.tlist minUniquev:[[tdict objectForKey:@"tid"] intValue]];
-                    
-                    if ([self.tlist checkTIDexists:[tdict objectForKey:@"tid"]]) {
-                        DBGLog(@" tid exists already: %@",[tdict objectForKey:@"tid"]);
-                        [tdict setValue:[NSNumber numberWithInt:[self.tlist getUnique]] forKey:@"tid"];
-                        DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
-                    }
+                    [self.tlist fixDictTID:tdict];
                     trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
                     [newTracker saveConfig];
                     [self.tlist confirmTopLayoutEntry:newTracker];
@@ -201,35 +197,55 @@
 - (void) doLoadCsvFiles {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self loadTrackerCsvFiles];
-
+    
+    // file load done, enable userInteraction
+    
     self.view.userInteractionEnabled = YES;
 
     self.navigationItem.leftBarButtonItem.enabled = YES;
     self.navigationItem.rightBarButtonItem.enabled = YES;
     
+    // stop activityIndicator spinning
     [self.activityIndicator stopAnimating];
     [self.activityIndicator release];
+
+    // give up lock
+    self.refreshLock = 0;
+    
+    DBGLog(@"csv data loaded, UI enabled, lock off");
     
     [pool drain];
     
+    // thread finished
+}
+
+- (void) refreshViewPart2 {
+    
+	[self.tlist loadTopLayoutTable];
+	[self.tableView reloadData];
+    
+    [self refreshEditBtn];
+    [self refreshToolBar:YES];
+    [self.view setNeedsDisplay];
+    // no effect [self.tableView setNeedsDisplay];
 }
 
 - (void) doLoadInputfiles {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     if ([self loadTrackerPlistFiles]) {
-        [self.tlist loadTopLayoutTable];
-        [self.tableView reloadData];
-        [self refreshEditBtn];
-        [self.view setNeedsDisplay];
+        // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
+        [self refreshViewPart2];
     };
 
     [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
     
+    DBGLog(@"load plist thread finished, lock still on, UI still disabled");
     [pool drain];
+    // end of this thread, refreshLock still on, userInteraction disabled, activityIndicator still spinning and doLoadCsvFiles is in charge
 }
 
-- (BOOL) existsCsvInputFiles {
+- (BOOL) existsInputFiles:(NSString*)targ_ext {
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
@@ -238,8 +254,9 @@
         
     while ((file = [dirEnum nextObject])) {
         NSString *fname = [file lastPathComponent];
-        NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
+        NSRange inmatch = [fname rangeOfString:targ_ext options:NSBackwardsSearch|NSAnchoredSearch];
         if (inmatch.location != NSNotFound) {
+            DBGLog(@"existsInputFiles: match on %@",fname);
             return TRUE;
         }
     }
@@ -248,32 +265,65 @@
 
 - (void) loadInputFiles {
     
-    if ([self existsCsvInputFiles]) {  // hope plists fast, csv could be slow
+    if ([self existsInputFiles:@"_in.csv"] || [self existsInputFiles:@"_in.plist"]) {  // hope plists fast, csv could be slow
         self.view.userInteractionEnabled = NO;
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         
         self.activityIndicator = 
-        [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
         self.activityIndicator.center =  self.tableView.center;
         [[[UIApplication sharedApplication] keyWindow] addSubview:self.activityIndicator];
         [self.activityIndicator startAnimating];
     
         [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
-        
+        // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
+        DBGLog(@"returning main thread, lock on, UI disabled, activity spinning,  files to load");
+        return;
     }
+
+    [self refreshViewPart2];
+    // if here, no files to load, this thread set the lock and refresh is done now 
+    self.refreshLock = 0;
+    DBGLog(@"finished, no files to load - lock off");
+    
+    return;
 }
+
+- (void) loadSamples {
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSArray *paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
+
+    DBGLog(@"paths %@",paths  );
+
+        
+    for (NSString *p in paths) {
+        NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
+        [self.tlist fixDictTID:tdict];
+        trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
+        
+        [self.tlist deConflict:newTracker];
+        
+        [newTracker saveConfig];
+        [self.tlist confirmTopLayoutEntry:newTracker];
+        DBGLog(@"finished loadSample on %@",p);
+    }
+    
+}
+
 
 #pragma mark -
 #pragma mark view support
 
 - (void)scrollState {
 
- if (privacyObj && self.privacyObj.showing == PVNOSHOW) { // don't instantiate if not there
-        self.tableView.scrollEnabled = YES;
-    } else {
+ if (privacyObj && self.privacyObj.showing != PVNOSHOW) { // don't instantiate if not there
         self.tableView.scrollEnabled = NO;
-    }
+        DBGLog(@"no");
+ } else {
+        self.tableView.scrollEnabled = YES;
+         DBGLog(@"yes");
+ }
 
  }
 
@@ -350,7 +400,7 @@
 
 - (void)viewDidLoad {
 	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
-
+    self.refreshLock = 0;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
     
@@ -429,6 +479,7 @@
     DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
     if (resetPassPref) [self.privacyObj resetPw];
+    if (reloadSamplesPref) [self loadSamples];
     
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reset_password_pref"];
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reload_sample_trackers_pref"];
@@ -442,17 +493,17 @@
 }
 
 - (void) refreshView {
+    
+    if (0 != OSAtomicTestAndSet(0, &(refreshLock))) {
+        // wasn't 0 before, so we didn't get lock, so leave because refresh already in process
+        return;
+    }
+            
     DBGLog(@"refreshView");
-    [self handlePrefs];
-    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
-	[self.tlist loadTopLayoutTable];
-	[self.tableView reloadData];
-
 	[self scrollState];
-    
-    [self refreshEditBtn];
-    [self refreshToolBar:YES];
-    
+
+    [self handlePrefs];
+    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

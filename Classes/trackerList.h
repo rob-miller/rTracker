@@ -37,6 +37,7 @@
 - (int) getTIDfromIndex:(NSUInteger)ndx;
 - (BOOL)checkTIDexists:(NSNumber*)tid;
 - (int) getTIDfromName:(NSString*)str;
+- (void) fixDictTID:(NSDictionary*)tdict;
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 
 - (void) deleteTrackerAllRow : (NSUInteger) row;
@@ -45,5 +46,8 @@
 
 //- (void) writeTListXLS:(NSFileHandle*)nsfh;
 - (void) exportAll;
+
+- (void) deConflict:(trackerObj*)newTracker;
+
 
 @end

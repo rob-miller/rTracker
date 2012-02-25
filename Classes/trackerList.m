@@ -162,6 +162,16 @@
     return 0;
 }
 
+- (void) fixDictTID:(NSDictionary*)tdict {
+    [self minUniquev:[[tdict objectForKey:@"tid"] intValue]];
+    
+    if ([self checkTIDexists:[tdict objectForKey:@"tid"]]) {
+        DBGLog(@" tid exists already: %@",[tdict objectForKey:@"tid"]);
+        [tdict setValue:[NSNumber numberWithInt:[self getUnique]] forKey:@"tid"];
+        DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
+    }
+}
+
 /*
  // discard for now, write each tracker as csv ile
  
@@ -257,6 +267,26 @@
         [to export];
         [to release];
     }
+}
+
+- (BOOL) testConflict:(NSString*) tname {
+    for (NSString *n in self.topLayoutNames) {
+        if ([tname isEqualToString:n]) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+- (void) deConflict:(trackerObj*)newTracker {
+    if (! [self testConflict:newTracker.trackerName])
+        return;
+
+    int i=2;
+    NSString *tstr;
+    
+    while ([self testConflict:(tstr = [NSString stringWithFormat:@"%@ %d",newTracker.trackerName,i++])]) ;
+    newTracker.trackerName = tstr;
 }
 
 @end

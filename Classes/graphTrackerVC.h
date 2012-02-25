@@ -41,6 +41,9 @@
     dpRslt *dpr;
     
     useTrackerController *parentUTC;
+    
+    int32_t shakeLock;
+
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
@@ -58,6 +61,7 @@
 @property(nonatomic,retain) useTrackerController *parentUTC;
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
+@property (atomic)     int32_t shakeLock;
 
 - (void) yavTap;
 - (void) gtvTap:(NSSet *)touches;

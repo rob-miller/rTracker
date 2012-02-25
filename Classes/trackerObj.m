@@ -201,6 +201,10 @@
 #pragma mark -
 #pragma mark load/save db<->object 
 
+//
+// load tracker configuration incl valObjs from self.tDb, preset self.toid
+// self.trackerName from tDb
+// 
 - (void) loadConfig {
 	
 	dbgNSAssert(self.toid,@"tObj load toid=0");
@@ -302,6 +306,10 @@
 
 }
 
+// 
+// load tracker config, valObjs from supplied dictionary
+// self.trackerName from dictionary:optDict:trackerName
+//
 - (void) loadConfigFromDict:(NSDictionary *)dict {
 	
 	dbgNSAssert(self.toid,@"tObj load from dict toid=0");
@@ -327,19 +335,7 @@
     }
 
 	for (valueObj *vo in self.valObjTable) {
-        /*
-		[s1 removeAllObjects];
-		[s2 removeAllObjects];
-		
-		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%d;",vo.vid];
-		[self toQry2ArySS :s1 s2:s2];
-		//e1 = [s1 objectEnumerator];
-		e2 = [s2 objectEnumerator];
-		
-		for (NSString *key in s1 ) {
-			[vo.optDict setObject:[e2 nextObject] forKey:key];
-		}
-		*/
+
 		if (vo.vcolor > self.nextColor)
 			nextColor = vo.vcolor;
 		

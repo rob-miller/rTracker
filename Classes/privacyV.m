@@ -45,13 +45,13 @@ static int privacyValue=PRIVDFLT;
 
 - (void) lockDown {
     DBGLog(@"privObj: lockdown");
-    // needs more -- 
+    [self.ttv showKey:0];
     [self setPrivacyValue:MINPRIV]; 
     self.pwState = PWQUERYPASS;
-    //self.showing = PVNOSHOW;
-    if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
-		self.showing = PVQUERY;
-    }
+    self.showing = PVNOSHOW;
+    //if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
+	//	self.showing = PVQUERY;
+    //}
 }
 
 
@@ -168,6 +168,8 @@ static int privacyValue=PRIVDFLT;
 - (void) resetPw {
     [self.ppwv dbResetPass];
     self.pwState = PWNEEDPRIVOK;
+    self.showing = PVNOSHOW;
+    [self setPrivacyValue:MINPRIV];
 }
      
 #pragma mark -

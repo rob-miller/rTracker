@@ -24,10 +24,12 @@
 
 	trackerList *tlist;
 	privacyV *privacyObj;
+    int32_t refreshLock;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
 @property (nonatomic, retain) privacyV *privacyObj;
+@property (atomic) int32_t refreshLock;
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;

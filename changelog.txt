@@ -389,3 +389,26 @@
 
 --- commit ---
 
+22 february
+ - finished implementation of reset password pref
+ - located sample tracker files, next step loading ...
+
+23 february
+ - fixed ? multiple entry on refreshView() due to skipped name
+ duplicate _in.plist; used flag for lock, nonatomic, race vulnerable
+ but seems like lots of time to spare -- perhaps delete skipped
+ _in.plist ?
+
+25 february
+ - implemented atomic test-and-set flags to control refresh and
+ recalculateFns thread routines so not re-entered while running
+ - made circle primitive move back to center so dotsLines should look
+ better
+ - load sample plists according to prefs
+ - de-conflict sample plists against topLayoutTable
+ - fix rvc:scrollState to allow scroll if privacyObj not yet
+ instantiated
+ - set ppwV to hidden in hide() as otherwise comes up on scroll
+
+--- commit ---
+

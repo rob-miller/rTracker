@@ -13,7 +13,7 @@
 
 #define MTPrim(x,y) CGContextMoveToPoint(context,(x),(y))
 #define ALPrim(x,y) CGContextAddLineToPoint(context,(x),(y))
-#define AEPrim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-2.0f),(y-2.0f)},{4.0f,4.0f}})
+#define AEPrim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-2.0f),(y-2.0f)},{4.0f,4.0f}}); CGContextMoveToPoint(context,(x),(y))
 #if GFXHDEBUG 
 #define MoveTo(x,y) NSLog(@"mov: %f,%f",x,y); MTPrim(x,y)
 #define AddLineTo(x,y) NSLog(@"lin: %f,%f",x,y); ALPrim(x,y)

@@ -13,6 +13,12 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B401214EF133600828B90 /* Menus & Guests_in.plist */; };
+		D40069CF14F595A7006798B2 /* Attitude_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400814EF124800828B90 /* Attitude_in.plist */; };
+		D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
+		D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400A14EF124800828B90 /* Exercise_in.plist */; };
+		D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400B14EF124800828B90 /* Sleep_in.plist */; };
+		D40069D314F595C2006798B2 /* Weight stats_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400C14EF124800828B90 /* Weight stats_in.plist */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40B400D14EF124800828B90 /* Attitude_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400814EF124800828B90 /* Attitude_in.plist */; };
 		D40B400E14EF124800828B90 /* Car_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
@@ -159,6 +165,25 @@
 		D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D40069CD14F59575006798B2 /* Copy Sample Trackers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = sampleTrackers;
+			dstSubfolderSpec = 7;
+			files = (
+				D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */,
+				D40069CF14F595A7006798B2 /* Attitude_in.plist in Copy Sample Trackers */,
+				D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */,
+				D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */,
+				D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */,
+				D40069D314F595C2006798B2 /* Weight stats_in.plist in Copy Sample Trackers */,
+			);
+			name = "Copy Sample Trackers";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -618,6 +643,7 @@
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "rTracker" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
+				D40069CD14F59575006798B2 /* Copy Sample Trackers */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
 			);

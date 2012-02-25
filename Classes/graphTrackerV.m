@@ -461,7 +461,9 @@
 -(void)drawRect:(CGRect)r {
     CGContextRef context = UIGraphicsGetCurrentContext();
 #endif
+    DBGLog(@"gtv draw stuff now");
     if (self.doDrawGraph) {
+        DBGLog(@"doDrawGraph is true");
         /*
         if ((CGContextRef)0 == inContext) {
             self.context = UIGraphicsGetCurrentContext();

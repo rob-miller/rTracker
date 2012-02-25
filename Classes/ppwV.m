@@ -98,7 +98,7 @@
     //f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
     f.origin.y = self.parentView.frame.size.height;  // self.topy + self.frame.size.height;
     self.frame = f;
-    //self.hidden = YES;
+    self.hidden = YES;
 }
 
 - (void) show {
