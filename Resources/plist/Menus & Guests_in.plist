@@ -13,10 +13,10 @@
 		<key>savertn</key>
 		<string>1</string>
 		<key>width</key>
-		<real>42</real>
+		<real>62</real>
 	</dict>
 	<key>tid</key>
-	<integer>26</integer>
+	<integer>4</integer>
 	<key>valObjTable</key>
 	<array>
 		<dict>
@@ -72,6 +72,27 @@
 			<integer>0</integer>
 			<key>vtype</key>
 			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>optDict</key>
+			<dict>
+				<key>graph</key>
+				<string>1</string>
+				<key>privacy</key>
+				<string>1</string>
+			</dict>
+			<key>vGraphType</key>
+			<integer>0</integer>
+			<key>valueName</key>
+			<string>hosted by</string>
+			<key>vcolor</key>
+			<integer>3</integer>
+			<key>vid</key>
+			<integer>3</integer>
+			<key>vpriv</key>
+			<integer>0</integer>
+			<key>vtype</key>
+			<integer>1</integer>
 		</dict>
 	</array>
 </dict>

@@ -30,3 +30,5 @@
 
 #define f(x) ((CGFloat) (x))
 #define d(x) ((double) (x))
+
+#define SAMPLES_VERSION 1

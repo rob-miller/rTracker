@@ -308,8 +308,10 @@
 		okey = @"autoscale"; dfltState=AUTOSCALEDFLT;
 		if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:@"0"]) { // will switch on
 			[self removeGraphMinMax];
+            //[self addGraphFromZero];  // ASFROMZERO
 		} else {
-			[self addGraphMinMax];
+            //[self removeGraphFromZero];
+			[self addGraphMinMax];      // ASFROMZERO
 		}
 	} else if ( btn == [self.wDict objectForKey:@"csbBtn"] ) {  
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;

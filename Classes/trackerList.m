@@ -39,7 +39,10 @@
 	self.sql = @"select count(*) from toplevel;";
 
 	DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
-	
+
+	self.sql = @"create table if not exists info (val integer, name text);";
+	[self toExecSql];
+
 	self.sql = nil;	
 }	
 
@@ -87,22 +90,42 @@
     DBGTLIST(self);
 }
 
+- (void) addToTopLayoutTable:(trackerObj*) tObj {
+    DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
+    
+    [self.topLayoutIDs addObject:[NSNumber numberWithInt:tObj.toid]];
+    [self.topLayoutNames addObject:tObj.trackerName];
+    [self.topLayoutPriv addObject:[NSNumber numberWithInt:[[tObj.optDict valueForKey:@"privacy"] intValue]]];
+
+    [self confirmTopLayoutEntry:tObj];
+}
+
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
-	DBGTLIST(self);
     DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
+	DBGTLIST(self);
 	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
 	int rank = [self toQry2Int];  // returns 0 if not found 
 	if (rank == 0) {
-		rank = [self.topLayoutNames count] +1;  // so put at end
-        DBGLog(@"rank not found, set to %d",rank);
-	}
-	dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
+        DBGLog(@"rank not found");
+	} else {
+        self.sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%i and priv <= %i;",rank,[privacyV getPrivacyValue]];
+        if (1 < [self toQry2Int]) {
+            DBGLog(@"too many at rank %i",rank);
+            rank = 0;
+        }
+    }
+	if (rank == 0) {
+		rank = [self.topLayoutNames count];  // so put at end
+        DBGLog(@"rank adjust, set to %d",rank);
+    }
+    
+    dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
     int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
     privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
-				rank, tObj.toid, tObj.trackerName, privVal]; 
+				rank, tObj.toid, [self toSqlStr:tObj.trackerName], privVal]; 
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -114,7 +137,7 @@
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
 		DBGLog(@" %@ to rank %d",tracker,nrank);
-		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,tracker];
+		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ self toSqlStr:tracker]];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
@@ -132,7 +155,7 @@
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
 		DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,tracker, priv];  // rank in db always non-0
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,[self toSqlStr:tracker], priv];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -287,6 +310,7 @@
     
     while ([self testConflict:(tstr = [NSString stringWithFormat:@"%@ %d",newTracker.trackerName,i++])]) ;
     newTracker.trackerName = tstr;
+    [newTracker.optDict setObject:tstr forKey:@"name"];
 }
 
 @end

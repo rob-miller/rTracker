@@ -182,27 +182,27 @@
 		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 		NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
 
-		NSString *vt=nil;
+		//NSString *vt=nil;
 		
 		switch (ep) {
 			case FREPHOURS :
 				[offsetComponents setHour:ival];
-				vt = @"hours";
+				//vt = @"hours";
 				break;
 			case FREPDAYS :
 				[offsetComponents setDay:ival];
-				vt = @"days";
+				//vt = @"days";
 				break;
 			case FREPWEEKS :
 				[offsetComponents setWeek:ival];
-				vt = @"weeks";
+				//vt = @"weeks";
 				break;
 			case FREPMONTHS :
 				[offsetComponents setMonth:ival];
-				vt = @"months";
+				//vt = @"months";
 				break;
 			case FREPYEARS :
-				vt = @"years";
+				//vt = @"years";
 				[offsetComponents setYear:ival];
 				break;
 			default:
@@ -214,7 +214,7 @@
 												  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)maxdate]
 												 options:0];
 		epDate = [targ timeIntervalSince1970];
-		DBGLog(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
+		//DBGLog(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
 		
 		[gregorian release];
 		[offsetComponents release];
@@ -730,7 +730,9 @@
 
 - (void) btnDelete:(id)sender {
 	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
-	[self.fnArray removeLastObject];
+	if (0 < [self.fnArray count]) {
+        [self.fnArray removeLastObject];
+    }
 	[self updateFnTitles];
 	[pkr reloadComponent:0];
 	[self updateFnTV];
@@ -1063,7 +1065,7 @@
 		[self ftStartSet];
 	} else {
 		int last = [[self.fnArray lastObject] intValue];
-		if (last >= 0 || last <= -TMPUNIQSTART) { // state = after valObj
+		if (last >= 0 || last <= -TMPUNIQSTART || isFnTimeOp(last)) { // state = after valObj
 			[self ftAdd2OpSet];
 			[self ftAddCloseParen];
 		} else if (isFn1Arg(last)) {  // state = after Fn1 = delta, avg, sum

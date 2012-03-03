@@ -10,6 +10,7 @@
 
 #import "voChoice.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voChoice
 
@@ -194,7 +195,7 @@
 		if (ncol == nil) {
 			NSInteger col = [self.vo.parentTracker nextColor];
 			[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
-			b.backgroundColor = [((trackerObj*) self.vo.parentTracker).colorSet objectAtIndex:col];
+			b.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
 		} 
 	}
 	if (++i<CHOICES) {
@@ -225,10 +226,10 @@
 		// do nothing as no choice label set so button not active
 	} else {
 		NSInteger col = [ncol integerValue];
-		if (++col >= [((trackerObj*) self.vo.parentTracker).colorSet count])
+		if (++col >= [[rTracker_resource colorSet] count])
 			col=0;
 		[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
-		btn.backgroundColor = [((trackerObj*) self.vo.parentTracker).colorSet objectAtIndex:col];
+		btn.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
 	}
 	
 }
@@ -298,7 +299,7 @@
 		if (cc == nil) {
 			btn.backgroundColor = [UIColor clearColor];
 		} else {
-			btn.backgroundColor = [((trackerObj*) self.vo.parentTracker).colorSet objectAtIndex:[cc integerValue]];
+			btn.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:[cc integerValue]];
 		}
 		
 		[btn addTarget:self action:@selector(choiceColorButtonAction:) forControlEvents:UIControlEventTouchDown];

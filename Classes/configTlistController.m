@@ -315,10 +315,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];
-		[self.tlist confirmTopLayoutEntry:nTO];
+		[self.tlist addToTopLayoutTable:nTO];
+        //[self.tlist confirmTopLayoutEntry:nTO];
 		[oTO release];
 		[nTO release];
-		[self.tlist loadTopLayoutTable];
+		//[self.tlist loadTopLayoutTable];
 		[self.table reloadData];
 
 	} else if (selSegNdx == SegmentMoveDelete) {

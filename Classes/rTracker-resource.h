@@ -13,12 +13,16 @@
 
 
 @interface rTracker_resource : NSObject {
-    //int foo;
+    
 }
+
+
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
 + (unsigned int) countLines:(NSString*)str;
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;
++ (NSArray*) colorSet;
++ (NSArray*) colorNames;
 
 @end
 

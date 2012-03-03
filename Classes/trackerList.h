@@ -31,6 +31,7 @@
 
 - (void)loadTopLayoutTable;
 - (void)confirmTopLayoutEntry:(trackerObj *)tObj;
+- (void) addToTopLayoutTable:(trackerObj *)tObj;
 - (void)reorderFromTLT;
 - (void)reloadFromTLT;
 

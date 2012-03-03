@@ -20,6 +20,7 @@
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
 
+/*
 - (void)tfvoFinEdit:(UITextField*)tf {
 	tf.textColor = [UIColor blackColor];
 	[self.vo.value setString:tf.text];
@@ -28,10 +29,19 @@
 	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
+*/
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
 	DBGLog(@"tf end editing vid=%d",self.vo.vid);
-	[self tfvoFinEdit:textField];
+	//[self tfvoFinEdit:textField];
+	textField.textColor = [UIColor blackColor];
+	[self.vo.value setString:textField.text];
+    textField.backgroundColor = [UIColor whiteColor];
+    
+	//self.vo.display = nil; // so will redraw this cell only
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+    
+    
     //*activeField = nil;
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
 }

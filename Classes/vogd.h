@@ -19,6 +19,7 @@
     
     double vScale;
     
+    CGFloat yZero;
 }
 
 @property(nonatomic,retain) valueObj *vo;
@@ -27,6 +28,7 @@
 @property(nonatomic) double minVal;
 @property(nonatomic) double maxVal;
 @property(nonatomic) double vScale;
+@property(nonatomic) CGFloat yZero;
 
 - (vogd*) initAsNum:(valueObj*)vo;
 - (vogd*) initAsNote:(valueObj*)vo;

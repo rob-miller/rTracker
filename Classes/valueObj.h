@@ -56,6 +56,7 @@
 
 // vo config checkbutton default states
 #define AUTOSCALEDFLT   YES
+#define ASFROMZERODFLT  YES
 #define SHRINKBDFLT     NO 
 #define TBNLDFLT        NO
 #define TBNIDFLT        YES

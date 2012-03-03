@@ -17,6 +17,7 @@
 
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 @implementation gtYAxV
 @synthesize vogd,myFont,scaleOriginY,scaleHeightY,graphSV,parentGTVC;
@@ -33,7 +34,7 @@
 - (void) vtChoiceSetColor:(CGContextRef)context val:(CGFloat)val{
     NSString *cc = [NSString stringWithFormat:@"cc%d",(int)(val-1.0f)];
     NSInteger col = [[self.vogd.vo.optDict objectForKey:cc] integerValue];
-    [((UIColor *) [((trackerObj*)self.vogd.vo.parentTracker).colorSet objectAtIndex:col]) set];
+    [((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]) set];
 }
 
 
@@ -59,6 +60,8 @@
     
     NSInteger vtype = self.vogd.vo.vtype;
     NSString *fmt = @"%0.2f";
+    
+    //NSString *vsCopy = nil;
     
 	for (i=YTICKS; i>=1; i--) {
 		CGFloat y = f(i) * step;
@@ -102,6 +105,11 @@
                     fmt = @"%0.2f";
                 }
                 vstr = [NSString stringWithFormat:fmt,val];
+                //if ([vstr isEqualToString:vsCopy])
+                //    vstr = nil;  // just do once, tho could do better at getting closer to actual value
+                //else
+                //    vsCopy = vstr;
+                
                 break;
                 
         }

@@ -36,7 +36,7 @@
     NSUInteger c = [tl.topLayoutNames count]; \
     NSUInteger i; \
     DBGLog(@"tlist: %d items  privacy= %d",c,[privacyV getPrivacyValue]); \
-    NSLog(@"n  id  priv   name"); \
+    NSLog(@"n  id  priv   name (tlist)"); \
     for (i=0;i<c;i++) { \
         NSLog(@" %d  %@  %@   %@",i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
     } \

@@ -13,10 +13,9 @@
 #import "vogd.h"
 //#import "togd.h"
 #import "graphTrackerVC.h"
-
 #import "graphTracker-constants.h"
-
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 //#define DEBUGLOG 1
 
@@ -26,7 +25,7 @@
 
 @implementation graphTrackerV
 
-@synthesize tracker,currVO,doDrawGraph,xMark,parentGTVC;
+@synthesize tracker,gtvCurrVO,doDrawGraph,xMark,parentGTVC;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -88,8 +87,8 @@
 - (void) vtChoiceSetColor:(vogd*)vogd context:(CGContextRef)context val:(CGFloat)val{
     NSString *cc = [NSString stringWithFormat:@"cc%d",(int)((val-1.0f) / vogd.vScale)];
     NSInteger col = [[vogd.vo.optDict objectForKey:cc] integerValue];
-    CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:col]).CGColor);
-    CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:col]).CGColor);
+    CGContextSetFillColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);
+    CGContextSetStrokeColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);
 }
 
 #define LXNOTSTARTED -1.0f
@@ -351,15 +350,30 @@
 
 - (void) plotVO:(valueObj *)vo context:(CGContextRef)context barCount:(int)barCount {
 	//[(UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor] set];
-    if (vo.vtype != VOT_CHOICE) {
-        CGContextSetFillColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
-        CGContextSetStrokeColorWithColor(context,((UIColor *) [self.tracker.colorSet objectAtIndex:vo.vcolor]).CGColor);
-    }
-    if (vo == self.currVO) {
+
+    vogd *currVogd = (vogd*) vo.vogd;
+    
+    if (vo == self.gtvCurrVO) {
+        if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {
+            //CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
+            //CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);
+            //CGContextSetFillColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
+            CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
+            MoveTo(0.0f, currVogd.yZero);
+            AddLineTo(self.frame.size.width,currVogd.yZero);
+            Stroke;            
+        }
+        
         CGContextSetLineWidth(context, DBL_LINE_WIDTH);
     } else {
         CGContextSetLineWidth(context, STD_LINE_WIDTH);
     }
+    
+    if (vo.vtype != VOT_CHOICE) {
+        CGContextSetFillColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:vo.vcolor]).CGColor);
+        CGContextSetStrokeColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:vo.vcolor]).CGColor);
+    }
+
 	switch (vo.vGraphType) {
 		case VOG_DOTS:
             switch (vo.vtype) {
@@ -367,30 +381,30 @@
                 case VOT_SLIDER:
                 case VOT_CHOICE:
                 case VOT_FUNC:
-                    [self plotVO_dots:(vogd*)vo.vogd context:context];
+                    [self plotVO_dots:currVogd context:context];
                     break;
                 case VOT_TEXT:
                 case VOT_BOOLEAN:
                 //case VOT_IMAGE:
-                    [self plotVO_dotsNoY:(vogd*)vo.vogd context:context];
+                    [self plotVO_dotsNoY:currVogd context:context];
                     break;
                 default:   // VOT_TEXTB
                     if ([(NSString*) [vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
-                        [self plotVO_dots:(vogd*)vo.vogd context:context];
+                        [self plotVO_dots:currVogd context:context];
                     } else {
-                        [self plotVO_dotsNoY:(vogd*)vo.vogd context:context];
+                        [self plotVO_dotsNoY:currVogd context:context];
                     }
                     break;
             }
 			break;
 		case VOG_BAR:
-			[self plotVO_bar:(vogd*)vo.vogd context:context barCount:barCount];
+			[self plotVO_bar:currVogd context:context barCount:barCount];
 			break;
 		case VOG_LINE:
-			[self plotVO_lines:(vogd*)vo.vogd context:context];
+			[self plotVO_lines:currVogd context:context];
 			break;
 		case VOG_DOTSLINE:
-			[self plotVO_dotsline:(vogd*)vo.vogd context:context];
+			[self plotVO_dotsline:currVogd context:context];
 			break;
 		case VOG_PIE:
 			DBGErr(@"pie chart not yet supported");
@@ -417,6 +431,7 @@
     
 	for (valueObj *vo in self.tracker.valObjTable) {
 		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+            //DBGLog(@"drawGraph %@",vo.valueName);
 			[self plotVO:vo context:context barCount:barCount];
             if (VOG_BAR == vo.vGraphType) {
                 barCount++;
@@ -438,6 +453,7 @@
 #pragma mark drawRect
 
 
+// using layers is a tiled approach, speedup realized because only needed tiles are redrawn.  plotVO_ routines work out if data in tiles.
 #if USELAYER
 
 +(Class)layerClass {
@@ -461,9 +477,9 @@
 -(void)drawRect:(CGRect)r {
     CGContextRef context = UIGraphicsGetCurrentContext();
 #endif
-    DBGLog(@"gtv draw stuff now");
+    //DBGLog(@"gtv draw stuff now");
     if (self.doDrawGraph) {
-        DBGLog(@"doDrawGraph is true");
+        //DBGLog(@"doDrawGraph is true, gtvCurrVo= %@",self.gtvCurrVO.valueName);
         /*
         if ((CGContextRef)0 == inContext) {
             self.context = UIGraphicsGetCurrentContext();
@@ -504,17 +520,17 @@
 #pragma mark -
 #pragma mark touch support
 
+#if DEBUGLOG
 - (NSString*) touchReport:(NSSet*)touches {
     
-#if DEBUGLOG
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
 	return [NSString stringWithFormat:@"touch at %f, %f.  taps= %d  numTouches= %d",
             touchPoint.x, touchPoint.y, [touch tapCount], [touches count]];
-#endif
-    return @"";
+    //return @"";
 
 }
+#endif
 /*
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     DBGLog(@"touches began: %@", [self touchReport:touches]);

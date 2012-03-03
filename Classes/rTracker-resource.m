@@ -71,5 +71,22 @@ BOOL keyboardIsShown=NO;
      completion:NULL];
 }
 
++ (NSArray *) colorSet {
+	return [NSArray arrayWithObjects:
+                [UIColor redColor], [UIColor greenColor], [UIColor blueColor],
+                [UIColor cyanColor], [UIColor yellowColor], [UIColor magentaColor],
+                [UIColor orangeColor], [UIColor purpleColor], [UIColor brownColor], 
+                [UIColor whiteColor], [UIColor lightGrayColor], [UIColor darkGrayColor], nil];
+		
+}
+
++ (NSArray *) colorNames {
+	return [NSArray arrayWithObjects:
+            @"red", @"green", @"blue",
+            @"cyan", @"yellow", @"magenta",
+            @"orange", @"purple", @"brown", 
+            @"white", @"lightGray", @"darkGray", nil];
+}
+
 
 @end

@@ -112,7 +112,7 @@ NSMutableArray *deleteVOs=nil;
 	
 	// Release any cached data, images, etc that aren't in use.
 	
-	tempTrackerObj.colorSet = nil;
+	//tempTrackerObj.colorSet = nil;
 	tempTrackerObj.votArray = nil;
 	
 }
@@ -263,13 +263,14 @@ DBGLog(@"btnAddValue was pressed!");
 	
 	if ([self.nameField.text length] > 0) {
 		self.tempTrackerObj.trackerName = self.nameField.text;
-        [self.tempTrackerObj.optDict setObject:nameField.text forKey:@"name"];  // in case skipped keyboard done (for Pat!)
+        [self.tempTrackerObj.optDict setObject:self.nameField.text forKey:@"name"];  // in case skipped keyboard done (for Pat!)
 		if (! self.tempTrackerObj.toid) {
 			self.tempTrackerObj.toid = [self.tlist getUnique];
 		}
 		[self.tempTrackerObj saveConfig];
-		[self.tlist confirmTopLayoutEntry:tempTrackerObj];
-		[self.tlist loadTopLayoutTable];
+        [self.tlist addToTopLayoutTable:self.tempTrackerObj];
+		//[self.tlist confirmTopLayoutEntry:tempTrackerObj];
+		//[self.tlist loadTopLayoutTable];
 		[self.navigationController popViewControllerAnimated:YES];
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 	} else {
@@ -442,7 +443,15 @@ DBGLog(@"btnAddValue was pressed!");
 			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 			cell.textLabel.text = vo.valueName;
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-			cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
+			//cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
+            cell.detailTextLabel.text = ( [[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"] ?
+                                         [NSString stringWithFormat:@"%@ - no graph", [self.tempTrackerObj.votArray objectAtIndex:vo.vtype]] 
+                                         :
+                                         [NSString stringWithFormat:@"%@ - %@ - %@",
+                                          [self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
+                                         [vo.vos.voGraphSet objectAtIndex:vo.vGraphType],
+                                         [[rTracker_resource colorNames] objectAtIndex:vo.vcolor]] );
+                                         
 		}
 	}
 	

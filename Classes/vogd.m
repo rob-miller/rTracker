@@ -17,7 +17,7 @@
 
 @implementation vogd
 
-@synthesize vo,xdat,ydat,minVal,maxVal,vScale;
+@synthesize vo,xdat,ydat,minVal,maxVal,vScale,yZero;
 
 - (id) init {
     DBGErr(@"vogd: invalid init!");
@@ -25,10 +25,21 @@
     return self;
 }
 
+- (double) getMinMax:(NSString*)targ alt:(NSString*)alt {
+    double retval=0.0;
+    if ([[NSScanner localizedScannerWithString:alt] scanDouble:&retval]) {
+        return retval;
+    }
+    trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
+    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d;",targ,self.vo.vid];
+    return [myTracker toQry2Double];
+}
+
 - (id) initAsNum:(valueObj*)inVO {
     if ((self = [super init])) {
 
         self.vo = inVO;
+        self.yZero = 0.0F;
         
         //double dscale = d(self.bounds.size.width - (2.0f*BORDER)) / d(self.lastDate - self.firstDate);
         
@@ -39,8 +50,8 @@
             && ([@"0" isEqualToString:[self.vo.optDict objectForKey:@"autoscale"]])
             ) { 
             //DBGLog(@"autoscale= %@", [self.vo.optDict objectForKey:@"autoscale"]);
-            self.minVal = [[self.vo.optDict objectForKey:@"gmin"] doubleValue];
-            self.maxVal = [[self.vo.optDict objectForKey:@"gmax"] doubleValue];
+            self.minVal = [self getMinMax:@"min" alt:[self.vo.optDict objectForKey:@"gmin"]];
+            self.maxVal = [self getMinMax:@"max" alt:[self.vo.optDict objectForKey:@"gmax"]];
         } else if (self.vo.vtype == VOT_SLIDER) {
             NSNumber *nmin = [self.vo.optDict objectForKey:@"smin"];
             NSNumber *nmax = [self.vo.optDict objectForKey:@"smax"];
@@ -50,14 +61,16 @@
             self.minVal = d(0);
             self.maxVal = CHOICES+1;
         } else {  // number or function with autoscale
-            myTracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
-            self.minVal = [myTracker toQry2Double];
-            myTracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
-            self.maxVal = [myTracker toQry2Double];
+            
+            self.minVal = [self getMinMax:@"min" alt:nil];
+            self.maxVal = [self getMinMax:@"max" alt:nil];
 
+            /*
+            // should be option ASFROMZERO
             if ((0.0f < self.minVal) && (0.0f < self.maxVal)) {   // confusing if no start at 0
                 self.minVal = 0.0f;
             }
+            */
             
             self.maxVal += (self.maxVal - self.minVal) *0.10f;   // +10% for visibility
         }
@@ -68,10 +81,15 @@
         if (minVal == maxVal) {
             self.maxVal = 1.0f;
         }
+
+        DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
         
         //double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);
         self.vScale = d(myTOGD.rect.size.height) / (self.maxVal - self.minVal);
-        
+
+        self.yZero -= (CGFloat) self.minVal;
+        self.yZero *= (CGFloat) self.vScale;
+
         NSMutableArray *mxdat = [[NSMutableArray alloc] init];
         NSMutableArray *mydat = [[NSMutableArray alloc] init];
         
@@ -124,6 +142,7 @@
     if ((self = [super init])) {
         
         self.vo = inVO;
+        self.yZero = 0.0F;
         
         trackerObj *myTracker = self.vo.parentTracker;
         togd * myTOGD = myTracker.togd;
@@ -171,6 +190,7 @@
     if ((self = [super init])) {
         
         self.vo = inVO;
+        self.yZero = 0.0F;
         
         trackerObj *myTracker = self.vo.parentTracker;
         togd *myTOGD = myTracker.togd;
@@ -214,6 +234,7 @@
     if ((self = [super init])) {
         
         self.vo = inVO;
+        self.yZero = 0.0F;
         
         trackerObj *myTracker = self.vo.parentTracker;
         togd * myTOGD = myTracker.togd;
@@ -280,7 +301,7 @@
 
 - (UIColor*) myGraphColor {
     if (self.vo.vtype != VOT_CHOICE) 
-        return( (UIColor *) [((trackerObj*)self.vo.parentTracker).colorSet objectAtIndex:self.vo.vcolor] );
+        return( (UIColor *) [[rTracker_resource colorSet] objectAtIndex:self.vo.vcolor] );
     else
         return  [UIColor whiteColor];
 }

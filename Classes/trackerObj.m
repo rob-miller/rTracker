@@ -27,7 +27,7 @@
 
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
-@synthesize nextColor, colorSet, votArray;
+@synthesize nextColor, votArray;
 @synthesize maxLabel,activeControl,vc, dateFormatter,togd;
 
 #define f(x) ((CGFloat) (x))
@@ -126,11 +126,12 @@
 		valObjTable = [[NSMutableArray alloc] init];
 		nextColor=0;
 		
+        /*  move to utc
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(trackerUpdated:) 
 													 name:rtValueUpdatedNotification 
 												   object:nil];
-		
+		*/
 		//DBGLog(@"init trackerObj New");
 	}
 	
@@ -159,7 +160,7 @@
 
 
 - (void) dealloc {
-	DBGLog(@"dealloc tObj: %@",trackerName);
+	DBGLog(@"dealloc tObj: %@",self.trackerName);
 	
 	self.trackerName = nil;
 	[trackerName release];
@@ -168,8 +169,6 @@
 	self.valObjTable = nil;
 	[valObjTable release];
 	
-	self.colorSet = nil;
-	[colorSet release];
 	self.votArray = nil;
 	[votArray release];
 	
@@ -183,9 +182,11 @@
     [dateFormatter release];
     
 	//unregister for value updated notices
+    /* move to utc
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:rtValueUpdatedNotification
                                                   object:nil];
+     */
 	[super dealloc];
 }
 
@@ -290,7 +291,7 @@
 	}
 	
 	//[self nextColor];  // inc safely past last used color
-	if (nextColor >= [self.colorSet count])
+	if (nextColor >= [[rTracker_resource colorSet] count])
 		nextColor=0;
 	
 	[s1 release];
@@ -344,7 +345,7 @@
 	}
 	
 	//[self nextColor];  // inc safely past last used color
-	if (nextColor >= [self.colorSet count])
+	if (nextColor >= [[rTracker_resource colorSet] count])
 		nextColor=0;
 	
 	self.sql=nil;
@@ -457,7 +458,7 @@
 
 		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
-					vo.vid, i++, vo.vtype, vo.valueName, vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
+					vo.vid, i++, vo.vtype, [self toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
 		[self toExecSql];
 		
 		[self clearVoOptDict:vo];
@@ -564,7 +565,7 @@
 		
 		return YES;
 	} else {
-		DBGWarn(@"tObj loadData: nothing for date %d %@", iDate, qDate);
+		DBGLog(@"tObj loadData: nothing for date %d %@", iDate, qDate);
 		return NO;
 	}
 }
@@ -592,7 +593,7 @@
             haveData = YES;
             minPriv = MIN(vo.vpriv,minPriv);
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-                        vo.vid, tdi, vo.value];
+                        vo.vid, tdi, [self toSqlStr:vo.value]];
         }
         [self toExecSql];
                         
@@ -743,7 +744,7 @@
 
             // update value data
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        [[idDict objectForKey:key] intValue],its,[aRecord objectForKey:key]];
+                        [[idDict objectForKey:key] intValue],its,[self toSqlStr:[aRecord objectForKey:key]]];
             [self toExecSql];
             
             // update trkrData - date easy, need minpriv
@@ -1046,11 +1047,12 @@
 - (NSInteger) nextColor
 {
 	NSInteger rv = nextColor;
-	if (++nextColor >= [self.colorSet count])
+	if (++nextColor >= [[rTracker_resource colorSet] count])
 		nextColor=0;
 	return rv;
 }
 
+/*
 - (NSArray *) colorSet {
 	if (colorSet == nil) {
 		colorSet = [[NSArray alloc] initWithObjects:
@@ -1062,6 +1064,7 @@
 	}
 	return colorSet;
 }
+*/
 
 // TODO: dump plist, votArray could be encoded as colorSet above (?)
 
@@ -1076,7 +1079,7 @@
 	return votArray;
 }
 
-- (void) setTOGD:(CGRect)inRect {
+- (void) setTOGD:(CGRect)inRect {  // note TOGD not Togd -- so self.togd still automatically retained/released
     id ttogd = [[togd alloc] initWithData:self rect:inRect];
     self.togd = ttogd;
     [ttogd release];

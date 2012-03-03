@@ -232,7 +232,7 @@
 }
 
 - (void) dbSetPass:(NSString*)pass {
-	self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",pass];
+	self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[self.tob toSqlStr:pass]];
 	[self.tob toExecSql];
 }
 

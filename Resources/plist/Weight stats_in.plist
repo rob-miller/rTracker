@@ -16,7 +16,7 @@
 		<real>68</real>
 	</dict>
 	<key>tid</key>
-	<integer>14</integer>
+	<integer>7</integer>
 	<key>valObjTable</key>
 	<array>
 		<dict>
@@ -65,7 +65,7 @@
 			<key>valueName</key>
 			<string>% body fat</string>
 			<key>vcolor</key>
-			<integer>1</integer>
+			<integer>4</integer>
 			<key>vid</key>
 			<integer>2</integer>
 			<key>vpriv</key>
@@ -123,7 +123,7 @@
 			<key>valueName</key>
 			<string>BMI</string>
 			<key>vcolor</key>
-			<integer>6</integer>
+			<integer>1</integer>
 			<key>vid</key>
 			<integer>4</integer>
 			<key>vpriv</key>
@@ -177,7 +177,7 @@
 			<key>valueName</key>
 			<string>waist</string>
 			<key>vcolor</key>
-			<integer>8</integer>
+			<integer>2</integer>
 			<key>vid</key>
 			<integer>6</integer>
 			<key>vpriv</key>

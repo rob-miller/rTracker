@@ -10,6 +10,7 @@
 #import "configTVObjVC.h"
 #import "voState.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation addValObjController
 
@@ -103,7 +104,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	NSArray *allGraphs = [valueObj allGraphs];
 	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
 	
-	colorCount = [self.parentTrackerObj.colorSet count];
+	colorCount = [[rTracker_resource colorSet] count];
 
 	if (self.tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
@@ -156,7 +157,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	// Release any cached data, images, etc that aren't in use.
 
-	parentTrackerObj.colorSet = nil;
+	//parentTrackerObj.colorSet = nil;
 	parentTrackerObj.votArray = nil;
 	
 }
@@ -246,14 +247,18 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self.tempValObj.optDict removeObjectForKey:@"frv1"];
 	
     if ([(NSString*) [self.tempValObj.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
-        // disallow no autoscale if gmin, gmax not set and valid
-        double gmn = [(NSString*) [self.tempValObj.optDict objectForKey:@"gmin"] doubleValue];
-        double gmx = [(NSString*) [self.tempValObj.optDict objectForKey:@"gmax"] doubleValue];
         
-        if (gmn == gmx) {
-            [self.tempValObj.optDict setObject:@"1" forKey:@"autoscale"];
+        // override no autoscale if gmin, gmax both set and equal
+        double gmn, gmx;
+        
+        if ( ([[NSScanner localizedScannerWithString:[self.tempValObj.optDict objectForKey:@"gmin"]] scanDouble:&gmn])
+            &&
+             ([[NSScanner localizedScannerWithString:[self.tempValObj.optDict objectForKey:@"gmax"]] scanDouble:&gmx])
+            ){
+            if (gmn == gmx) {
+                [self.tempValObj.optDict setObject:@"1" forKey:@"autoscale"];
+            }
         }
-        
     }
     
 #if DEBUGLOG	
@@ -393,7 +398,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			//label = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 			//[label retain];
 			//label.frame = frame;
-			label.backgroundColor = [self.parentTrackerObj.colorSet objectAtIndex:row];
+			label.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:row];
 			break;
 		case 2:
 			frame.size = sizeGTLabel;
@@ -444,7 +449,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	} else if (self.tempValObj.vGraphType == VOG_NONE) {
 		colorCount = 0;
 	} else if (colorCount == 0) {
-		colorCount = [self.parentTrackerObj.colorSet count];
+		colorCount = [[rTracker_resource colorSet] count];
 	}
 	
 	if (oldcc != colorCount) 

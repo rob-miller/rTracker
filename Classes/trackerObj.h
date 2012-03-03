@@ -30,7 +30,7 @@
 	CGSize maxLabel;
 	NSInteger nextColor;
 	
-	NSArray *colorSet;
+	//NSArray *colorSet;
 	NSArray *votArray;
 	
 	UIControl *activeControl;	// ugly: track currently active text field so can scroll when keyboard shown, resign on background tap
@@ -48,7 +48,6 @@
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 @property (nonatomic) CGSize maxLabel;
 @property (readonly) NSInteger nextColor;
-@property (nonatomic,retain) NSArray *colorSet;
 @property (nonatomic,retain) NSArray *votArray;
 @property (nonatomic,assign) UIControl *activeControl;
 @property (nonatomic,assign) UIViewController *vc;

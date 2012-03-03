@@ -103,7 +103,8 @@
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
-    DBGLog(@"UTC update notification from tracker");
+
+    DBGLog(@"UTC update notification from tracker %@", ((trackerObj*)[n object]).trackerName);
     [self updateTableCells];
     self.needSave=YES;
 	[self showSaveBtn];
@@ -114,7 +115,7 @@
 	self.fwdRotations = YES;
 	//DBGLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
-	self.title = tracker.trackerName;
+	self.title = self.tracker.trackerName;
 	self.needSave = NO;
     
 	//for (valueObj *vo in self.tracker.valObjTable) {
@@ -131,12 +132,6 @@
 	keyboardIsShown = NO;
 	
 	self.tracker.vc = self;
-
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(updateUTC:) 
-												 name:rtTrackerUpdatedNotification 
-											   object:self.tracker];
-	
 	
     [super viewDidLoad];
 }
@@ -153,10 +148,7 @@
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 
-	//unregister for tracker updated notices
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:rtTrackerUpdatedNotification
-                                                  object:nil];  
+    DBGLog(@"utc unload %@",self.tracker.trackerName);
 	
 	UIView *haveView = [self.view viewWithTag:kViewTag2];
 	if (haveView) 
@@ -192,8 +184,10 @@
 		switch (self.dpr.action) {
 			case DPA_NEW:
 				[self.tracker resetData];
+                [self updateTrackerTableView];
 				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpr.date timeIntervalSince1970]]];
-				//break;
+				[self updateToolBar];
+				break;
 			case DPA_SET:
 			{
 				if ([self.tracker hasData]) {
@@ -231,6 +225,17 @@
         [dpr release];
 	}
 
+    [[NSNotificationCenter defaultCenter] addObserver:self.tracker 
+                                             selector:@selector(trackerUpdated:) 
+                                                 name:rtValueUpdatedNotification 
+                                               object:nil];
+    
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(updateUTC:) 
+												 name:rtTrackerUpdatedNotification 
+											   object:self.tracker];
+	
+
     //DBGLog(@"add kybd will show notifcation");
 	keyboardIsShown = NO;
     
@@ -254,6 +259,16 @@
 {
     DBGLog(@"utc view disappearing");
     //already done [self.tracker.activeControl resignFirstResponder];
+
+    // unregister this tracker for value updated notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self.tracker 
+                                                    name:rtValueUpdatedNotification
+                                                  object:nil];
+
+	//unregister for tracker updated notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:rtTrackerUpdatedNotification
+                                                  object:nil];  
 
     //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
@@ -796,7 +811,7 @@
 
 - (UIBarButtonItem *) currDateBtn {
 	//DBGLog(@"currDateBtn called");
-	NSString *datestr = [NSDateFormatter localizedStringFromDate:tracker.trackerDate 
+	NSString *datestr = [NSDateFormatter localizedStringFromDate:self.tracker.trackerDate 
 													   dateStyle:NSDateFormatterShortStyle 
 													   timeStyle:NSDateFormatterShortStyle];
 

@@ -24,7 +24,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, activityIndicator;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, activityIndicator, initialPrefsLoad;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -139,6 +139,7 @@
 
 #pragma mark load plists for input trackers
 - (BOOL) loadTrackerPlistFiles {
+    // called on refresh, loads any _in.plist files as trackers
     DBGLog(@"loadTrackerPlistFiles");
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
@@ -174,7 +175,7 @@
                     [self.tlist fixDictTID:tdict];
                     trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
                     [newTracker saveConfig];
-                    [self.tlist confirmTopLayoutEntry:newTracker];
+                    [self.tlist addToTopLayoutTable:newTracker];
                     DBGLog(@"finished with %@",tname);
                     [newTracker release];  // rtm 05 feb 2012
                     NSError *err;
@@ -220,7 +221,7 @@
 }
 
 - (void) refreshViewPart2 {
-    
+    DBGLog(@"entry");
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
     
@@ -235,6 +236,8 @@
     
     if ([self loadTrackerPlistFiles]) {
         // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
+        [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
+        [self.tlist reorderFromTLT];
         [self refreshViewPart2];
     };
 
@@ -246,21 +249,25 @@
 }
 
 - (BOOL) existsInputFiles:(NSString*)targ_ext {
+    BOOL retval = FALSE;
+    
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
         
     NSString *file;
         
-    while ((file = [dirEnum nextObject])) {
+    while ((retval == FALSE) && (file = [dirEnum nextObject])) {
         NSString *fname = [file lastPathComponent];
         NSRange inmatch = [fname rangeOfString:targ_ext options:NSBackwardsSearch|NSAnchoredSearch];
         if (inmatch.location != NSNotFound) {
             DBGLog(@"existsInputFiles: match on %@",fname);
-            return TRUE;
+            retval = TRUE;
         }
     }
-    return FALSE;
+
+    [localFileManager release];
+    return retval;
 }
 
 - (void) loadInputFiles {
@@ -291,6 +298,7 @@
 }
 
 - (void) loadSamples {
+    // called when handlePrefs decides is needed, copies plist files to documents dir
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
 
@@ -305,9 +313,14 @@
         [self.tlist deConflict:newTracker];
         
         [newTracker saveConfig];
-        [self.tlist confirmTopLayoutEntry:newTracker];
+        [self.tlist addToTopLayoutTable:newTracker];
         DBGLog(@"finished loadSample on %@",p);
+        [newTracker release];
     }
+    
+    self.tlist.sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
+    [self.tlist toExecSql];
+    self.tlist.sql = nil;
     
 }
 
@@ -316,16 +329,14 @@
 #pragma mark view support
 
 - (void)scrollState {
-
- if (privacyObj && self.privacyObj.showing != PVNOSHOW) { // don't instantiate if not there
+    if (privacyObj && self.privacyObj.showing != PVNOSHOW) { // don't instantiate if not there
         self.tableView.scrollEnabled = NO;
         DBGLog(@"no");
- } else {
+    } else {
         self.tableView.scrollEnabled = YES;
-         DBGLog(@"yes");
- }
-
- }
+        DBGLog(@"yes"); 
+    }
+}
 
 - (void) refreshToolBar:(BOOL)animated {
     //DBGLog(@"refresh tool bar, noshow= %d",(PVNOSHOW == self.privacyObj.showing));
@@ -470,7 +481,13 @@
     
 }
 
+- (BOOL) samplesNeeded {
+    self.tlist.sql = @"select val from info where name = 'samples_version'";
+    return (SAMPLES_VERSION != [self.tlist toQry2Int]);
+}
+
 - (void) handlePrefs {
+    /*
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     BOOL resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
@@ -481,15 +498,48 @@
     if (resetPassPref) [self.privacyObj resetPw];
     if (reloadSamplesPref) [self loadSamples];
     
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reset_password_pref"];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reload_sample_trackers_pref"];
+    if (resetPassPref) 
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reset_password_pref"];
+    if (reloadSamplesPref)
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reload_sample_trackers_pref"];
+    
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
     reloadSamplesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reload_sample_trackers_pref"];
     
     DBGLog(@"exit prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+     */
     
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    [sud synchronize];
+
+    BOOL resetPassPref = [sud boolForKey:@"reset_password_pref"];
+    BOOL reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
+    
+    DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+
+    if (resetPassPref) [self.privacyObj resetPw];
+    if (reloadSamplesPref 
+        || 
+        (self.initialPrefsLoad && [self samplesNeeded]) 
+         ) [self loadSamples];
+    
+    if (resetPassPref) 
+        [sud setBool:NO forKey:@"reset_password_pref"];
+    if (reloadSamplesPref)
+        [sud setBool:NO forKey:@"reload_sample_trackers_pref"];
+    
+    self.initialPrefsLoad = NO;
+    
+    [sud synchronize];
+
+#if DEBUGLOG
+    resetPassPref = [sud boolForKey:@"reset_password_pref"];
+    reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
+    
+    DBGLog(@"exit prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+#endif
 }
 
 - (void) refreshView {

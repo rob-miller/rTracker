@@ -171,6 +171,7 @@
     self.gtv = tgtv;
     [tgtv release];
 	self.gtv.tracker = self.tracker;
+    self.gtv.gtvCurrVO = self.currVO;
     self.gtv.parentGTVC = (id) self;
     if (DPA_GOTO == self.dpr.action) {
         int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
@@ -198,6 +199,7 @@
     [self resignFirstResponder];
     [super viewWillDisappear:animated];
 }
+
 #pragma mark -
 #pragma mark handle shake event
 
@@ -210,18 +212,16 @@
     [super viewDidAppear:animated];
 }
 
-- (void) doRecalculateFns {
+- (void) doRecalculateFns {  // and re-create graphs 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self.tracker recalculateFns];
-        
+    [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
+    
     [self.activityIndicator stopAnimating];
     [self.activityIndicator release];
-    
+        
     [self.gtv setNeedsDisplay];
-    [self.xAV setNeedsDisplay];
     [self.yAV setNeedsDisplay];
-    [self.scrollView setNeedsDisplay];   // no effect
-    [self.view setNeedsDisplay];   // no effect
     
     self.shakeLock = 0; // release lock
     
@@ -349,6 +349,8 @@
 # pragma mark view rotation methods
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if (0 != self.shakeLock)
+        return NO;
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -502,15 +504,19 @@
 #pragma mark handle taps in subviews
 
 - (void) yavTap {
+    if (0 != self.shakeLock)
+        return;
     //DBGLog(@"yav tapped!");
     [self nextVO];
     self.yAV.vogd = (vogd*) self.currVO.vogd;
     [self.yAV setNeedsDisplay];
-    self.gtv.currVO = self.currVO;
+    self.gtv.gtvCurrVO = self.currVO;  // double line width
     [self.gtv setNeedsDisplay];
 }
 
 - (void) gtvTap:(NSSet *)touches {
+    if (0 != self.shakeLock)
+        return;
     //DBGLog(@"gtv tapped!");
     //int xMarkSecs;
     UITouch *touch = [touches anyObject];
@@ -610,10 +616,12 @@
 
 - (void) nextVO {
     if (nil == self.currVO) {
+        // no currVO set, work through list and set first one that has graph enabled
         for (valueObj *vo in self.tracker.valObjTable) 
             if ([self testSetVO:vo])
                 return;
     } else {
+        // currVO is set, find it in list and then circle around trying to find next that has graph enabled
         NSUInteger currNdx = [self.tracker.valObjTable indexOfObject:currVO];
         NSUInteger ndx=currNdx+1;
         NSUInteger maxc = [self.tracker.valObjTable count];

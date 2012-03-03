@@ -31,7 +31,7 @@
 
 - (void) dealloc {
 
-	DBGLog(@"voState default dealloc");
+	//DBGLog(@"voState default dealloc");
     // *vo is assigned not retained
 	[super dealloc];
 }

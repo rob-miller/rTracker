@@ -95,23 +95,26 @@
 - (UIView*) voDisplay:(CGRect) bounds
 {
     self.vosFrame = bounds;
+    
 #if DEBUGLOG
     NSString *vals = self.vo.value;
     CGFloat valf = [self.vo.value floatValue];
     //trackerObj *pto = self.vo.parentTracker;
     
-    DBGLog(@"voDisplay slider vals= %@ valf= %f -> slider.valf= %f",vals,valf,self.sliderCtl.value);
+    DBGLog(@"voDisplay slider %@ vals= %@ valf= %f -> slider.valf= %f",self.vo.valueName,vals,valf,self.sliderCtl.value);
 #endif
+    
     
     //DBGLog(@"parent tracker date= %@",pto.trackerDate);
     if ([self.vo.value isEqualToString:@""]) {  // && (self.sliderCtl.value != self.sdflt)) {
-        self.sliderCtl.value = self.sdflt;  
-        //[self.sliderCtl setValue:self.sdflt animated:NO];
+        //self.sliderCtl.value = (float) self.sdflt;  
+        [self.sliderCtl setValue:self.sdflt animated:NO];  // method above failed with v=0.95
     } else if (self.sliderCtl.value != [self.vo.value floatValue]) {
-        self.sliderCtl.value = [self.vo.value floatValue];
-        //[self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
+        //self.sliderCtl.value = [self.vo.value floatValue];
+        [self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
     }
     DBGLog(@"sliderCtl voDisplay: %f", self.sliderCtl.value);
+    //NSLog(@"sliderCtl voDisplay: %f", self.sliderCtl.value);
 	return self.sliderCtl;
 }
 

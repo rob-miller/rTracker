@@ -14,13 +14,11 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B401214EF133600828B90 /* Menus & Guests_in.plist */; };
-		D40069CF14F595A7006798B2 /* Attitude_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400814EF124800828B90 /* Attitude_in.plist */; };
 		D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
 		D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400A14EF124800828B90 /* Exercise_in.plist */; };
 		D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400B14EF124800828B90 /* Sleep_in.plist */; };
 		D40069D314F595C2006798B2 /* Weight stats_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400C14EF124800828B90 /* Weight stats_in.plist */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
-		D40B400D14EF124800828B90 /* Attitude_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400814EF124800828B90 /* Attitude_in.plist */; };
 		D40B400E14EF124800828B90 /* Car_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
 		D40B400F14EF124800828B90 /* Exercise_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400A14EF124800828B90 /* Exercise_in.plist */; };
 		D40B401014EF124800828B90 /* Sleep_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400B14EF124800828B90 /* Sleep_in.plist */; };
@@ -123,6 +121,8 @@
 		D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
 		D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
+		D49702CC1502DEB80009B56A /* Drinks_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D49702CB1502DEB80009B56A /* Drinks_in.plist */; };
+		D49702CE1502DED70009B56A /* Self_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D49702CD1502DED70009B56A /* Self_in.plist */; };
 		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
 		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
@@ -174,7 +174,6 @@
 			dstSubfolderSpec = 7;
 			files = (
 				D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */,
-				D40069CF14F595A7006798B2 /* Attitude_in.plist in Copy Sample Trackers */,
 				D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */,
 				D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */,
 				D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */,
@@ -198,7 +197,6 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D40B400814EF124800828B90 /* Attitude_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Attitude_in.plist; path = Resources/plist/Attitude_in.plist; sourceTree = "<group>"; };
 		D40B400914EF124800828B90 /* Car_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Car_in.plist; path = Resources/plist/Car_in.plist; sourceTree = "<group>"; };
 		D40B400A14EF124800828B90 /* Exercise_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Exercise_in.plist; path = Resources/plist/Exercise_in.plist; sourceTree = "<group>"; };
 		D40B400B14EF124800828B90 /* Sleep_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Sleep_in.plist; path = Resources/plist/Sleep_in.plist; sourceTree = "<group>"; };
@@ -264,6 +262,8 @@
 		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
 		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
 		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Resources/xib/addValObjController.xib; sourceTree = "<group>"; };
+		D49702CB1502DEB80009B56A /* Drinks_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Drinks_in.plist; path = Resources/plist/Drinks_in.plist; sourceTree = "<group>"; };
+		D49702CD1502DED70009B56A /* Self_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Self_in.plist; path = Resources/plist/Self_in.plist; sourceTree = "<group>"; };
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
@@ -625,10 +625,11 @@
 		D4A8D07C14F1189B0028AD03 /* sample trackers */ = {
 			isa = PBXGroup;
 			children = (
-				D40B401214EF133600828B90 /* Menus & Guests_in.plist */,
-				D40B400814EF124800828B90 /* Attitude_in.plist */,
 				D40B400914EF124800828B90 /* Car_in.plist */,
+				D49702CB1502DEB80009B56A /* Drinks_in.plist */,
 				D40B400A14EF124800828B90 /* Exercise_in.plist */,
+				D40B401214EF133600828B90 /* Menus & Guests_in.plist */,
+				D49702CD1502DED70009B56A /* Self_in.plist */,
 				D40B400B14EF124800828B90 /* Sleep_in.plist */,
 				D40B400C14EF124800828B90 /* Weight stats_in.plist */,
 			);
@@ -679,7 +680,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Robert T. Miller";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
@@ -740,13 +741,14 @@
 				D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */,
 				D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */,
 				D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */,
-				D40B400D14EF124800828B90 /* Attitude_in.plist in Resources */,
 				D40B400E14EF124800828B90 /* Car_in.plist in Resources */,
 				D40B400F14EF124800828B90 /* Exercise_in.plist in Resources */,
 				D40B401014EF124800828B90 /* Sleep_in.plist in Resources */,
 				D40B401114EF124800828B90 /* Weight stats_in.plist in Resources */,
 				D40B401314EF133600828B90 /* Menus & Guests_in.plist in Resources */,
 				D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */,
+				D49702CC1502DEB80009B56A /* Drinks_in.plist in Resources */,
+				D49702CE1502DED70009B56A /* Self_in.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,6 +894,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
@@ -921,6 +924,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
@@ -943,6 +947,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -960,6 +965,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -981,6 +987,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -1000,6 +1007,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -1018,6 +1026,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1042,6 +1051,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
@@ -1068,6 +1078,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;

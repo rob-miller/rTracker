@@ -116,11 +116,14 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			DBGLog(@"init uniquev");
 			self.sql = @"insert into uniquev (id, value) values (0, 1);";
 			[self toExecSql];
-		} else {
+		} 
+#if DEBUGLOG
+        else {
 			self.sql = @"select value from uniquev where id=0;";
 			c = [self toQry2Int];
 			DBGLog(@"uniquev= %d",c);
 		}
+#endif
 		self.sql = nil;
 
 		
@@ -203,6 +206,21 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 }
 
 #pragma mark -
+#pragma mark escape chars for sql store
+
+- (NSString*) fromSqlStr:(NSString*) instr {
+    NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"''" withString:@"'"];
+    //DBGLog(@"in: %@  out: %@",instr,outstr);
+    return outstr;
+}
+
+- (NSString*) toSqlStr:(NSString*) instr {
+    NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+    //DBGLog(@"in: %@  out: %@",instr,outstr);
+    return outstr;
+}
+
+#pragma mark -
 #pragma mark sql query execute methods
 
 - (void) toQry2AryS : (NSMutableArray *) inAry {
@@ -215,7 +233,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
 			char *rslts = (char *) sqlite3_column_text(stmt, 0);
-			NSString *tlentry = [NSString stringWithUTF8String:rslts];
+			NSString *tlentry = [self fromSqlStr:[NSString stringWithUTF8String:rslts]];
 			[inAry addObject:(id) tlentry];
 			SQLDbg(@"  rslt: %@",tlentry);
 		}
@@ -246,7 +264,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
             
             //if (strlen(ls1)) {  // don't report if empty ? - fix problem with csv load...
                 [i1 addObject: [NSNumber numberWithInt: li1]];
-                [s1 addObject: [NSString stringWithUTF8String: ls1]];
+                [s1 addObject: [self fromSqlStr:[NSString stringWithUTF8String: ls1]]];
                 SQLDbg(@"  rslt: %@ %@",[i1 lastObject], [s1 lastObject]);
             //}
 		}
@@ -270,7 +288,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
 			[i1 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,0)]];
-			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
+			[s1 addObject: [self fromSqlStr:[NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]]];
 			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,2)]];
 			
 			SQLDbg(@"  rslt: %@ %@ %@",[i1 lastObject], [s1 lastObject],[i2 lastObject]);
@@ -294,9 +312,9 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt;
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 0)]];
+			[s1 addObject: [self fromSqlStr:[NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 0)]]];
 			
-			[s2 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]];
+			[s2 addObject: [self fromSqlStr:[NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]]];
 			
 			SQLDbg(@"  rslt: %@ %@",[s1 lastObject], [s2 lastObject]);
 		}
@@ -323,7 +341,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			
 			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 1)]];
 			
-			[s1 addObject: [NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 2)]];
+			[s1 addObject: [self fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 2)]]];
 			
 			SQLDbg(@"  rslt: %@ %@ %@",[i1 lastObject], [i2 lastObject], [s1 lastObject]);
 		}
@@ -352,7 +370,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			
 			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 1)]];
 			
-			[s1 addObject: [NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 2)]];
+			[s1 addObject: [self fromSqlStr:[NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 2)]]];
 			
 			[i3 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt, 3)]];
 			
@@ -503,7 +521,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		//int rslt;
 		if((/*rslt =*/ sqlite3_step(stmt)) == SQLITE_ROW) {
-			srslt = [NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 0)];
+			srslt = [self fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 0)]];
 		} else {
 			DBGErr(@"tob error executing . %@ . : %s", self.sql, sqlite3_errmsg(tDb));
 		}
@@ -604,7 +622,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			cols = [cols stringByAppendingString:[NSString stringWithUTF8String:sqlite3_column_name(stmt,i)]];
 			cols = [cols stringByAppendingString:@" "];
 		}
-		NSLog(@"%@",cols);
+		NSLog(@"%@  (db)",cols);
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
 			cols = @"";
 			for (i=0; i<c; i++) {

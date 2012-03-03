@@ -102,14 +102,10 @@ in_vpriv:(NSInteger)in_vpriv
 	self.checkButtonUseVO = nil;
 	[checkButtonUseVO release];
 	
-	DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
+	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
 	self.vos = nil;
 	[(id)vos release];
-	DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );    
-	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
-	//[(voState*)vos release];
-	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
-	//[vos dealloc];
+	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );    
 	[super dealloc];
 }
 

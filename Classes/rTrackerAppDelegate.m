@@ -20,12 +20,38 @@
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
+
+    if (nil == [[NSUserDefaults standardUserDefaults] objectForKey:@"reload_sample_trackers_pref"]) {
+        ((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
+
+         NSString  *mainBundlePath = [[NSBundle mainBundle] bundlePath];
+         NSString  *settingsPropertyListPath = [mainBundlePath
+                                                stringByAppendingPathComponent:@"Settings.bundle/Root.plist"];
+         
+         NSDictionary *settingsPropertyList = [NSDictionary 
+                                               dictionaryWithContentsOfFile:settingsPropertyListPath];
+         
+         NSMutableArray     *preferenceArray = [settingsPropertyList objectForKey:@"PreferenceSpecifiers"];
+         NSMutableDictionary *registerableDictionary = [NSMutableDictionary dictionary];
+         
+         for (int i = 0; i < [preferenceArray count]; i++)  { 
+             NSString  *key = [[preferenceArray objectAtIndex:i] objectForKey:@"Key"];
+             
+             if (key)  {
+                 id  value = [[preferenceArray objectAtIndex:i] objectForKey:@"DefaultValue"];
+                 [registerableDictionary setObject:value forKey:key];
+             }
+         }
+         
+         [[NSUserDefaults standardUserDefaults] registerDefaults:registerableDictionary]; 
+         [[NSUserDefaults standardUserDefaults] synchronize]; 
+    }
     
     // Override point for customization after app launch    
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
 
-	DBGLog(@"rt app delegate: app did finish launching");
+    DBGLog(@"rt app delegate: app did finish launching");
 }
 
 

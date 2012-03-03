@@ -412,3 +412,51 @@
 
 --- commit ---
 
+26 february
+ - change warning to log for 'no data for date' message
+ - disable 'should autorotate' while shakeLock on so can't leave until
+ done
+ - call setTOGD after recalculate fns to recreate graph (shake to redo
+ graph)
+ - fixed failure to set slider init val to 0.95 by using [setValue]
+ instead of .value=
+ - removed set autoscale to start from 0; TODO: option
+ - gtYAxV only print yAx val once if unchanged; TODO: to be closest to
+ accurate tick
+ - fixed timeFns to work like numbers, e.g. can use +-/*() 
+
+27 february
+ - added toSqlStr and fromSqlStr calls throughout to enable 's in strs
+ ... but not working
+
+28 february
+ - found escape seq : '' for '
+ - stuck getting default values in for prefs -- maybe not
+ appdidfinishlaunching but handleprefs instead
+
+29 february
+ - added flag for initial prefs load, now sample trackers added once.
+
+01 March
+ - added updateTrackerTableView() and updateToolBar() for utc/dpa_new
+ (datepicker create new entry), that seems to work now
+
+02 March 
+ - work on sample trackers - attitude-> self (earlier notes); tweak car
+ - move colorset to rtracker-resource save mem for all trackers)
+ - enable add/edit tracker shows voType-graphType-colour
+ - fixed 'del' on fn defn caused crash when removed more than present
+ - add display 'no graph' for add/edit tracker as appropriate
+
+03 March
+ - graphs autoscale min or max if not set to value
+ - add addToTopLayoutTable(tObj) to fix problem of initial rank for loaded trackers
+ - eliminated other trackerObjs notified when value changed (was notifying all)
+ - added zero line for graphs which span y=0
+ - fixed multiple sample trackers being added on restart (possibly only issue for simulator restarts)
+ - fixed error on deconflict samples, needed to set to:optdict:name to trackername
+ - copy new versions of trackers into rtracker dir, change tids to
+ consecutive numbers.
+
+--- commit ---
+
