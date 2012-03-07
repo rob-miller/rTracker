@@ -24,6 +24,15 @@
 + (NSArray*) colorSet;
 + (NSArray*) colorNames;
 
++ (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
++ (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
+
++ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
++ (void) setProgressVal:(float)progressVal;
+//+ (void) updateProgressBar;
++ (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
+
+
 @end
 
 extern BOOL keyboardIsShown;

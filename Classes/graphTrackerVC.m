@@ -17,6 +17,7 @@
 
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 @interface graphTrackerVC (PrivateMethods)
 - (CGFloat) getMaxDataLabelWidth;
@@ -26,7 +27,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,activityIndicator,shakeLock;
+@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,shakeLock;
 
 /*
  - (void) loadView {
@@ -217,9 +218,9 @@
     [self.tracker recalculateFns];
     [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
     
-    [self.activityIndicator stopAnimating];
-    [self.activityIndicator release];
-        
+    //[rTracker_resource finishActivityIndicator:self.scrollView navItem:nil disable:NO];
+    [rTracker_resource finishProgressBar:self.scrollView navItem:nil disable:NO];
+    
     [self.gtv setNeedsDisplay];
     [self.yAV setNeedsDisplay];
     
@@ -239,12 +240,9 @@
         
         // we are first one here
         
-        self.activityIndicator = 
-        [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
-        self.activityIndicator.center =  self.scrollView.center;
-        [self.scrollView addSubview:activityIndicator];
-        [self.activityIndicator startAnimating];
-        
+        //[rTracker_resource startActivityIndicator:self.scrollView navItem:nil disable:NO];
+        [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO];
+
         [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
     }
 }

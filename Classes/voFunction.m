@@ -9,6 +9,7 @@
 #import "voFunction.h"
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @interface voFunction ()
 - (void) updateFnTitles;
@@ -1187,6 +1188,9 @@
     int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];
     int nextDate = [MyTracker firstDate];
     
+    float ndx=1.0;
+    float all = [self.vo.parentTracker getDateCount];
+    
     do {
         [MyTracker loadData:nextDate];
         //DBGLog(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
@@ -1197,6 +1201,9 @@
                         self.vo.vid, nextDate, self.vo.value];
         }
         [MyTracker toExecSql];
+        
+        [rTracker_resource setProgressVal:(ndx/all)];
+        ndx += 1.0;
         
     } while ((nextDate = [MyTracker postDate]));    // iterate through dates
     

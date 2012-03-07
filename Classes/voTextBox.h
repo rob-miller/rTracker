@@ -10,6 +10,8 @@
 #import "voState.h"
 #import "voDataEdit.h"
 
+#import "useTrackerController.h"
+
 @interface voTextBox : voState <UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate>{
 
     UIButton *tbButton;
@@ -33,6 +35,8 @@
 	voDataEdit *devc;
 	CGRect saveFrame;
 	
+    useTrackerController *parentUTC;
+    
 }
 
 @property (nonatomic,retain) UIButton *tbButton;
@@ -47,6 +51,9 @@
 @property (nonatomic,retain) NSArray *historyArray;
 @property (nonatomic,retain) NSArray *historyNdx;
 @property (nonatomic,retain) NSArray *namesNdx;
+
+@property (nonatomic,retain) useTrackerController *parentUTC;
+
 //@property (nonatomic,retain) NSMutableDictionary *peopleDictionary;
 //@property (nonatomic,retain) NSMutableDictionary *historyDictionary;
 

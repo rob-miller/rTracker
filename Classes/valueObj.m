@@ -9,6 +9,7 @@
 #import "valueObj.h"
 #import "trackerObj.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 #import "voNumber.h"
 #import "voText.h"
@@ -345,4 +346,69 @@ in_vpriv:(NSInteger)in_vpriv
 	return 0;
 }
 
+#if DEBUGERR
+#define VOINF [NSString stringWithFormat:@"t: %@ vo: %i %@",((trackerObj*)self.parentTracker).trackerName,self.vid,self.valueName]
+#endif
+
+- (void) validate {
+    DBGLog(@"validate %@",VOINF);
+    
+    if (self.vtype < 0) {
+        DBGErr(@"%@ invalid vtype (negative): %d",VOINF,self.vtype);
+        self.vtype = 0;
+    } else if (self.vtype > VOT_MAX) {
+        DBGErr(@"%@ invalid vtype (too large): %d max vtype= %i",VOINF,self.vtype,VOT_MAX);
+        self.vtype = 0;
+    }
+    
+    if (self.vpriv < 0) {
+        DBGErr(@"%@ invalid vpriv (too low): %d minpriv= %i, 0 accepted",VOINF,self.vpriv,MINPRIV);
+        DBGLog(@"hello : %@ ",VOINF);
+        self.vpriv = MINPRIV;
+    } else if (self.vpriv > MAXPRIV) {
+        DBGErr(@"%@ invalid vtype (too large): %d maxpriv= %i",VOINF,self.vpriv,MAXPRIV);
+        self.vpriv = 0;
+    }
+
+    if (VOT_CHOICE != self.vtype) {
+        if (self.vcolor < 0) {
+            DBGErr(@"%@ invalid vcolor (negative): %d",VOINF,self.vcolor);
+            self.vcolor = 0;
+        } else if (self.vcolor > ([[rTracker_resource colorSet] count] -1) ) {
+            DBGErr(@"%@ invalid vcolor (too large): %d max color= %i",VOINF,self.vcolor, ([[rTracker_resource colorSet] count] -1));
+            self.vcolor = 0;
+        }
+    }
+    
+    if (self.vGraphType < 0) {
+        DBGErr(@"%@ invalid vGraphType (negative): %d",VOINF,self.vGraphType);
+        self.vGraphType = 0;
+    } else if (self.vGraphType > VOG_MAX) {
+        DBGErr(@"%@ invalid vGraphType (too large): %d max vGraphType= %i",VOINF,self.vGraphType,VOG_MAX);
+        self.vGraphType = 0;
+    }
+
+    if (VOT_CHOICE == self.vtype) {
+        if (-1 != self.vcolor) {
+            DBGErr(@"%@ invalid choice vcolor (not -1): %d",VOINF,self.vcolor);
+            self.vcolor = -1;
+        }
+        int i;
+        for (i=0; i< CHOICES; i++) {
+            NSString *key = [NSString stringWithFormat:@"cc%d",i];
+            NSNumber *ncol = [self.optDict objectForKey:key];
+            if (ncol != nil) {
+                NSInteger col = [ncol integerValue];
+                if (col < 0) {
+                    DBGErr(@"%@ invalid choice %i color (negative): %d",VOINF,i,col);
+                    [self.optDict setObject:[NSNumber numberWithInt:0] forKey:key];
+                } else if (col > ([[rTracker_resource colorSet] count] -1)) {
+                    DBGErr(@"%@ invalid choice %i color (too large): %d max color= %i",VOINF,i,col,([[rTracker_resource colorSet] count] -1));
+                    [self.optDict setObject:[NSNumber numberWithInt:0] forKey:key];
+                }
+            }
+        }
+    }
+    
+}
 @end

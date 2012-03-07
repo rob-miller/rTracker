@@ -89,4 +89,96 @@ BOOL keyboardIsShown=NO;
 }
 
 
+static UIActivityIndicatorView *activityIndicator=nil;
+
++ (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    
+    if (disable) {
+        view.userInteractionEnabled = NO;
+        [navItem setHidesBackButton:YES animated:YES];
+        navItem.rightBarButtonItem.enabled = NO;
+    }
+    
+    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+    activityIndicator.center = view.center;
+    [view addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+}
+
++ (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    
+    if (disable) {
+        [navItem setHidesBackButton:NO animated:YES];
+        navItem.rightBarButtonItem.enabled = YES;
+        view.userInteractionEnabled = YES;
+    }
+    
+    [activityIndicator stopAnimating];
+    [activityIndicator release];
+    activityIndicator = nil;
+}
+
+static UIProgressView *progressBar=nil;
+
++ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    
+    if (disable) {
+        view.userInteractionEnabled = NO;
+        [navItem setHidesBackButton:YES animated:YES];
+        navItem.rightBarButtonItem.enabled = NO;
+    }
+    
+    progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault ];
+    CGRect pbFrame = progressBar.frame;
+    CGRect vFrame = view.frame;
+    pbFrame.size.width = vFrame.size.width;
+    progressBar.frame = pbFrame;
+    
+    //progressBar.center = view.center;
+    [view addSubview:progressBar];
+    //[progressBar startAnimating];
+    
+/*
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(updateProgressBar) 
+                                                 name:rtProgressBarUpdateNotification 
+                                               object:nil];
+    
+  */  
+    DBGLog(@"progressBar started");
+}
+
+static float localProgressVal;
+
++ (void) setProgressVal:(float)progressVal {
+    localProgressVal = progressVal;
+    [self performSelectorOnMainThread:@selector(updateProgressBar) withObject:nil waitUntilDone:NO];
+}
+
++ (void) updateProgressBar {
+    [progressBar setProgress:localProgressVal];
+    DBGLog(@"progress bar updated: %f",localProgressVal);
+}
+
++ (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    
+    if (disable) {
+        [navItem setHidesBackButton:NO animated:YES];
+        navItem.rightBarButtonItem.enabled = YES;
+        view.userInteractionEnabled = YES;
+    }
+/*
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:rtProgressBarUpdateNotification
+                                                  object:nil];
+*/
+    //[progressBar stopAnimating];
+    [progressBar removeFromSuperview];
+    [progressBar release];
+    progressBar = nil;
+    
+    DBGLog(@"progressbar finished");
+}
+
+
 @end

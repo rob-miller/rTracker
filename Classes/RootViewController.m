@@ -16,6 +16,7 @@
 #import "rTracker-resource.h"
 #import "privacyV.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 #import "CSVParser.h"
 
@@ -24,7 +25,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, activityIndicator, initialPrefsLoad;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -53,6 +54,10 @@
 
 #pragma mark -
 #pragma mark load CSV files waiting for input
+
+static int fileLoadCount;
+static int fileReadCount;
+
 
 //
 // original code:
@@ -88,7 +93,7 @@
                 int ndx=0;
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
-                        //DBGLog(@"match to: %@",tracker);
+                        DBGLog(@"match to: %@",tracker);
                         NSString *target = [docsDir stringByAppendingPathComponent:file];
                         //NSError *error = nil;
                         NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
@@ -109,6 +114,7 @@
                             CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
                             [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
                             [parser release];
+                            [to recalculateFns];
                             [to release];
                             
                             /*
@@ -124,6 +130,8 @@
                             if (!rslt) {
                                 DBGLog(@"Error: %@", err);
                             }
+                            [rTracker_resource setProgressVal:(((float)fileReadCount)/((float)fileLoadCount))];                    
+                            fileReadCount++;
                             // apparently cannot rename in but can delete from application's Document folder
                             //*/
                         }
@@ -183,6 +191,9 @@
                     if (!rslt) {
                         DBGLog(@"Error: %@", err);
                     }
+
+                    [rTracker_resource setProgressVal:(((float)fileReadCount)/((float)fileLoadCount))];                    
+                    fileReadCount++;
                     didSomething = YES;
                         // apparently cannot rename in but can delete from application's Document folder
                         
@@ -201,15 +212,8 @@
     
     // file load done, enable userInteraction
     
-    self.view.userInteractionEnabled = YES;
-
-    self.navigationItem.leftBarButtonItem.enabled = YES;
-    self.navigationItem.rightBarButtonItem.enabled = YES;
+    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
     
-    // stop activityIndicator spinning
-    [self.activityIndicator stopAnimating];
-    [self.activityIndicator release];
-
     // give up lock
     self.refreshLock = 0;
     
@@ -238,9 +242,10 @@
         // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
         [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
         [self.tlist reorderFromTLT];
-        [self refreshViewPart2];
     };
-
+    
+    [self refreshViewPart2];
+    
     [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
     
     DBGLog(@"load plist thread finished, lock still on, UI still disabled");
@@ -248,8 +253,8 @@
     // end of this thread, refreshLock still on, userInteraction disabled, activityIndicator still spinning and doLoadCsvFiles is in charge
 }
 
-- (BOOL) existsInputFiles:(NSString*)targ_ext {
-    BOOL retval = FALSE;
+- (int) countInputFiles:(NSString*)targ_ext {
+    int retval = 0;
     
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
@@ -257,12 +262,12 @@
         
     NSString *file;
         
-    while ((retval == FALSE) && (file = [dirEnum nextObject])) {
+    while (file = [dirEnum nextObject]) {
         NSString *fname = [file lastPathComponent];
         NSRange inmatch = [fname rangeOfString:targ_ext options:NSBackwardsSearch|NSAnchoredSearch];
         if (inmatch.location != NSNotFound) {
             DBGLog(@"existsInputFiles: match on %@",fname);
-            retval = TRUE;
+            retval++;
         }
     }
 
@@ -272,19 +277,16 @@
 
 - (void) loadInputFiles {
     
-    if ([self existsInputFiles:@"_in.csv"] || [self existsInputFiles:@"_in.plist"]) {  // hope plists fast, csv could be slow
-        self.view.userInteractionEnabled = NO;
-        self.navigationItem.leftBarButtonItem.enabled = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-        
-        self.activityIndicator = 
-            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
-        self.activityIndicator.center =  self.tableView.center;
-        [[[UIApplication sharedApplication] keyWindow] addSubview:self.activityIndicator];
-        [self.activityIndicator startAnimating];
+    fileLoadCount = [self countInputFiles:@"_in.csv"];
+    fileLoadCount += [self countInputFiles:@"_in.plist"];
+    fileReadCount=1;
     
+    if ( 0 < fileLoadCount ) {  
+        [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+
         [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
         // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
+        
         DBGLog(@"returning main thread, lock on, UI disabled, activity spinning,  files to load");
         return;
     }

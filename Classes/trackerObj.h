@@ -47,7 +47,7 @@
 @property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 @property (nonatomic) CGSize maxLabel;
-@property (readonly) NSInteger nextColor;
+@property (nonatomic) NSInteger nextColor;
 @property (nonatomic,retain) NSArray *votArray;
 @property (nonatomic,assign) UIControl *activeControl;
 @property (nonatomic,assign) UIViewController *vc;
@@ -65,6 +65,7 @@
 - (void) rescanMaxLabel; 
 
 - (void) setToOptDictDflts;
+- (int) getDateCount;
 - (BOOL) loadData:(NSInteger)iDate;
 - (void) saveData;
 - (void) resetData;

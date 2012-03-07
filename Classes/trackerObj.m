@@ -284,15 +284,17 @@
 		}
 		
 		if (vo.vcolor > self.nextColor)
-			nextColor = vo.vcolor;
+			self.nextColor = vo.vcolor;
 		
         [vo.vos setOptDictDflts];
 		[vo.vos loadConfig];
+        
+        [vo validate];
 	}
 	
 	//[self nextColor];  // inc safely past last used color
-	if (nextColor >= [[rTracker_resource colorSet] count])
-		nextColor=0;
+	if (self.nextColor >= [[rTracker_resource colorSet] count])
+		self.nextColor=0;
 	
 	[s1 release];
 	[s2 release];
@@ -648,6 +650,13 @@
     
 }
 
+- (int) getDateCount {
+    self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where minpriv <= %d;",[privacyV getPrivacyValue]];
+    int rv = [self toQry2Int];
+    self.sql = nil;
+    return rv;
+}
+
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh {
 	
 	//[nsfh writeData:[self.trackerName dataUsingEncoding:NSUTF8StringEncoding]];
@@ -669,6 +678,9 @@
     int currDate = (int) [self.trackerDate timeIntervalSince1970];
     int nextDate = [self firstDate];
     
+    float ndx = 1.0;
+    float all = [self getDateCount];
+    
     do {
         [self loadData:nextDate];
         // write data - each vo gets routine to write itself -- function results too
@@ -679,6 +691,8 @@
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+        [rTracker_resource setProgressVal:(ndx/all)];
+        ndx += 1.0;
     } while ((nextDate = [self postDate]));    // iterate through dates
     
     // restore current date
@@ -688,6 +702,68 @@
 #pragma mark -
 #pragma mark read in from export
 
+// 2nd try
+- (void)receiveRecord:(NSDictionary *)aRecord
+{
+    
+    NSDate *ts = [self strToDate:[aRecord objectForKey:TIMESTAMP_LABEL]];
+    if (nil == ts) {
+        for (NSString *key in aRecord)
+        {
+            DBGLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
+        }
+        DBGErr(@"skipping record as failed reading %@ key",TIMESTAMP_LABEL);
+        return;
+    } else {
+        DBGLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
+    }
+    
+    int its = [ts timeIntervalSince1970];
+    
+    //NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
+    
+    int mp = BIGPRIV;
+	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
+	{
+        DBGLog(@" key= %@", key);
+        if (! [key isEqualToString:TIMESTAMP_LABEL]) { // not timestamp 
+            self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
+            int valobjID,valobjPriv;
+            [self toQry2IntInt:&valobjID i2:&valobjPriv];
+            DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            
+            //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
+                        valobjID,its,[self toSqlStr:[aRecord objectForKey:key]]];
+            [self toExecSql];
+            
+            if (![@"" isEqualToString:[aRecord objectForKey:key]])  {   // only fields with data
+                if (valobjPriv < mp)
+                    mp = valobjPriv;  // if 
+            }
+        }
+    }
+    
+    /*  replacing data for this date, minpriv is waht we saw...
+     
+    self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
+    int currMinPriv = [self toQry2Int];
+    
+    if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
+        // assume not found, new entry minpriv is mp for this record
+    } else if (currMinPriv < mp) {
+        mp = currMinPriv;   // data already present and < mp
+    }
+    // default mp < currMinPriv
+    */
+    
+    self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
+    [self toExecSql];
+}
+
+
+/* first try...
+ 
 - (void)receiveRecord:(NSDictionary *)aRecord
 {
     
@@ -710,7 +786,7 @@
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
         DBGLog(@"pass1 key= %@", key);
-        if ((! [key isEqualToString:TIMESTAMP_LABEL]) /* not timestamp */
+        if ((! [key isEqualToString:TIMESTAMP_LABEL]) // not timestamp 
              && (![@"" isEqualToString:[aRecord objectForKey:key]]) ) {   // only fields with data
             
             //self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
@@ -737,8 +813,8 @@
 	for (NSString *key in aRecord)
 	{
         DBGLog(@"pass2 key= %@", key);
-        if ((! [key isEqualToString:TIMESTAMP_LABEL]) //{ /* not timestamp */
-            // && ( ! ((nil != [typDict objectForKey:key]) && [vtf isEqualToNumber:[typDict objectForKey:key]]))  /* ignore calculated function value */
+        if ((! [key isEqualToString:TIMESTAMP_LABEL]) //{ // not timestamp 
+            // && ( ! ((nil != [typDict objectForKey:key]) && [vtf isEqualToNumber:[typDict objectForKey:key]]))  // ignore calculated function value 
             ) { 
             //&& (nil != [aRecord objectForKey:key])) {    // accept fields without data if updating
 
@@ -771,6 +847,7 @@
     //[typDict release];
     
 }
+*/
 
 
 #pragma mark -
@@ -1039,6 +1116,7 @@
     
 	for (valueObj *vo in self.valObjTable) {
         if (VOT_FUNC == vo.vtype) {
+            [rTracker_resource setProgressVal:0.0f];
             [vo.vos recalculate];
         }
 	}

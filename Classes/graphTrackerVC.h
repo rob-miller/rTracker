@@ -59,7 +59,6 @@
 @property(nonatomic,retain) gtYAxV *yAV;
 @property(nonatomic,retain) dpRslt *dpr;
 @property(nonatomic,retain) useTrackerController *parentUTC;
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 
 @property (atomic)     int32_t shakeLock;
 

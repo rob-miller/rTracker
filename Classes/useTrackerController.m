@@ -667,13 +667,23 @@
 	}
 }
 
-- (IBAction)btnExport {
-	//DBGLog(@"btnExport was pressed!");
-    //NSString *fname = [[NSString stringWithFormat:@"%@_out.csv",self.tracker.trackerName]
-    //                   stringByReplacingOccurrencesOfString:@" " withString:@"_"];
-
-    // not threaded with activity indicator, so not disabling interaction
+- (void) doExport {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    DBGLog(@"start export");
+    
     [self.tracker export];
+    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+
+    [pool drain];
+}
+
+- (IBAction)btnExport {
+
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+    
+    [NSThread detachNewThreadSelector:@selector(doExport) toTarget:self withObject:nil];
+
+    
 }
 
 - (void) btnPrevDate {

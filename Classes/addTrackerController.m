@@ -396,7 +396,7 @@ DBGLog(@"btnAddValue was pressed!");
 		
 			self.nameField.text = self.tempTrackerObj.trackerName;
 			self.nameField.placeholder = @"Name this Tracker";
-        DBGLog(@"loading cell 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
+        //DBGLog(@"loaded section 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
 
 //		} else {   // row = 1
 //			cell.textLabel.text = @"privacy level:";
@@ -423,7 +423,8 @@ DBGLog(@"btnAddValue was pressed!");
 //		}
 		
 	} else {
-		static NSString *valCellID = @"valCellID";
+
+        static NSString *valCellID = @"valCellID";
 		cell = [tableView dequeueReusableCellWithIdentifier: valCellID];
 		if (cell == nil) {
 			cell = [[[UITableViewCell alloc]
@@ -441,19 +442,22 @@ DBGLog(@"btnAddValue was pressed!");
 			cell.textLabel.text = @"";
 		} else {
 			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
-			cell.textLabel.text = vo.valueName;
+            //DBGLog(@"starting section 1 cell for %@",vo.valueName);
+			cell.textLabel.text = vo.valueName; 
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			//cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
-            cell.detailTextLabel.text = ( [[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"] ?
-                                         [NSString stringWithFormat:@"%@ - no graph", [self.tempTrackerObj.votArray objectAtIndex:vo.vtype]] 
-                                         :
-                                         [NSString stringWithFormat:@"%@ - %@ - %@",
-                                          [self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
-                                         [vo.vos.voGraphSet objectAtIndex:vo.vGraphType],
-                                         [[rTracker_resource colorNames] objectAtIndex:vo.vcolor]] );
-                                         
+            if ([@"0" isEqualToString:[vo.optDict objectForKey:@"graph"]])
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", [self.tempTrackerObj.votArray objectAtIndex:vo.vtype]];
+            else if (VOT_CHOICE == vo.vtype)  // vColor = -1
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
+                                             [vo.vos.voGraphSet objectAtIndex:vo.vGraphType]];
+            else 
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
+                                             [vo.vos.voGraphSet objectAtIndex:vo.vGraphType],
+                                             [[rTracker_resource colorNames] objectAtIndex:vo.vcolor]];
 		}
-	}
+        //DBGLog(@"loaded section 1 row %i : .%@. : .%@.",row, cell.textLabel.text, cell.detailTextLabel.text);
+    }
 	
 	return cell;
 }

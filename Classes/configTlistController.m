@@ -15,7 +15,7 @@
 @implementation configTlistController
 
 @synthesize tlist;
-@synthesize table, activityIndicator;
+@synthesize table;
 
 static int selSegNdx=SegmentEdit;
 
@@ -43,25 +43,16 @@ UITableView *deleteTableView;
 - (void) startExport {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self.tlist exportAll];
-    [self.navigationItem setHidesBackButton:NO animated:YES];
-    self.navigationItem.rightBarButtonItem.enabled = YES;
-    self.view.userInteractionEnabled = YES;
-    [self.activityIndicator stopAnimating];
-    self.activityIndicator = nil;
+    
+    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+    
     [pool drain];
 }
 
 - (void) btnExport {
-    DBGLog(@"export all");
-    self.view.userInteractionEnabled = NO;
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-    self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    self.activityIndicator = 
-    [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
-    self.activityIndicator.center =  self.view.center;
-    [self.view addSubview:self.activityIndicator];
-    [self.activityIndicator startAnimating];
+    DBGLog(@"export all");
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
     
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
 }

@@ -9,6 +9,7 @@
 #import "trackerList.h"
 #import "privacyV.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation trackerList
 
@@ -285,10 +286,16 @@
 }
 
 - (void) exportAll {
+    float ndx=1.0;
+    float all = [self.topLayoutIDs count];
+    
     for (NSNumber *tid in self.topLayoutIDs) {
         trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
         [to export];
         [to release];
+        
+        [rTracker_resource setProgressVal:(ndx/all)];
+        ndx += 1.0;
     }
 }
 

@@ -460,3 +460,25 @@
 
 --- commit ---
 
+04 march 2012
+ - hours tracking down vcolor for choice =-1 so broke detail display
+ in edit table above
+ - added vo.validate(), probably not needed as there were no
+ problems...
+ - fixed problem with textbox save not updating tracker due to not
+ notifying all trackers after change above (voTextbox needs to know
+ parentUTC)
+ - consolidate activityIndicators to rtracker-resource, saving LOC
+ - add activityIndicator to tracker export
+
+05 March 2012
+ - changed csv record load to be more efficient, think working ok!
+ - moved refreshviewPart2 to occur if plist load found nothing, to
+ handle private csv file waiting for load.
+
+06 March 2002
+ - changed activity indicators to progress bars
+
+07 March 2002
+
+--- commit ---

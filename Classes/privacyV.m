@@ -243,6 +243,9 @@ static int privacyValue=PRIVDFLT;
 
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
+    if ((PVNOSHOW == showing) && (PVNOSHOW == newState))
+        return;  // this happens when closing down.
+    
     //[(RootViewController*) self.parent refreshToolBar:YES];
     
 	// (showing == newState)

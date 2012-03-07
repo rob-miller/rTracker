@@ -21,7 +21,7 @@
 @implementation voTextBox
 
 @synthesize tbButton,textView,devc,saveFrame,accessoryView,addButton,segControl;
-@synthesize alphaArray,namesArray,historyArray,namesNdx,historyNdx;
+@synthesize alphaArray,namesArray,historyArray,namesNdx,historyNdx,parentUTC;
 
 //@synthesize peopleDictionary,historyDictionary;
 @synthesize pv,showNdx;
@@ -76,6 +76,7 @@
 	voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
 	vde.vo = self.vo;
 	self.devc = vde; // assign
+    self.parentUTC = (useTrackerController*) [MyTracker.vc.navigationController visibleViewController];
 	[MyTracker.vc.navigationController pushViewController:vde animated:YES];
 	[vde release];
 	
@@ -117,7 +118,21 @@
 	//self.devc = vc;
 	DBGLog(@"de view will appear");
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    [[NSNotificationCenter defaultCenter] addObserver:self.vo.parentTracker 
+                                             selector:@selector(trackerUpdated:) 
+                                                 name:rtValueUpdatedNotification 
+                                               object:nil];
+    
+	[[NSNotificationCenter defaultCenter] addObserver:self.parentUTC
+											 selector:@selector(updateUTC:) 
+												 name:rtTrackerUpdatedNotification 
+											   object:self.vo.parentTracker];
+	
+    
+    //DBGLog(@"add kybd will show notifcation");
+	keyboardIsShown = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                //object:self.textView];    //.devc.view.window];
@@ -132,6 +147,18 @@
 
 - (void) dataEditVWDisappear:(UIViewController*)vc {
 	DBGLog(@"de view will disappear");
+
+    // unregister this tracker for value updated notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self.vo.parentTracker 
+                                                    name:rtValueUpdatedNotification
+                                                  object:nil];
+    
+	//unregister for tracker updated notices
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self.parentUTC
+                                                    name:rtTrackerUpdatedNotification
+                                                  object:nil];  
+    
 
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
@@ -258,6 +285,7 @@
 	[self.textView resignFirstResponder];
 	self.devc.navigationItem.rightBarButtonItem = nil;	// this will remove the "save" button
 	
+    DBGLog(@"tb save: vo.val= .%@  tv.txt= %@",self.vo.value,self.textView.text);
 	if (! [self.vo.value isEqualToString:self.textView.text]) {
 		[self.vo.value setString:self.textView.text];
         

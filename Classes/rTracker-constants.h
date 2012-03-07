@@ -13,6 +13,7 @@
 
 #define rtTrackerUpdatedNotification @"rtTrackerUpdatedNotification"
 #define rtValueUpdatedNotification @"rtValueUpdatedNotification"
+#define rtProgressBarUpdateNotification @"rtProgressBarUpdateNotification"
 
 #define kAnimationDuration 0.3
 

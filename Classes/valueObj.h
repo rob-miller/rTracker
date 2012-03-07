@@ -19,7 +19,8 @@
 #define VOT_CHOICE	4
 #define VOT_BOOLEAN	5
 #define VOT_FUNC	6
-#define VOT_MAX		7
+
+#define VOT_MAX		6
 
 // image not yet
 // #define VOT_IMAGE	7
@@ -35,7 +36,7 @@
 #define VOG_PIE			4
 //histogram...
 #define VOG_NONE		5
-#define VOG_MAX			6
+#define VOG_MAX			5
 
 // supported colors ; tied to trackerObj:colorSet
 // not used
@@ -160,6 +161,7 @@
 - (void)checkAction:(id)sender;
 
 - (void) resetData;
+- (void) validate;
 
 //+ (NSArray *) graphsForVOT:(NSInteger)vot;
 //- (NSArray *) graphsForVOT:(NSInteger)vot;

@@ -14,6 +14,7 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 
+
 #define SQLDEBUG    0
 
 #define DEBUGLOG    0
@@ -27,10 +28,9 @@
 #define SQLDbg(args...)
 #endif
 
+#define DBGSTR 
 #if DEBUGLOG
-//#define DBGLog(args...) NSLog(@"%@",[NSString stringWithFormat: args])
 #define DBGLog(args...) NSLog(@"%s%d: %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
-//#define DBGLog (args, ...) NSLog((@"%s [Line %d] " args), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #define DBGTLIST(tl) { \
     NSUInteger c = [tl.topLayoutNames count]; \
@@ -58,10 +58,9 @@
 
 
 #if DEBUGERR
-//#define DBGErr(args...) NSLog(@"%@",[NSString stringWithFormat: args])
-#define DBGErr(args...) 
-#else
 #define DBGErr(args...) NSLog(@"%s%d: **ERROR** %@",__PRETTY_FUNCTION__,__LINE__,[NSString stringWithFormat: args])
+#else
+#define DBGErr(args...) 
 #endif
 
 #if RELEASE

@@ -94,7 +94,7 @@
 	}
 	
 	if ((name == nil) || [name isEqualToString:@""]) 
-		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:vo.vtype]];
+		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:self.vo.vtype]];
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"Configure %@",name]];
 	name = nil;
 	 
