@@ -30,6 +30,8 @@
 + (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 + (void) setProgressVal:(float)progressVal;
 //+ (void) updateProgressBar;
++ (void) stashProgressBarMax:(int) total;
++ (void) bumpProgressBar;
 + (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 
 

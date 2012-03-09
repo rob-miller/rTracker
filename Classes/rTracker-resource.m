@@ -160,6 +160,20 @@ static float localProgressVal;
     DBGLog(@"progress bar updated: %f",localProgressVal);
 }
 
+static float localProgValTotal;
+static float localProgValCurr;
+
++ (void) stashProgressBarMax:(int) total {
+    localProgValTotal = (float) total;
+    localProgValCurr = 0.0f;
+}
+
++ (void) bumpProgressBar {
+    localProgValCurr += 1.0f;
+    [self setProgressVal:(localProgValCurr/localProgValTotal)];
+    DBGLog(@"setprogress %f", (localProgValCurr/localProgValTotal));
+}
+
 + (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
     
     if (disable) {

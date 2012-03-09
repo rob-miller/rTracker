@@ -715,6 +715,7 @@
         DBGErr(@"skipping record as failed reading %@ key",TIMESTAMP_LABEL);
         return;
     } else {
+        self.trackerDate = ts;
         DBGLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
     }
     
@@ -759,6 +760,8 @@
     
     self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
     [self toExecSql];
+    
+    [rTracker_resource bumpProgressBar];
 }
 
 

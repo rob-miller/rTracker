@@ -27,11 +27,13 @@
 
 - (double) getMinMax:(NSString*)targ alt:(NSString*)alt {
     double retval=0.0;
-    if ([[NSScanner localizedScannerWithString:alt] scanDouble:&retval]) {
-        return retval;
+    if (nil != alt) {
+        if ([[NSScanner localizedScannerWithString:alt] scanDouble:&retval]) {
+            return retval;
+        }
     }
     trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
-    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d;",targ,self.vo.vid];
+    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d and val != '';",targ,self.vo.vid];
     return [myTracker toQry2Double];
 }
 
@@ -95,7 +97,7 @@
         
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
         NSMutableArray *d1 = [[NSMutableArray alloc] init];
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d order by date;",self.vo.vid];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
         [myTracker toQry2AryID:i1 d1:d1];
         myTracker.sql=nil;
         

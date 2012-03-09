@@ -482,3 +482,18 @@
 07 March 2002
 
 --- commit ---
+
+08 March 2012
+ - updated sleep tracker to not graph quality
+ - added stashProgressBarMax and bumpProgressBar, plus code to csv load 
+   so progress bar shows while reading csv file
+
+09 March 2012
+ - skip graphing numbers=='' by modifying sql select
+ - trackerObj receiveRecord (csv load) sets date, so can tell if
+ failed timestamp read and therefore not delete input file
+ - xcode 4.3.1, so tested on ios 5.1
+ - fix NSScanner with nil argument when drawing graph (check for nil)
+ - fix getMinMax for graph detecting '' as 0, so autoscale works with
+ '' data
+

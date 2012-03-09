@@ -16,7 +16,7 @@
 		<real>99</real>
 	</dict>
 	<key>tid</key>
-	<integer>6</integer>
+	<integer>24</integer>
 	<key>valObjTable</key>
 	<array>
 		<dict>
@@ -92,7 +92,7 @@
 			<key>optDict</key>
 			<dict>
 				<key>graph</key>
-				<string>1</string>
+				<string>0</string>
 				<key>privacy</key>
 				<string>1</string>
 				<key>sdflt</key>

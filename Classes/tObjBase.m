@@ -391,7 +391,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) toQry2AryID : (NSMutableArray *)i1 d1:(NSMutableArray *)d1
 {
-	SQLDbg(@"toQry2AryIF: %@ => _%@_",self.dbName,self.sql);
+	SQLDbg(@"toQry2AryID: %@ => _%@_",self.dbName,self.sql);
 	dbgNSAssert(tDb,@"toQry2AryIF called with no tDb");
 	
 	sqlite3_stmt *stmt;

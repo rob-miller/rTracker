@@ -55,8 +55,10 @@
 #pragma mark -
 #pragma mark load CSV files waiting for input
 
-static int fileLoadCount;
-static int fileReadCount;
+static int csvLoadCount;
+static int plistLoadCount;
+static int csvReadCount;
+static int plistReadCount;
 
 
 //
@@ -98,6 +100,12 @@ static int fileReadCount;
                         //NSError *error = nil;
                         NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
                         
+                        // TODO: could count lines with rTracker-resource here, but need to to know how many done / to go
+                        // or add orutine to just bump progress bar with current step -- but then problem with diff tasks 
+                        // updating progress bar....
+                        
+                        [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
+                        
                         /*
                         if (!csvString)
                         {
@@ -109,11 +117,19 @@ static int fileReadCount;
                         */
                         if (csvString)
                         {
+                            BOOL csvLoadError=FALSE;
                             trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
 
+                            NSDate *toDate = to.trackerDate;  // date is right now
+                            
                             CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
                             [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
                             [parser release];
+                            if (toDate == to.trackerDate) {  // date set by csv data, so if unchanged CSV load failed
+                                csvLoadError = TRUE;
+                                DBGLog(@"error on date from loading csv data");
+                            }
+                            
                             [to recalculateFns];
                             [to release];
                             
@@ -125,13 +141,16 @@ static int fileReadCount;
                             NSString *newpath = [docsDir stringByAppendingPathComponent:newfile];
                             DBGLog(@"rename old: %@  to new: %@",target,newpath);
                              */
-                            NSError *err;
-                            BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
-                            if (!rslt) {
-                                DBGLog(@"Error: %@", err);
+                            if (! csvLoadError) {
+                                NSError *err;
+                                BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
+                                if (!rslt) {
+                                    DBGLog(@"Error deleting file: %@", err);
+                                }
                             }
-                            [rTracker_resource setProgressVal:(((float)fileReadCount)/((float)fileLoadCount))];                    
-                            fileReadCount++;
+                            
+                            [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];                    
+                            csvReadCount++;
                             // apparently cannot rename in but can delete from application's Document folder
                             //*/
                         }
@@ -192,8 +211,8 @@ static int fileReadCount;
                         DBGLog(@"Error: %@", err);
                     }
 
-                    [rTracker_resource setProgressVal:(((float)fileReadCount)/((float)fileLoadCount))];                    
-                    fileReadCount++;
+                    [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];                    
+                    plistReadCount++;
                     didSomething = YES;
                         // apparently cannot rename in but can delete from application's Document folder
                         
@@ -277,11 +296,12 @@ static int fileReadCount;
 
 - (void) loadInputFiles {
     
-    fileLoadCount = [self countInputFiles:@"_in.csv"];
-    fileLoadCount += [self countInputFiles:@"_in.plist"];
-    fileReadCount=1;
+    csvLoadCount = [self countInputFiles:@"_in.csv"];
+    plistLoadCount += [self countInputFiles:@"_in.plist"];
+    csvReadCount=1;
+    plistReadCount=1;
     
-    if ( 0 < fileLoadCount ) {  
+    if ( 0 < (plistLoadCount + csvLoadCount) ) {  
         [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
 
         [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
@@ -303,11 +323,22 @@ static int fileReadCount;
     // called when handlePrefs decides is needed, copies plist files to documents dir
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
-
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    NSFileManager *dfltManager = [NSFileManager defaultManager];
+    
     DBGLog(@"paths %@",paths  );
 
         
     for (NSString *p in paths) {
+        NSString *fname = [p lastPathComponent];
+        NSString *dest = [docsDir stringByAppendingFormat:@"/%@",fname];
+        NSError *err = [[NSError alloc] init];
+        if (!([dfltManager copyItemAtPath:p toPath:dest error:&err])) {
+            DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
+            DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
+        }
+        
+        /*
         NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
         [self.tlist fixDictTID:tdict];
         trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
@@ -316,8 +347,9 @@ static int fileReadCount;
         
         [newTracker saveConfig];
         [self.tlist addToTopLayoutTable:newTracker];
-        DBGLog(@"finished loadSample on %@",p);
         [newTracker release];
+         */
+        DBGLog(@"finished loadSample on %@",p);
     }
     
     self.tlist.sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
