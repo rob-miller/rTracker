@@ -501,16 +501,23 @@
 	if (nil == historyArray) {
 		//NSMutableArray *his1 = [[NSMutableArray alloc] init];
 		NSMutableSet *s0 = [[NSMutableSet alloc] init];
-		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %d;",self.vo.vid];
+		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %d and val != '';",self.vo.vid];
 		NSMutableArray *his0 = [[NSMutableArray alloc] init];
 		[MyTracker toQry2AryS:his0];
 		for (NSString *s in his0) {
-			[s0 addObjectsFromArray:[s componentsSeparatedByString:@"\n"]];
+            NSString *s1 = [s stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
+#if DEBUGLOG
+            NSArray *sepset= [s1 componentsSeparatedByString:@"\n"];
+            DBGLog(@"s= %@",s1);
+            DBGLog(@"c= %d separated= .%@.",sepset.count,sepset);
+#endif
+			[s0 addObjectsFromArray:[s1 componentsSeparatedByString:@"\n"]];
 		}
 		MyTracker.sql = nil;
 		[s0 filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
 		historyArray = [[[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
 		
+        DBGLog(@"historyArray count= %d  content= .%@.",historyArray.count,historyArray);
 		//historyArray = [[NSArray alloc] initWithArray:his1];
 		[his0 release];
 		[s0 release];	

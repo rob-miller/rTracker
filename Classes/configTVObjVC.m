@@ -425,6 +425,10 @@
             //newPriv = currPriv;
             tf.text = [NSString stringWithFormat:@"%d",currPriv];
         }
+        newPriv = [tf.text intValue];
+        if (newPriv < PRIVDFLT) {
+            tf.text = [NSString stringWithFormat:@"%d",PRIVDFLT];
+        }
         
 	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
 		okey = @"frv0";

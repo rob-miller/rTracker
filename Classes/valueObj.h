@@ -98,6 +98,9 @@
 - (id) newVOGD;
 - (void) recalculate;
 - (void) resetData;
+- (NSString*) mapValue2Csv;
+- (NSString*) mapCsv2Value:(NSString*)inCsv;
+
 @end
 
 
@@ -171,5 +174,7 @@
 - (NSDictionary*) dictFromVO;
 
 //- (void) txtDTF:(BOOL)num;
+
+- (NSString*) csvValue;
 
 @end

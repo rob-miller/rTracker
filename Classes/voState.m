@@ -163,7 +163,8 @@
 	CGRect bounds;
 	UITableViewCell *cell;
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
-	
+	DBGLog(@"votvenabledcell maxlabel= w= %f h= %f",maxLabel.width,maxLabel.height);
+    
 	static NSString *CellIdentifier = @"Cell1";
 	
 	cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -215,7 +216,13 @@
 	label.textColor = [UIColor blackColor];
 	label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
 	label.contentMode = UIViewContentModeTopLeft;
-	label.text = vo.valueName;
+	label.text = self.vo.valueName;
+    label.alpha = 1.0;
+    //label.enabled = YES;
+    DBGLog(@"enabled text= %@",label.text);
+
+    label.backgroundColor = [UIColor clearColor];
+    //label.textColor = [UIColor blackColor];
 	[cell.contentView addSubview:label];
 	[label release];
 	
@@ -236,6 +243,7 @@
 	CGRect bounds;
 	UITableViewCell *cell;
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
+	//DBGLog(@"votvcell maxlabel= w= %f h= %f",maxLabel.width,maxLabel.height);
 	
 	static NSString *CellIdentifier = @"Cell2";
 	
@@ -250,7 +258,10 @@
 			[viewToRemove removeFromSuperview];
 	}
 
-	cell.textLabel.text = vo.valueName;
+	cell.textLabel.text = self.vo.valueName;
+    DBGLog(@"text= %@",cell.textLabel.text);
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.backgroundColor = [UIColor clearColor];
 	//cell.textLabel.tag = kViewTag;
 	bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
 	bounds.origin.y = maxLabel.height - (MARGIN);
@@ -302,6 +313,15 @@
 - (void) resetData {
 	// subclass overrides if need to do anything
 }
+
+- (NSString*) mapValue2Csv {
+    return (NSString*) self.vo.value;  	// subclass overrides if need to do anything - specifically for choice
+}
+
+- (NSString*) mapCsv2Value:(NSString*)inCsv {
+    return inCsv;        // subclass overrides if need to do anything - specifically for choice
+}
+
 /*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {
     DBGErr(@"transformVO with no handler!");

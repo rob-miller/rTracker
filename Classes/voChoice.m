@@ -150,9 +150,18 @@
             [self.vo disableVO];
         }
     } else {
-        if (self.segmentedControl.selectedSegmentIndex != [self getSegmentIndexForValue]) {
+        int segNdx = [self getSegmentIndexForValue];
+        if (self.segmentedControl.selectedSegmentIndex != segNdx) {
             DBGLog(@"segmentedControl set value int: %d str: %@", [self.vo.value integerValue], self.vo.value);
-            self.segmentedControl.selectedSegmentIndex = [self getSegmentIndexForValue];
+            // during loadCSV, not matching the string will cause a new c%d dict entry, so can be > CHOICES
+            if (CHOICES > segNdx) {
+                // normal case
+                self.segmentedControl.selectedSegmentIndex = [self getSegmentIndexForValue];
+            } else {
+                // data can't be shown in buttons but it is there
+                // user must fix it, but it is all there to work with by save/edit csv and modify tracker
+                self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+            }
             [self.vo enableVO];
         }
     }
@@ -343,6 +352,61 @@
 
 - (id) newVOGD {
     return [[vogd alloc] initAsNum:self.vo];
+}
+
+- (NSString*) mapValue2Csv {
+#if DEBUGLOG
+    DBGLog(@"val= %@ indexForval= %d obj= %@",
+           self.vo.value,
+           [self getSegmentIndexForValue],
+           [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]] );
+#endif
+    return [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]];
+}
+
+- (NSString*) mapCsv2Value:(NSString*)inCsv {
+    NSMutableDictionary *optDict = self.vo.optDict;
+    int ndx;
+    int count = [optDict count];
+    int maxc=0;
+    int firstBlank = -1;
+    DBGLog(@"inCsv= %@",inCsv);
+    for (ndx=0; ndx <count;ndx++) {
+        NSString *key = [NSString stringWithFormat:@"c%d",ndx];
+        NSString *val = [optDict objectForKey:key];
+        if (nil != val) {
+            maxc = ndx;
+            if ([val isEqualToString:inCsv]) {
+                DBGLog(@"matched, returning %d",ndx+1);
+                return [NSString stringWithFormat:@"%d",ndx+1];    // found match, return 1-based index and be done
+            } else if ((-1 == firstBlank) && ([@"" isEqualToString:val])) {
+                firstBlank = ndx;
+            }
+        }
+    }
+
+    // did not find inCsv as an object in optDict for a c%d key.
+    
+    // is inCsv a digit from a pre-1.0.5 csv save file?
+    // TODO: remove this because is only for upgrade to 1.0.5
+    int intval = [inCsv intValue];
+    if ((0<intval) && (intval < CHOICES+1)) {
+        return inCsv;
+    }
+        
+    // need to add a new object to optDict
+    
+    // if any blanks, put it there. using maxc as ndx now
+    if (-1 != firstBlank) {
+        maxc = firstBlank;  // this position available
+    } else {
+        maxc++;  // maxc is last one used because there were no blanks, so inc to next
+    }
+    
+    [optDict setObject:inCsv forKey:[NSString stringWithFormat:@"c%d",maxc]];
+    
+    maxc++;  // +1 because value not 0-based, while c%d key is
+    return [NSString stringWithFormat:@"%d",maxc];
 }
 
 @end

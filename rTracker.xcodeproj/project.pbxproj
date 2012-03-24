@@ -13,18 +13,13 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
-		D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B401214EF133600828B90 /* Menus & Guests_in.plist */; };
 		D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
 		D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400A14EF124800828B90 /* Exercise_in.plist */; };
-		D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400B14EF124800828B90 /* Sleep_in.plist */; };
 		D40069D314F595C2006798B2 /* Weight stats_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D40B400C14EF124800828B90 /* Weight stats_in.plist */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
 		D40B400E14EF124800828B90 /* Car_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400914EF124800828B90 /* Car_in.plist */; };
 		D40B400F14EF124800828B90 /* Exercise_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400A14EF124800828B90 /* Exercise_in.plist */; };
-		D40B401014EF124800828B90 /* Sleep_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400B14EF124800828B90 /* Sleep_in.plist */; };
 		D40B401114EF124800828B90 /* Weight stats_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B400C14EF124800828B90 /* Weight stats_in.plist */; };
-		D40B401314EF133600828B90 /* Menus & Guests_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B401214EF133600828B90 /* Menus & Guests_in.plist */; };
-		D40B401414EF133600828B90 /* Menus & Guests_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D40B401214EF133600828B90 /* Menus & Guests_in.plist */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
 		D42744711438B84E0011EFE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = D427446D1438B84E0011EFE6 /* Icon-72.png */; };
@@ -117,14 +112,12 @@
 		D482D272114FEB5E00CE6BC8 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
 		D482D276114FEB7500CE6BC8 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
 		D487CF221502E66D008667AA /* Drinks_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D49702CB1502DEB80009B56A /* Drinks_in.plist */; };
-		D487CF231502E67A008667AA /* Self_in.plist in Copy Sample Trackers */ = {isa = PBXBuildFile; fileRef = D49702CD1502DED70009B56A /* Self_in.plist */; };
 		D487D7741260A77800298C1D /* configTVObjVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D487D7721260A77800298C1D /* configTVObjVC.m */; };
 		D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D487D7731260A77800298C1D /* configTVObjVC.xib */; };
 		D48F9E7F119AA02A00B37C93 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
 		D48F9FB2119B4CA600B37C93 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
 		D49702CC1502DEB80009B56A /* Drinks_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D49702CB1502DEB80009B56A /* Drinks_in.plist */; };
-		D49702CE1502DED70009B56A /* Self_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D49702CD1502DED70009B56A /* Self_in.plist */; };
 		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
 		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
@@ -136,6 +129,7 @@
 		D4A700D01379928E005E0E23 /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
 		D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D4A8D07A14F114EC0028AD03 /* Settings.bundle */; };
 		D4AE7C49148C0E290085EB78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4AE7C48148C0E290085EB78 /* Default@2x.png */; };
+		D4B3641B1517F5F40076C2CD /* Finances_in.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4B3641A1517F5F40076C2CD /* Finances_in.plist */; };
 		D4B5E7C414478A1C002E30F2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B5E7C314478A1C002E30F2 /* Default.png */; };
 		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
 		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
@@ -175,12 +169,9 @@
 			dstPath = sampleTrackers;
 			dstSubfolderSpec = 7;
 			files = (
-				D487CF231502E67A008667AA /* Self_in.plist in Copy Sample Trackers */,
 				D487CF221502E66D008667AA /* Drinks_in.plist in Copy Sample Trackers */,
-				D40069CE14F595A1006798B2 /* Menus & Guests_in.plist in Copy Sample Trackers */,
 				D40069D014F595AC006798B2 /* Car_in.plist in Copy Sample Trackers */,
 				D40069D114F595B4006798B2 /* Exercise_in.plist in Copy Sample Trackers */,
-				D40069D214F595BB006798B2 /* Sleep_in.plist in Copy Sample Trackers */,
 				D40069D314F595C2006798B2 /* Weight stats_in.plist in Copy Sample Trackers */,
 			);
 			name = "Copy Sample Trackers";
@@ -203,9 +194,7 @@
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D40B400914EF124800828B90 /* Car_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Car_in.plist; path = Resources/plist/Car_in.plist; sourceTree = "<group>"; };
 		D40B400A14EF124800828B90 /* Exercise_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Exercise_in.plist; path = Resources/plist/Exercise_in.plist; sourceTree = "<group>"; };
-		D40B400B14EF124800828B90 /* Sleep_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Sleep_in.plist; path = Resources/plist/Sleep_in.plist; sourceTree = "<group>"; };
 		D40B400C14EF124800828B90 /* Weight stats_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Weight stats_in.plist"; path = "Resources/plist/Weight stats_in.plist"; sourceTree = "<group>"; };
-		D40B401214EF133600828B90 /* Menus & Guests_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Menus & Guests_in.plist"; path = "Resources/plist/Menus & Guests_in.plist"; sourceTree = "<group>"; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
@@ -267,7 +256,6 @@
 		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
 		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Resources/xib/addValObjController.xib; sourceTree = "<group>"; };
 		D49702CB1502DEB80009B56A /* Drinks_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Drinks_in.plist; path = Resources/plist/Drinks_in.plist; sourceTree = "<group>"; };
-		D49702CD1502DED70009B56A /* Self_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Self_in.plist; path = Resources/plist/Self_in.plist; sourceTree = "<group>"; };
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
@@ -285,6 +273,7 @@
 		D4A7B00512FCC28500ABC266 /* privDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privDefs.h; sourceTree = "<group>"; };
 		D4A8D07A14F114EC0028AD03 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D4AE7C48148C0E290085EB78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		D4B3641A1517F5F40076C2CD /* Finances_in.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Finances_in.plist; path = Resources/plist/Finances_in.plist; sourceTree = "<group>"; };
 		D4B5E7C314478A1C002E30F2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
@@ -632,9 +621,7 @@
 				D40B400914EF124800828B90 /* Car_in.plist */,
 				D49702CB1502DEB80009B56A /* Drinks_in.plist */,
 				D40B400A14EF124800828B90 /* Exercise_in.plist */,
-				D40B401214EF133600828B90 /* Menus & Guests_in.plist */,
-				D49702CD1502DED70009B56A /* Self_in.plist */,
-				D40B400B14EF124800828B90 /* Sleep_in.plist */,
+				D4B3641A1517F5F40076C2CD /* Finances_in.plist */,
 				D40B400C14EF124800828B90 /* Weight stats_in.plist */,
 			);
 			name = "sample trackers";
@@ -747,12 +734,10 @@
 				D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */,
 				D40B400E14EF124800828B90 /* Car_in.plist in Resources */,
 				D40B400F14EF124800828B90 /* Exercise_in.plist in Resources */,
-				D40B401014EF124800828B90 /* Sleep_in.plist in Resources */,
 				D40B401114EF124800828B90 /* Weight stats_in.plist in Resources */,
-				D40B401314EF133600828B90 /* Menus & Guests_in.plist in Resources */,
 				D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */,
 				D49702CC1502DEB80009B56A /* Drinks_in.plist in Resources */,
-				D49702CE1502DED70009B56A /* Self_in.plist in Resources */,
+				D4B3641B1517F5F40076C2CD /* Finances_in.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -783,7 +768,6 @@
 				D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */,
 				D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */,
 				D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */,
-				D40B401414EF133600828B90 /* Menus & Guests_in.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

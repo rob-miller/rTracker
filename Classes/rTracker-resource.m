@@ -106,7 +106,7 @@ static UIActivityIndicatorView *activityIndicator=nil;
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
-    
+// note needs performSelectorOnMainThread fix for ios5
     if (disable) {
         [navItem setHidesBackButton:NO animated:YES];
         navItem.rightBarButtonItem.enabled = YES;
@@ -145,7 +145,7 @@ static UIProgressView *progressBar=nil;
                                                object:nil];
     
   */  
-    DBGLog(@"progressBar started");
+    //DBGLog(@"progressBar started");
 }
 
 static float localProgressVal;
@@ -157,7 +157,7 @@ static float localProgressVal;
 
 + (void) updateProgressBar {
     [progressBar setProgress:localProgressVal];
-    DBGLog(@"progress bar updated: %f",localProgressVal);
+    //DBGLog(@"progress bar updated: %f",localProgressVal);
 }
 
 static float localProgValTotal;
@@ -171,27 +171,44 @@ static float localProgValCurr;
 + (void) bumpProgressBar {
     localProgValCurr += 1.0f;
     [self setProgressVal:(localProgValCurr/localProgValTotal)];
-    DBGLog(@"setprogress %f", (localProgValCurr/localProgValTotal));
+    //DBGLog(@"setprogress %f", (localProgValCurr/localProgValTotal));
 }
 
-+ (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
-    
-    if (disable) {
-        [navItem setHidesBackButton:NO animated:YES];
-        navItem.rightBarButtonItem.enabled = YES;
-        view.userInteractionEnabled = YES;
+static UIView *localView;
+static UINavigationItem *localNavItem;
+static BOOL localDisable;
+
++ (void) doFinishProgressBar {
+    if (localDisable) {
+        [localNavItem setHidesBackButton:NO animated:YES];
+        localNavItem.rightBarButtonItem.enabled = YES;
+        localView.userInteractionEnabled = YES;
     }
-/*
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:rtProgressBarUpdateNotification
-                                                  object:nil];
-*/
+    
+    /*
+     [[NSNotificationCenter defaultCenter] removeObserver:self
+     name:rtProgressBarUpdateNotification
+     object:nil];
+     */
     //[progressBar stopAnimating];
+
     [progressBar removeFromSuperview];
     [progressBar release];
     progressBar = nil;
     
-    DBGLog(@"progressbar finished");
+    //DBGLog(@"progressbar finished");
+    
+}
+
++ (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    localView = view;
+    localNavItem = navItem;
+    localDisable = disable;
+    if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) {// if not 5
+        [rTracker_resource doFinishProgressBar];
+    } else {
+        [self performSelectorOnMainThread:@selector(doFinishProgressBar) withObject:nil waitUntilDone:NO];
+    }
 }
 
 

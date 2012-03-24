@@ -203,15 +203,27 @@ static int privacyValue=PRIVDFLT;
 	return ppwv;
 }
 
+static NSTimeInterval lastShow=0;
+
 - (void) showPVQ:(BOOL)state {
     DBGLog(@"parent v h= %f  pvh= %f  prod= %f",self.parentView.frame.size.height,PVH,self.parentView.frame.size.height * PVH );
     DBGLog(@"x= %f  y= %f  w= %f  h= %f",self.frame.origin.x, self.frame.origin.y, self.frame.size.width,self.frame.size.height);
 	if (state) {
+        // show
+        lastShow = [[NSDate date] timeIntervalSinceReferenceDate];
 		[self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
 		//self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
         //self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
         self.transform = CGAffineTransformMakeTranslation(0, -(self.frame.size.height));
 	} else {
+        // hide
+        NSTimeInterval thisHide = [[NSDate date] timeIntervalSinceReferenceDate];
+        DBGLog(@"lastShow= %lf thisHide= %lf delta= %lf",lastShow,thisHide,(thisHide-lastShow));
+        if ((thisHide - lastShow) <= 0.6) {
+            [self.ttv showKey:0]; 
+            [self setPrivacyValue:PRIVDFLT];
+        }
+            
 		//self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         //self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         self.transform = CGAffineTransformMakeTranslation(0, (self.frame.size.height));
@@ -264,7 +276,7 @@ static int privacyValue=PRIVDFLT;
                 
     } else if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features        
 		showing = PVNEEDPASS;
-		[self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
+        [self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
 		//[self.ppwv createPass:PVCONFIG cancel:PVNOSHOW]; // need more work // recurse on input newState, config on successful new pass
 
 	} else if (PVQUERY == newState) {
@@ -296,7 +308,7 @@ static int privacyValue=PRIVDFLT;
 		[UIView setAnimationDuration:kAnimationDuration];
 		
 		if (PVNEEDPASS == self.showing) { // if set pass is up, cancelled out of create
-            //DBGLog(@"cancelled out of create pass");
+            DBGLog(@"cancelled out of create pass");
 			[self.ppwv hidePPWVAnimated:FALSE];
             [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
 		} else {

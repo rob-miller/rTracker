@@ -170,7 +170,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		tDb = nil;
 		DBGLog(@"closed tDb: %@", self.dbName);
 	} else {
-		DBGWarn(@"tDb already closed %@", self.dbName);
+		DBGLog(@"hey! tdb close when tDb already closed %@", self.dbName);
 	}
 }
 

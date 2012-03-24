@@ -270,7 +270,7 @@ DBGLog(@"btnAddValue was pressed!");
 		[self.tempTrackerObj saveConfig];
         [self.tlist addToTopLayoutTable:self.tempTrackerObj];
 		//[self.tlist confirmTopLayoutEntry:tempTrackerObj];
-		//[self.tlist loadTopLayoutTable];
+		[self.tlist loadTopLayoutTable];
 		[self.navigationController popViewControllerAnimated:YES];
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 	} else {

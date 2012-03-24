@@ -475,6 +475,19 @@
 	self.sql = nil;
 }
 
+- (void) saveChoiceConfigs {  // for csv load, need to update vo optDict if vo is VOT_CHOICE
+	DBGLog(@"tObj saveChoiceConfig: trackerName= %@",trackerName) ;
+	BOOL NeedSave=NO;
+	for (valueObj *vo in self.valObjTable) {
+        if (VOT_CHOICE == vo.vtype) {
+            NeedSave = YES;
+            break;
+        }
+    }
+    if (NeedSave)
+        [self saveConfig];    
+}
+
 - (void) export {
     NSString *fname = [NSString stringWithFormat:@"%@_out.csv",self.trackerName];
     
@@ -625,6 +638,9 @@
     instr = [instr stringByReplacingOccurrencesOfString:@"\n" withString:@"\r"];
     instr = [instr stringByReplacingOccurrencesOfString:@"\"" withString:@"\"\""];
     instr = [NSString stringWithFormat:@"\"%@\"",instr];
+    if ([@"\"(null)\"" isEqualToString:instr]) {
+        instr = @"\"\"";
+    }
     return instr;
 }
 
@@ -687,7 +703,11 @@
         outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
         for (valueObj *vo in self.valObjTable) {
             outString = [outString stringByAppendingString:@","];
-            outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+            if (VOT_CHOICE == vo.vtype) {
+                outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
+            } else {
+                outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+            }
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -728,14 +748,21 @@
 	{
         DBGLog(@" key= %@", key);
         if (! [key isEqualToString:TIMESTAMP_LABEL]) { // not timestamp 
-            self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
-            int valobjID,valobjPriv;
-            [self toQry2IntInt:&valobjID i2:&valobjPriv];
+            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
+            int valobjID,valobjPriv,valobjType;
+            [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
             DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
             
             //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
+            
+            NSString *val2Store = [self toSqlStr:[aRecord objectForKey:key]];
+            if ((![@"" isEqualToString:val2Store]) && (VOT_CHOICE == valobjType)) {
+                valueObj *vo = [self getValObj:valobjID];
+                val2Store = [vo.vos mapCsv2Value:val2Store];
+            } 
+            
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        valobjID,its,[self toSqlStr:[aRecord objectForKey:key]]];
+                        valobjID,its,val2Store];
             [self toExecSql];
             
             if (![@"" isEqualToString:[aRecord objectForKey:key]])  {   // only fields with data
@@ -745,7 +772,7 @@
         }
     }
     
-    /*  replacing data for this date, minpriv is waht we saw...
+    /*  replacing data for this date, minpriv is what we saw...
      
     self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
     int currMinPriv = [self toQry2Int];
@@ -1166,6 +1193,10 @@
     [ttogd release];
     [self.togd fillVOGDs];
     //[self.togd release];  // rtm 05 feb 2012 +1 alloc, +1 self.togd retain
+}
+
+- (int) getPrivacyValue {
+    return [[self.optDict objectForKey:@"privacy"] intValue];
 }
 
 @end

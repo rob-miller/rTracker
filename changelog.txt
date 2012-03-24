@@ -497,3 +497,58 @@
  - fix getMinMax for graph detecting '' as 0, so autoscale works with
  '' data
 
+--- commit ---
+
+10 March 2012
+ - changed back to install samples directly instead of just copy
+ plists in as need this to avoid name, tid conflicts.  changed so
+ implemented in loadPlists, add count of samples so progressBar works
+ - ios5 won't tolerate display change outside main thread: fix so
+ finishProgressBar uses performSelectorOnMainThread
+ - added (only on privObj == noshow) to refreshView on priv button
+ press, as was messing up when new password needed
+ - changed tictacV updateTT to always draw all cells, under 5.1
+ otherwise some cells disappear on taps.
+ - changed closed tdb already closed to log instead of warning
+ - changed voTextBox historyArray to correctly break lines and present
+ correct historical set
+
+11 march 2012
+ - started make choice csv imp/exp work with text vals, create new as
+ needed
+
+12 march 2012
+ - continue on csv load choice by text string not value
+
+13 march 2012
+ - completed choice as text string to/from csv
+   - save and load appropriate text strings
+   - create new optDict entries on load if string not matched
+   - correctly insert new val into intervening blank space in dict if
+   avail
+ - fix dot appearing on graph for text='' 
+ - fixed background not clear on utc
+   -- but bad table cell labels on return from graph with selected date.
+
+14 march 2012
+ - fixed problem with cell labels needing redraw by adding additional
+ [updatetrackertableview]s in viewWillAppear (to set controls
+ correctly so next not noticed) and viewDidAppear (to update labels)
+ - utc now disappears in ios5 if app regains active and tracker is
+ private
+ - clear privacy setting on open/close privacy view in < 0.6 sec
+
+19 march 2012
+ - make more space around privacy button
+ - fix finishProgressBar not working for <5.0 - don't use performSelectorOnMainThread
+ - update Default png views
+
+20 march 2012
+ - disallow setting tracker/value privacy to < privdflt
+
+24 march 2012
+ - rectify various issues around 'null'/"" choice entries save to /
+ read from csv files after change above for choice val as text in csv
+
+--- commit ---
+

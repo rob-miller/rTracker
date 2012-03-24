@@ -27,6 +27,7 @@
 @synthesize tlist, refreshLock;
 @synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad;
 
+
 #pragma mark -
 #pragma mark core object methods and support
 
@@ -59,7 +60,7 @@ static int csvLoadCount;
 static int plistLoadCount;
 static int csvReadCount;
 static int plistReadCount;
-
+static BOOL InstallSamples;
 
 //
 // original code:
@@ -125,12 +126,18 @@ static int plistReadCount;
                             CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
                             [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
                             [parser release];
-                            if (toDate == to.trackerDate) {  // date set by csv data, so if unchanged CSV load failed
+                            if (toDate == to.trackerDate) {  // date set by csv data, so if unchanged then CSV load failed
                                 csvLoadError = TRUE;
                                 DBGLog(@"error on date from loading csv data");
                             }
                             
-                            [to recalculateFns];
+                            [to recalculateFns];    // updates fn vals in database
+                            [to saveChoiceConfigs]; // in case csv data had unrecognised choices
+                            
+                            DBGLog(@"csv loaded:");
+#if DEBUGLOG
+                            [to describe];
+#endif                            
                             [to release];
                             
                             /*
@@ -257,6 +264,11 @@ static int plistReadCount;
 - (void) doLoadInputfiles {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    if (InstallSamples) {
+        [self loadSamples:YES];
+        InstallSamples = NO;
+    }
+    
     if ([self loadTrackerPlistFiles]) {
         // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
         [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
@@ -297,7 +309,10 @@ static int plistReadCount;
 - (void) loadInputFiles {
     
     csvLoadCount = [self countInputFiles:@"_in.csv"];
-    plistLoadCount += [self countInputFiles:@"_in.plist"];
+    plistLoadCount = [self countInputFiles:@"_in.plist"];
+    if (InstallSamples)
+        plistLoadCount += [self loadSamples:NO];
+        
     csvReadCount=1;
     plistReadCount=1;
     
@@ -319,43 +334,65 @@ static int plistReadCount;
     return;
 }
 
-- (void) loadSamples {
+- (int) loadSamples:(BOOL)doLoad {
     // called when handlePrefs decides is needed, copies plist files to documents dir
+    // also called with doLoad=NO to just count
+    // returns count
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
+    int count=0;
+    
+    /* copy plists over version
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *dfltManager = [NSFileManager defaultManager];
+    */
     
     DBGLog(@"paths %@",paths  );
 
         
     for (NSString *p in paths) {
-        NSString *fname = [p lastPathComponent];
-        NSString *dest = [docsDir stringByAppendingFormat:@"/%@",fname];
-        NSError *err = [[NSError alloc] init];
-        if (!([dfltManager copyItemAtPath:p toPath:dest error:&err])) {
-            DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
-            DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
+
+        if (doLoad) {
+            
+            /*
+             // copy plists over version -- doesn't handle conflicts
+             NSString *fname = [p lastPathComponent];
+             NSString *dest = [docsDir stringByAppendingFormat:@"/%@",fname];
+             NSError *err = [[NSError alloc] init];
+             if (!([dfltManager copyItemAtPath:p toPath:dest error:&err])) {
+                DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
+                DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
+             }
+             */
+            // /*
+            // load now into trackerObj - needs progressBar
+            NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
+            [self.tlist fixDictTID:tdict];
+            trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
+        
+            [self.tlist deConflict:newTracker];
+        
+            [newTracker saveConfig];
+            [self.tlist addToTopLayoutTable:newTracker];
+            [newTracker release];
+            
+            [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];                    
+            plistReadCount++;
+            
+            // */
+            
+            DBGLog(@"finished loadSample on %@",p);
         }
-        
-        /*
-        NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
-        [self.tlist fixDictTID:tdict];
-        trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
-        
-        [self.tlist deConflict:newTracker];
-        
-        [newTracker saveConfig];
-        [self.tlist addToTopLayoutTable:newTracker];
-        [newTracker release];
-         */
-        DBGLog(@"finished loadSample on %@",p);
+        count++;
     }
     
-    self.tlist.sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
-    [self.tlist toExecSql];
-    self.tlist.sql = nil;
+    if (doLoad) {
+        self.tlist.sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
+        [self.tlist toExecSql];
+        self.tlist.sql = nil;
+    }
     
+    return(count);
 }
 
 
@@ -414,6 +451,7 @@ static int plistReadCount;
         || ([name isEqualToString:@"iPhone"])
         || ([name isEqualToString:@"iPad"])
         || (0 == [name length])
+        //|| YES
         ){
         self.title = @"rTracker";
     } else {
@@ -445,6 +483,7 @@ static int plistReadCount;
 
 - (void)viewDidLoad {
 	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+    InstallSamples = NO;
     self.refreshLock = 0;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
@@ -554,10 +593,15 @@ static int plistReadCount;
     DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
     if (resetPassPref) [self.privacyObj resetPw];
+    
     if (reloadSamplesPref 
         || 
         (self.initialPrefsLoad && [self samplesNeeded]) 
-         ) [self loadSamples];
+        ) { 
+        InstallSamples = YES;
+    } else {
+        //InstallSamples = NO;
+    }
     
     if (resetPassPref) 
         [sud setBool:NO forKey:@"reset_password_pref"];
@@ -678,7 +722,7 @@ static int plistReadCount;
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
         [pbtn setImage:[UIImage imageNamed:@"closedview-button.png"] forState:UIControlStateNormal];
-        pbtn.frame = CGRectMake(0, 0, pbtn.currentImage.size.width, pbtn.currentImage.size.height);
+        pbtn.frame = CGRectMake(0, 0, ( pbtn.currentImage.size.width * 1.5 ), pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
         privateBtn = [[UIBarButtonItem alloc]
                       initWithCustomView:pbtn];
@@ -820,7 +864,8 @@ static int plistReadCount;
 		[self refreshView];
 	}
      */
-    [self refreshView];
+    if (PVNOSHOW == self.privacyObj.showing) 
+        [self refreshView];
 }
 
 - (void) btnHelp {

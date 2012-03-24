@@ -512,7 +512,7 @@
 	//rlab.textAlignment = UITextAlignmentRight;
 	NSString *valstr = self.vo.value;  // evaluated on read so make copy
 	if (![valstr isEqualToString:@""]) {
-		self.rlab.backgroundColor = [UIColor whiteColor];
+		self.rlab.backgroundColor = [UIColor clearColor];  // was whiteColor
         self.rlab.text = valstr;
 	} else {
 		self.rlab.backgroundColor = [UIColor lightGrayColor];

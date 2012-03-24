@@ -167,6 +167,10 @@ in_vpriv:(NSInteger)in_vpriv
     return value;
 }
 
+- (NSString*) csvValue {
+    return [self.vos mapValue2Csv];
+}
+
 - (void) resetData {
     [self.vos resetData];
 	[self.value setString:@""];
@@ -196,6 +200,7 @@ in_vpriv:(NSInteger)in_vpriv
 			break;
 		case VOT_CHOICE:
 			tvos = [[voChoice alloc] initWithVO:self];
+            self.vcolor = -1;
 			//value = [[NSMutableString alloc] initWithCapacity:1];
 			//[self.value setString:@"0"];
 			break;
@@ -318,7 +323,10 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) describe 
 {
-	DBGLog(@" value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
+	DBGLog(@" value id %d name %@ type %d value .%@.\noptDict:\n",self.vid,self.valueName, self.vtype, self.value);
+    for (NSString *key in self.optDict) {
+        DBGLog(@" k:%@  v:%@",key,[self.optDict objectForKey:key] );
+    }
 }
 
 
@@ -363,7 +371,6 @@ in_vpriv:(NSInteger)in_vpriv
     
     if (self.vpriv < 0) {
         DBGErr(@"%@ invalid vpriv (too low): %d minpriv= %i, 0 accepted",VOINF,self.vpriv,MINPRIV);
-        DBGLog(@"hello : %@ ",VOINF);
         self.vpriv = MINPRIV;
     } else if (self.vpriv > MAXPRIV) {
         DBGErr(@"%@ invalid vtype (too large): %d maxpriv= %i",VOINF,self.vpriv,MAXPRIV);

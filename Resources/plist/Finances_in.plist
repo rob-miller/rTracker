@@ -7,22 +7,26 @@
 		<key>height</key>
 		<real>18</real>
 		<key>name</key>
-		<string>Sleep</string>
+		<string>Finances</string>
 		<key>privacy</key>
 		<string>1</string>
 		<key>savertn</key>
 		<string>1</string>
 		<key>width</key>
-		<real>99</real>
+		<real>128</real>
 	</dict>
 	<key>tid</key>
-	<integer>24</integer>
+	<integer>34</integer>
 	<key>valObjTable</key>
 	<array>
 		<dict>
 			<key>optDict</key>
 			<dict>
+				<key>autoscale</key>
+				<string>1</string>
 				<key>graph</key>
+				<string>1</string>
+				<key>nswl</key>
 				<string>0</string>
 				<key>privacy</key>
 				<string>1</string>
@@ -30,117 +34,15 @@
 			<key>vGraphType</key>
 			<integer>0</integer>
 			<key>valueName</key>
-			<string>to bed</string>
+			<string>grocery spend</string>
 			<key>vcolor</key>
-			<integer>0</integer>
+			<integer>3</integer>
 			<key>vid</key>
 			<integer>1</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>
-			<integer>5</integer>
-		</dict>
-		<dict>
-			<key>optDict</key>
-			<dict>
-				<key>graph</key>
-				<string>0</string>
-				<key>privacy</key>
-				<string>1</string>
-			</dict>
-			<key>vGraphType</key>
 			<integer>0</integer>
-			<key>valueName</key>
-			<string>get up</string>
-			<key>vcolor</key>
-			<integer>0</integer>
-			<key>vid</key>
-			<integer>2</integer>
-			<key>vpriv</key>
-			<integer>0</integer>
-			<key>vtype</key>
-			<integer>5</integer>
-		</dict>
-		<dict>
-			<key>optDict</key>
-			<dict>
-				<key>graph</key>
-				<string>0</string>
-				<key>privacy</key>
-				<string>1</string>
-				<key>sdflt</key>
-				<string>0</string>
-				<key>smax</key>
-				<string>1</string>
-				<key>smin</key>
-				<string>-1.0</string>
-			</dict>
-			<key>vGraphType</key>
-			<integer>0</integer>
-			<key>valueName</key>
-			<string>easy to sleep</string>
-			<key>vcolor</key>
-			<integer>6</integer>
-			<key>vid</key>
-			<integer>8</integer>
-			<key>vpriv</key>
-			<integer>0</integer>
-			<key>vtype</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>optDict</key>
-			<dict>
-				<key>graph</key>
-				<string>0</string>
-				<key>privacy</key>
-				<string>1</string>
-				<key>sdflt</key>
-				<string>.95</string>
-				<key>smax</key>
-				<string>1.0</string>
-				<key>smin</key>
-				<string>0.0</string>
-			</dict>
-			<key>vGraphType</key>
-			<integer>2</integer>
-			<key>valueName</key>
-			<string>quality</string>
-			<key>vcolor</key>
-			<integer>2</integer>
-			<key>vid</key>
-			<integer>4</integer>
-			<key>vpriv</key>
-			<integer>0</integer>
-			<key>vtype</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>optDict</key>
-			<dict>
-				<key>graph</key>
-				<string>0</string>
-				<key>privacy</key>
-				<string>1</string>
-				<key>sdflt</key>
-				<string>0</string>
-				<key>smax</key>
-				<string>1</string>
-				<key>smin</key>
-				<string>-1</string>
-			</dict>
-			<key>vGraphType</key>
-			<integer>0</integer>
-			<key>valueName</key>
-			<string>easy to wake</string>
-			<key>vcolor</key>
-			<integer>3</integer>
-			<key>vid</key>
-			<integer>10</integer>
-			<key>vpriv</key>
-			<integer>0</integer>
-			<key>vtype</key>
-			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>optDict</key>
@@ -155,13 +57,13 @@
 				<string>1</string>
 			</dict>
 			<key>vGraphType</key>
-			<integer>1</integer>
-			<key>valueName</key>
-			<string>interruptions</string>
-			<key>vcolor</key>
 			<integer>0</integer>
+			<key>valueName</key>
+			<string>entertainment</string>
+			<key>vcolor</key>
+			<integer>5</integer>
 			<key>vid</key>
-			<integer>11</integer>
+			<integer>3</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>
@@ -170,7 +72,11 @@
 		<dict>
 			<key>optDict</key>
 			<dict>
+				<key>autoscale</key>
+				<string>1</string>
 				<key>graph</key>
+				<string>1</string>
+				<key>nswl</key>
 				<string>0</string>
 				<key>privacy</key>
 				<string>1</string>
@@ -178,36 +84,40 @@
 			<key>vGraphType</key>
 			<integer>0</integer>
 			<key>valueName</key>
-			<string>woke w/o alarm</string>
+			<string>maintenance</string>
 			<key>vcolor</key>
-			<integer>8</integer>
+			<integer>9</integer>
 			<key>vid</key>
-			<integer>6</integer>
+			<integer>7</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>
-			<integer>5</integer>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>optDict</key>
 			<dict>
+				<key>autoscale</key>
+				<string>1</string>
 				<key>graph</key>
 				<string>1</string>
+				<key>nswl</key>
+				<string>0</string>
 				<key>privacy</key>
 				<string>1</string>
 			</dict>
 			<key>vGraphType</key>
-			<integer>0</integer>
+			<integer>2</integer>
 			<key>valueName</key>
-			<string>dreams</string>
+			<string>bank balance</string>
 			<key>vcolor</key>
-			<integer>5</integer>
+			<integer>1</integer>
 			<key>vid</key>
-			<integer>9</integer>
+			<integer>4</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>
-			<integer>5</integer>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>optDict</key>
@@ -217,11 +127,13 @@
 				<key>fnddp</key>
 				<string>2</string>
 				<key>frep0</key>
-				<string>1</string>
+				<string>-4</string>
 				<key>frep1</key>
-				<string>2</string>
+				<string>-1</string>
+				<key>frv0</key>
+				<string>1</string>
 				<key>func</key>
-				<string>-14</string>
+				<string>-2 1</string>
 				<key>graph</key>
 				<string>1</string>
 				<key>privacy</key>
@@ -230,11 +142,11 @@
 			<key>vGraphType</key>
 			<integer>2</integer>
 			<key>valueName</key>
-			<string>hrs resting</string>
+			<string>weekly groceries</string>
 			<key>vcolor</key>
-			<integer>1</integer>
+			<integer>7</integer>
 			<key>vid</key>
-			<integer>3</integer>
+			<integer>5</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>
@@ -248,24 +160,59 @@
 				<key>fnddp</key>
 				<string>2</string>
 				<key>frep0</key>
-				<string>1</string>
+				<string>-4</string>
 				<key>frep1</key>
-				<string>2</string>
+				<string>-1</string>
+				<key>frv0</key>
+				<string>1</string>
 				<key>func</key>
-				<string>-10 3 -8 4 -11 -6 8 -6 10 -6 9 -7 11</string>
+				<string>-2 3</string>
 				<key>graph</key>
 				<string>1</string>
 				<key>privacy</key>
 				<string>1</string>
 			</dict>
 			<key>vGraphType</key>
-			<integer>3</integer>
+			<integer>2</integer>
 			<key>valueName</key>
-			<string>score</string>
+			<string>weekly entertain</string>
 			<key>vcolor</key>
-			<integer>9</integer>
+			<integer>8</integer>
 			<key>vid</key>
-			<integer>7</integer>
+			<integer>6</integer>
+			<key>vpriv</key>
+			<integer>0</integer>
+			<key>vtype</key>
+			<integer>6</integer>
+		</dict>
+		<dict>
+			<key>optDict</key>
+			<dict>
+				<key>autoscale</key>
+				<string>1</string>
+				<key>fnddp</key>
+				<string>2</string>
+				<key>frep0</key>
+				<string>-4</string>
+				<key>frep1</key>
+				<string>-1</string>
+				<key>frv0</key>
+				<string>1</string>
+				<key>func</key>
+				<string>-2 7</string>
+				<key>graph</key>
+				<string>1</string>
+				<key>privacy</key>
+				<string>1</string>
+			</dict>
+			<key>vGraphType</key>
+			<integer>2</integer>
+			<key>valueName</key>
+			<string>weekly maintenance</string>
+			<key>vcolor</key>
+			<integer>10</integer>
+			<key>vid</key>
+			<integer>8</integer>
 			<key>vpriv</key>
 			<integer>0</integer>
 			<key>vtype</key>

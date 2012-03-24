@@ -177,14 +177,28 @@
 	[super viewDidUnload];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    DBGLog(@"utc view did appear!");
+     // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
+    if ((nil != self.tracker)
+        && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    
+    //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
+    [self.table reloadData];
+
+    [super viewDidAppear:animated];
+}
 - (void) viewWillAppear:(BOOL)animated
 {
     DBGLog(@"utc: view will appear");
+    
 	if (self.dpr) {
 		switch (self.dpr.action) {
 			case DPA_NEW:
 				[self.tracker resetData];
-                [self updateTrackerTableView];
+                //[self updateTrackerTableView];  // moved below
 				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpr.date timeIntervalSince1970]]];
 				[self updateToolBar];
 				break;
@@ -250,7 +264,8 @@
 	
 
     [self showSaveBtn];
-	//DBGLog(@"useTrackerController: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+    [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable 
+    
     [super viewWillAppear:animated];
 	
 }
@@ -576,6 +591,13 @@
 #pragma mark -
 #pragma mark datepicker support
 
+- (void) clearVoDisplay {
+	for (valueObj *vo in self.tracker.valObjTable) {
+        //if (vo.vtype == VOT_FUNC)
+        vo.display = nil;  // always redisplay
+	}
+    
+}
 - (void) updateTrackerTableView {
     // see related updateTableCells above
 	//DBGLog(@"utc: updateTrackerTableView");
@@ -644,6 +666,9 @@
 
 #pragma mark -
 #pragma mark button press action methods
+- (void)applicationWillResignActive:(UIApplication *)application {
+    DBGLog(@"HEY!");
+}
 
 - (IBAction)btnCancel {   // not used 
     
@@ -679,6 +704,10 @@
 
 - (IBAction)btnExport {
 
+    DBGLog(@"exporting tracker:");
+#if DEBUGLOG
+    [self.tracker describe];
+#endif    
     [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
     
     [NSThread detachNewThreadSelector:@selector(doExport) toTarget:self withObject:nil];

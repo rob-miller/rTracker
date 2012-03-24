@@ -155,7 +155,7 @@
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
         NSMutableArray *s1 = [[NSMutableArray alloc] init];
         
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL order by date;",self.vo.vid];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' order by date;",self.vo.vid];
         [myTracker toQry2AryIS:i1 s1:s1];
         myTracker.sql=nil;
         NSEnumerator *e = [s1 objectEnumerator];

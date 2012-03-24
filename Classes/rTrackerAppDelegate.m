@@ -66,10 +66,21 @@
     [((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).privacyObj lockDown];
 }
 
+/*
+// does not make utc disappear before first visible
+ - (void) applicationWillBecomeActive:(UIApplication *)application {
+	DBGLog(@"rt app delegate: app will become active");
+    [self.navigationController.visibleViewController viewWillAppear:YES];
+}
+*/
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	// Save data if appropriate
+	// rootViewController needs to possibly load files
+    // useTrackerController needs to detect if displaying a private tracker
+    
 	DBGLog(@"rt app delegate: app did become active");
-    [(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
+    //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
+
+    [self.navigationController.visibleViewController viewDidAppear:YES];
 }
 
 #pragma mark -

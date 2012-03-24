@@ -59,6 +59,8 @@
     
 - (void) addValObj:(valueObj*)valObj;
 - (void) saveConfig;
+- (void) saveChoiceConfigs;
+
 - (NSDictionary*) dictFromTO;
 - (void) loadConfig;
 - (void) loadConfigFromDict:(NSDictionary*)dict;
@@ -103,5 +105,6 @@
 - (void)receiveRecord:(NSDictionary *)aRecord;
 
 - (void) setTOGD:(CGRect)inRect;
+- (int) getPrivacyValue;
 
 @end

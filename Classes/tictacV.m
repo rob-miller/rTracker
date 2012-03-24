@@ -176,10 +176,10 @@ static unsigned int theKey;
 }
 
 - (void) updateTT {
-	if ([self currPt]) {
-		//DBGLog(@"updateTT: draw cell %d %d",self.currX,self.currY);
-		[self drawCell];
-	} else {  
+//	if ([self currPt]) {
+//		DBGLog(@"updateTT: draw cell %d %d",self.currX,self.currY);
+//		[self drawCell];
+//	} else {  
 		int i,j;
 		//DBGLog(@"updateTT: draw all cells");
 		for (i=0;i<3;i++) {
@@ -188,7 +188,7 @@ static unsigned int theKey;
 				[self drawCell];
 			}
 		}
-	}
+//	}
 	[self setNoCurrPt];
 }
 
@@ -196,9 +196,9 @@ static unsigned int theKey;
 
 - (void) press:(int) x y:(int)y {
 	[self setCurrPt:x y:y];
-	//DBGLog(@"press: %d,%d  => %f %f %f %f",x,y,
-	//	  self.currRect.origin.x,self.currRect.origin.y,
-	//	  self.currRect.size.width,self.currRect.size.height);
+	DBGLog(@"press: %d,%d  => %f %f %f %f",x,y,
+		  self.currRect.origin.x,self.currRect.origin.y,
+		  self.currRect.size.width,self.currRect.size.height);
 	
 	//unsigned int rmask = REGIONMASK(x,y);
 	//unsigned int rinc =  REGIONINC(x,y);
@@ -211,6 +211,7 @@ static unsigned int theKey;
 	
 	self.key = newVal;
 	[self setNeedsDisplayInRect:self.currRect];
+	//[self setNeedsDisplay];
 }
 
 #pragma mark translate view coords to tic-tac-toe regions
