@@ -703,11 +703,11 @@
         outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
         for (valueObj *vo in self.valObjTable) {
             outString = [outString stringByAppendingString:@","];
-            if (VOT_CHOICE == vo.vtype) {
+            //if (VOT_CHOICE == vo.vtype) {
                 outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
-            } else {
-                outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
-            }
+            //} else {
+                //outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+            //}
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1026,8 +1026,9 @@
 		if (vo.vid == vid)
 			return vo.valueName;
 	}
-	dbgNSAssert(0,@"voGetNameForVID failed");
-	return [NSString stringWithFormat:@"vid %d not found",vid];
+	dbgNSAssert(0,@"voGetNameForVID failed");  
+	//return [NSString stringWithFormat:@"vid %d not found",vid];
+    return @"not configured yet";
 }
 
 - (BOOL) voHasData:(NSInteger) vid

@@ -229,7 +229,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];
 	self.tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
 	row = [self.votPicker selectedRowInComponent:1];
-	self.tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
+    if (VOT_CHOICE == self.tempValObj.vtype) {
+        self.tempValObj.vcolor = -1;   // choice color set in optDict per choice
+    } else {
+        self.tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
+    }
 	row = [self.votPicker selectedRowInComponent:2];
 	self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
 	

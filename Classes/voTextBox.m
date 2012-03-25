@@ -732,6 +732,23 @@
 }
 
 
+- (NSString*) mapValue2Csv {
+    // add from history or contacts adds trailing \n, trim it here
+    NSUInteger ndx = [self.vo.value length];
 
+    if (0<ndx) {
+        unichar c = [self.vo.value characterAtIndex:--ndx];
+
+        DBGLog(@".%@. lne=%d trim= .%@.",self.vo.value,ndx,[self.vo.value substringToIndex:ndx]);
+        DBGLog(@" %d %d %d : %d",[self.vo.value characterAtIndex:ndx-2],[self.vo.value characterAtIndex:ndx-1],[self.vo.value characterAtIndex:ndx],'\n');
+        
+        if (('\n' == c) || ('\r' == c)) {
+            DBGLog(@"trimming.");
+            return (NSString*) [self.vo.value substringToIndex:ndx];
+        }
+    }
+    
+    return (NSString*) self.vo.value;  	
+}
 
 @end

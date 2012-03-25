@@ -315,7 +315,7 @@
 }
 
 - (NSString*) mapValue2Csv {
-    return (NSString*) self.vo.value;  	// subclass overrides if need to do anything - specifically for choice
+    return (NSString*) self.vo.value;  	// subclass overrides if need to do anything - specifically for choice, textbox
 }
 
 - (NSString*) mapCsv2Value:(NSString*)inCsv {

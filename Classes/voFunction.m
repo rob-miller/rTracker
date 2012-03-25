@@ -49,6 +49,7 @@
 	//[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
 	// don't save an empty string
 	NSString *ts = [self.fnArray componentsJoinedByString:@" "];
+    //DBGLog(@"fnArray ts= .%@.",ts);
 	if (0 < [ts length]) {
 		[self.vo.optDict setObject:ts forKey:@"func"];
 	}
@@ -63,7 +64,9 @@
 	
 	NSArray *tmp = [[self.vo.optDict objectForKey:@"func"] componentsSeparatedByString:@" "];
 	for (NSString *s in tmp) {
-		[self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
+        if (![@"" isEqualToString:s]) {
+            [self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
+        }
 	}
 }
 
@@ -88,16 +91,19 @@
 
 #pragma mark protocol: updateVORefs
 
+// called to instantiate tempTrackerObj with -vid to real trackerObj on save tracker config
+
 - (void) updateVORefs:(NSInteger)newVID old:(NSInteger)oldVID {
-	// subclass overrides if need to do anything
 	[self loadFnArray];
 	NSUInteger i=0;
 	NSUInteger max = [self.fnArray count];
+    DBGLog(@"start fnArray= %@",self.fnArray);
 	for (i=0; i< max; i++) {
 		if ([[self.fnArray objectAtIndex:i] integerValue] == oldVID) {
 			[self.fnArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInteger:newVID]];
 		}
 	}
+    DBGLog(@"fin fnArray= %@",self.fnArray);
 	[self saveFnArray];
 	
 	for (i=0;i<2;i++) {
@@ -1035,7 +1041,9 @@
 
 - (void) ftAddVOs {
 	for (valueObj *valo in MyTracker.valObjTable) {
-		[self.fnTitles addObject:[NSNumber numberWithInteger:valo.vid]];
+        if (valo != self.vo) {
+            [self.fnTitles addObject:[NSNumber numberWithInteger:valo.vid]];
+        }
 	}
 }
 
@@ -1062,6 +1070,7 @@
 
 - (void) updateFnTitles {
 	[self.fnTitles removeAllObjects];
+    DBGLog(@"fnArray= %@",self.fnArray);
 	if ([self.fnArray count] == 0) {  // state = start
 		[self ftStartSet];
 	} else {

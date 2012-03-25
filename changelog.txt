@@ -552,3 +552,15 @@
 
 --- commit ---
 
+ - trim \n or \r from textbox data when writing csv file
+
+25 march 2012
+ - change message for fn config page to 'not configured yet' instead
+ of 'vid 0 not found' (source was tracker voGetNameForVID)
+ - loadFnArray skip if db entry is "" (was inserting 0 causing problem above)
+ - disallow fn to choose self for vo to compute on
+ - fix set choice vcolor to not -1 in btnSave for addValObjcontroller
+ - submit as 1.0.5
+
+--- commit ---
+

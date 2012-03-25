@@ -215,6 +215,7 @@ static NSTimeInterval lastShow=0;
 		//self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
         //self.transform = CGAffineTransformMakeTranslation(0, -(self.parentView.frame.size.height * PVH));
         self.transform = CGAffineTransformMakeTranslation(0, -(self.frame.size.height));
+        //self.parentView.userInteractionEnabled=NO;  // sadly kills interaction for child view as well
 	} else {
         // hide
         NSTimeInterval thisHide = [[NSDate date] timeIntervalSinceReferenceDate];
@@ -227,6 +228,7 @@ static NSTimeInterval lastShow=0;
 		//self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         //self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         self.transform = CGAffineTransformMakeTranslation(0, (self.frame.size.height));
+        //self.parentView.userInteractionEnabled=YES;
     }
 }
 
@@ -326,7 +328,7 @@ static NSTimeInterval lastShow=0;
         //self.hidden = YES;
         self.alpha = 0.0;
 		[UIView commitAnimations];
-		
+        
 		showing = PVNOSHOW;
 		
         

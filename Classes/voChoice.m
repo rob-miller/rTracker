@@ -61,6 +61,7 @@
 }
 
 - (int) getSegmentIndexForValue {
+    // doesn't display if e.g only choice 6 configured
     return [self.vo.value integerValue]-1;
 }
 
