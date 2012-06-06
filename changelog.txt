@@ -564,3 +564,9 @@
 
 --- commit ---
 
+01 April 2012
+ - (late evening Sunday) in review ... ready for sale.
+
+05 June 2012
+ - more code around detect owner name so no Rob's's tracks
+ 

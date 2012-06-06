@@ -16,6 +16,7 @@
 
 
 #define SQLDEBUG    0
+#define NONAME      0
 
 #define DEBUGLOG    0
 #define DEBUGWARN   1

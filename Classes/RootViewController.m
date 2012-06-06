@@ -443,6 +443,24 @@ static BOOL InstallSamples;
         }
     }
     
+    NSUInteger prodNdx=0;
+    NSString *longName = [words objectAtIndex:0];
+    
+    for (prodNdx =0; prodNdx<c;prodNdx++) {
+        if ( (NSOrderedSame == [@"iphone" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
+            || (NSOrderedSame == [@"ipad" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
+            || (NSOrderedSame == [@"ipod" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
+            || (NSOrderedSame == [@"itouch" caseInsensitiveCompare:[words objectAtIndex:prodNdx]]) ) {
+            break;
+        }
+    }
+    if (1 < prodNdx) {
+        for (i=1;i<prodNdx;i++) {
+            longName = [longName stringByAppendingFormat:@" %@",[words objectAtIndex:i]];
+        }
+    } else if (0 == prodNdx) {
+            longName = nil;
+    }
     
     //name= @"aiiiiiiiiiiiiiiiiiiiiii";
     
@@ -451,7 +469,9 @@ static BOOL InstallSamples;
         || ([name isEqualToString:@"iPhone"])
         || ([name isEqualToString:@"iPad"])
         || (0 == [name length])
-        //|| YES
+#if NONAME
+        || YES
+#endif
         ){
         self.title = @"rTracker";
     } else {
@@ -465,14 +485,44 @@ static BOOL InstallSamples;
         if ((0.0f == bw1) || (0.0f==bw2)) {
             self.title = @"rTracker";
         } else {
-            NSString *tname = [name stringByAppendingString:@"'s tracks"];
-            NSString *tn2 = [name stringByAppendingString:@" 's tracks"];
+            NSString *tname,*tn2;
+
+            NSRange r0 = [name rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"'`’´‘"] options:NSBackwardsSearch];
+            if (NSNotFound != r0.location) {
+                NSUInteger len = [name length];
+                NSUInteger pos = r0.location + r0.length;
+                if (pos == (len-1)) {
+                    unichar c = [name characterAtIndex:pos];
+                    if (('s' == c) || ('S' == c)) {
+                        tname = [name stringByAppendingString:@" tracks"];
+                        tn2 = [name stringByAppendingString:@"  tracks"];
+                    }
+                }
+            }
+            
+            if (nil == tname) {
+                tname = [name stringByAppendingString:@"’s tracks"];
+                tn2 = [name stringByAppendingString:@" ’s tracks"];
+            }
+
+            DBGLog(@"tname= %@",tname);
+            DBGLog(@"longName= %@",longName);
+            
+            NSString *ltname = [longName stringByAppendingString:@" tracks"];
+            NSString *ltn2 = [longName stringByAppendingString:@"  tracks"];
+            
             CGFloat maxWidth = (bw2 - bw1)-8; //self.view.bounds.size.width - btnWidths;
             //DBGLog(@"view wid= %f bw1= %f bw2= %f",self.view.bounds.size.width ,bw1,bw2);
             CGSize namesize = [tn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
             CGFloat nameWidth = namesize.width;
+            
+            CGSize lnamesize = [ltn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
+            CGFloat lnameWidth = lnamesize.width;
+            
             //DBGLog(@"name wid= %f  maxwid= %f  name= %@",nameWidth,maxWidth,tname);
-            if (nameWidth < maxWidth) {
+            if (lnameWidth < maxWidth) {
+                self.title = ltname;
+            } else if (nameWidth < maxWidth) {
                 self.title = tname;
             } else {
                 self.title = @"rTracker";
