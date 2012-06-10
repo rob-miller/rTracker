@@ -497,6 +497,9 @@ static BOOL InstallSamples;
                         tname = [name stringByAppendingString:@" tracks"];
                         tn2 = [name stringByAppendingString:@"  tracks"];
                     }
+                } else if (pos == len) {
+                        tname = [name stringByAppendingString:@" tracks"];
+                        tn2 = [name stringByAppendingString:@"  tracks"];
                 }
             }
             

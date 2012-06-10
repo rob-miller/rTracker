@@ -309,7 +309,9 @@ DBGLog(@"btnAddValue was pressed!");
 {
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
 	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
-						   withRowAnimation:UITableViewRowAnimationFade];		
+						   withRowAnimation:UITableViewRowAnimationFade];
+    [deleteIndexPath release];
+    [deleteTableView release];
 }
 
 - (void) addDelVO:(valueObj*)vo {
@@ -332,6 +334,8 @@ DBGLog(@"btnAddValue was pressed!");
 		[self delVOlocal:row];
 	} else {
 		//DBGLog(@"check valobjdelete cancelled");
+        [deleteIndexPath release];
+        [deleteTableView release];
 	}
 	
 }
@@ -519,7 +523,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		DBGLog(@"atc: delete row %d ",row);
 		deleteIndexPath = indexPath;
 		deleteTableView = tableView;
-		
+		[deleteIndexPath retain];
+        [deleteTableView retain];
+        
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 		if ((! self.tempTrackerObj.tDb) // no db created yet for this tempTrackerObj
             || (! self.tempTrackerObj.toid))   // this tempTrackerObj not written to db yet at all
