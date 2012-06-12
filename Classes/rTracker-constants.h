@@ -33,3 +33,5 @@
 #define d(x) ((double) (x))
 
 #define SAMPLES_VERSION 1
+#define RTDB_VERSION 1
+

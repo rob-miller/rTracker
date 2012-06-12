@@ -454,11 +454,11 @@ static BOOL InstallSamples;
             break;
         }
     }
-    if (1 < prodNdx) {
+    if ((1 <= prodNdx) && (prodNdx < c)) {
         for (i=1;i<prodNdx;i++) {
             longName = [longName stringByAppendingFormat:@" %@",[words objectAtIndex:i]];
         }
-    } else if (0 == prodNdx) {
+    } else if ((0 == prodNdx) || (prodNdx >= c)) {
             longName = nil;
     }
     
@@ -523,7 +523,7 @@ static BOOL InstallSamples;
             CGFloat lnameWidth = lnamesize.width;
             
             //DBGLog(@"name wid= %f  maxwid= %f  name= %@",nameWidth,maxWidth,tname);
-            if (lnameWidth < maxWidth) {
+            if ((nil != longName) && (lnameWidth < maxWidth)) {
                 self.title = ltname;
             } else if (nameWidth < maxWidth) {
                 self.title = tname;

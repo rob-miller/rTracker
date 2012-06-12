@@ -44,6 +44,18 @@
 	self.sql = @"create table if not exists info (val integer, name text);";
 	[self toExecSql];
 
+    self.sql = @"select count(*) from info where name='rtdb_version'";
+    if (0 == [self toQry2Int]) {
+        DBGLog(@"rtdb_version not set");
+        self.sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];
+        [self toExecSql];
+#if DEBUGLOG
+    } else {
+        self.sql = @"select val from info where name='rtdb_version'";
+        DBGLog(@"rtdb_version= %d",[self toQry2Int]);
+#endif
+    }
+    
 	self.sql = nil;	
 }	
 

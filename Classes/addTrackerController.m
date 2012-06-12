@@ -169,7 +169,7 @@ static int editMode;
 	// Create and configure the segmented control
 	UISegmentedControl *editToggle = [[UISegmentedControl alloc]
 									  initWithItems:[NSArray arrayWithObjects:@"Edit tracker",
-													 @"Edit values", nil]];
+													 @"Edit items", nil]];
 	editToggle.segmentedControlStyle = UISegmentedControlStyleBar;
 	editToggle.selectedSegmentIndex = 0;
 	editMode = 0;

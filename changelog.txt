@@ -569,4 +569,22 @@
 
 05 June 2012
  - more code around detect owner name so no Rob's's tracks
- 
+
+--- commit ---
+
+10 June 2012
+ - fix crash due to missing retain/release on NSIndexPath for deleting
+ value within a tracker
+ - no 's tracks if owners' name ends in '
+
+--- commit ---
+
+12 June 2012
+ - change 'use default value' colours from red on gray to yellow on
+ darkGray to improve visibility
+ - change 'edit values' button to 'edit items'
+ - added rtdb_version value in tracker list info table, start value is
+ '1'
+ - more robustness work around apostrophes in owners' name
+
+--- commit for submit v 1.0.6 ---
