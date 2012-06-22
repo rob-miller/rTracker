@@ -12,14 +12,25 @@
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
 
+@interface addValObjController() 
+@property (nonatomic) NSInteger tmpVtype;
+@property (nonatomic) NSInteger tmpVcolor;
+@property (nonatomic) NSInteger tmpVGraphType;
+@end
+
 @implementation addValObjController
 
-@synthesize tempValObj;
-@synthesize parentTrackerObj;
-@synthesize graphTypes;
+@synthesize tempValObj; // =_tempValObj;
+@synthesize parentTrackerObj; // = _parentTrackerObj;
+@synthesize graphTypes; // = _graphTypes;
 
-@synthesize labelField;
-@synthesize votPicker;
+// setting to _foo breaks size calc for picker, think because is iboutlet?
+@synthesize labelField;  // = _labelField; 
+@synthesize votPicker;  // = _votPicker;
+
+@synthesize tmpVtype = _tmpVtype;
+@synthesize tmpVcolor = _tmpVcolor;
+@synthesize tmpVGraphType = _tmpVGraphType;
 
 CGSize sizeVOTLabel;
 CGSize sizeGTLabel;
@@ -204,8 +215,22 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 {
 	[self.navigationController popViewControllerAnimated:YES];
 }
+
+- (void) stashVals {
+    self.tmpVtype = self.tempValObj.vtype;
+    self.tmpVcolor = self.tempValObj.vcolor;
+    self.tmpVGraphType = self.tempValObj.vGraphType;
+}
+
+- (void) retrieveVals {
+    self.tempValObj.vtype = self.tmpVtype;
+    self.tempValObj.vcolor = self.tmpVcolor;
+    self.tempValObj.vGraphType = self.tmpVGraphType;
+}
+
 - (IBAction)btnCancel {
 	//DBGLog(@"addVObjC: btnCancel was pressed!");
+    [self retrieveVals];
 	[self leave];
 }
 
@@ -242,6 +267,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	}
 	
 	// clear extraneous frv entries to keep db clean
+    
+    // no default fdlc so if set stays set - delete on del cons from fn
+    
 	NSInteger v = [[self.tempValObj.optDict objectForKey:@"frep0"] integerValue] ;
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv0"];
@@ -488,6 +516,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	[self updateForPickerRowSelect:row inComponent:component];
 }
+
 
 
 @end

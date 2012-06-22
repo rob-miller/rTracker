@@ -238,14 +238,16 @@
 	CGRect viewFrame = self.view.frame;
 	//DBGLog(@"k will show, y= %f",viewFrame.origin.y);
 	CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
-	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+
+    CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
 	if (boty <= topk) {
 		//DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
 		//DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
 		
 		viewFrame.origin.y -= (boty - topk);
-		viewFrame.size.height -= self.toolBar.frame.size.height - MARGIN;
+		//viewFrame.size.height -= self.toolBar.frame.size.height - MARGIN;
+        viewFrame.size.height +=  MARGIN;
 		
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationBeginsFromCurrentState:YES];
@@ -439,6 +441,9 @@
 	} else if ( tf == [self.wDict objectForKey:@"fnddpTF"] ) {
 		okey = @"fnddp";
 		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:CTFKEY] ) {
+		okey = LCKEY;
+		nkey = nil;
 	} else {
 		dbgNSAssert(0,@"mtfDone cannot identify tf");
 	}
@@ -469,6 +474,7 @@
 	frame.origin.y -= TFXTRA;
 	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
 	rtf.clearsOnBeginEditing = NO;
+        
 	[rtf setDelegate:self];
 	rtf.returnKeyType = UIReturnKeyDone;
 	rtf.borderStyle = UITextBorderStyleRoundedRect;

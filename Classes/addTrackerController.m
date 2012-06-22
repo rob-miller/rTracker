@@ -564,14 +564,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	} // else ??
 }
 
-/*
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger row = [indexPath row];
-	NSUInteger section = [indexPath section];
-	
-	DBGLog(@"selected section %d row %d ", section, row);
+- (void) addValObj:(NSUInteger) row {
+	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+	avc.parentTrackerObj = self.tempTrackerObj;
+	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+	[avc stashVals];
+    
+	[self.navigationController pushViewController:avc animated:YES];
+	[avc release];    
 }
-*/
+///*
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSUInteger row = [indexPath row];
+	//NSUInteger section = [indexPath section];
+	
+	//DBGLog(@"selected section %d row %d ", section, row);
+
+    [self addValObj:row];
+}
+//*/
 
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
@@ -582,12 +594,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	//DBGLog(@"accessory button tapped for section %d row %d ", section, row);
     
-	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
-	avc.parentTrackerObj = self.tempTrackerObj;
-	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
-	
-	[self.navigationController pushViewController:avc animated:YES];
-	[avc release];
+    [self addValObj:row];
 	
 }
 

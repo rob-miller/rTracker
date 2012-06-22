@@ -35,3 +35,11 @@
 #define SAMPLES_VERSION 1
 #define RTDB_VERSION 1
 
+
+// strings to access text field for setting constant
+// lc= lastConst, could be more than 1
+#define LCKEY @"fdlc"
+#define CTFKEY @"fdcTF"
+#define CLKEY @"fdcLab"
+
+

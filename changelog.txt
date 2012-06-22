@@ -580,7 +580,7 @@
 --- commit ---
 
 12 June 2012
- - change 'use default value' colours from red on gray to yellow on
+ - change 'use last value' colours from red on gray to yellow on
  darkGray to improve visibility
  - change 'edit values' button to 'edit items'
  - added rtdb_version value in tracker list info table, start value is
@@ -588,3 +588,38 @@
  - more robustness work around apostrophes in owners' name
 
 --- commit for submit v 1.0.6 ---
+
+16 june 2012
+ - working on constant in function
+ - changed 'delta' to 'change_in'
+
+17 june 2012
+ - fn constant, text field and label appear/hide on pick 'constant';
+ scroll on keyboard appear not sufficient
+
+20 june 2012
+ - fix keyboard scroll to not include toolbar height so toolbar not
+ shown
+ - crash if change value type then cancel out .. actually bug is
+ change value type, go into config for that type, done, cancel -- val
+ type has been changed
+
+21 june 2012 
+ - added tmp(Vtype,Vcolor,VGraphType) to private addValObjController
+ interface, plus stashVals() and retrieveVals methods to better
+ support cancel out
+ - back to constant, need work on logic because fn1arg expecting arg
+ but inline const already there... also need to go back to calcFnVal
+ because of change to bound constant on both sides by token -- needed
+ to make deleting const robust
+
+22 june 2012
+ - problem was not logic but had 'constant' in wrong place in picker
+ list
+ - add btn downs keyboard
+ - updateFnTitles hides constant tf after wiping array
+ -> constant initial implementation seems to work.
+
+--- commit ---
+
+

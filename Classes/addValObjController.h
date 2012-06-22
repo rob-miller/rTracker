@@ -34,4 +34,6 @@
 - (void) updateForPickerRowSelect:(NSInteger)row inComponent:(NSInteger)component;
 //- (IBAction) btnSetup;
 
+- (void) stashVals;
+
 @end
