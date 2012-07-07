@@ -587,7 +587,7 @@
 	labframe = [self configLabel:@"min:" frame:frame key:@"nminLab" addsv:NO];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-	CGFloat tfWidth = [[NSString stringWithString:@"9999999999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"9999999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -656,7 +656,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	CGFloat tfWidth = [[NSString stringWithString:@"9999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	

@@ -390,7 +390,24 @@
     if ((nil == [self.optDict objectForKey:@"privacy"])) {
         [self.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
     }
+
     
+    if ((nil == [self.optDict objectForKey:@"rtdb_version"])) {
+        [self.optDict setObject:[NSNumber numberWithInt:RTDB_VERSION] forKey:@"rtdb_version"];
+        DBGLog(@"tracker init rtdb_version");
+    }
+    if ((nil == [self.optDict objectForKey:@"rtfn_version"])) {
+        [self.optDict setObject:[NSNumber numberWithInt:RTFN_VERSION] forKey:@"rtfn_version"];
+        DBGLog(@"tracker init rtfn_version");
+    }
+    if ((nil == [self.optDict objectForKey:@"rt_version"])) {
+        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"rt_version"];
+        DBGLog(@"tracker init rt_version");
+    }
+    if ((nil == [self.optDict objectForKey:@"rt_build"])) {
+        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"] forKey:@"rt_build"];
+        DBGLog(@"tracker init rt_build");
+    }
 }
 
 - (void) clearToOptDict {
@@ -1133,17 +1150,22 @@
 
 - (void) describe {
 	DBGLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
-
+    DBGLog(@"db ver %@ fn ver %@ created by rt ver %@ build %@",
+           [self.optDict objectForKey:@"rtdb_version"],[self.optDict objectForKey:@"rtfn_version"],
+           [self.optDict objectForKey:@"rt_version"],[self.optDict objectForKey:@"rt_build"]
+           );
 	//NSEnumerator *enumer = [self.valObjTable objectEnumerator];
 	//valueObj *vo;
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
 		[vo describe];
 	}
+    
+
 }
 
 - (void) recalculateFns {
-	DBGLog(@"tracker id %d name %@ recalculateFns", self.toid, self.trackerName, self.dbName);
+	DBGLog(@"tracker id %d name %@ dbname %@ recalculateFns", self.toid, self.trackerName, self.dbName);
     
 	for (valueObj *vo in self.valObjTable) {
         if (VOT_FUNC == vo.vtype) {

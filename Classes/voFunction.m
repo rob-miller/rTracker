@@ -51,7 +51,7 @@
 	//[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
 	// don't save an empty string
 	NSString *ts = [self.fnArray componentsJoinedByString:@" "];
-    //DBGLog(@"fnArray ts= .%@.",ts);
+    DBGLog(@"saving fnArray ts= .%@.",ts);
 	if (0 < [ts length]) {
 		[self.vo.optDict setObject:ts forKey:@"func"];
 	}
@@ -67,7 +67,8 @@
 	NSArray *tmp = [[self.vo.optDict objectForKey:@"func"] componentsSeparatedByString:@" "];
 	for (NSString *s in tmp) {
         if (![@"" isEqualToString:s]) {
-            [self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
+            //[self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
+            [self.fnArray addObject:[NSNumber numberWithDouble:[s doubleValue]]];
         }
 	}
 }
@@ -162,10 +163,10 @@
 										  timeStyle:NSDateFormatterShortStyle];
 }
 
+
 - (int) getEpDate:(int)ndx maxdate:(int)maxdate {
 
 	NSString *key = [NSString stringWithFormat:@"frep%d",ndx];
-	
 	NSNumber *nep = [self.vo.optDict objectForKey:key];
 	NSInteger ep = [nep integerValue];
 	NSInteger epDate;
@@ -176,13 +177,12 @@
 		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;",maxdate];
 		epDate = [to toQry2Int];
 		DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
-		to.sql = nil;
 	} else if (ep >= 0) {
 		// ep is vid
-		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d order by date desc limit 1;",ep,maxdate];
+		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d and val <> 0 and val <> '' order by date desc limit 1;",ep,maxdate]; // add val<>0,<>"" 5.vii.12
+        DBGLog(@"get ep qry: %@",to.sql);
 		epDate = [to toQry2Int];
 		DBGLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
-		to.sql = nil;
 	} else {
 		// ep is (offset * -1)+1 into epTitles, with optDict:frv0 multiplier
 
@@ -228,6 +228,9 @@
 		[gregorian release];
 		[offsetComponents release];
 	}
+
+    to.sql = nil;
+
 	return epDate;
 }
 
@@ -323,74 +326,69 @@
         // recursive function, self.currFnNdx holds our current processing position
 		NSInteger currTok = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];
 		if (isFn1Arg(currTok)) {
-            if (FN1ARGCONSTANT == currTok) {
-                result = [[self.fnArray objectAtIndex:self.currFnNdx++] doubleValue];
-                self.currFnNdx++;  // skip the bounding constant tok
-            } else {
-                // currTok is function taking 1 argument, so get it
-                vid = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
-                //valueObj *valo = [to getValObj:vid];
-                NSString *sv1 = [to getValObj:vid].value;
-                double v1 = [sv1 doubleValue];
-                DBGLog(@"v1= %f", v1);
-                // v1 is value for current tracker entry (epd1) for our arg
-                switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
-                    case FN1ARGDELTA :
-                        if (sv1 == nil || [sv1 isEqualToString:@""])
-                            return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
-                        // epd1 value is ok, get from db value for epd0
-                        to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
-                        double v0 = [to toQry2Double];
-                        DBGLog(@"delta: v0= %f", v0);
-                        // do caclulation
-                        result = v1 - v0;
-                        break;
-                    case FN1ARGAVG :
-                    {
-                        // below (calculate via sqlite) works but need to include any current but unsaved value
-                        //to.sql = [NSString stringWithFormat:@"select avg(val) from voData where id=%d and date >=%d and date <%d;",
-                        //		  vid,epd0,epd1];
-                        //result = [to toQry2Float];  // --> + v1;
-                        
-                        double c = [[self.vo.optDict objectForKey:@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
-                        // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
-                        if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
-                            to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
-                                      vid,epd0,epd1];
-                            c = [to toQry2Float] + 1.0f;  // +1 for current on screen
-                        }
-                        
-                        to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%d and date >=%d and date <%d;",
+            // currTok is function taking 1 argument, so get it
+            vid = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
+            //valueObj *valo = [to getValObj:vid];
+            NSString *sv1 = [to getValObj:vid].value;
+            double v1 = [sv1 doubleValue];
+            DBGLog(@"v1= %f", v1);
+            // v1 is value for current tracker entry (epd1) for our arg
+            switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
+                case FN1ARGDELTA :
+                    if (sv1 == nil || [sv1 isEqualToString:@""])
+                        return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
+                    // epd1 value is ok, get from db value for epd0
+                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
+                    double v0 = [to toQry2Double];
+                    DBGLog(@"delta: v0= %f", v0);
+                    // do caclulation
+                    result = v1 - v0;
+                    break;
+                case FN1ARGAVG :
+                {
+                    // below (calculate via sqlite) works but need to include any current but unsaved value
+                    //to.sql = [NSString stringWithFormat:@"select avg(val) from voData where id=%d and date >=%d and date <%d;",
+                    //		  vid,epd0,epd1];
+                    //result = [to toQry2Float];  // --> + v1;
+                    
+                    double c = [[self.vo.optDict objectForKey:@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
+                    // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
+                    if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
+                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
                                   vid,epd0,epd1];
-                        result = ([to toQry2Float] + v1) / c;  // c>0 because at least 1 from above
-                        break;
+                        c = [to toQry2Float] + 1.0f;  // +1 for current on screen
                     }
-                    default:
-                        // remaining options for fn w/ 1 arg are pre/post/all sum
-                        switch (currTok) {
-                                // by selecting for not null ep0 using total() these sum over intermediate non-endpoint values
-                                // -- ignoring passed epd0
-                            case FN1ARGPRESUM :
-                                // we conditionally add in v1=(date<=%d) below so presum sql query same as sum
-                                
-                                //to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
-                                //		  vid,epd0,epd1];
-                                //break;
-                            case FN1ARGSUM :
-                                // (date<%d) because add in v1 below
-                                to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
-                                          vid,epd0,epd1];
-                                break;
-                            case FN1ARGPOSTSUM :
-                                // (date<%d) because add in v1 below
-                                to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >%d and date <%d;",vid,epd0,epd1];
-                                break;
-                        }
-                        result = [to toQry2Float];
-                        if (currTok != FN1ARGPRESUM)
-                            result += v1;
-                        break;
+                    
+                    to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%d and date >=%d and date <%d;",
+                              vid,epd0,epd1];
+                    result = ([to toQry2Float] + v1) / c;  // c>0 because at least 1 from above
+                    break;
                 }
+                default:
+                    // remaining options for fn w/ 1 arg are pre/post/all sum
+                    switch (currTok) {
+                            // by selecting for not null ep0 using total() these sum over intermediate non-endpoint values
+                            // -- ignoring passed epd0
+                        case FN1ARGPRESUM :
+                            // we conditionally add in v1=(date<=%d) below so presum sql query same as sum
+                            
+                            //to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
+                            //		  vid,epd0,epd1];
+                            //break;
+                        case FN1ARGSUM :
+                            // (date<%d) because add in v1 below
+                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
+                                      vid,epd0,epd1];
+                            break;
+                        case FN1ARGPOSTSUM :
+                            // (date<%d) because add in v1 below
+                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >%d and date <%d;",vid,epd0,epd1];
+                            break;
+                    }
+                    result = [to toQry2Float];
+                    if (currTok != FN1ARGPRESUM)
+                        result += v1;
+                    break;
             }
 		} else if (isFn2ArgOp(currTok)) {
             // we are processing some combo of previous result and next value, currFnNdx was ++ already so get that result:
@@ -423,6 +421,9 @@
 		} else if (currTok == FNPARENCLOSE) {
             // close paren means we are there, return what we have
 			return [NSNumber numberWithDouble:result];
+        } else if (FNCONSTANT == currTok) {
+                result = [[self.fnArray objectAtIndex:self.currFnNdx++] doubleValue];
+                self.currFnNdx++;  // skip the bounding constant tok
         } else if (isFnTimeOp(currTok)) {
             result = (double) epd1 - epd0;
             DBGLog(@" timefn: %f secs",result);
@@ -491,9 +492,15 @@
         }
         [MyTracker loadData:ep0start];   // reset from search
     }
-  */  
-	if (ep0date == 0)  // start endpoint not ok
-		return instr;
+  */
+    
+	if (ep0date == 0)  {// start endpoint not ok
+        NSNumber *nep = [self.vo.optDict objectForKey:@"frep0"];
+        NSInteger ep = [nep integerValue];
+        if (! (nep == nil || ep == FREPENTRY) ) {  // allow to go through if just looking for previous entry and this is first
+            return instr;
+        }
+    }
     
 	self.currFnNdx=0;
 	
@@ -644,7 +651,7 @@
 						   addsv:NO ];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [[NSString stringWithString:@"9999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -713,7 +720,7 @@
             constantPending = NO;
             constantClosePending = YES;
 		} else if (isFn(i)) {
-            if (FN1ARGCONSTANT == i) {
+            if (FNCONSTANT == i) {
                 if (constantClosePending) {
                     constantClosePending = NO;
                 } else {
@@ -751,7 +758,7 @@
 	NSInteger row = [pkr selectedRowInComponent:0];
 	NSNumber *ntok = [self.fnTitles objectAtIndex:row];
 	[self.fnArray addObject:ntok];
-    if (FN1ARGCONSTANT == [ntok intValue]) {  // constant has const_tok on both sides to help removal
+    if (FNCONSTANT == [ntok intValue]) {  // constant has const_tok on both sides to help removal
         UITextField *vtf= [self.ctvovcp.wDict objectForKey:CTFKEY];
         [self.fnArray addObject:[NSNumber numberWithDouble:[vtf.text doubleValue]]];
         [self.fnArray addObject:ntok];
@@ -767,7 +774,7 @@
     //  also [self.tempValObj.optDict removeObjectForKey:@"fdc"]; -- can't be sure with mult consts
 	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
 	if (0 < [self.fnArray count]) {
-        if (FN1ARGCONSTANT == [[self.fnArray lastObject] intValue]) {
+        if (FNCONSTANT == [[self.fnArray lastObject] intValue]) {
             [self.fnArray removeLastObject];  // remove bounding token after
             [self.fnArray removeLastObject];  // remove constant value
         }
@@ -820,7 +827,7 @@
                                    addsv:NO ];
     
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [[NSString stringWithString:@"9999.99"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"9999.99" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -903,7 +910,7 @@
 	labframe = [self.ctvovcp configLabel:@"Display result decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [[NSString stringWithString:@"999"] sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -1077,6 +1084,7 @@
 	for (i=FN1ARGFIRST;i>=FN1ARGLAST;i--) {
 		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
 	}
+    [self.fnTitles addObject:[NSNumber numberWithInt:FNCONSTANT]];
 }
 
 - (void) ftAddTimeSet {
@@ -1130,7 +1138,7 @@
 		[self ftStartSet];
 	} else {
 		int last = [[self.fnArray lastObject] intValue];
-		if (last >= 0 || last <= -TMPUNIQSTART || isFnTimeOp(last) || FN1ARGCONSTANT == last) { // state = after valObj
+		if (last >= 0 || last <= -TMPUNIQSTART || isFnTimeOp(last) || FNCONSTANT == last) { // state = after valObj
 			[self ftAdd2OpSet];
 			[self ftAddCloseParen];
 		} else if (isFn1Arg(last)) {  // state = after Fn1 = delta, avg, sum

@@ -34,6 +34,7 @@
 
 #define SAMPLES_VERSION 1
 #define RTDB_VERSION 1
+#define RTFN_VERSION 1
 
 
 // strings to access text field for setting constant

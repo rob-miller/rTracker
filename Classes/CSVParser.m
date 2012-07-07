@@ -259,7 +259,7 @@
 		}
 		else
 		{
-			fieldName = [NSString stringWithFormat:@"FIELD_%ld", fieldCount + 1];
+			fieldName = [NSString stringWithFormat:@"FIELD_%d", fieldCount + 1];
 			[fieldNames addObject:fieldName];
 			fieldNamesCount++;
 		}

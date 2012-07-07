@@ -295,6 +295,7 @@ static BOOL InstallSamples;
         
     while (file = [dirEnum nextObject]) {
         NSString *fname = [file lastPathComponent];
+        //DBGLog(@"consider input file %@",fname);
         NSRange inmatch = [fname rangeOfString:targ_ext options:NSBackwardsSearch|NSAnchoredSearch];
         if (inmatch.location != NSNotFound) {
             DBGLog(@"existsInputFiles: match on %@",fname);
@@ -485,7 +486,7 @@ static BOOL InstallSamples;
         if ((0.0f == bw1) || (0.0f==bw2)) {
             self.title = @"rTracker";
         } else {
-            NSString *tname,*tn2;
+            NSString *tname=nil,*tn2;
 
             NSRange r0 = [name rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"'`’´‘"] options:NSBackwardsSearch];
             if (NSNotFound != r0.location) {

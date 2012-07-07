@@ -622,4 +622,22 @@
 
 --- commit ---
 
+04 july 2012
+ - constant code messes up previous fns; re-work so symbol defines
+ don't change; probably need to do a version change on fns so can add
+ more 1-arg, 2-arg etc. operators one day?
+ - float constants not staying, get truncated - change load string
+ from db was getting values as ints, now double
 
+05 july 2012
+  - mileage fn calc not respecting 'tank full', add "and val <> 0 and
+  val <> ''" to selection of start date endpoint
+
+07 july 2012
+  - added rtfn_version symbol to support later changing available
+  functions
+  - db_ver, n_ver, cfbundle_ver and a build counter now read at load
+  - db, fn, cfbundle, build count all stored for each tracker on
+  create or save if not present already.
+  - test on iOS 6.0 / xCode 4.5b2
+  - allow calc fn if ep0=0 (first entry) and ep0 is entry or nil

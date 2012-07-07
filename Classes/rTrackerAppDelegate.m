@@ -9,6 +9,7 @@
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
 #import "dbg-defs.h"
+#import "rTracker-constants.h"
 
 @implementation rTrackerAppDelegate
 
@@ -51,6 +52,11 @@
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
 
+    DBGLog(@" rTracker version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
+           [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
+           [[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"],
+           RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
+           );
     DBGLog(@"rt app delegate: app did finish launching");
 }
 
