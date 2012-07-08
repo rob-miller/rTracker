@@ -54,7 +54,7 @@
 
     DBGLog(@" rTracker version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
-           [[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"],
+           [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"],
            RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
            );
     DBGLog(@"rt app delegate: app did finish launching");

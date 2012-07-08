@@ -396,7 +396,7 @@
         [self.optDict setObject:[NSNumber numberWithInt:RTDB_VERSION] forKey:@"rtdb_version"];
         [self.optDict setObject:[NSNumber numberWithInt:RTFN_VERSION] forKey:@"rtfn_version"];
         [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"rt_version"];
-        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"] forKey:@"rt_build"];
+        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"rt_build"];
         [self saveToOptDict];
         
         DBGLog(@"tracker init version info");

@@ -650,4 +650,12 @@
   - change colour back on number field for 'init from last' for iOS < 5
   - ready for version 1.0.7
 
+--- commit --- many times to fix sampleTrackers changes ---
+
+08 july 2012
+  - change to using CFBundleVersion for build counter, not own entry
+  in Info.plist
+  - submitted as 1.0.7
+  
 --- commit ---
+
