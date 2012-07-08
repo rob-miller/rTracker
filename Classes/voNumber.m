@@ -115,7 +115,11 @@
                     to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<%d order by date desc limit 1;",
                               self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
                     NSString *r = [to toQry2Str];
-                    self.dtf.textColor = [UIColor yellowColor]; //[UIColor lightGrayColor];
+                    if (SYSTEM_VERSION_LESS_THAN(@"5.0")) {
+                        self.dtf.textColor = [UIColor lightGrayColor];
+                    } else {
+                        self.dtf.textColor = [UIColor yellowColor]; //[UIColor lightGrayColor];
+                    }
                     self.dtf.backgroundColor = [UIColor darkGrayColor];
                     self.dtf.text = r;
                 }

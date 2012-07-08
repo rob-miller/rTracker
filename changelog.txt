@@ -641,3 +641,13 @@
   create or save if not present already.
   - test on iOS 6.0 / xCode 4.5b2
   - allow calc fn if ep0=0 (first entry) and ep0 is entry or nil
+
+--- commit ---
+
+08 july 2012
+  - if needed, version info written to tracker db immediately on load
+  - restructure so sampleTrackers is real subdir, not copied
+  - change colour back on number field for 'init from last' for iOS < 5
+  - ready for version 1.0.7
+
+--- commit ---

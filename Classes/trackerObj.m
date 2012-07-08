@@ -43,6 +43,10 @@
  *     field='width'     : max size over all valobj display widgets (num, text, slider, etc)
  *	   field='privacy'   : user specified privacy value for trackerObj
  *     field='savertn'   : bool - save button returns to tracker list (else reset for new tracker data)
+ *	   field='rtdb_version' : database version this tracker created for (these set on load tracker as new with v 1.0.7)
+ *	   field='rtfn_version' : function token set version this tracker created for
+ *	   field='rt_version':  rTracker version this tracker created for/with
+ *	   field='rt_build'  : rTracker build number this tracker created for/with
  *     TODO: field='labelwid'  : max size to print over all valobj values
  *
  *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) ; priv(int)
@@ -220,7 +224,8 @@
 	for ( NSString *key in s1 ) {
 		[self.optDict setObject:[e2 nextObject] forKey:key];
 	}
-	
+
+    [self setTrackerVersion];
     [self setToOptDictDflts];
     
     DBGLog(@"to optdict: %@",self.optDict);
@@ -318,7 +323,8 @@
 	dbgNSAssert(self.toid,@"tObj load from dict toid=0");
 	
     self.optDict = [dict objectForKey:@"optDict"];
-
+    
+    [self setTrackerVersion];
     [self setToOptDictDflts];  // probably redundant
     
 	self.trackerName = [self.optDict objectForKey:@"name"];
@@ -383,30 +389,28 @@
 
 #pragma mark tracker obj default set and vacuum routines together
 
+//  version change for 1.0.7 to include version info with tracker
+- (void) setTrackerVersion {
+    
+    if ((nil == [self.optDict objectForKey:@"rt_build"])) {
+        [self.optDict setObject:[NSNumber numberWithInt:RTDB_VERSION] forKey:@"rtdb_version"];
+        [self.optDict setObject:[NSNumber numberWithInt:RTFN_VERSION] forKey:@"rtfn_version"];
+        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"rt_version"];
+        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"] forKey:@"rt_build"];
+        [self saveToOptDict];
+        
+        DBGLog(@"tracker init version info");
+    }
+}
+
+// setToOptDictDflts
+//  fields not stored in db if they are set to default values, so here set set those values in Tobj if not read in from db
 - (void) setToOptDictDflts {
     if ((nil == [self.optDict objectForKey:@"savertn"])) {
         [self.optDict setObject:(SAVERTNDFLT ? @"1" : @"0") forKey:@"savertn"];
     }
     if ((nil == [self.optDict objectForKey:@"privacy"])) {
         [self.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
-    }
-
-    
-    if ((nil == [self.optDict objectForKey:@"rtdb_version"])) {
-        [self.optDict setObject:[NSNumber numberWithInt:RTDB_VERSION] forKey:@"rtdb_version"];
-        DBGLog(@"tracker init rtdb_version");
-    }
-    if ((nil == [self.optDict objectForKey:@"rtfn_version"])) {
-        [self.optDict setObject:[NSNumber numberWithInt:RTFN_VERSION] forKey:@"rtfn_version"];
-        DBGLog(@"tracker init rtfn_version");
-    }
-    if ((nil == [self.optDict objectForKey:@"rt_version"])) {
-        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"rt_version"];
-        DBGLog(@"tracker init rt_version");
-    }
-    if ((nil == [self.optDict objectForKey:@"rt_build"])) {
-        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"RTMbuild"] forKey:@"rt_build"];
-        DBGLog(@"tracker init rt_build");
     }
 }
 

@@ -38,7 +38,7 @@
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>RTMbuild</key>
-	<integer>20</integer>
+	<integer>30</integer>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
