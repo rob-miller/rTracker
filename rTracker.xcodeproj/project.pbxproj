@@ -112,8 +112,6 @@
 		D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D48F9FB1119B4CA600B37C93 /* addValObjController.xib */; };
 		D49854B012312A400009E458 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
 		D49854B112312A400009E458 /* useTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D49854AF12312A400009E458 /* useTrackerController.xib */; };
-		D4992EE515A97C790084F7C6 /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4992EE415A97C790084F7C6 /* sampleTrackers */; };
-		D4992EE615A97C790084F7C6 /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4992EE415A97C790084F7C6 /* sampleTrackers */; };
 		D4A314AA1189BB6A00F062AC /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
 		D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A3150C11903F5E00F062AC /* addTrackerController.xib */; };
 		D4A316C11191987E00F062AC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A316C01191987E00F062AC /* MainWindow.xib */; };
@@ -231,7 +229,6 @@
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
-		D4992EE415A97C790084F7C6 /* sampleTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sampleTrackers; path = Resources/sampleTrackers; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
 		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
@@ -386,7 +383,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D4992EE415A97C790084F7C6 /* sampleTrackers */,
 				D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */,
 				D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */,
 				D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */,
@@ -693,7 +689,6 @@
 				D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */,
 				D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */,
 				D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */,
-				D4992EE515A97C790084F7C6 /* sampleTrackers in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,7 +719,6 @@
 				D431F3CD14883A7E00E2608A /* datePickerVC.xib in Resources */,
 				D431F3CE14883A7E00E2608A /* voDataEdit.xib in Resources */,
 				D431F3CF14883A7E00E2608A /* voTBacc.xib in Resources */,
-				D4992EE615A97C790084F7C6 /* sampleTrackers in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
