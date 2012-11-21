@@ -20,16 +20,27 @@
 #import "rTracker-resource.h"
 
 @implementation gtYAxV
-@synthesize vogd,myFont,scaleOriginY,scaleHeightY,graphSV,parentGTVC;
+@synthesize vogd,myFont,scaleOriginY,scaleHeightY,graphSV,parentGTVC;  //, backgroundColor;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        // rtm debug
+        //[self setBackgroundColor:[UIColor yellowColor]];
+        //self.backgroundColor = [UIColor yellowColor];
+        //self.opaque = YES;
+        //self.alpha = 1.0f;
+        
+        //DBGLog(@"gtyaxv init done");
     }
     return self;
 }
+
+//- (void) setBackgroundColor:(UIColor *) col {
+//    DBGLog(@" gtyaxv bg color set to %@", col);
+//}
 
 - (void) vtChoiceSetColor:(CGContextRef)context val:(CGFloat)val{
     NSString *cc = [NSString stringWithFormat:@"cc%d",(int)(val-1.0f)];
@@ -122,6 +133,9 @@
     [[UIColor whiteColor] set];
     
 	Stroke;
+
+    // rtm debug
+    [self setBackgroundColor:[UIColor yellowColor]];
 }
 
 - (void)drawRect:(CGRect)rect

@@ -22,6 +22,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        // rtm debug
+        //[self setBackgroundColor:[UIColor cyanColor]];
+        //self.opaque = YES;
+        //self.alpha = 1.0f;
     }
     return self;
 }
@@ -88,6 +92,10 @@
         
 		NSString *ds = (NSString *) [dta objectAtIndex:0];
 		NSString *ts = (NSString *) [dta objectAtIndex:1];
+        
+        ds = [ds stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+
+        //DBGLog(@"ds= _%@_  ts= _%@_",ds,ts);  // US region gets comma at end of ds
         
 		CGSize dsize = [ds sizeWithFont:myFont];
 		CGSize tsize = [ts sizeWithFont:myFont];

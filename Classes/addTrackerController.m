@@ -155,7 +155,8 @@ NSMutableArray *deleteVOs=nil;
 	ctvovc.to = self.tempTrackerObj;
 	ctvovc.vo = nil;
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentModalViewController:ctvovc animated:YES];
+	//io6 [self presentModalViewController:ctvovc animated:YES];
+    [self presentViewController:ctvovc animated:YES completion:NULL];
 	[ctvovc release];  // rtm 05 feb 2012 
 }
 

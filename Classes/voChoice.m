@@ -81,7 +81,7 @@
         return;
 	DBGLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];   
-    if (@"" == self.vo.value) {  
+    if ([@"" isEqual: self.vo.value]) {  
         [self.vo disableVO];
     } else {
     	[self.vo enableVO];

@@ -53,7 +53,7 @@
 - (void) setTrackerDate:(int) targD;
 - (void) doGT;
 - (void) returnFromGraph;
-- (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers;
+//- (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers;
 
 
 @end

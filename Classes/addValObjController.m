@@ -314,7 +314,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	ctvovc.vo = self.tempValObj;
 	//[tempValObj retain];
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentModalViewController:ctvovc animated:YES];
+	//[self presentModalViewController:ctvovc animated:YES];
+    [self presentViewController:ctvovc animated:YES completion:NULL];
 	[ctvovc release];
 }
 

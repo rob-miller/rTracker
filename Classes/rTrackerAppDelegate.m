@@ -49,8 +49,13 @@
     }
     
     // Override point for customization after app launch    
-	[window addSubview:[navigationController view]];
-    [window makeKeyAndVisible];
+
+	// fix 'Application windows are expected to have a root view controller at the end of application launch'
+    //   as found in http://stackoverflow.com/questions/7520971
+    
+    //[self.window addSubview:[navigationController view]];
+    [self.window setRootViewController:navigationController];
+    [self.window makeKeyAndVisible];
 
     DBGLog(@" rTracker version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],

@@ -37,6 +37,7 @@
 	UIViewController *vc;		// ugly: vos may need this to present a voEdit page
     
     NSDateFormatter *dateFormatter;
+    NSDateFormatter *dateOnlyFormatter;
     
     id togd;
 }
@@ -52,6 +53,7 @@
 @property (nonatomic,assign) UIControl *activeControl;
 @property (nonatomic,assign) UIViewController *vc;
 @property (nonatomic,retain) NSDateFormatter *dateFormatter;
+@property (nonatomic,retain) NSDateFormatter *dateOnlyFormatter;
 @property (nonatomic,retain) id togd;
 
 - (id) init:(int) tid;

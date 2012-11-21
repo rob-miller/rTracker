@@ -300,8 +300,11 @@
 
 # pragma mark view rotation methods
 
-// Override to allow orientations other than the default portrait orientation.
+ // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+
+    // only for pre ios 6.0
+    
     // Return YES for supported orientations
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -312,15 +315,19 @@
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc should rotate to interface orientation landscape left?");
+ 
             if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {//if 5
                 [self doGT];
             }
+ 
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc should rotate to interface orientation landscape right?");
+ 
             if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) { //if 5
                 [self doGT];
             }
+ 
 			break;
 		default:
 			DBGWarn(@"utc rotation query but can't tell to where?");
@@ -329,10 +336,17 @@
 	
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
+
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc did rotate from interface orientation portrait");
+            ///*
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+                [self doGT];
+            }
+             //*/
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc did rotate from interface orientation portrait upside down");
@@ -359,22 +373,47 @@
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
             [self.tracker.activeControl resignFirstResponder];
+            /*
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+                [self doGT];
+            }
+            */
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
             [self.tracker.activeControl resignFirstResponder];
+            /*
+            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+                [self doGT];
+            }
+            */
 			break;
 		default:
 			DBGWarn(@"utc will rotate but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
-
+// * not ios6
+// YES should be default anyway so no need to subclass  ??
+/*
 - (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers {
+ 
     DBGLog(@"autoFwdRot returning %d",self.fwdRotations);
     //return self.fwdRotations;
     return YES;
 }
+ */
+
+/* YES is default
+- (BOOL) shouldAutomaticallyForwardRotationMethods {
+    return YES;
+}
+
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods {
+    return YES;
+}
+ */
+
 
 - (void) doGT {
     DBGLog(@"start present graph");
@@ -389,8 +428,12 @@
     gt.parentUTC = self;
     
     self.fwdRotations = NO;
-    [self presentModalViewController:gt animated:YES];
-    //[self addChildViewController:self.modalViewController];
+     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+         [self presentViewController:gt animated:YES completion:NULL];
+     } else {
+         [self presentModalViewController:gt animated:YES];
+         //[self addChildViewController:self.modalViewController];
+     }
     [gt release];
     DBGLog(@"graph up");
 }
@@ -399,7 +442,12 @@
     DBGLog(@"start return from graph");
     //self.view = nil;
     self.fwdRotations=YES;
-    [self dismissModalViewControllerAnimated:YES];
+    
+     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+         [self dismissViewControllerAnimated:YES completion:NULL];
+     } else {
+         [self dismissModalViewControllerAnimated:YES];
+     }
     //[UIViewController attemptRotationToDeviceOrientation];
     DBGLog(@"graph down");
 }
@@ -434,6 +482,7 @@
 			break;			
 	}
 }
+
 
 
 # pragma mark -
@@ -752,8 +801,12 @@
     self.dpvc.dpr = self.dpr;
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-	[self presentModalViewController:self.dpvc animated:YES];
-
+	//
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+        [self presentViewController:self.dpvc animated:YES completion:NULL];
+    } else {
+        [self presentModalViewController:self.dpvc animated:YES];
+    }
 	/*
 	
 	

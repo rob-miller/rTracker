@@ -32,37 +32,39 @@
 /*
  - (void) loadView {
     [super loadView];
-    scrollView = [[UIScrollView alloc] initWithFrame:[[self view] bounds]];
+     //scrollView = [[UIScrollView alloc] initWithFrame:[[self view] bounds]];
+     scrollView = [[UIScrollView alloc] initWithFrame:[[self view] bounds]];
     //scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-    [scrollView setBackgroundColor:[UIColor blackColor]];
+    [scrollView setBackgroundColor:[UIColor magentaColor]];
     [scrollView setDelegate:self];
     [scrollView setBouncesZoom:YES];
     [[self view] addSubview:scrollView];
-    [[self view] setBackgroundColor:[UIColor blueColor]];
+    [[self view] setBackgroundColor:[UIColor brownColor]];
     
 }
 */
 
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-
-    [super viewDidLoad];
-
+- (void) buildView {
     self.shakeLock = 0;
     
-    //self.view.backgroundColor = [UIColor blackColor]; 
+    self.view.backgroundColor = [UIColor blackColor];
+    //[[self view] setBackgroundColor:[UIColor blueColor]];
+    
     CGRect gtvRect;
     
     // get our own frame
     
-	CGRect srect = [[self view] bounds];
-
+    CGRect srect = [[self view] bounds];
+    ///*
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {
-        srect.size.width -= 5;  
+        srect.size.width -= 5;
         srect.size.height += 20;
         self.view.bounds = srect;
     }
+    // */
+    //srect.origin.y -= 50;
+    
+    DBGLog(@"gtvc srect: %f %f %f %f",srect.origin.x,srect.origin.y,srect.size.width,srect.size.height);
     
     CGFloat tw = srect.size.width;   // swap because landscape only implementation and view not loaded yet
     CGFloat th = srect.size.height;
@@ -76,7 +78,7 @@
     
     // view for title
     CGRect rect;
-    rect.origin.y =  0.0f; 
+    rect.origin.y =  0.0f;
     rect.size.height = labelHeight;
     rect.origin.x = 0.0f;
     rect.size.width = srect.size.width; // /2.0f;
@@ -87,11 +89,13 @@
     self.titleView.tracker = self.tracker;
     self.titleView.myFont = self.myFont;
     //self.titleView.backgroundColor = [UIColor greenColor];  // debug
+    
     [[self view] addSubview:self.titleView];
+    
     //[self.titleView release]; // rtm 05 feb 2012 +1 alloc +1 self. retain
     
     gtvRect.origin.y = rect.size.height;
-
+    
     // view for y axis labels
     
     rect.origin.x = 0.0f;
@@ -99,12 +103,16 @@
     rect.origin.y = self.titleView.frame.size.height;
     rect.size.height = srect.size.height - labelHeight; // ((2*labelHeight) + (3*SPACE) + TICKLEN);
     
+    DBGLog(@"gtvc yax rect: %f %f %f %f",rect.origin.x,rect.origin.y,rect.size.width,rect.size.height);
+    
     gtYAxV *tyav = [[gtYAxV alloc] initWithFrame:rect];
     self.yAV = tyav;
     [tyav release];
     //self.yAV.vogd = (vogd*) self.currVO.vogd;  // do below, not valid yet
     self.yAV.myFont = self.myFont;
-    //self.yAV.backgroundColor = [UIColor blueColor];  //debug;
+    //self.yAV.backgroundColor = [UIColor yellowColor];  //debug;
+    //[self.yAV setBackgroundColor:[UIColor yellowColor]];
+    
     self.yAV.scaleOriginY = 0.0f;
     self.yAV.parentGTVC = (id) self;
     //[self.yAV release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
@@ -117,7 +125,7 @@
     rect.origin.y = srect.size.height - ((2*labelHeight) + (3*SPACE) + TICKLEN);
     rect.size.height = srect.size.height - BORDER - rect.size.width;
     rect.origin.x = rect.size.width;
-    rect.size.width = srect.size.width - rect.size.width;
+    rect.size.width = srect.size.width - rect.size.width - 10;
     
     self.yAV.scaleHeightY = rect.origin.y - self.titleView.frame.size.height;   // set bottom of y scale area
     
@@ -139,12 +147,15 @@
     self.scrollView = tsv;
     [tsv release];
     [self.scrollView setBackgroundColor:[UIColor blackColor]];
+    //[self.scrollView setBackgroundColor:[UIColor greenColor]];
     [self.scrollView setDelegate:self];
     [self.scrollView setBouncesZoom:YES];
+    
     [[self view] addSubview:scrollView];
+    
     //[self.scrollView release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] setBackgroundColor:[UIColor yellowColor]];  //debug
-
+    
     DBGLog(@"did create scrollview");
     
     self.scrollView.minimumZoomScale=1.0;
@@ -159,10 +170,13 @@
     
     [self.tracker setTOGD:gtvRect];  // now we know the full gtvRect
     [self nextVO]; // initialize self.currVO
-
-    self.yAV.vogd = (vogd*) self.currVO.vogd; 
+    
+    self.yAV.vogd = (vogd*) self.currVO.vogd;
     self.yAV.graphSV = self.scrollView;
+    
     [[self view] addSubview:self.yAV];
+    //[self.yAV setBackgroundColor:[UIColor yellowColor]];
+    
     self.xAV.mytogd = self.tracker.togd;
     self.xAV.graphSV = self.scrollView;
     [[self view] addSubview:self.xAV];
@@ -178,7 +192,10 @@
         int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
         self.gtv.xMark = ((togd*)self.tracker.togd).firstDate + (targSecs * ((togd*)self.tracker.togd).dateScale);
     }
-	[self.scrollView addSubview:self.gtv];
+	
+    
+    [self.scrollView addSubview:self.gtv];
+    
     //[self.gtv release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] addSubview:[[[UIView alloc]initWithFrame:srect] retain]];
     //self.view.multipleTouchEnabled = YES;
@@ -187,13 +204,25 @@
 
 }
 
+// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+- (void)viewDidLoad {
+
+    [super viewDidLoad];
+
+    //if ( SYSTEM_VERSION_LESS_THAN(@"6.0") ) {
+        [self buildView];
+    //}
+}
+
 
  - (void) viewWillAppear:(BOOL)animated {
+     [super viewWillAppear:animated];
+     
      if (DPA_GOTO == self.dpr.action) {
          int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
          self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
      }
-     [super viewWillAppear:animated];
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -209,8 +238,10 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self becomeFirstResponder];
+
     [super viewDidAppear:animated];
+
+    [self becomeFirstResponder];
 }
 
 - (void) doRecalculateFns {  // and re-create graphs 
@@ -389,20 +420,26 @@
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"gt did rotate from interface orientation landscape left");
-            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
-                [self.parentUTC returnFromGraph];
-            }
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"gt did rotate from interface orientation landscape right");
+            /*
             if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
                 [self.parentUTC returnFromGraph];
             }
+             */
 			break;
 		default:
 			DBGLog(@"gt did rotate but can't tell from where");
 			break;			
 	}
+
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
+        if (self.interfaceOrientation ==  UIInterfaceOrientationPortrait) {
+            [self.parentUTC returnFromGraph];
+        }
+    }
+
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration

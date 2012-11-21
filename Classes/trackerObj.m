@@ -28,7 +28,7 @@
 
 @synthesize trackerName, trackerDate, valObjTable, optDict;
 @synthesize nextColor, votArray;
-@synthesize maxLabel,activeControl,vc, dateFormatter,togd;
+@synthesize maxLabel,activeControl,vc, dateFormatter, dateOnlyFormatter, togd;
 
 #define f(x) ((CGFloat) (x))
 
@@ -184,6 +184,8 @@
 	
     self.dateFormatter =nil;
     [dateFormatter release];
+    self.dateOnlyFormatter =nil;
+    [dateOnlyFormatter release];
     
 	//unregister for value updated notices
     /* move to utc
@@ -675,10 +677,25 @@
     return dateFormatter;
 }
 
+- (NSDateFormatter*) dateOnlyFormatter {
+    if (nil == dateOnlyFormatter) {
+        dateOnlyFormatter = [[NSDateFormatter alloc] init];
+        [dateOnlyFormatter setTimeStyle:NSDateFormatterNoStyle];
+        [dateOnlyFormatter setDateStyle:NSDateFormatterLongStyle];
+    }
+    return dateOnlyFormatter;
+}
+
 - (NSDate*) strToDate:(NSString*)str {
         
     return [self.dateFormatter dateFromString:str];
         
+}
+
+- (NSDate*) strToDateOnly:(NSString*)str {
+    
+    return [self.dateOnlyFormatter dateFromString:str];
+    
 }
 
 - (NSString*) dateToStr:(NSDate*)dat {
@@ -748,6 +765,10 @@
 {
     
     NSDate *ts = [self strToDate:[aRecord objectForKey:TIMESTAMP_LABEL]];
+
+    if (nil == ts) {  // try without time spec
+        ts = [self strToDateOnly:[aRecord objectForKey:TIMESTAMP_LABEL]];
+    }
     if (nil == ts) {
         for (NSString *key in aRecord)
         {

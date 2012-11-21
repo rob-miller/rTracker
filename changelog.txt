@@ -659,3 +659,54 @@
   
 --- commit ---
 
+11 sept 2012
+  - csv reader will now accept 'date only' timestamps, sets time to
+  00:00:00
+
+... nice if it would scroll to top for scroll bars as not visible and
+freezes...
+
+20 oct 2012
+   - fixes for iphone 5
+     - new default screen image
+     - group table background color deprecated (fixed in xib)
+     - fix 'Application windows are expected to have a root view controller at the end of application launch' with setRootViewController: in rTrackerAppDelegate.m
+
+     - above helped with detecting rotation but not there yet...
+
+03 nov 2012
+   - removed code to check version >= 5 on 'will rotate', graph shows now
+   - some race condition (?) on presenting graph vc, changed viewDidAppear() to call super before becomeFirstResponder...  nope.... Ah! depends on rotate left or right..
+
+   -- unable to set background color on gtXAxV, gtYAxV, gtVONameV (gtVoNameV not used?)
+   - remove punctuation chars from end of date string for x axis label, us region setting
+
+04 nov 2012
+   todo for ios6 -- see release notes esp uikit
+     - re-work rotation code ?
+     - check auth to access addressbook and handle better
+     -view(did|will)unload now deprecated
+     - ensure setting rootviewcontroller where was addSubview'ing
+     -- problem with pushing vodataedit viewcontroller / nav controller
+     -> pushnavigationitem instead?
+
+06 nov 2012
+   - vodataedit problem was with xib file, see 
+     		http://stackoverflow.com/questions/12434937
+
+07 nov 2012
+   - replaced ios6 deprecated uiviewcontroller calls, suspect need to re-enable if ios5
+   - still no solution for left/rigt rotation differences
+
+20 nov 2012
+   - finally solved left/right landscape issue, was 'full screen at start' flag in MainWindow.xib -- found because looking for issue with bottom buttons not working.
+   - changed behaviour so rotating upside down and on to landscape does not return to normal view
+   - put ios 5 checks back in so works on ios5 devices.  4.2 no longer supported, need to test for 4.3
+
+21 nov 2012
+   - removed graphTracker.xib
+   - commit because think most things working for ios6 except drawing graphs
+ 
+--- commit ---
+
+++ working on graph not drawing problem

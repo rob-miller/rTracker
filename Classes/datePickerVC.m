@@ -17,7 +17,8 @@
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_CANCEL;
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -96,19 +97,22 @@
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_NEW;
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 - (IBAction) dateSetBtnAction
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_SET;
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 - (IBAction) dateGotoBtnAction
 {
 	self.dpr.date = self.datePicker.date;
 	self.dpr.action = DPA_GOTO;
-	[self dismissModalViewControllerAnimated:YES];
+	//[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (IBAction) dateModeChoice:(id)sender

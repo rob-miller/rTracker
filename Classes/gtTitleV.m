@@ -18,6 +18,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        // rtm debug
+        //[self setBackgroundColor:[UIColor redColor]];
     }
     return self;
 }

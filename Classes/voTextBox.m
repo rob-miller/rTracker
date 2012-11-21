@@ -78,6 +78,7 @@
 	self.devc = vde; // assign
     self.parentUTC = (useTrackerController*) [MyTracker.vc.navigationController visibleViewController];
 	[MyTracker.vc.navigationController pushViewController:vde animated:YES];
+    //[MyTracker.vc.navigationController push :vde animated:YES];
 	[vde release];
 	
 }

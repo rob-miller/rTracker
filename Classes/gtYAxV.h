@@ -19,6 +19,8 @@
     id parentGTVC;
 }
 
+//@property(nonatomic,retain) UIColor *backgroundColor;
+
 @property(nonatomic,retain) vogd *vogd;
 @property(nonatomic,retain) UIFont *myFont;
 @property(nonatomic) CGFloat scaleOriginY;

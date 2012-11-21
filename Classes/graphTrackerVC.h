@@ -64,5 +64,6 @@
 
 - (void) yavTap;
 - (void) gtvTap:(NSSet *)touches;
+- (void) buildView;
 
 @end

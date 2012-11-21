@@ -439,7 +439,7 @@ static BOOL InstallSamples;
     
     for (i=0;i<c && nil == name;i++) {
         NSString *w=nil;
-        if (@"" != (w = [words objectAtIndex:i])) {
+        if (![@"" isEqual: (w = [words objectAtIndex:i])]) {
             name = w;
         }
     }

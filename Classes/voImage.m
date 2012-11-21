@@ -66,7 +66,8 @@
 	picker.allowsEditing = YES;
 	picker.sourceType = 
 		(sender == takePhotoButton) ? UIImagePickerControllerSourceTypeCamera :	UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-	[self.devc presentModalViewController:picker animated:YES];
+	//[self.devc presentModalViewController:picker animated:YES];
+    [self.devc presentViewController:picker animated:YES completion:NULL];
 	[picker release];
 }
 
@@ -75,7 +76,8 @@
 		UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 		picker.delegate = self;
 		picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-		[self.devc presentModalViewController:picker animated:YES];
+		//[self.devc presentModalViewController:picker animated:YES];
+        [self.devc presentViewController:picker animated:YES completion:NULL];
 		[picker release];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc]
@@ -147,15 +149,21 @@
 #pragma mark -
 #pragma mark imagePickerController delegate support 
 
+
+//- (void) imagePickerController:(UIImagePickerController *)picker
+//		 didFinishPickingImage:(UIImage*)image
+//				   editingInfo:(NSDictionary*)editingInfo {
+
 - (void) imagePickerController:(UIImagePickerController *)picker
-		 didFinishPickingImage:(UIImage*)image
-				   editingInfo:(NSDictionary*)editingInfo {
-	imageView.image = image;
-	[picker dismissModalViewControllerAnimated:YES];
+		 didFinishPickingMediaWithInfo:(NSDictionary *)mediaInfo {
+	imageView.image = [mediaInfo objectForKey:UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
+	//[picker dismissModalViewControllerAnimated:YES];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	[picker dismissModalViewControllerAnimated:YES];
+	//[picker dismissModalViewControllerAnimated:YES];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 

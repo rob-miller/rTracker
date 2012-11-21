@@ -74,7 +74,8 @@
 		[((voFunction*)self.vo.vos) funcDone];
 	}
 	
-	[self dismissModalViewControllerAnimated:YES];
+	//ios6 [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 //- (IBAction) backgroundTap:(id)sender {
