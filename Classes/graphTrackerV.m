@@ -51,6 +51,7 @@
         tempTiledLayer.levelsOfDetailBias = 2;
 #endif
         self.opaque=NO;
+        self.doDrawGraph = TRUE;  // rtm dbg
     }
     return self;
 }

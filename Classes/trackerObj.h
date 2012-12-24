@@ -58,12 +58,15 @@
 
 - (id) init:(int) tid;
 - (id) initWithDict:(NSDictionary*)dict;
-    
+
+- (void) confirmTOdict:(NSDictionary*)dict;
+
 - (void) addValObj:(valueObj*)valObj;
 - (void) saveConfig;
 - (void) saveChoiceConfigs;
 
 - (NSDictionary*) dictFromTO;
+
 - (void) loadConfig;
 - (void) loadConfigFromDict:(NSDictionary*)dict;
 - (void) rescanMaxLabel; 
@@ -93,6 +96,9 @@
 - (int) countEntries;
 - (NSString*) voGetNameForVID:(NSInteger)vid;
 
+- (BOOL) voVIDisUsed:(NSInteger)vid;
+- (void) voUpdateVID:(NSInteger)old new:(NSInteger)new;
+
 - (int) noCollideDate:(int)testDate;
 - (void) changeDate:(NSDate*)newdate;
 
@@ -101,6 +107,9 @@
 
 - (void) export;
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
+- (NSDictionary *) genRtrk:(BOOL)withData;
+
+- (void) loadDataDict:(NSDictionary*)dataDict;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

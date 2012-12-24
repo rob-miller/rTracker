@@ -163,6 +163,64 @@
 }
 
 
+- (void) confirmTOdict:(NSDictionary*)dict {
+
+    NSDictionary *newOptDict = [dict objectForKey:@"optDict"];
+    NSString *key;
+    for (key in newOptDict) {
+        [self.optDict setObject:[newOptDict objectForKey:key] forKey:key];  // incoming optDict may be incomplete, assume obsolete optDict entries not a problem
+    }
+    
+    NSArray *newValObjs = [dict objectForKey:@"valObjTable@"];
+    for (NSDictionary *voDict in newValObjs) {
+        NSInteger nVid = [[voDict objectForKey:@"vid"] integerValue];                // new VID
+        NSString *nVname = [voDict objectForKey:@"valueName"];
+        
+        NSInteger eVid = -1;
+        for (valueObj *vo in self.valObjTable) {
+            if ([vo.valueName isEqualToString:nVname]) {
+                if ((-1 == eVid) || (vo.vid == nVid)) {         // first matching nVname or matches nVname and nVid
+                    eVid = vo.vid;
+                }
+            }
+        }
+
+        if (-1 == eVid) { // no existing valObj with this name
+
+            if ([self voVIDisUsed:nVid]) {  // handle case of existing valObj has same vid
+                [self voUpdateVID:nVid new:[self getUnique]];
+            }
+            [self addValObj:[[valueObj alloc] initWithDict:self dict:voDict]];  // safe to add as specified
+            
+        } else { // name match .. first or also vid match
+            [self voUpdateVID:eVid new:nVid];  // does nothing if same already
+            
+            // what if type changes?  what if changes to function???
+        }
+        
+        /* think done need to test !
+         
+        rtm working here
+        if eVid is 0 then add new valueObj
+        else if eVid matches voDict vid then [problem if vtype mismatch ?]
+        else if vid does not match then mess to merge ?
+         */
+        
+        /*
+        return [NSDictionary dictionaryWithObjectsAndKeys:
+                [NSNumber numberWithInteger:self.vid],@"vid",
+                [NSNumber numberWithInteger:self.vtype],@"vtype",
+                [NSNumber numberWithInteger:self.vpriv],@"vpriv",
+                self.valueName,@"valueName",
+                [NSNumber numberWithInteger:self.vcolor],@"vcolor",
+                [NSNumber numberWithInteger:self.vGraphType],@"vGraphType",
+                self.optDict,@"optDict",
+                nil];
+        */
+        
+    }
+}
+
 - (void) dealloc {
 	DBGLog(@"dealloc tObj: %@",self.trackerName);
 	
@@ -523,10 +581,21 @@
 	[self writeTrackerCSV:nsfh];
 	[nsfh closeFile];
     
+    
     fname = [NSString stringWithFormat:@"%@_out.plist",self.trackerName];
     fpath = [rTracker_resource ioFilePath:fname access:YES];
-    [[self dictFromTO] writeToFile:fpath atomically:YES];
+    if (! ([[self dictFromTO] writeToFile:fpath atomically:YES])) {
+        DBGErr(@"problem writing file %@",fname);
+    }
     
+    // rtm here -- perhaps not for release code ?
+    fname = [NSString stringWithFormat:@"%@_out.rtrk",self.trackerName];
+    fpath = [rTracker_resource ioFilePath:fname access:YES];
+    NSDictionary *rtrk = [self genRtrk:YES];
+    if(! ([rtrk writeToFile:fpath atomically:YES])) {
+        DBGErr(@"problem writing file %@",fname);
+    }
+
 	//[nsfh release];
     
     
@@ -546,6 +615,84 @@
             nil];
     
 }
+
+- (NSDictionary *) genRtrk:(BOOL)withData {
+    // would be nice to jump temporarily to maxpriv so everything is written out, but no mechanism to get up to root VC's privacyObj
+    // int currPriv = [privacyV getPrivacyValue];
+
+    NSMutableDictionary *tData = [[NSMutableDictionary alloc] init];
+    
+    if (withData) {
+        // save current trackerDate (NSDate->int)
+        int currDate = (int) [self.trackerDate timeIntervalSince1970];
+        int nextDate = [self firstDate];
+        
+        float ndx = 1.0;
+        float all = [self getDateCount];
+        
+        do {
+            [self loadData:nextDate];
+            NSMutableDictionary *vData = [[NSMutableDictionary alloc] init];
+            for (valueObj *vo in self.valObjTable) {
+                [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
+                //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
+            }
+            //[NSNumber numberWithDouble:[self.trackerDate timeIntervalSinceReferenceDate]] ];
+            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]] ];
+            //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
+            [vData release];
+            //DBGLog(@"genRtrk: tData= %@",tData);
+            [rTracker_resource setProgressVal:(ndx/all)];
+            ndx += 1.0;
+        } while ((nextDate = [self postDate]));    // iterate through dates
+        
+        // restore current date
+        [self loadData:currDate];
+        
+    }
+    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSString stringWithFormat:@"%d",self.toid],@"toid",
+                              self.trackerName,@"trackerName",
+                              [self dictFromTO],@"configDict",
+                              [[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
+                              nil];
+    [tData release];
+    //TODO: rtm here, are rtrkDict sub-dictionaries leaked?
+    return rtrkDict;
+}
+
+- (void) loadDataDict:(NSDictionary*)dataDict {
+    NSString *dateIntStr;
+    for (dateIntStr in dataDict) {
+        NSDate *tdate= [NSDate dateWithTimeIntervalSinceReferenceDate:[dateIntStr doubleValue]];
+        int tdi = [tdate timeIntervalSince1970];
+        NSDictionary *vdata = [dataDict objectForKey:dateIntStr];
+        NSString *vids;
+        int mp = BIGPRIV;
+        for (vids in vdata) {
+            NSInteger vid = [vids integerValue];
+            valueObj *vo = [self getValObj:vid];
+            //NSString *val = [vo.vos mapCsv2Value:[vdata objectForKey:vids]];
+            NSString *val = [vdata objectForKey:vids];
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
+                        vid,tdi,val];
+            [self toExecSql];
+            
+            if (vo.vpriv < mp) {
+                mp = vo.vpriv;
+            }
+        }
+        self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",tdi,mp];
+        [self toExecSql];
+    }
+}
+
+/*
+- (void) rcvRtrk:(NSDictionary *)rTrk {
+   rtm working here -- this needs to be in rvc, merge with load plist files 
+}
+*/
+
 
 - (valueObj *) getValObj:(NSInteger) qVid {
 	valueObj *rvo=nil;
@@ -607,6 +754,7 @@
 		return NO;
 	}
 }
+
 
 - (void) saveData {
 
@@ -784,7 +932,7 @@
     int its = [ts timeIntervalSince1970];
     
     //NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
-    
+
     int mp = BIGPRIV;
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
@@ -1068,10 +1216,50 @@
 		if (vo.vid == vid)
 			return vo.valueName;
 	}
-	dbgNSAssert(0,@"voGetNameForVID failed");  
+	DBGLog(@"voGetNameForVID %d failed", vid);
 	//return [NSString stringWithFormat:@"vid %d not found",vid];
     return @"not configured yet";
 }
+
+/*  precludes musltiple vo with same name
+- (NSInteger) voGetVIDforName:(NSString *)vname {
+	for (valueObj *vo in self.valObjTable) {
+		if ([vo.valueName isEqualToString:vname])
+			return vo.vid;
+	}
+	DBGLog(@"voGetVIDNameForName failed for name %@",vname);
+	//return [NSString stringWithFormat:@"vid %d not found",vid];
+    return 0;
+}
+*/
+
+- (BOOL) voVIDisUsed:(NSInteger)vid {
+	for (valueObj *vo in self.valObjTable) {
+		if (vo.vid == vid)
+			return YES;
+	}
+    return NO;
+}
+
+- (void) voUpdateVID:(NSInteger)old new:(NSInteger)new {
+    
+    if (old == new) return;
+    
+    if ([self voVIDisUsed:new]) {
+        [self voUpdateVID:new new:[self getUnique]];
+    }
+    
+    self.sql= [NSString stringWithFormat: @"update voData set id=%d where id=%d", new, old];
+    [self toExecSql];
+    self.sql= [NSString stringWithFormat: @"update voInfo set id=%d where id=%d", new, old];
+    [self toExecSql];
+    self.sql= [NSString stringWithFormat: @"update voConfig set id=%d where id=%d", new, old];
+    [self toExecSql];
+
+    self.sql = nil;
+
+}
+
 
 - (BOOL) voHasData:(NSInteger) vid
 {

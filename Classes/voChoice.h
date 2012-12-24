@@ -13,10 +13,12 @@
 	configTVObjVC *ctvovcp;
     UISegmentedControl *segmentedControl;
     BOOL processingTfDone;
+    BOOL processingTfvDone;
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
 @property (nonatomic,retain) UISegmentedControl *segmentedControl;
 @property (nonatomic) BOOL processingTfDone;
+@property (nonatomic) BOOL processingTfvDone;
 
 @end

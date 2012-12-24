@@ -14,7 +14,7 @@
 
 @implementation voChoice
 
-@synthesize ctvovcp,segmentedControl,processingTfDone;
+@synthesize ctvovcp,segmentedControl,processingTfDone,processingTfvDone;
 
 - (id) initWithVO:(valueObj *)valo {
 	if ((self = [super initWithVO:valo])) {
@@ -39,13 +39,22 @@
 }
 
 - (NSString*) getValueForSegmentChoice {
-    int i;
+    //int i;
     NSString *rslt = @"";
     NSUInteger segNdx = [self.segmentedControl selectedSegmentIndex];
     if (UISegmentedControlNoSegment != segNdx) {
 
+        NSString *val = [self.vo.optDict objectForKey:[NSString stringWithFormat:@"cv%d",segNdx]];
+        if (nil == val) {
+            rslt = [NSString stringWithFormat:@"%d",segNdx+1];
+        } else {
+            rslt = val;
+        }
+#if DEBUGLOG
         NSString *chTitle = [self.segmentedControl titleForSegmentAtIndex:segNdx];
-    
+        DBGLog(@"get v for seg title %@ ndx %d rslt %@",chTitle,segNdx,rslt);  // why tf not just return fn on segNdx?
+#endif
+/*
         for (i=0; i<CHOICES;i++) {
             NSString *key = [NSString stringWithFormat:@"c%d",i];
             NSString *val = [self.vo.optDict objectForKey:key];
@@ -54,7 +63,8 @@
                 break;
             }
         }
-        dbgNSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");    
+        dbgNSAssert(i<CHOICES,@"segmentAction: failed to identify choice!");
+*/
     }
     
     return rslt;
@@ -62,7 +72,15 @@
 
 - (int) getSegmentIndexForValue {
     // doesn't display if e.g only choice 6 configured
-    return [self.vo.value integerValue]-1;
+    // rtm change with 'specify choice values' 24.xii.2012 return [self.vo.value integerValue]-1;
+    NSString *currVal = self.vo.value;
+    for (int i=0; i<CHOICES; i++) {
+        NSString *key = [NSString stringWithFormat:@"cv%d",i];
+        if ([[self.vo.optDict valueForKey:key] isEqualToString:currVal]) {
+            return i;
+        }
+    }
+    return CHOICES;
 }
 
 
@@ -217,6 +235,56 @@
     self.processingTfDone = NO;
     
 }
+//TODO: merge these two?
+- (void) ctfvDone:(UITextField *)tf
+{
+    if (YES == self.processingTfvDone)
+        return;
+    self.processingTfvDone = YES;
+    
+	int i=0;
+	NSString *key;
+	for (key in self.ctvovcp.wDict) {
+		if ([self.ctvovcp.wDict objectForKey:key] == tf) {
+			const char *kstr = [key UTF8String];
+			sscanf(kstr,"%dtfv",&i);
+			break;
+		}
+	}
+	
+    if (! [@"" isEqualToString:tf.text]) {
+        DBGLog(@"set choice value %d: %@",i, tf.text);
+        [self.vo.optDict setObject:tf.text forKey:[NSString stringWithFormat:@"cv%d",i]];
+    } else {
+        [self.vo.optDict removeObjectForKey:[NSString stringWithFormat:@"cv%d",i]];
+    }
+    
+    /*
+	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
+	UIButton *b = [self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dbtn",i]];
+	if ([tf.text isEqualToString:@""]) {
+		b.backgroundColor = [UIColor clearColor];
+		[self.vo.optDict removeObjectForKey:cc];
+		//TODO: should offer to delete any stored data
+	} else {
+		NSNumber *ncol = [self.vo.optDict objectForKey:cc];
+		
+		if (ncol == nil) {
+			NSInteger col = [self.vo.parentTracker nextColor];
+			[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
+			b.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
+		}
+	}
+    */
+	//if (++i<CHOICES) {
+		[[self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
+	//} else {
+	//	[tf resignFirstResponder];
+	//}
+    
+    self.processingTfvDone = NO;
+    
+}
 
 - (void) choiceColorButtonAction:(UIButton *)btn
 {
@@ -280,13 +348,27 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-	CGFloat tfWidth = [@"9999999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
-	frame.size.width = tfWidth;
+    CGFloat tfvWidth = [@"999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	CGFloat tfWidth = [@"9999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
 	int i,j=1;
 	for (i=0; i<CHOICES; i++) {
-		
+        frame.size.width = tfvWidth;
+
+		[ctvovc configTextField:frame
+                            key:[NSString stringWithFormat:@"%dtfv",i]
+                         target:self
+                         action:@selector(ctfvDone:)
+                            num:YES
+                          place:[NSString stringWithFormat:@"%d",i+1]
+                           text:[self.vo.optDict objectForKey:[NSString stringWithFormat:@"cv%d",i]]
+                          addsv:YES ];
+
+		frame.origin.x += MARGIN + tfvWidth;
+        frame.size.width = tfWidth;
+
 		[ctvovc configTextField:frame 
 						  key:[NSString stringWithFormat:@"%dtf",i] 
 					   target:self
@@ -316,10 +398,11 @@
 		[ctvovc.wDict setObject:btn forKey:[NSString stringWithFormat:@"%dbtn",i]];
 		[ctvovc.view addSubview:btn];
 		
-		frame.origin.x = MARGIN + (j * (tfWidth + ctvovc.LFHeight + 2*MARGIN));
+		frame.origin.x = MARGIN + (j * (tfvWidth + tfWidth + ctvovc.LFHeight + 3*MARGIN));
 		j = ( j ? 0 : 1 ); // j toggles 0-1
 		frame.origin.y += j * ((2*MARGIN) + ctvovc.LFHeight);
-		frame.size.width = tfWidth;
+
+		//frame.size.width = tfWidth;
 		//frame.size.height = self.labelField.frame.size.height; // lab.frame.size.height;
 	}
 	
@@ -378,8 +461,12 @@
         if (nil != val) {
             maxc = ndx;
             if ([val isEqualToString:inCsv]) {
-                DBGLog(@"matched, returning %d",ndx+1);
-                return [NSString stringWithFormat:@"%d",ndx+1];    // found match, return 1-based index and be done
+                //DBGLog(@"matched, returning %d",ndx+1);
+                //return [NSString stringWithFormat:@"%d",ndx+1];    // found match, return 1-based index and be done
+                // change for can spec value for choice
+                DBGLog(@"matched, ndx=%d",ndx);
+                NSString *key = [NSString stringWithFormat:@"cv%d",ndx];
+                return [optDict valueForKey:key];
             } else if ((-1 == firstBlank) && ([@"" isEqualToString:val])) {
                 firstBlank = ndx;
             }

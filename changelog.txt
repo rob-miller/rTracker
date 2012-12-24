@@ -710,3 +710,50 @@ freezes...
 --- commit ---
 
 ++ working on graph not drawing problem
+   - problem is change in rotation calls -- old ones not being called, so doDrawGraph flag not gettting set.
+   + still problem with graph geometry on 6.0
+
+23 nov 2012
+   - solved graph geometry problem by removing ios5 hack to modify bounds
+
+26 nov 2012
+   - working on .rtrk file support:
+   -- created method tlist:updateTID(old,new) which moves existing tracker with tid=new out of way and updates existing tracker with tid=old to be tid=new
+   -- changed tlist:fixDictTID to use this instead of modify dict
+   -- working on loadTrackerPlistFiles to update existing tracker on load plist with existing name
+   TODO: ?  change filemanager usage to use defaultFileManager see
+http://mobiledevelopertips.com/data-file-management/iphone-file-system-creating-renaming-and-deleting-files.html
+
+27 nov 2012
+   - implemented voUpdateVID(old, new) and most of trackerObj:confirmDict
+   -- need to handle optDict
+
+29 nov 2012
+   - think finished for processing input plists including optdict
+   -- next is receiving .rtrk files
+
+09 dec 2012
+   - added doc for rvc:loadTrackerDict
+   - loadInputFiles look for .rtrk and add to csv and plist sets
+   - modified rvc:loadTrackerPlistFiles to list input files, rename to _reading, load TOdicts as seen
+   -- still working, need to rm _reading files or hand off to csv load for data
+   -- rvc:refreshView() will check for _reading files, offer to delete or try again
+
+14 dec 2012
+   - implemented trackerObj:loadDataDict -- think that is it, now to debug...
+
+18 dec 2012
+   - successful load of csv data and plists as before
+   - finished update of dev certs provision etc can run on iphone, hoepfully can submit
+   - implemented specify values for choices
+
+19 dec 2012
+   - minor tweaks to choices, ignore if empty field
+
+23 dec 2012 (24 dec computer time)
+   - set empty field for choice value removes that key
+   - write _out.rtrk file on tracker export, ignore when reading -- debug
+   - lots of debugging choice changes
+   - completed initial loadFromFileURL !
+
+todo: if change vid, must change in fn!

@@ -55,13 +55,13 @@
     // get our own frame
     
     CGRect srect = [[self view] bounds];
-    ///*
-    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {
+    
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") && SYSTEM_VERSION_LESS_THAN(@"6.0")) {
         srect.size.width -= 5;
         srect.size.height += 20;
         self.view.bounds = srect;
     }
-    // */
+    
     //srect.origin.y -= 50;
     
     DBGLog(@"gtvc srect: %f %f %f %f",srect.origin.x,srect.origin.y,srect.size.width,srect.size.height);
@@ -423,11 +423,6 @@
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"gt did rotate from interface orientation landscape right");
-            /*
-            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
-                [self.parentUTC returnFromGraph];
-            }
-             */
 			break;
 		default:
 			DBGLog(@"gt did rotate but can't tell from where");
@@ -444,7 +439,8 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    self.gtv.doDrawGraph=FALSE;
+    //rtm dbg self.gtv.doDrawGraph=FALSE;
+    self.gtv.doDrawGraph=TRUE;
     
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:

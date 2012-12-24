@@ -39,6 +39,8 @@
 - (BOOL)checkTIDexists:(NSNumber*)tid;
 - (int) getTIDfromName:(NSString*)str;
 - (void) fixDictTID:(NSDictionary*)tdict;
+- (void) updateTID:(NSNumber *)old new:(NSNumber*)new;
+
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 
 - (void) deleteTrackerAllRow : (NSUInteger) row;

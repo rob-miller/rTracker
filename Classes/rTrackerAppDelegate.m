@@ -20,10 +20,13 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
-
+//- (void)applicationDidFinishLaunching:(UIApplication *)application {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
     if (nil == [[NSUserDefaults standardUserDefaults] objectForKey:@"reload_sample_trackers_pref"]) {
-        ((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
+
+        //((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
+        rootController.initialPrefsLoad = YES;
 
          NSString  *mainBundlePath = [[NSBundle mainBundle] bundlePath];
          NSString  *settingsPropertyListPath = [mainBundlePath
@@ -62,10 +65,29 @@
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"],
            RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
            );
+    
+    //NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
+    // rtm here
+    // docs say app openURL below is called anyway, so don't do here which is only if app not already open
+    //
+    // if (url != nil && [url isFileURL]) {
+    //    [rootController handleOpenFileURL:url];
+    //}
     DBGLog(@"rt app delegate: app did finish launching");
+
+    return YES;
 }
 
 
+- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    if (url != nil && [url isFileURL]) {
+        [rootController handleOpenFileURL:url tname:nil];
+    }
+    return YES;
+        
+}
+    
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
 	DBGLog(@"rt app delegate: app will terminate");

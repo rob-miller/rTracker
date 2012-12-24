@@ -198,13 +198,45 @@
     return 0;
 }
 
+////
+//
+// 26.xi.12 previously this would modify dictionary to set its TID to non-conflicting value, now calls updateTID to move existing trackers with conflicting TID to new TID
+//
+////
 - (void) fixDictTID:(NSDictionary*)tdict {
-    [self minUniquev:[[tdict objectForKey:@"tid"] intValue]];
+    NSNumber *tid = [tdict objectForKey:@"tid"];
+    [self minUniquev:[tid intValue]];
     
-    if ([self checkTIDexists:[tdict objectForKey:@"tid"]]) {
-        DBGLog(@" tid exists already: %@",[tdict objectForKey:@"tid"]);
-        [tdict setValue:[NSNumber numberWithInt:[self getUnique]] forKey:@"tid"];
-        DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
+    if ([self checkTIDexists:tid]) {
+        //[tdict setValue:[NSNumber numberWithInt:[self getUnique]] forKey:@"tid"];
+        //DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
+        [self updateTID:tid new:[NSNumber numberWithInt:[self getUnique]]];
+    }
+}
+
+- (void) updateTID:(NSNumber *)old new:(NSNumber*)new {
+
+    if (old == new) return;
+    if ([self checkTIDexists:new]) {
+        [self updateTID:new new:[NSNumber numberWithInt:[self getUnique]]];
+    }
+
+    // rename file
+    NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",[old intValue]];
+    NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",[new intValue]];
+    NSError *error;
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm moveItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
+                    toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
+        DBGLog(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+    } else {
+        // update toplevel if file rename went ok
+        self.sql = [NSString stringWithFormat:@"update toplevel set id=%@ where id=%@",new, old ];
+        [self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+        self.sql = nil;
+        
+        DBGLog(@"changed TID %@ to %@",old,new);
     }
 }
 

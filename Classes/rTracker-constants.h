@@ -7,7 +7,8 @@
  *
  */
 
-#define MARGIN 10.0f
+// 18 dec change MARGIN from 10.0f
+#define MARGIN 8.0f
 #define SPACE 3.0f
 #define TFXTRA 2.0f;
 
