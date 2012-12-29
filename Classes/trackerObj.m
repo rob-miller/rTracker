@@ -1233,6 +1233,25 @@
 }
 */
 
+- (void) updateVIDinFns:(NSInteger)old new:(NSInteger)new {
+    NSString *oldstr = [NSString stringWithFormat:@" %d ",old];
+	for (valueObj *vo in self.valObjTable) {
+		if (VOT_FUNC == vo.vtype) {
+            NSString *fnstr = [vo.optDict objectForKey:@"func"];
+            NSRange match = [fnstr rangeOfString:oldstr];
+            if (NSNotFound != match.location) {
+                fnstr = [fnstr stringByReplacingOccurrencesOfString:oldstr withString:[NSString stringWithFormat:@" %d ",new]];
+                [vo.optDict setObject:fnstr forKey:@"func"];
+
+                self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func",fnstr,vo.vid];
+                [self toExecSql];
+            }
+        }
+
+	}
+    
+}
+
 - (BOOL) voVIDisUsed:(NSInteger)vid {
 	for (valueObj *vo in self.valObjTable) {
 		if (vo.vid == vid)
@@ -1257,6 +1276,8 @@
     [self toExecSql];
 
     self.sql = nil;
+    
+    [self updateVIDinFns:old new:new];
 
 }
 

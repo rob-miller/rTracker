@@ -237,10 +237,10 @@ static BOOL InstallSamples;
 
 #pragma mark load .plists ad .rtrks for input trackers
 
-- (BOOL) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
-    BOOL didSomething=NO;
+- (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
+    
     
     if (nil != tname) {
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
@@ -253,7 +253,6 @@ static BOOL InstallSamples;
 
     if (nil != tdict) {  // rtrk might not have configDict
         [self loadTrackerDict:tdict tname:tname];
-        didSomething= YES;
     }
     
     if (nil != dataDict) {
@@ -268,11 +267,9 @@ static BOOL InstallSamples;
         [to describe];
 #endif
         [to release];
-        
-        didSomething= YES;
     }
     
-    return didSomething;
+    return [self.tlist getTIDfromName:tname];
 }
 
 
@@ -1145,19 +1142,8 @@ static BOOL InstallSamples;
     return cell;
 }
 
-
-
-// Override to support row selection in the table view.
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    if (PVNOSHOW != self.privacyObj.showing) {
-        return;
-    }
-    
-	NSUInteger row = [indexPath row];
-	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
-	
-	trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromIndex:row]];
+- (void) openTracker:(int)tid {
+    trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 
 	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
@@ -1166,10 +1152,22 @@ static BOOL InstallSamples;
     
     //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
     
-    
 	[utc release];
 	
 	[to release];
+}
+
+// Override to support row selection in the table view.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (PVNOSHOW != self.privacyObj.showing) {
+        return;
+    }
+    
+	//NSUInteger row = [indexPath row];
+	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
+	
+    [self openTracker:[self.tlist getTIDfromIndex:[indexPath row]]];
 	
 }
 

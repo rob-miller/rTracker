@@ -73,6 +73,12 @@
 #define FREPWEEKS  -4
 #define FREPMONTHS -5
 #define FREPYEARS  -6
+#define FREPCDAYS   -7
+#define FREPCWEEKS  -8
+#define FREPCMONTHS -9
+#define FREPCYEARS  -10
+
+#define MAXFREP 10
 
 
 #define FNSEGNDX_OVERVIEW 0
@@ -93,6 +99,8 @@
 	NSInteger currFnNdx;			// index as we compute the function
     
     UILabel *rlab;
+    
+    NSArray *votWoSelf;             // myTracker's valobjtable without reference to self for picking endpoints
 }
 
 @property (nonatomic,assign) configTVObjVC *ctvovcp;
@@ -103,6 +111,7 @@
 @property (nonatomic,retain) NSMutableArray *fnArray;
 @property (nonatomic) NSInteger currFnNdx;
 @property (nonatomic,retain) UILabel *rlab;
+@property (nonatomic,retain) NSArray *votWoSelf;
 
 - (void) funcDone;
 - (void) funcVDL:(configTVObjVC*)ctvovc donebutton:(UIBarButtonItem*)db ;

@@ -81,9 +81,12 @@
 
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    if (url != nil && [url isFileURL]) {
-        [rootController handleOpenFileURL:url tname:nil];
+    //if (url != nil && [url isFileURL]) {
+        int tid = [rootController handleOpenFileURL:url tname:nil];
+    if (0 != tid) {
+        [rootController openTracker:tid];
     }
+    //}
     return YES;
         
 }

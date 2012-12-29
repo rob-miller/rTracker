@@ -49,6 +49,7 @@
 - (void) refreshView;
 - (void) refreshToolBar:(BOOL)animated;
 - (void) refreshEditBtn;
-- (BOOL) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname;
+- (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname;
+- (void) openTracker:(int)tid;
 
 @end

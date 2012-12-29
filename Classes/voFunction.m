@@ -21,7 +21,7 @@
 
 @implementation voFunction
 
-@synthesize epTitles, fnTitles, fnStrs, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab;
+@synthesize epTitles, fnTitles, fnStrs, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab, votWoSelf;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -40,6 +40,9 @@
 	
     self.rlab = nil;
     [rlab release];
+    
+    self.votWoSelf = nil;
+    [votWoSelf release];
     
 	[super dealloc];
 }
@@ -125,7 +128,8 @@
 - (NSArray*) epTitles {
 	if (epTitles == nil) {
 		// n.b.: tied to FREP symbol defns in voFunctions.h
-		epTitles = [[NSArray alloc] initWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years", nil];
+		epTitles = [[NSArray alloc] initWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years",
+                    @"cal days",@"cal weeks",@"cal months", @"cal years",nil];
 	}
 	return epTitles;
 }
@@ -152,6 +156,32 @@
 		}
 	}
 	return fnStrs;
+}
+
+- (NSArray*)votWoSelf {
+    if (nil == votWoSelf) {
+        //if (0 > self.vo.vid) {  // temporary vo waiting for save so not included in tracker's vo table
+        //  -> no, could be editinging an already existing entry
+        //    votWoSelf = [NSArray arrayWithArray:MyTracker.valObjTable];
+        //} else {
+            NSMutableArray *tvot = [NSMutableArray arrayWithCapacity:[MyTracker.valObjTable count]];
+            for (valueObj *tvo in MyTracker.valObjTable) {
+                if (tvo.vid != self.vo.vid) {
+                    [tvot addObject:tvo];
+                }
+            }
+            //votWoSelf = [NSArray arrayWithArray:tvot];
+            votWoSelf = [[NSArray alloc] initWithArray:tvot];
+            // not needed? [tvot release];
+        //}
+        DBGLog(@"instantiate votWoSelf:");
+        DBGLog(@"self.vo vid=%d  name= %@",self.vo.vid,self.vo.valueName);
+        for (valueObj *mvo in votWoSelf) {
+            DBGLog(@"  %d: %@",mvo.vid,mvo.valueName);
+        }
+        DBGLog(@".");
+    }
+    return votWoSelf;
 }
 
 #pragma mark -
@@ -190,7 +220,7 @@
 		NSInteger ival = [[self.vo.optDict objectForKey:vkey] integerValue] * ( ndx ? 1 : -1 ) ; // negative offset if ep0
 		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 		NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
-
+        
 		//NSString *vt=nil;
 		
 		switch (ep) {
@@ -198,18 +228,26 @@
 				[offsetComponents setHour:ival];
 				//vt = @"hours";
 				break;
+			case FREPCDAYS :
+                ival += (ndx ? 0 : 1);   // for -1 calendar day, we want offset -0 day and normalize to previous midnight below
 			case FREPDAYS :
 				[offsetComponents setDay:ival];
 				//vt = @"days";
 				break;
-			case FREPWEEKS :
-				[offsetComponents setWeek:ival];
+			case FREPCWEEKS :
+                ival += (ndx ? 0 : 1);
+            case FREPWEEKS :
+                [offsetComponents setWeek:ival];
 				//vt = @"weeks";
 				break;
+			case FREPCMONTHS :
+                ival += (ndx ? 0 : 1);
 			case FREPMONTHS :
 				[offsetComponents setMonth:ival];
 				//vt = @"months";
 				break;
+			case FREPCYEARS :
+                ival += (ndx ? 0 : 1);
 			case FREPYEARS :
 				//vt = @"years";
 				[offsetComponents setYear:ival];
@@ -219,11 +257,38 @@
 				break;
 		}
 	
-		NSDate *targ = [gregorian dateByAddingComponents:offsetComponents 
-												  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)maxdate]
-												 options:0];
+        NSDate *targ = [gregorian dateByAddingComponents:offsetComponents
+                                                  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)maxdate]
+                                                 options:0];
+        
+        unsigned unitFlags = 0;
+        
+		switch (ep) {
+                // if calendar week, we need to get to beginning of week as per calendar
+			case FREPCWEEKS :
+            {
+                NSDate *beginOfWeek=nil;
+                BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                if (rslt) {
+                    targ = beginOfWeek;
+                }
+            }
+                // if any of week, day, month, year we need to wipe hour, minute, second components
+			case FREPCDAYS :
+                unitFlags |= NSDayCalendarUnit;
+			case FREPCMONTHS :
+                unitFlags |= NSMonthCalendarUnit;
+			case FREPCYEARS :
+                unitFlags |= NSYearCalendarUnit;
+                NSDateComponents *components = [gregorian components:unitFlags fromDate:targ];
+                targ = [gregorian dateFromComponents:components];
+                break;
+                
+        }
+        
+        
 		epDate = [targ timeIntervalSince1970];
-		//DBGLog(@"ep %d ->offset %d %@: %@", ndx, ival, vt, [self qdate:epDate] );
+		DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
 		
 		[gregorian release];
 		[offsetComponents release];
@@ -567,24 +632,33 @@
 	NSString *key = [NSString stringWithFormat:@"frep%d",component];
 	NSNumber *n = [self.vo.optDict objectForKey:key];
 	NSInteger ep = [n integerValue];
-	if (n == nil || ep == FREPDFLT) // no endpoint defined, so default row 0
+    DBGLog(@"comp= %d ep= %d n= %@ ",component,ep,n);
+	if (n == nil || ep == FREPDFLT) {// no endpoint defined, so default row 0
+        DBGLog(@" returning 0");
 		return 0;
-	if (ep >= 0  || ep <= -TMPUNIQSTART)  // ep defined and saved, or ep not saved and has tmp vid, so return ndx in vo table
-		return [MyTracker.valObjTable indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
+    }
+	if (ep >= 0  || ep <= -TMPUNIQSTART)  {// ep defined and saved, or ep not saved and has tmp vid, so return ndx in vo table
+		//return [MyTracker.valObjTable indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
+        DBGLog(@" returning %d",([self.votWoSelf indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1));
+        return [self.votWoSelf indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
 		//return ep+1;
-	
-	return (ep * -1) + [MyTracker.valObjTable count] -1;  // ep is offset into hours, months list
+	}
+    DBGLog(@" returning %d",((ep * -1) + [self.votWoSelf count] -1));
+	return (ep * -1) + [self.votWoSelf count] -1;  // ep is offset into hours, months list
+    //return (ep * -1) + [MyTracker.valObjTable count] -1;  // ep is offset into hours, months list
 }
 
 - (NSString *) fnrRowTitle:(NSInteger)row {
 	if (row != 0) {
-		NSInteger votc = [MyTracker.valObjTable count];
+		NSInteger votc = [self.votWoSelf count];   //[MyTracker.valObjTable count];
 		if (row <= votc) {
-			return ((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).valueName;
+            DBGLog(@" returning %@",((valueObj*) [self.votWoSelf objectAtIndex:row-1]).valueName);
+			return ((valueObj*) [self.votWoSelf objectAtIndex:row-1]).valueName;  //((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).valueName;
 		} else {
 			row -= votc;
 		}
 	}
+    DBGLog(@" returning %@",[self.epTitles objectAtIndex:row]);
 	return [self.epTitles objectAtIndex:row];
 }
 
@@ -593,7 +667,7 @@
 //
 
 - (void) updateValTF:(NSInteger)row component:(NSInteger)component {
-	NSInteger votc = [MyTracker.valObjTable count];
+	NSInteger votc = [self.votWoSelf count];   //[MyTracker.valObjTable count];
 	
 	if (row > votc) {
 		NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
@@ -608,6 +682,7 @@
 		[self.ctvovcp.view addSubview:[self.ctvovcp.wDict objectForKey:pre_vkey]];
 		UILabel *postLab = [self.ctvovcp.wDict objectForKey:post_vkey];
 		postLab.text = [self fnrRowTitle:row];
+        DBGLog(@" postlab= %@",postLab.text);
 		[self.ctvovcp.view addSubview:postLab];
 	}
 }
@@ -639,7 +714,9 @@
 	frame = [self.ctvovcp configPicker:frame key:@"frPkr" caller:self];
 	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"frPkr"];
 	
+    DBGLog(@"pkr component 0 selectRow %d",[self epToRow:0]);
 	[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
+    DBGLog(@"pkr component 1 selectRow %d",[self epToRow:1]);
 	[pkr selectRow:[self epToRow:1] inComponent:1 animated:NO];
 	
 	frame.origin.y += frame.size.height + MARGIN;
@@ -1183,9 +1260,11 @@
 	if (otherVal < -1) {
  */ // only allow time offset for previous side of range
 	if (component == 1) {
-		return [MyTracker.valObjTable count]+1;
+        DBGLog(@" returning %d",([self.votWoSelf count]+1));
+        return [self.votWoSelf count]+1;  // [MyTracker.valObjTable count]+1;  // count all +1 for 'current entry'
 	} else {
-		return [MyTracker.valObjTable count] + 6;
+        DBGLog(@" returning %d",([self.votWoSelf count]+MAXFREP));
+		return [self.votWoSelf count] + MAXFREP; //[MyTracker.valObjTable count] + MAXFREP;
 	}
 }
 
@@ -1238,7 +1317,7 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {	
 	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
-		NSInteger votc = [MyTracker.valObjTable count];
+		NSInteger votc = [self.votWoSelf count]; //[MyTracker.valObjTable count];
 		
 		NSString *key = [NSString stringWithFormat:@"frep%d",component];
 		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
@@ -1253,7 +1332,7 @@
 			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:key];
 		} else if (row <= votc) {
 			[self.vo.optDict setObject:[NSNumber numberWithInteger:
-										((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).vid]
+										((valueObj*) [self.votWoSelf objectAtIndex:row-1]).vid]   //((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).vid]
 								forKey:key];  
 		} else { 
 			[self.vo.optDict setObject:[NSNumber numberWithInt:(((row - votc) +1) * -1)] forKey:key];
@@ -1276,6 +1355,8 @@
 
 #pragma mark -
 #pragma mark fn value results for graphing
+
+// TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
 
 - (void) setFnVals {
     int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];

@@ -757,3 +757,18 @@ http://mobiledevelopertips.com/data-file-management/iphone-file-system-creating-
    - completed initial loadFromFileURL !
 
 todo: if change vid, must change in fn!
+
+--- commit ---
+
+24 dec 2012
+   - openTracker for url opened
+   - implemented updateVIDinFns()
+   - added calendar day/week/month/year endpoints in response to user request
+
+27 dec 2012
+   - attempting to disallow selecting self as fn endpoint when editing existing function, getting 'unrecognized selector sent' error on creating picker
+
+28 dec 2012 (clock says 29 dec)
+   - debugged errors on disallow selecting self as fn endpoint, root cause was not recognising NSArray +arrayWithArray puts in autorelease pool instead of alloc
+
+--- commit ----
