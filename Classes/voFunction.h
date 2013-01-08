@@ -78,6 +78,8 @@
 #define FREPCMONTHS -9
 #define FREPCYEARS  -10
 
+#define ISCALFREP(x) ((FREPCDAYS >= x) && (FREPCYEARS <= x))
+
 #define MAXFREP 10
 
 

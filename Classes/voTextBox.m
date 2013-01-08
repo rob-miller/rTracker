@@ -410,8 +410,10 @@
 	labframe = [ctvovc configLabel:@"Use number of lines for graph:" frame:frame key:@"tbnlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
-						key:@"tbnlBtn" 
-					  state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] ]; // default:0
+                          key:@"tbnlBtn"
+                        state:[[self.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
 	
     // need now for contacts else unuseable /*  TODO: support index picker component in v 2.0
 	 
@@ -421,7 +423,9 @@
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
 						key:@"tbniBtn" 
-					  state:(![[self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"0"]) ]; // default:1
+					  state:(![[self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"0"])  // default:1
+                        addsv:YES
+     ];
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
@@ -429,7 +433,9 @@
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
 						key:@"tbhiBtn" 
-					  state:[[self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"] ]; // default:0
+					  state:[[self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"]  // default:0
+                        addsv:YES
+     ];
 
 	 //*/
 	

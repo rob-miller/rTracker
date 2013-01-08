@@ -772,3 +772,12 @@ todo: if change vid, must change in fn!
    - debugged errors on disallow selecting self as fn endpoint, root cause was not recognising NSArray +arrayWithArray puts in autorelease pool instead of alloc
 
 --- commit ----
+
+07 jan 2013 / 08 jan on clock, crossed dateline from hawaii
+   - enlarged field for 'cal xxxx' in drawFuncOptsRange
+   - fixed crash (due to ios6 keeping views ?) when return to fn range view
+   - implemented graph last only for cal fn range ep units
+   - implemented dirtyFns bool for tracker - dirty on fn save, clear from db on recalc
+   - implemented copy for valueObj
+
+--- commit ---

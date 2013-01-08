@@ -119,8 +119,10 @@
 	//-- draw graphs button
 	
 	[ctvovc configCheckButton:frame 
-						key:@"ggBtn" 
-					  state:(![[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) ]; // default = @"1"
+                          key:@"ggBtn" 
+                        state:(![[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"])  // default = @"1"
+                        addsv:YES
+     ];
 	
 	//-- privacy level label
 	

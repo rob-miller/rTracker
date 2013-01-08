@@ -64,6 +64,7 @@
 #define TBHIDFLT        NO
 #define GRAPHDFLT	    YES
 #define NSWLDFLT        NO
+#define GRAPHLASTDFLT   YES
 
 // vo config textfield default values
 #define SLIDRMINDFLT	0.0

@@ -420,8 +420,10 @@
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	[ctvovc configCheckButton:frame 
-						key:@"csbBtn" 
-					  state:[[self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"] ]; // default:0
+                          key:@"csbBtn"
+                        state:[[self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
 	
 	ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
 	[super voDrawOptions:ctvovc];

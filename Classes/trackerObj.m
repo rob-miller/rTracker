@@ -129,7 +129,7 @@
 		//self.valObjTable = [[NSMutableArray alloc] init];
 		valObjTable = [[NSMutableArray alloc] init];
 		nextColor=0;
-		
+
         /*  move to utc
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(trackerUpdated:) 
@@ -1407,6 +1407,12 @@
             [vo.vos recalculate];
         }
 	}
+    
+    [self.optDict removeObjectForKey:@"dirtyFns"];
+    self.sql = @"delete from trkrInfo where field='dirtyFns';";
+    [self toExecSql];
+    self.sql = nil;
+
 }
 
 - (NSInteger) nextColor

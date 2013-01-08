@@ -330,6 +330,8 @@
 		okey = @"nswl"; dfltState=NSWLDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"srBtn"] ) {
 		okey = @"savertn"; dfltState=SAVERTNDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"graphLastBtn"] ) {
+		okey = @"graphlast"; dfltState=GRAPHLASTDFLT;
 	}else {
 		dbgNSAssert(0,@"ckButtonAction cannot identify btn");
 	}
@@ -361,11 +363,12 @@
 	
 }
 
-- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state
+- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv
 {
 	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-	imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
-	imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+	//imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
+    imageButton.frame = frame; 
+    imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 
 	[self.wDict setObject:imageButton forKey:key];
@@ -374,7 +377,10 @@
 	[imageButton setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")] 
 				 forState: UIControlStateNormal];
 	
-	[self.view addSubview:imageButton];
+	if (addsv) {
+        [self.view addSubview:imageButton];
+    }
+    
 	[imageButton release];
 }
 
@@ -579,7 +585,9 @@
 	
 	[self configCheckButton:frame 
 						key:@"nasBtn" 
-					  state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) ]; // default:1
+					  state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"])  // default:1
+                      addsv:YES
+     ];
 	
 	//if (! autoscale) {  still need to calc lasty, make room before general options
 	
@@ -644,7 +652,9 @@
 	
 	[self configCheckButton:frame 
 						key:@"srBtn" 
-					  state:(![[self.to.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) ]; // default = @"1"
+					  state:(![[self.to.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) // default = @"1"
+                      addsv:YES
+     ];
 	
 	//-- privacy level label
 	

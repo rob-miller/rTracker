@@ -20,6 +20,7 @@
 @synthesize tempTrackerObj;
 @synthesize table;
 @synthesize nameField;
+@synthesize copyBtn;
 
 NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 UITableView *deleteTableView;
@@ -43,6 +44,9 @@ NSMutableArray *deleteVOs=nil;
 		[deleteVOs release];
 		deleteVOs = nil;
 	}
+    
+    self.copyBtn = nil;
+    [copyBtn release];
 	
 	[super dealloc];
 }
@@ -150,6 +154,42 @@ NSMutableArray *deleteVOs=nil;
 # pragma mark -
 # pragma mark toolbar support
 
+- (void) btnCopy {
+    DBGLog(@"copy!");
+    
+    valueObj *lastVO = [self.tempTrackerObj.valObjTable lastObject];
+    valueObj *newVO = [[valueObj alloc] initWithDict:self.tempTrackerObj dict:[lastVO dictFromVO]];
+    newVO.vid = [self.tempTrackerObj getUnique];
+    [self.tempTrackerObj addValObj:newVO];
+    [newVO release];
+    [self.table reloadData];
+    
+}
+
+- (UIBarButtonItem *) copyBtn {
+    if (nil == copyBtn) {
+        
+        UIButton *cBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        NSString *title = @"Copy";
+        cBtn.frame = CGRectMake(0, 0, [title sizeWithFont:cBtn.titleLabel.font].width +2, [title sizeWithFont:cBtn.titleLabel.font].height );
+        
+        [cBtn setTitle:@"Copy" forState:UIControlStateNormal];
+        [cBtn addTarget:self action:@selector(btnCopy) forControlEvents:UIControlEventTouchUpInside];
+        copyBtn = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
+    }
+    
+    return copyBtn;
+}
+
+
+/*
+ frame.size.width = [label sizeWithFont:button.titleLabel.font].width + 4*SPACE;
+if (frame.origin.x == -1.0f) {
+    frame.origin.x = self.view.frame.size.width - (frame.size.width + MARGIN); // right justify
+}
+button.frame = frame;
+*/
+
 - (void) btnSetup {
 	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
 	ctvovc.to = self.tempTrackerObj;
@@ -202,7 +242,9 @@ static int editMode;
                          flexibleSpaceButtonItem,
                          editToggleButtonItem,
                          flexibleSpaceButtonItem,
+                         self.copyBtn,
                          nil];
+    
 	[setupBtnItem release];
 	[flexibleSpaceButtonItem release];
 	[editToggleButtonItem release];
@@ -213,8 +255,10 @@ static int editMode;
 	//[table reloadData];
 	if (editMode == 0) {
 		[self.table setEditing:YES animated:YES];
+        self.copyBtn.enabled = YES;
 	} else {
 		[self.table setEditing:NO animated:YES];
+        self.copyBtn.enabled = NO;
 	}
 	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];

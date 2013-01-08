@@ -194,8 +194,10 @@
 	CGRect labframe = [ctvovc configLabel:@"Start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
-						key:@"swlBtn" 
-					  state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"]) ]; // default:0
+                          key:@"swlBtn"
+                        state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"])  // default:0
+                        addsv:YES
+    ];
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
 	

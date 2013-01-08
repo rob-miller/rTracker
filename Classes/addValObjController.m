@@ -259,6 +259,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     } else {
         self.tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
     }
+    
+    if (VOT_FUNC == self.tempValObj.vtype) {
+        [self.parentTrackerObj.optDict setObject:@"1" forKey:@"dirtyFns"];
+    }
+    
 	row = [self.votPicker selectedRowInComponent:2];
 	self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
 	

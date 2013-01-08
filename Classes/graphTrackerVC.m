@@ -222,7 +222,10 @@
          int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
          self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
      }
-
+     
+    if (nil != [self.tracker.optDict objectForKey:@"dirtyFns"]) {
+        [self fireRecalculateFns];
+    }
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -256,9 +259,12 @@
     [self.yAV setNeedsDisplay];
     
     self.shakeLock = 0; // release lock
-    
     [pool drain];
     
+}
+
+- (void) fireRecalculateFns {
+    [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
@@ -274,7 +280,7 @@
         //[rTracker_resource startActivityIndicator:self.scrollView navItem:nil disable:NO];
         [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO];
 
-        [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
+        [self fireRecalculateFns];
     }
 }
 

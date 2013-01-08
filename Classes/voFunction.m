@@ -671,7 +671,7 @@
 	
 	if (row > votc) {
 		NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
-		//NSString *key = [NSString stringWithFormat:@"frep%d",component];
+		NSString *key = [NSString stringWithFormat:@"frep%d",component];
 		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
 		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
 		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
@@ -681,9 +681,21 @@
 		[self.ctvovcp.view addSubview:vtf];
 		[self.ctvovcp.view addSubview:[self.ctvovcp.wDict objectForKey:pre_vkey]];
 		UILabel *postLab = [self.ctvovcp.wDict objectForKey:post_vkey];
+		//postLab.text = [[self fnrRowTitle:row] stringByReplacingOccurrencesOfString:@"cal " withString:@"c "];
 		postLab.text = [self fnrRowTitle:row];
         DBGLog(@" postlab= %@",postLab.text);
 		[self.ctvovcp.view addSubview:postLab];
+        
+        if ((0 == component) && (ISCALFREP([[self.vo.optDict objectForKey:key] integerValue]))) {
+            UIButton *ckBtn = [self.ctvovcp.wDict objectForKey:@"graphLastBtn"];
+            BOOL state = (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"]) ; // default:1
+            [ckBtn setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")]
+                         forState: UIControlStateNormal];
+            [self.ctvovcp.view addSubview:ckBtn];
+            UILabel *glLab = [self.ctvovcp.wDict objectForKey:@"graphLastLabel"];
+            [self.ctvovcp.view addSubview:glLab];
+        }
+        
 	}
 }
 
@@ -742,15 +754,30 @@
 					addsv:NO ];
 	
 	frame.origin.x += tfWidth + 2*SPACE;
-	/*labframe =*/ [self.ctvovcp configLabel:@"months" 
+	/*labframe =*/ [self.ctvovcp configLabel:@"cal months" 
 							   frame:frame
 								 key:@"frpost0vLab" 
 							   addsv:NO ];
 	
-	[self updateValTF:[self epToRow:0] component:0];
+	//[self updateValTF:[self epToRow:0] component:0];
 	
 	frame.origin.x = (self.ctvovcp.view.frame.size.width / 2.0) + MARGIN;
 	
+    labframe = [self.ctvovcp configLabel:@"only last:"
+                                          frame:frame
+                                            key:@"graphLastLabel"
+                                          addsv:NO ];
+    
+    frame.origin.x += labframe.size.width + SPACE;
+    [self.ctvovcp configCheckButton:frame
+                                key:@"graphLastBtn"
+                              state:(![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])  // default:1
+                              addsv:NO
+     ];
+
+    [self updateValTF:[self epToRow:0] component:0];
+
+    /*
 	labframe = [self.ctvovcp configLabel:@"+" 
 						   frame:frame
 							 key:@"frpre1vLab" 
@@ -767,12 +794,12 @@
 					addsv:NO ];
 	
 	frame.origin.x += tfWidth + 2*SPACE;
-	/*labframe =*/ [self.ctvovcp configLabel:@"months" 
+	/ *labframe =* / [self.ctvovcp configLabel:@"cal months"
 							   frame:frame
 								 key:@"frpost1vLab" 
 							   addsv:NO ];
-	
 	[self updateValTF:[self epToRow:1] component:1];
+	*/
 	
 }
 
@@ -1055,7 +1082,7 @@
 		
 		[segmentedControl addTarget:self action:@selector(fnSegmentAction:) forControlEvents:UIControlEventValueChanged];
 		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-		segmentedControl.selectedSegmentIndex = self.fnSegNdx = 0;
+		segmentedControl.selectedSegmentIndex = self.fnSegNdx ; //= 0;
 		UIBarButtonItem *scButtonItem = [[UIBarButtonItem alloc]
 										 initWithCustomView:segmentedControl];
 		
@@ -1067,6 +1094,7 @@
 	} else {
         ctvovc.toolBar.items = [NSArray arrayWithObjects: db,nil];
     }
+    
 }
 
 
@@ -1114,8 +1142,10 @@
         [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FDDPDFLT] forKey:@"fnddp"];
     if (nil == [self.vo.optDict objectForKey:@"func"]) 
         [self.vo.optDict setObject:@"" forKey:@"func"];
-    if (nil == [self.vo.optDict objectForKey:@"autoscale"]) 
+    if (nil == [self.vo.optDict objectForKey:@"autoscale"])
         [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
+    if (nil == [self.vo.optDict objectForKey:@"graphlast"])
+        [self.vo.optDict setObject:(GRAPHLASTDFLT ? @"1" : @"0") forKey:@"graphlast"];
     
     return [super setOptDictDflts];
 }
@@ -1135,6 +1165,8 @@
         ([key isEqualToString:@"func"] && ([val isEqualToString:@""]))
         ||
         ([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"graphlast"] && [val isEqualToString:(GRAPHLASTDFLT ? @"1" : @"0")])
         ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
@@ -1323,11 +1355,13 @@
 		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
 		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
 		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
-		
+        
 		[((UIView*) [self.ctvovcp.wDict objectForKey:pre_vkey]) removeFromSuperview];
 		[((UIView*) [self.ctvovcp.wDict objectForKey:vtfkey]) removeFromSuperview];
 		[((UIView*) [self.ctvovcp.wDict objectForKey:post_vkey]) removeFromSuperview];
-		
+        [((UIView*) [self.ctvovcp.wDict objectForKey:@"graphLastBtn"]) removeFromSuperview];
+        [((UIView*) [self.ctvovcp.wDict objectForKey:@"graphLastLabel"]) removeFromSuperview];
+        
 		if (row == 0) {
 			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:key];
 		} else if (row <= votc) {
@@ -1356,8 +1390,91 @@
 #pragma mark -
 #pragma mark fn value results for graphing
 
-// TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
+- (void) trimFnVals:(NSInteger)frep0 {
+    DBGLog(@"ep= %d",frep0);
+    
+    NSInteger ival = [[self.vo.optDict objectForKey:@"frv0"] integerValue] *  -1 ; // negative offset if ep0
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
 
+    switch (frep0) {
+        case FREPCDAYS :
+            ival += 1;   // for -1 calendar day, we want offset -0 day and normalize to previous midnight below
+            [offsetComponents setDay:ival];
+            //vt = @"days";
+            break;
+        case FREPCWEEKS :
+            ival += 1;
+            [offsetComponents setWeek:ival];
+            //vt = @"weeks";
+            break;
+        case FREPCMONTHS :
+            ival += 1;
+            [offsetComponents setMonth:ival];
+            //vt = @"months";
+            break;
+        case FREPCYEARS :
+            ival += 1;
+            //vt = @"years";
+            [offsetComponents setYear:ival];
+            break;
+        default:
+            dbgNSAssert1(0,@"trimFnVals: failed to identify ep %d",frep0);
+            break;
+    }
+    
+    NSInteger epDate=-1;
+    
+    MyTracker.sql = [NSString stringWithFormat:@"select date from voData where id = %d order by date desc",self.vo.vid];
+    NSMutableArray *dates = [[NSMutableArray alloc] init];
+    [MyTracker toQry2AryI:dates];
+    for (NSNumber *d in dates) {
+        NSDate *targ = [gregorian dateByAddingComponents:offsetComponents
+                                                  toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[d intValue]]
+                                                 options:0];
+        
+        unsigned unitFlags = 0;
+        
+		switch (frep0) {
+                // if calendar week, we need to get to beginning of week as per calendar
+			case FREPCWEEKS :
+            {
+                NSDate *beginOfWeek=nil;
+                BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                if (rslt) {
+                    targ = beginOfWeek;
+                }
+            }
+                // if any of week, day, month, year we need to wipe hour, minute, second components
+			case FREPCDAYS :
+                unitFlags |= NSDayCalendarUnit;
+			case FREPCMONTHS :
+                unitFlags |= NSMonthCalendarUnit;
+			case FREPCYEARS :
+                unitFlags |= NSYearCalendarUnit;
+                NSDateComponents *components = [gregorian components:unitFlags fromDate:targ];
+                targ = [gregorian dateFromComponents:components];
+                break;
+                
+        }
+        
+        NSInteger currD = [targ timeIntervalSince1970];
+        if (epDate == currD) {
+            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d",self.vo.vid,[d intValue]];
+            [MyTracker toExecSql];
+        } else {
+            epDate = currD;
+        }
+        
+    }
+
+    [gregorian release];
+    [offsetComponents release];
+
+}
+
+// TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
+// based on vo opt @"graphlast"
 - (void) setFnVals {
     int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];
     int nextDate = [MyTracker firstDate];
@@ -1381,6 +1498,14 @@
         
     } while ((nextDate = [MyTracker postDate]));    // iterate through dates
     
+    NSInteger frep0 = [[self.vo.optDict objectForKey:@"frep0"] integerValue];
+    if (ISCALFREP(frep0)
+        &&
+        (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])
+        ) {
+        [self trimFnVals:frep0];
+    }
+        
     // restore current date
 	[MyTracker loadData:currDate];
     

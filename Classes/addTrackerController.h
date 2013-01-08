@@ -18,6 +18,7 @@
 {
 	trackerList *tlist;
 	trackerObj *tempTrackerObj;
+    UIBarButtonItem *copyBtn;
 }
 
 @property (nonatomic, retain) trackerList *tlist;
@@ -26,6 +27,7 @@
 // UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;
 @property (nonatomic, retain) UITextField *nameField;
+@property (nonatomic, retain) UIBarButtonItem *copyBtn;
 
 - (void)configureToolbarItems;
 
