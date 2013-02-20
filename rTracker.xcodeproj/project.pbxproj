@@ -14,6 +14,11 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
+		D40AB40216D428D2008174D3 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40AB40116D428D2008174D3 /* SenTestingKit.framework */; };
+		D40AB40316D428D2008174D3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		D40AB40416D428D2008174D3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		D40AB40A16D428D2008174D3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D40AB40816D428D2008174D3 /* InfoPlist.strings */; };
+		D40AB40D16D428D2008174D3 /* rTrackerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D40AB40C16D428D2008174D3 /* rTrackerTests.m */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D414DDBE1632D5B100010847 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D414DDBD1632D5B100010847 /* Default-568h@2x.png */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
@@ -154,6 +159,16 @@
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D40AB41316D428E5008174D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = rTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rTrackerAppDelegate.h; sourceTree = "<group>"; };
@@ -167,6 +182,13 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D40AB40016D428D2008174D3 /* rTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D40AB40116D428D2008174D3 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		D40AB40716D428D2008174D3 /* rTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "rTrackerTests-Info.plist"; sourceTree = "<group>"; };
+		D40AB40916D428D2008174D3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D40AB40B16D428D2008174D3 /* rTrackerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rTrackerTests.h; sourceTree = "<group>"; };
+		D40AB40C16D428D2008174D3 /* rTrackerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rTrackerTests.m; sourceTree = "<group>"; };
+		D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "rTrackerTests-Prefix.pch"; sourceTree = "<group>"; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D414DDBD1632D5B100010847 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -315,6 +337,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40AB3FC16D428D2008174D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40AB40216D428D2008174D3 /* SenTestingKit.framework in Frameworks */,
+				D40AB40316D428D2008174D3 /* UIKit.framework in Frameworks */,
+				D40AB40416D428D2008174D3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D431F3AF14883A6600E2608A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -355,6 +387,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* rTracker.app */,
 				D431F3BA14883A6600E2608A /* rTracker-iPad.app */,
+				D40AB40016D428D2008174D3 /* rTrackerTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -368,6 +401,7 @@
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				D431F3051488395D00E2608A /* Resources-iPad */,
+				D40AB40516D428D2008174D3 /* rTrackerTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -433,8 +467,29 @@
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
 				D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */,
 				D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */,
+				D40AB40116D428D2008174D3 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D40AB40516D428D2008174D3 /* rTrackerTests */ = {
+			isa = PBXGroup;
+			children = (
+				D40AB40B16D428D2008174D3 /* rTrackerTests.h */,
+				D40AB40C16D428D2008174D3 /* rTrackerTests.m */,
+				D40AB40616D428D2008174D3 /* Supporting Files */,
+			);
+			path = rTrackerTests;
+			sourceTree = "<group>";
+		};
+		D40AB40616D428D2008174D3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D40AB40716D428D2008174D3 /* rTrackerTests-Info.plist */,
+				D40AB40816D428D2008174D3 /* InfoPlist.strings */,
+				D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		D431F3051488395D00E2608A /* Resources-iPad */ = {
@@ -607,6 +662,25 @@
 			productReference = 1D6058910D05DD3D006BFB54 /* rTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D40AB3FF16D428D2008174D3 /* rTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D40AB41216D428D2008174D3 /* Build configuration list for PBXNativeTarget "rTrackerTests" */;
+			buildPhases = (
+				D40AB3FB16D428D2008174D3 /* Sources */,
+				D40AB3FC16D428D2008174D3 /* Frameworks */,
+				D40AB3FD16D428D2008174D3 /* Resources */,
+				D40AB3FE16D428D2008174D3 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D40AB41416D428E5008174D3 /* PBXTargetDependency */,
+			);
+			name = rTrackerTests;
+			productName = rTrackerTests;
+			productReference = D40AB40016D428D2008174D3 /* rTrackerTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		D431F36B14883A6600E2608A /* rTracker-iPad */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D431F3B714883A6600E2608A /* Build configuration list for PBXNativeTarget "rTracker-iPad" */;
@@ -650,6 +724,7 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* rTracker */,
 				D431F36B14883A6600E2608A /* rTracker-iPad */,
+				D40AB3FF16D428D2008174D3 /* rTrackerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -696,6 +771,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40AB3FD16D428D2008174D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40AB40A16D428D2008174D3 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D431F36C14883A6600E2608A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -729,6 +812,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		D40AB3FE16D428D2008174D3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
 		D4A110DD15A85BE8005D2624 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -789,6 +885,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40AB3FB16D428D2008174D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40AB40D16D428D2008174D3 /* rTrackerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D431F38914883A6600E2608A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -835,6 +939,25 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D40AB41416D428E5008174D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* rTracker */;
+			targetProxy = D40AB41316D428E5008174D3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D40AB40816D428D2008174D3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D40AB40916D428D2008174D3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -850,6 +973,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
@@ -877,6 +1001,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
@@ -939,6 +1064,94 @@
 				SDKROOT = iphoneos;
 			};
 			name = Release;
+		};
+		D40AB40F16D428D2008174D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/rTracker.app/rTracker";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "rTrackerTests/rTrackerTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = "rTrackerTests/rTrackerTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		D40AB41016D428D2008174D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/rTracker.app/rTracker";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "rTrackerTests/rTrackerTests-Prefix.pch";
+				INFOPLIST_FILE = "rTrackerTests/rTrackerTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		D40AB41116D428D2008174D3 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/rTracker.app/rTracker";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "rTrackerTests/rTrackerTests-Prefix.pch";
+				INFOPLIST_FILE = "rTrackerTests/rTrackerTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = AppStore;
 		};
 		D431F3B814883A6600E2608A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1019,6 +1232,7 @@
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
@@ -1080,6 +1294,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D40AB41216D428D2008174D3 /* Build configuration list for PBXNativeTarget "rTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D40AB40F16D428D2008174D3 /* Debug */,
+				D40AB41016D428D2008174D3 /* Release */,
+				D40AB41116D428D2008174D3 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		D431F3B714883A6600E2608A /* Build configuration list for PBXNativeTarget "rTracker-iPad" */ = {
 			isa = XCConfigurationList;

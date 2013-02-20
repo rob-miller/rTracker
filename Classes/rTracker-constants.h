@@ -45,3 +45,5 @@
 #define CLKEY @"fdcLab"
 
 
+// add to x and y axes to improve visibility of endpoints
+#define GRAPHSCALE d(0.02)

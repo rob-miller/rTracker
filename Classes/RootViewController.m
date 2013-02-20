@@ -297,13 +297,17 @@ static BOOL InstallSamples;
                 [filesToProcess addObject:file];
             }
         } else if ([[file pathExtension] isEqualToString: @"rtrk"]) {
+#if RTRK_EXPORT
             NSRange inmatch = [fname rangeOfString:@"_out.rtrk" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _out.rtrk at end of file name
-                // so skip -- debug code -- rtm here  //TODO:decide if can export .rtrk to file
+                // so skip -- debug code -- rtm here  //TODO:0:decide if can export .rtrk to file
             } else {
+#endif
                 [filesToProcess addObject:file];
+#if RTRK_EXPORT
             }
+#endif
         }
     }
     
@@ -316,7 +320,7 @@ static BOOL InstallSamples;
         DBGLog(@"process input: %@",fname);
 
         target = [docsDir stringByAppendingPathComponent:file];
-        newTarget = [target stringByAppendingString:@"_reading"];
+        newTarget = [[target stringByAppendingString:@"_reading"] stringByReplacingOccurrencesOfString:@"Documents/Inbox" withString:@"Documents/"];
         
         NSError *err;
         if ([localFileManager moveItemAtPath:target toPath:newTarget error:&err] != YES)
@@ -389,7 +393,7 @@ static BOOL InstallSamples;
         }
     }
  */
-    
+    [filesToProcess release];  // added 13 feb 2013
     [localFileManager release];    
     return(didSomething);
 }
@@ -488,6 +492,8 @@ static BOOL InstallSamples;
     plistReadCount=1;
     
     if ( 0 < (plistLoadCount + csvLoadCount) ) {
+        [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
+        
         [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
 
         [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
@@ -856,8 +862,6 @@ static BOOL InstallSamples;
 
     [self handlePrefs];
     
-//TODO: rtm: test for rtrkr_reading files, offer to delete or try again ( = rename to .rtrkr)
-    
     [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
 }
 
@@ -869,10 +873,75 @@ static BOOL InstallSamples;
     [super viewWillAppear:animated];
 }
 
+BOOL stashAnimated;
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    //TODO: fix to use default file manager as per saved web page
+    NSFileManager *localFileManager=[[NSFileManager alloc] init];
+    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+    
+    NSString *file;
+    
+    while ((file = [dirEnum nextObject])) {
+        if ([[file pathExtension] isEqualToString: @"rtrk_reading"]) {
+            NSError *err;
+            NSString *target;
+            target = [docsDir stringByAppendingPathComponent:file];
+            
+            if (0 == buttonIndex) {   // delete it
+                if (YES != [localFileManager removeItemAtPath:target error:&err]) {
+                    DBGLog(@"Error deleting file: %@", err);
+                }
+            } else {                  // try again -- rename from .rtrk_reading to .rtrk
+                NSString *newTarget;
+                newTarget = [target stringByReplacingOccurrencesOfString:@"rtrk_reading" withString:@"rtrk"];
+                if ([localFileManager moveItemAtPath:target toPath:newTarget error:&err] != YES) {
+                    DBGLog(@"Error on move %@ to %@: %@",target, newTarget, err);
+                    //DBGLog(@"Unable to move file: %@", [err localizedDescription]);
+                }
+            }
+        }
+    }
+    [localFileManager release];
+    
+    [self viewDidAppearRestart];
+}
+
+- (void) viewDidAppearRestart {
+	[self refreshView];
+    [super viewDidAppear:stashAnimated];
+}
+
 - (void) viewDidAppear:(BOOL)animated {
 	DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);	
-	[self refreshView];
-    [super viewDidAppear:animated];
+
+    //TODO:0: rtm: test for rtrk_reading files, offer to delete or try again ( = rename to .rtrk)
+    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+    //TODO: fix to use default file manager as per saved web page
+    NSFileManager *localFileManager=[[NSFileManager alloc] init];
+    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+    
+    NSString *file;
+    
+    while ((file = [dirEnum nextObject])) {
+        if ([[file pathExtension] isEqualToString: @"rtrk_reading"]) {
+            NSString *fname = [file lastPathComponent];
+            NSString *rtrkName = [fname stringByDeletingPathExtension];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Problem reading .rtrk file?"
+                                                            message:[ NSString stringWithFormat:@"There was a problem while loading the %@ rtrk file",rtrkName ]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Delete it"
+                                                  otherButtonTitles:@"Try again",nil];
+            [alert show];
+            [alert release];
+        }
+    }
+
+    [localFileManager release];
+    
+    stashAnimated = animated;
+    [self viewDidAppearRestart];
 }
 
 /*
@@ -1081,7 +1150,7 @@ static BOOL InstallSamples;
 }
 
 - (void)btnPrivate {
-    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop
 	[self.privacyObj togglePrivacySetter ];
     /*
 	if (PVNOSHOW != self.privacyObj.showing) {

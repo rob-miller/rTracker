@@ -19,6 +19,9 @@
 // to config textfield default values
 // #define PRIVDFLT		0  //note: already in valObj.h
 
+// max days for graph, 0= no limit
+#define GRAPHMAXDAYSDFLT 0
+
 
 @interface trackerObj : tObjBase {
 	//int tid;
@@ -107,7 +110,10 @@
 
 - (void) export;
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
+
+#if RTRK_EXPORT
 - (NSDictionary *) genRtrk:(BOOL)withData;
+#endif
 
 - (void) loadDataDict:(NSDictionary*)dataDict;
 

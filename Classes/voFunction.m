@@ -874,7 +874,7 @@
 }
 
 - (void) btnDelete:(id)sender {
-    //TODO: i= constTok remove token and value  -- done
+    // i= constTok remove token and value  -- done
     //  also [self.tempValObj.optDict removeObjectForKey:@"fdc"]; -- can't be sure with mult consts
 	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
 	if (0 < [self.fnArray count]) {
@@ -902,7 +902,7 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + labframe.size.height;
 	frame.size.width = self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
-	frame.size.height = self.ctvovcp.LFHeight;
+	frame.size.height = 2* self.ctvovcp.LFHeight;
 	
 	[self.ctvovcp configTextView:frame key:@"fdefnTV2" text:[self voFnDefnStr]];
 	
@@ -922,9 +922,9 @@
 	[self.ctvovcp configActionBtn:frame key:@"fdaBtn" label:@"Add" target:self action:@selector(btnAdd:)]; 
 	frame.origin.x = -1.0f;
 	[self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)]; 
-
-    frame.origin.x = MARGIN;
-    frame.origin.y += frame.size.height + MARGIN;
+    
+    frame.origin.x = [@"Add" sizeWithFont:[UIFont systemFontOfSize:18]].width + 3*MARGIN;
+    //frame.origin.y += frame.size.height + MARGIN;
     labframe = [self.ctvovcp configLabel:@"Constant value:" 
                                    frame:frame
                                      key:CLKEY 
@@ -944,6 +944,7 @@
                              text:nil 
                             addsv:NO ];
     
+
 }
 
 #pragma mark -
@@ -1470,6 +1471,7 @@
 
     [gregorian release];
     [offsetComponents release];
+    [dates release];
 
 }
 
@@ -1479,13 +1481,17 @@
     int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];
     int nextDate = [MyTracker firstDate];
     
+    if (0 == nextDate) {  // no data yet for this tracker so do not generate a 0 value in database
+        return;
+    }
+    
     float ndx=1.0;
     float all = [self.vo.parentTracker getDateCount];
     
     do {
         [MyTracker loadData:nextDate];
         //DBGLog(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
-        if ([self.vo.value isEqualToString:@""]) {
+        if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do? 
             MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
         } else {
             MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",

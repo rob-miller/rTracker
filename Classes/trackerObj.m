@@ -43,6 +43,7 @@
  *     field='width'     : max size over all valobj display widgets (num, text, slider, etc)
  *	   field='privacy'   : user specified privacy value for trackerObj
  *     field='savertn'   : bool - save button returns to tracker list (else reset for new tracker data)
+ *     field='graphMaxDays' : max number of days to plot on graph Y axis ; 0 = no limit
  *	   field='rtdb_version' : database version this tracker created for (these set on load tracker as new with v 1.0.7)
  *	   field='rtfn_version' : function token set version this tracker created for
  *	   field='rt_version':  rTracker version this tracker created for/with
@@ -472,6 +473,9 @@
     if ((nil == [self.optDict objectForKey:@"privacy"])) {
         [self.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
     }
+    if ((nil == [self.optDict objectForKey:@"graphMaxDays"])) {
+        [self.optDict setObject:[NSString stringWithFormat:@"%d",GRAPHMAXDAYSDFLT] forKey:@"graphMaxDays"];
+    }
 }
 
 - (void) clearToOptDict {
@@ -489,7 +493,10 @@
 			[self toExecSql];
 		} else if (([key isEqualToString:@"savertn"] && [val isEqualToString:(SAVERTNDFLT ? @"1" : @"0")])
 				   ||
-				   ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))) {
+				   ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))
+                   ||
+				   ([key isEqualToString:@"graphMaxDays"] && ([val intValue] == GRAPHMAXDAYSDFLT))
+                   ) {
 			[self toExecSql];
 			[self.optDict removeObjectForKey:key];
 		}
@@ -587,15 +594,22 @@
     if (! ([[self dictFromTO] writeToFile:fpath atomically:YES])) {
         DBGErr(@"problem writing file %@",fname);
     }
-    
-    // rtm here -- perhaps not for release code ?
+
+#if RTRK_EXPORT
+    // rtm here -- perhaps not yet for release code ?
     fname = [NSString stringWithFormat:@"%@_out.rtrk",self.trackerName];
     fpath = [rTracker_resource ioFilePath:fname access:YES];
-    NSDictionary *rtrk = [self genRtrk:YES];
+    NSDictionary *rtrk = [self genRtrk:NO];
     if(! ([rtrk writeToFile:fpath atomically:YES])) {
         DBGErr(@"problem writing file %@",fname);
     }
-
+    NSDictionary *tData = [rtrk objectForKey:@"dataDict"];
+    for (NSString *k in tData) {
+        [[tData objectForKey:k] release];
+    }
+    [rtrk release];
+#endif
+    
 	//[nsfh release];
     
     
@@ -615,6 +629,8 @@
             nil];
     
 }
+
+#if RTRK_EXPORT
 
 - (NSDictionary *) genRtrk:(BOOL)withData {
     // would be nice to jump temporarily to maxpriv so everything is written out, but no mechanism to get up to root VC's privacyObj
@@ -656,10 +672,18 @@
                               [self dictFromTO],@"configDict",
                               [[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
                               nil];
+   /*
+    // needed ?
+    for (NSString *k in tData) {
+        [[tData objectForKey:k] release];
+    }
+    */
+    
     [tData release];
-    //TODO: rtm here, are rtrkDict sub-dictionaries leaked?
+    //TODO:0: rtm here, are rtrkDict sub-dictionaries leaked?
     return rtrkDict;
 }
+#endif
 
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
@@ -765,7 +789,7 @@
 	DBGLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
 
 	BOOL haveData=NO;
-	int tdi = [self.trackerDate timeIntervalSince1970];
+	int tdi = (int) [self.trackerDate timeIntervalSince1970];  // scary! added (int) cast 6.ii.2013 !!!
 	NSInteger minPriv=BIGPRIV;
     
 	for (valueObj *vo in self.valObjTable) {

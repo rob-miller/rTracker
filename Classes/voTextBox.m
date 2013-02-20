@@ -415,7 +415,7 @@
                         addsv:YES
      ];
 	
-    // need now for contacts else unuseable /*  TODO: support index picker component in v 2.0
+    // need index picker for contacts else unuseable
 	 
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;

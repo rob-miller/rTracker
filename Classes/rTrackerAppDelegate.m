@@ -82,8 +82,10 @@
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
     //if (url != nil && [url isFileURL]) {
-        int tid = [rootController handleOpenFileURL:url tname:nil];
+    int tid = [rootController handleOpenFileURL:url tname:nil];
     if (0 != tid) {
+        // get to root view controller, else get last view on stack 
+        [self.navigationController popToRootViewControllerAnimated:NO];
         [rootController openTracker:tid];
     }
     //}

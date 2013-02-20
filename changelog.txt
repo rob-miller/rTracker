@@ -781,3 +781,49 @@ todo: if change vid, must change in fn!
    - implemented copy for valueObj
 
 --- commit ---
+
+15 jan 2013
+   - fixed problem of multiple open of .rtrk from url, apparently due to no permission to rename file in Documents/Inbox
+   -- new problem is display stack if open .rtrk url, open again without returning to list.
+
+
+16 jan 2013
+   - fixed display stack for loading rtrk with popToRootViewControllerAnimated
+   - clean up old TODO: comments
+
+06 feb 2013
+   - added graphMaxDays limit tracker option for Pat
+   -- now select graph points betweekn 2 dates
+   - added apparently necessary (int) cast on tracker date for trackerObj saveData()
+
+07 feb 2013
+   - started on making dots more visible if only 1 or 2 data points 
+   -- draw bigger but some issue with initial bounding box
+
+09 feb 2013
+   - graph x-axis = 24h if only 1 data point
+   - make function defn view 4 lines instead of 2 - is scrollable but can't tell
+   - scroll to top for progress bars on file loading
+   - copy button bigger but can only grey, can't make disappear
+
+12 feb 2013
+   - add 2% to graph x&y axes to inprove vilibility of endpoints
+
+
+13 feb 2013
+   - filesToProcess leaked in loadTrackerPlistFiles ?  added release
+   - added alert handling for failed rtrkr read
+   - review/clean breakpoints
+
+14 feb 2013
+   - tested 'delete' and 'try again' for finding rtrk_reading file
+
+19 feb 2013
+   - fixed bug empty tracker -> fn = sum of 2 -> show graph => voData for fn created with date=0
+   - fixed bug def fn constant position bad now
+
+20 feb
+   - added few releases as suggested by analyze - test esp graph per cal unit
+   - #if removed genRtrk due to warnings on potential leaks 
+
+--- commit ---

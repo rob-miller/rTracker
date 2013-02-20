@@ -26,11 +26,28 @@
         self.rect = inRect;
         self.bbox = inRect;
         
-        self.pto.sql = @"select min(date) from voData;";
-        self.firstDate = [self.pto toQry2Int];
         self.pto.sql = @"select max(date) from voData;";
         self.lastDate =  [self.pto toQry2Int];
+        
+        int gmd = [[self.pto.optDict valueForKey:@"graphMaxDays"] intValue];
+        if (0 != gmd) {
+            int tFirstDate;
+            gmd *= 60*60*24; // secs per day
+            tFirstDate = self.lastDate - gmd;
+            self.pto.sql = [NSString stringWithFormat:@"select min(date) from voData where date >= %d;",tFirstDate];
+        } else {
+            self.pto.sql = @"select min(date) from voData;";
+        }
+        self.firstDate = [self.pto toQry2Int];
         self.pto.sql = nil;
+        
+        if (self.firstDate == self.lastDate) {
+            self.firstDate -= 60*60*24; // secs per day -- single data point so arbitrarily set scale to 1 day
+        }
+        
+        int dateScaleExpand = (int) ((((double) self.lastDate - self.firstDate) * GRAPHSCALE) + d(0.5));
+        self.lastDate += dateScaleExpand;
+        self.firstDate -= dateScaleExpand;
         
         self.dateScale = d(rect.size.width) / (d(self.lastDate) - d(self.firstDate));
         self.dateScaleInv = d(self.lastDate - self.firstDate) / d(rect.size.width);

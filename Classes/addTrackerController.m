@@ -171,7 +171,7 @@ NSMutableArray *deleteVOs=nil;
         
         UIButton *cBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         NSString *title = @"Copy";
-        cBtn.frame = CGRectMake(0, 0, [title sizeWithFont:cBtn.titleLabel.font].width +2, [title sizeWithFont:cBtn.titleLabel.font].height );
+        cBtn.frame = CGRectMake(0, 0, [title sizeWithFont:cBtn.titleLabel.font].width +3, [title sizeWithFont:cBtn.titleLabel.font].height +2);
         
         [cBtn setTitle:@"Copy" forState:UIControlStateNormal];
         [cBtn addTarget:self action:@selector(btnCopy) forControlEvents:UIControlEventTouchUpInside];

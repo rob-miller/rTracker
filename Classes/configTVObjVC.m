@@ -439,6 +439,9 @@
             tf.text = [NSString stringWithFormat:@"%d",PRIVDFLT];
         }
         
+	} else if ( tf == [self.wDict objectForKey:@"gmdTF"] ) {
+		okey = @"graphMaxDays";
+		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
 		okey = @"frv0";
 		nkey = nil;
@@ -518,6 +521,7 @@
 	[self.wDict setObject:rtv forKey:key];
 	
 	rtv.text = text;
+    //[rtv scrollRangeToVisible: (NSRange) { (NSUInteger) ([text length]-1), (NSUInteger)1 }];  // works 1st time but text is cached so doesn't work subsequently
 	[self.view addSubview:rtv];
 	[rtv release];
 }
@@ -684,7 +688,43 @@
     // if password not set could disable privacy setting here but have to pass pwset bool all over
     //  alternatively, don't allow setting privacy val higher than current?
     // ((UITextField*) [self.wDict objectForKey:@"gpTF"]).enabled = NO;
+
+    //-- graph max _ days label
 	
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+	labframe = [self configLabel:@"Graph limit:" frame:frame key:@"glLab" addsv:YES];
+	
+	//-- graph max _ days textfield
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	
+	tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = tfWidth;
+	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+	
+    NSString *gMaxDays = [self.to.optDict objectForKey:@"graphMaxDays"];
+    if ([gMaxDays isEqualToString:@"0"]) {
+            gMaxDays = @"";
+    }
+    
+	[self configTextField:frame
+					  key:@"gmdTF"
+				   target:nil
+				   action:nil
+					  num:YES
+					place:@" "
+					 text:gMaxDays
+					addsv:YES ];
+    
+    //-- graph max _ days label 2  
+    
+    frame.origin.x += tfWidth + SPACE;
+    //labframe =
+    [self configLabel:@"days" frame:frame key:@"gl2Lab" addsv:YES];
+    
+
 }
 
 #pragma mark main config region methods

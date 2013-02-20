@@ -14,10 +14,12 @@
 #define MTPrim(x,y) CGContextMoveToPoint(context,(x),(y))
 #define ALPrim(x,y) CGContextAddLineToPoint(context,(x),(y))
 #define AEPrim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-2.0f),(y-2.0f)},{4.0f,4.0f}}); CGContextMoveToPoint(context,(x),(y))
-#if GFXHDEBUG 
+#define AE2Prim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-3.0f),(y-3.0f)},{6.0f,6.0f}}); CGContextMoveToPoint(context,(x),(y))
+#if GFXHDEBUG
 #define MoveTo(x,y) NSLog(@"mov: %f,%f",x,y); MTPrim(x,y)
 #define AddLineTo(x,y) NSLog(@"lin: %f,%f",x,y); ALPrim(x,y)
 #define AddCircle(x,y) NSLog(@"cir: %f,%f",x,y); AEPrim(x,y)
+#define AddBigCircle(x,y) NSLog(@"big cir: %f,%f",x,y); AE2Prim(x,y)
 #else
 //#define MoveTo(x,y) CGContextMoveToPoint(context,(x),(y))
 //#define AddLineTo(x,y) CGContextAddLineToPoint(context,(x),(y))
@@ -26,6 +28,7 @@
 #define MoveTo(x,y) MTPrim(x,y)
 #define AddLineTo(x,y) ALPrim(x,y)
 #define AddCircle(x,y) AEPrim(x,y)
+#define AddBigCircle(x,y) AE2Prim(x,y)
 #endif
 
 #define DevPt(x,y) CGContextConvertPointToUserSpace(context,(CGPoint){(x),(y)})

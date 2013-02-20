@@ -18,10 +18,12 @@
 #define SQLDEBUG    0
 #define NONAME      0
 
-#define DEBUGLOG    1
+#define DEBUGLOG    0
 #define DEBUGWARN   1
 #define DEBUGERR    1
 #define RELEASE     1
+
+#define RTRK_EXPORT 0
 
 #if SQLDEBUG 
 #define SQLDbg(args...) NSLog(@"%@",[NSString stringWithFormat: args])

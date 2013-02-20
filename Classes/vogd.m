@@ -33,7 +33,8 @@
         }
     }
     trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
-    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d and val != '';",targ,self.vo.vid];
+    togd *myTOGD = myTracker.togd;
+    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d and val != '' and date >= %d and date <= %d;",targ,self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
     return [myTracker toQry2Double];
 }
 
@@ -74,7 +75,6 @@
             }
             */
             
-            self.maxVal += (self.maxVal - self.minVal) *0.10f;   // +10% for visibility
         }
         
         if (self.minVal == self.maxVal) {
@@ -84,6 +84,10 @@
             self.maxVal = 1.0f;
         }
 
+        double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
+        self.maxVal += yScaleExpand;   // +5% each way for visibility
+        self.minVal -= yScaleExpand;
+        
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
         
         //double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);
@@ -97,7 +101,11 @@
         
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
         NSMutableArray *d1 = [[NSMutableArray alloc] init];
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
+        
+        //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
+        // 6.ii.2013 implement maxGraphDays
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+
         [myTracker toQry2AryID:i1 d1:d1];
         myTracker.sql=nil;
         
@@ -118,7 +126,7 @@
             
             //d+= border; //BORDER;
             //v+= border; //BORDER;
-            // fixed by doDrawGraph ?  TODONE: why does this code run again after rotate to portrait?
+            // fixed by doDrawGraph ? : why does this code run again after rotate to portrait?
 
             //DBGLog(@"num final: %f %f",d,v);
             

@@ -389,7 +389,7 @@
 		
 		d+= border; //BORDER;
 		v+= border; //BORDER;
-        // done by doDrawGraph ?  TODO: why does this code run again after rotate to portrait?
+        // done by doDrawGraph ? : why does this code run again after rotate to portrait?
 		DBGLog(@"num final: %f %f",d,v);
 		[xdat addObject:[NSNumber numberWithDouble:d]];
 		[ydat addObject:[NSNumber numberWithDouble:v]];

@@ -101,14 +101,15 @@
 	CGRect bbox = CGContextGetClipBoundingBox(context);
 	CGFloat minX = bbox.origin.x;
     CGFloat maxX = bbox.origin.x + bbox.size.width;
-    
+    BOOL bigger = ( [vogd.xdat count] < 2 ? 1 : 0 );
+
 	BOOL going=NO;
     CGFloat lastX=LXNOTSTARTED;
     CGFloat lastY=LXNOTSTARTED;
-    
+    CGFloat x=1.0f,y=1.0f;
 	for (NSNumber *nx in vogd.xdat) {
-        CGFloat x = [nx floatValue];
-        CGFloat y = [[e nextObject] floatValue];
+        x = [nx floatValue];
+        y = [[e nextObject] floatValue];
         if (going) {
             //DBGLog(@"addline %f %f",x,y);
             AddLineTo(x,y);
@@ -130,6 +131,10 @@
             } 
         }
     }
+    if (bigger) {  // only 1 point, have moved there
+        AddCircle(x,y);
+        AddBigCircle(x,y);
+    }
 	
 	Stroke;
 }
@@ -141,13 +146,15 @@
 	CGRect bbox = CGContextGetClipBoundingBox(context);
 	CGFloat minX = bbox.origin.x;
     CGFloat maxX = bbox.origin.x + bbox.size.width;
-    
+    BOOL bigger = ( [vogd.xdat count] < 2 ? 1 : 0 );
+
 	BOOL going=NO;
     CGFloat lastX=LXNOTSTARTED;
     CGFloat lastY=LXNOTSTARTED;
+    CGFloat x=1.0f,y=1.0f;
 	for (NSNumber *nx in vogd.xdat) {
-		CGFloat x = [nx floatValue];
-		CGFloat y = [[e nextObject] floatValue];
+		x = [nx floatValue];
+		y = [[e nextObject] floatValue];
         if (going) {
             //DBGLog(@"addline %f %f",x,y);
             AddLineTo(x,y);
@@ -173,6 +180,8 @@
             } 
         }
 	}
+    if (bigger) // only 1 point, have moved there already
+        AddBigCircle(x,y);
 	
 	Stroke;
 }
@@ -186,6 +195,7 @@
     CGFloat lastX=LXNOTSTARTED;
     CGFloat lastY=LXNOTSTARTED;
     BOOL going=NO;
+    BOOL bigger = ( [vogd.xdat count] < 3 ? 1 : 0 );  // need to emphasize 2 points so can't do outside loop 
     
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
@@ -196,6 +206,8 @@
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,y);
             AddCircle(x,y);
+            if (bigger)
+                AddBigCircle(x,y);
             if (vogd.vo.vtype == VOT_CHOICE)
                 Stroke;
             if (x > maxX)
@@ -213,6 +225,9 @@
             going=YES;    // going, show current
             MoveTo(x,y);
             AddCircle(x,y);
+            if (bigger)
+                AddBigCircle(x,y);
+            
             if (vogd.vo.vtype == VOT_CHOICE)
                 Stroke;
         }  
@@ -355,7 +370,7 @@
     vogd *currVogd = (vogd*) vo.vogd;
     
     if (vo == self.gtvCurrVO) {
-        if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {
+        if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {   // draw line at 0 if needed
             //CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
             //CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);
             //CGContextSetFillColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
