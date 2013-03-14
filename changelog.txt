@@ -822,8 +822,22 @@ todo: if change vid, must change in fn!
    - fixed bug empty tracker -> fn = sum of 2 -> show graph => voData for fn created with date=0
    - fixed bug def fn constant position bad now
 
-20 feb
+20 feb 2013
    - added few releases as suggested by analyze - test esp graph per cal unit
    - #if removed genRtrk due to warnings on potential leaks 
+
+--- commit ---
+
+21 feb 2013
+   - problem : calculate miles/month gets start dates that don't exist so delta doesn't work.
+ + need to get prev val or next val from date, but is it for all epd0 or just on delta?
+
+13 mar 2013
+   - tested / passed no memory leaks loading .rtrk from web page
+   - for problem above, get prev date value or skip for beginning - tested ok
+   - no graph y scale expand (min, max) if specified (min, max)
+  
+14 mar 2013
+   - ready for 1.0.8 release
 
 --- commit ---

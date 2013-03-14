@@ -85,8 +85,10 @@
         }
 
         double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
-        self.maxVal += yScaleExpand;   // +5% each way for visibility
-        self.minVal -= yScaleExpand;
+        if (nil == [self.vo.optDict objectForKey:@"gmax"])
+            self.maxVal += yScaleExpand;   // +5% each way for visibility unless specified
+        if (nil == [self.vo.optDict objectForKey:@"gmin"])
+            self.minVal -= yScaleExpand;
         
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
         

@@ -373,7 +373,7 @@
     for (i=0; i< maxc; i++) {
         outstr = [outstr stringByAppendingFormat:@" %@",[self.fnArray objectAtIndex:i]];
     }
-    DBGLog(@"calcFnValueWithCurrent fnArray= %@ ",outstr);
+    DBGLog(@"calcFnValueWithCurrent fnArray= %@ ", outstr);
 #endif    
     
 	int epd1;
@@ -403,7 +403,15 @@
                     if (sv1 == nil || [sv1 isEqualToString:@""])
                         return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
                     // epd1 value is ok, get from db value for epd0
-                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
+                    //to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
+                    // with per calendar date calcs, epd0 may not match a datapoint
+                    // - so get val coming into this time segment or skip for beginning - rtm 17.iii.13
+                    to.sql= [NSString stringWithFormat:@"select count(*) from voData where id=%d and date<=%d;",vid,epd0];
+                    int c= [to toQry2Int];
+                    if (0 == c)
+                        return nil; // skip for beginning
+                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<=%d order by date desc limit 1;",vid,epd0];
+                    
                     double v0 = [to toQry2Double];
                     DBGLog(@"delta: v0= %f", v0);
                     // do caclulation
@@ -513,7 +521,7 @@
 		}
 	}
 
-    DBGLog(@"calcFnValueWithCurrent rtn: %@", [NSNumber numberWithDouble:result]);
+    DBGLog(@"%@ calcFnValueWithCurrent rtn: %@", self.vo.valueName, [NSNumber numberWithDouble:result]);
 	return [NSNumber numberWithDouble:result];
 
 }
