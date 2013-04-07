@@ -61,8 +61,20 @@
             self.minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
             self.maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
         } else if (self.vo.vtype == VOT_CHOICE) {
-            self.minVal = d(0);
-            self.maxVal = CHOICES+1;
+            self.minVal=d(0);
+            self.maxVal=d(0);
+            for (int i=0; i<CHOICES; i++) {
+                NSString *key = [NSString stringWithFormat:@"cv%d",i];
+                NSString *tstVal = [self.vo.optDict valueForKey:key];
+                if (nil == tstVal) {
+                    tstVal = [NSString stringWithFormat:@"%f",(float)i+1]; 
+                }
+                double tval = [tstVal doubleValue];
+                if (self.minVal > tval)
+                    self.minVal = tval;
+                if (self.maxVal < tval)
+                    self.maxVal = tval;
+            }
         } else {  // number or function with autoscale
             
             self.minVal = [self getMinMax:@"min" alt:nil];

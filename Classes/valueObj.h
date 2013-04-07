@@ -177,5 +177,6 @@
 //- (void) txtDTF:(BOOL)num;
 
 - (NSString*) csvValue;
+- (int) getChoiceIndexForValue:(NSString *)val;
 
 @end

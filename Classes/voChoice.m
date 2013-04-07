@@ -36,6 +36,7 @@
 
 - (UITableViewCell*) voTVCell:(UITableView *)tableView {
 	return [super voTVEnabledCell:tableView];
+	//return [super voTVCell:tableView];
 }
 
 - (NSString*) getValueForSegmentChoice {
@@ -70,17 +71,27 @@
     return rslt;
 }
 
+
 - (int) getSegmentIndexForValue {
+    return [self.vo getChoiceIndexForValue:self.vo.value];
+    /*
     // doesn't display if e.g only choice 6 configured
     // rtm change with 'specify choice values' 24.xii.2012 return [self.vo.value integerValue]-1;
     NSString *currVal = self.vo.value;
+    //DBGLog(@"gsiv val=%@",currVal);
     for (int i=0; i<CHOICES; i++) {
         NSString *key = [NSString stringWithFormat:@"cv%d",i];
-        if ([[self.vo.optDict valueForKey:key] isEqualToString:currVal]) {
+        NSString *tstVal = [self.vo.optDict valueForKey:key];  
+        if (nil == tstVal) {
+            tstVal = [NSString stringWithFormat:@"%d",i];  // added 7.iv.2013 - need default value
+        }
+        //DBGLog(@"gsiv test against %d: %@",i,tstVal);
+        if ([tstVal isEqualToString:currVal]) {
             return i;
         }
     }
     return CHOICES;
+     */
 }
 
 
@@ -171,11 +182,12 @@
     } else {
         int segNdx = [self getSegmentIndexForValue];
         if (self.segmentedControl.selectedSegmentIndex != segNdx) {
-            DBGLog(@"segmentedControl set value int: %d str: %@", [self.vo.value integerValue], self.vo.value);
+            DBGLog(@"segmentedControl set value int: %d str: %@ segNdx: %d", [self.vo.value integerValue], self.vo.value,segNdx);
             // during loadCSV, not matching the string will cause a new c%d dict entry, so can be > CHOICES
             if (CHOICES > segNdx) {
                 // normal case
-                self.segmentedControl.selectedSegmentIndex = [self getSegmentIndexForValue];
+                self.segmentedControl.selectedSegmentIndex = segNdx;
+                //[self.segmentedControl setSelectedSegmentIndex:[self getSegmentIndexForValue]];
             } else {
                 // data can't be shown in buttons but it is there
                 // user must fix it, but it is all there to work with by save/edit csv and modify tracker
@@ -184,6 +196,7 @@
             [self.vo enableVO];
         }
     }
+    //[self.segmentedControl sendActionsForControlEvents:UIControlEventValueChanged];
     DBGLog(@"segmentedControl voDisplay: index %d", self.segmentedControl.selectedSegmentIndex);
     
 	return self.segmentedControl;

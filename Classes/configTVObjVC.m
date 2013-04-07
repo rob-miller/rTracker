@@ -700,7 +700,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	tfWidth = [@"999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	

@@ -84,9 +84,14 @@
 }
 
 
-
+// note same name call in gtYAxV
 - (void) vtChoiceSetColor:(vogd*)vogd context:(CGContextRef)context val:(CGFloat)val{
-    NSString *cc = [NSString stringWithFormat:@"cc%d",(int)((val-1.0f) / vogd.vScale)];
+    DBGLog(@"vtChoiceSetColor input %f",val);
+    val /= vogd.vScale;
+    val += vogd.minVal;
+    DBGLog(@"vtChoiceSetColor transformed %f",val);
+    int choice = [vogd.vo getChoiceIndexForValue:[NSString stringWithFormat:@"%f",val]];
+    NSString *cc = [NSString stringWithFormat:@"cc%d",choice];
     NSInteger col = [[vogd.vo.optDict objectForKey:cc] integerValue];
     CGContextSetFillColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);
     CGContextSetStrokeColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);

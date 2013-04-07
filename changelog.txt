@@ -841,3 +841,15 @@ todo: if change vid, must change in fn!
    - ready for 1.0.8 release
 
 --- commit ---
+
+07 apr 2013
+   - fixed bug in y axis title for choices introduced with changing graph edges
+   - fixed problem with choice colour in yaxis, same cause as above
+   - fixed  problem displaying prev choices for no default value, nothing to match against in optdict
+   - fixed problem displaying choice graph points in wrong colours
+   - changed vtEnable checkbox to constant 30x30
+   - make graphMaxDays input field wider 
+   - ready for 1.0.9 release (bugfix)
+
+--- commit ---
+

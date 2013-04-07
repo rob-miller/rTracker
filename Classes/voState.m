@@ -189,9 +189,14 @@
 	
 	bounds.origin.x = MARGIN;
 	bounds.origin.y = MARGIN;
+    /* changed to constant 30x30 7.iv.2013
 	bounds.size.width = checkImage.size.width ; //CHECKBOX_WIDTH; // cell.frame.size.width;
 	bounds.size.height = checkImage.size.height ; //self.tracker.maxLabel.height + 2*BMARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
+     */
+    bounds.size.width = 30.0f;
+    bounds.size.height = 30.0f;
 	
+
 	self.vo.checkButtonUseVO.frame = bounds;
 	self.vo.checkButtonUseVO.tag = kViewTag;
 	self.vo.checkButtonUseVO.backgroundColor = cell.backgroundColor;

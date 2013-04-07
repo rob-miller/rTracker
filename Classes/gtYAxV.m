@@ -42,8 +42,8 @@
 //    DBGLog(@" gtyaxv bg color set to %@", col);
 //}
 
-- (void) vtChoiceSetColor:(CGContextRef)context val:(CGFloat)val{
-    NSString *cc = [NSString stringWithFormat:@"cc%d",(int)(val-1.0f)];
+- (void) vtChoiceSetColor:(CGContextRef)context ndx:(int)ndx{
+    NSString *cc = [NSString stringWithFormat:@"cc%d",ndx];
     NSInteger col = [[self.vogd.vo.optDict objectForKey:cc] integerValue];
     [((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]) set];
 }
@@ -60,8 +60,8 @@
     
 	CGFloat unitStep = (finUnit - startUnit) / YTICKS;  
 
-	//DBGLog(@"svcofy= %f svoffy= %f  svh= %f max= %f min= %f upsvy= %f scaleh= %f start= %f fin= %f ",[self.graphSV contentOffset].y,svOffsetY,
-    // svHeight,self.vogd.minVal,self.vogd.maxVal,unitsPerSVY,self.scaleHeightY,startUnit,finUnit);
+	DBGLog(@"svcofy= %f svoffy= %f  svh= %f min= %f max= %f upsvy= %f scaleh= %f start= %f fin= %f ",[self.graphSV contentOffset].y,svOffsetY,
+     svHeight,self.vogd.minVal,self.vogd.maxVal,unitsPerSVY,self.scaleHeightY,startUnit,finUnit);
     
     //CGFloat len = self.bounds.size.height - (CGFloat) (2*BORDER);
 	CGFloat step = self.scaleHeightY / YTICKS;
@@ -84,10 +84,13 @@
         NSString *vstr;
         switch (vtype) {
             case VOT_CHOICE:
-                [self vtChoiceSetColor:context val:val];
-                NSString *ch = [NSString stringWithFormat:@"c%d",(int)(val-1.0f)];
+            {
+                int choice = (int)(YTICKS-i)-1;
+                [self vtChoiceSetColor:context ndx:choice];
+                NSString *ch = [NSString stringWithFormat:@"c%d",choice];
                 vstr = [self.vogd.vo.optDict objectForKey:ch];
                 break;
+            }
             case VOT_TEXT:
             case VOT_BOOLEAN:
             //case VOT_IMAGE:
