@@ -76,7 +76,7 @@
         // Add an accessibility label that describes the slider.
         [sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
         
-        sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+        //sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 
         /*
         if ([self.vo.value isEqualToString:@""]) {

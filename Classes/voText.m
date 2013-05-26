@@ -48,7 +48,7 @@
 }
 
 - (void) dealloc {
-    DBGLog(@"voText dealloc");
+    //DBGLog(@"voText dealloc");
     self.dtf = nil;
     [dtf release];
     [super dealloc];
@@ -72,7 +72,7 @@
         
         dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
         
-        dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
+        //dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
         dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
         
         // Add an accessibility label that describes what the text field is for.

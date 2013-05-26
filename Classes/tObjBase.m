@@ -31,7 +31,7 @@
 - (id) init {
 	
 	if ((self = [super init])) {
-		DBGLog(@"tObjBase init: db %@",self.dbName);
+		//DBGLog(@"tObjBase init: db %@",self.dbName);
 		tDb=nil;
 		//[self getTDb];
 		self.tuniq = TMPUNIQSTART;
@@ -40,7 +40,7 @@
 }
 
 - (void) dealloc {
-    DBGLog(@"dealloc tObjBase: %@  id=%d",self.dbName,self.toid);
+    //DBGLog(@"dealloc tObjBase: %@  id=%d",self.dbName,self.toid);
 	
 	//UIApplication *app = [UIApplication sharedApplication];
 	[[NSNotificationCenter defaultCenter] removeObserver:self
@@ -97,14 +97,14 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 
 - (void) getTDb {
-	DBGLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
+	//DBGLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
 	dbgNSAssert(self.dbName, @"getTDb called with no dbName set");
 	
 	if (sqlite3_open([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String], &tDb) != SQLITE_OK) {
 		sqlite3_close(tDb);
 		dbgNSAssert(0, @"error opening rTracker database");
 	} else {
-		DBGLog(@"opened tDb %@",self.dbName);
+		//DBGLog(@"opened tDb %@",self.dbName);
 		int c;
 		
 		self.sql = @"create table if not exists uniquev (id integer, value integer);";
@@ -116,7 +116,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			DBGLog(@"init uniquev");
 			self.sql = @"insert into uniquev (id, value) values (0, 1);";
 			[self toExecSql];
-		} 
+		}
+/*
 #if DEBUGLOG
         else {
 			self.sql = @"select value from uniquev where id=0;";
@@ -124,12 +125,13 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 			DBGLog(@"uniquev= %d",c);
 		}
 #endif
+*/
 		self.sql = nil;
 
 		
-		sqlite3_create_collation(tDb,"CMPSTRDBL",SQLITE_UTF8,NULL,col_str_flt);
+		sqlite3_create_collation(tDb,"CMPSTRDBL",SQLITE_UTF8,NULL,col_str_flt);  // set how comparisons will be done on this database
 		
-		UIApplication *app = [UIApplication sharedApplication];
+		UIApplication *app = [UIApplication sharedApplication];  // add callback to close database on app terminate
 		[[NSNotificationCenter defaultCenter] addObserver:self 
 												 selector:@selector(applicationWillTerminate:) 
 													 name:UIApplicationWillTerminateNotification
@@ -182,7 +184,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (tDb == nil) {
 		++tuniq;
 		i = -tuniq;
-		DBGLog(@"temp tObj id=%d getUnique returning %d",self.toid,i);
+		//DBGLog(@"temp tObj id=%d getUnique returning %d",self.toid,i);
 	} else {
 		self.sql = @"select value from uniquev where id=0;";
 		i = [self toQry2Int];

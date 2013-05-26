@@ -14,7 +14,7 @@
 @synthesize imageButton;
 
 - (void) dealloc {
-	DBGLog(@"dealloc voBoolean");
+	//DBGLog(@"dealloc voBoolean");
 	self.imageButton = nil;  // convenience constructor
     [imageButton release];
                          

@@ -23,7 +23,7 @@ BOOL keyboardIsShown=NO;
     }
 	NSString *docsDir = [paths objectAtIndex:0];
 	
-	DBGLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
+	//DBGLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
 	
 	return [docsDir stringByAppendingPathComponent:fname];
 }

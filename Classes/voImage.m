@@ -52,7 +52,7 @@
 	
 	[imageButton setImage:[UIImage imageNamed:@"blueButton.png"] forState: UIControlStateNormal];
 	
-	imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+	//imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 	
 	return imageButton;
 }
@@ -103,7 +103,7 @@
 		self.takePhotoButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
 		[self.takePhotoButton addTarget:self action:@selector(getCameraPhoto:) forControlEvents:UIControlEventTouchUpInside];		
 		[self.takePhotoButton setTitle:@"take photo" forState:UIControlStateNormal];
-		//self.takePhotoButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+		self.takePhotoButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 
 		[self.devc.view addSubview:self.takePhotoButton];
 		self.takePhotoButton = nil;

@@ -172,7 +172,7 @@
         [self.optDict setObject:[newOptDict objectForKey:key] forKey:key];  // incoming optDict may be incomplete, assume obsolete optDict entries not a problem
     }
     
-    NSArray *newValObjs = [dict objectForKey:@"valObjTable@"];
+    NSArray *newValObjs = [dict objectForKey:@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
     for (NSDictionary *voDict in newValObjs) {
         NSInteger nVid = [[voDict objectForKey:@"vid"] integerValue];                // new VID
         NSString *nVname = [voDict objectForKey:@"valueName"];
@@ -597,8 +597,10 @@
 
 #if RTRK_EXPORT
     // rtm here -- perhaps not yet for release code ?
+    NSString *fpatho = [rTracker_resource ioFilePath:@"outbox" access:YES];
+    [[NSFileManager defaultManager] createDirectoryAtPath:fpatho withIntermediateDirectories:NO attributes:nil error:nil];
     fname = [NSString stringWithFormat:@"%@_out.rtrk",self.trackerName];
-    fpath = [rTracker_resource ioFilePath:fname access:YES];
+    fpath = [fpatho stringByAppendingPathComponent:fname];
     NSDictionary *rtrk = [self genRtrk:NO];
     if(! ([rtrk writeToFile:fpath atomically:YES])) {
         DBGErr(@"problem writing file %@",fname);
@@ -607,7 +609,7 @@
     for (NSString *k in tData) {
         [[tData objectForKey:k] release];
     }
-    [rtrk release];
+    //[rtrk release];  // think not needed?
 #endif
     
 	//[nsfh release];
@@ -666,7 +668,7 @@
         [self loadData:currDate];
         
     }
-    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:
+    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:   // think this does not need release as is not alloc'd?
                               [NSString stringWithFormat:@"%d",self.toid],@"toid",
                               self.trackerName,@"trackerName",
                               [self dictFromTO],@"configDict",
@@ -1135,7 +1137,7 @@
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
 		CGSize tsize = [vo.valueName sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
-        DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
+        //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
 		if (tsize.width > lsize.width) {
 			lsize = tsize;
             // bug in xcode 4.2
@@ -1416,7 +1418,7 @@
 	//valueObj *vo;
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
-		[vo describe];
+		[vo describe:false];
 	}
     
 

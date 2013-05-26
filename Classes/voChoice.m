@@ -153,7 +153,7 @@
         segmentedControl.frame = self.vosFrame;
         [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
-        segmentedControl.tag = kViewTag;
+        //segmentedControl.tag = kViewTag;
         
 //        if ([self.vo.value isEqualToString:@""]) {
 //            self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -170,8 +170,7 @@
 
    	
     self.vosFrame = bounds;
-    //self.segmentedControl.tag = kViewTag;
-    
+
 	// set displayed segment from self.vo.value
     
     if ([self.vo.value isEqualToString:@""]) {

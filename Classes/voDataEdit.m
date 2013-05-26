@@ -78,7 +78,7 @@
 
 - (void)dealloc {
 	
-	DBGLog(@"vde dealloc");
+	//DBGLog(@"vde dealloc");
 	self.vo = nil;
 	//[vo release];
 

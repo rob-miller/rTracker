@@ -48,7 +48,7 @@ extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
 in_vgraphtype:(NSInteger)in_vgraphtype
 in_vpriv:(NSInteger)in_vpriv
 {
-	DBGLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
+	//DBGLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
@@ -64,10 +64,12 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 - (id) initWithDict:(id)parentTO dict:(NSDictionary*)dict {
+    /*
 	DBGLog(@"init vObj with dict vid: %d vtype: %d vname: %@",
            [(NSNumber*) [dict objectForKey:@"vid"] integerValue],
            [(NSNumber*) [dict objectForKey:@"vtype"] integerValue],
            (NSString*) [dict objectForKey:@"valueName"]);
+     */
 	if ((self = [super init])) {
 		self.useVO = NO;	
 		self.parentTracker = parentTO;
@@ -176,11 +178,11 @@ in_vpriv:(NSInteger)in_vpriv
 	[self.value setString:@""];
     //self.retrievedData = NO;
 	self.useVO = NO;  // disableVO
-    DBGLog(@"vo resetData %@",self.valueName);
+    //DBGLog(@"vo resetData %@",self.valueName);
 }
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
-    DBGLog(@"setVtype - allocating vos");
+    //DBGLog(@"setVtype - allocating vos");
 	vtype = vt;  // not self as this is set fn!
     id tvos=nil;
 	switch (vt) {
@@ -250,6 +252,7 @@ in_vpriv:(NSInteger)in_vpriv
 	if (display == nil) {
         DBGLog(@"vo new display name:  %@ currVal: .%@.",self.valueName,self.value);
 		self.display = [self.vos voDisplay:bounds];
+        self.display.tag = kViewTag;
 	}
 	return display;
 }
@@ -321,11 +324,15 @@ in_vpriv:(NSInteger)in_vpriv
 #pragma mark -
 #pragma mark utility methods
 
-- (void) describe 
+- (void) describe:(BOOL)od
 {
-	DBGLog(@" value id %d name %@ type %d value .%@.\noptDict:\n",self.vid,self.valueName, self.vtype, self.value);
-    for (NSString *key in self.optDict) {
-        DBGLog(@" k:%@  v:%@",key,[self.optDict objectForKey:key] );
+    if (od) {
+        DBGLog(@"value id %d name %@ type %d value .%@. optDict:",self.vid,self.valueName, self.vtype, self.value);
+        for (NSString *key in self.optDict) {
+            DBGLog(@" %@ = %@ ",key,[self.optDict objectForKey:key] );
+        }
+    } else {
+        	DBGLog(@"value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
     }
 }
 
@@ -359,7 +366,7 @@ in_vpriv:(NSInteger)in_vpriv
 #endif
 
 - (void) validate {
-    DBGLog(@"validate %@",VOINF);
+    DBGLog(@"%@",VOINF);
     
     if (self.vtype < 0) {
         DBGErr(@"%@ invalid vtype (negative): %d",VOINF,self.vtype);
@@ -420,7 +427,7 @@ in_vpriv:(NSInteger)in_vpriv
 }
 // specific to VOT_CHOICE with optional values - seach dictionary for value, return index
 - (int) getChoiceIndexForValue:(NSString *)val {
-    DBGLog(@"gciv val=%@",val);
+    //DBGLog(@"gciv val=%@",val);
     NSString *inVal = [NSString stringWithFormat:@"%f",[val floatValue]];
     for (int i=0; i<CHOICES; i++) {
         NSString *key = [NSString stringWithFormat:@"cv%d",i];
@@ -435,7 +442,7 @@ in_vpriv:(NSInteger)in_vpriv
             return i;
         }
     }
-    DBGLog(@"gciv: no match");
+    //DBGLog(@"gciv: no match");
     return CHOICES;
     
 }

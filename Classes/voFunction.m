@@ -54,7 +54,7 @@
 	//[self.vo.optDict setObject:[self.fnArray componentsJoinedByString:@" "] forKey:@"func"];
 	// don't save an empty string
 	NSString *ts = [self.fnArray componentsJoinedByString:@" "];
-    DBGLog(@"saving fnArray ts= .%@.",ts);
+    //DBGLog(@"saving fnArray ts= .%@.",ts);
 	if (0 < [ts length]) {
 		[self.vo.optDict setObject:ts forKey:@"func"];
 	}
@@ -103,13 +103,17 @@
 	[self loadFnArray];
 	NSUInteger i=0;
 	NSUInteger max = [self.fnArray count];
+#if DEBUGFUNCTION
     DBGLog(@"start fnArray= %@",self.fnArray);
+#endif
 	for (i=0; i< max; i++) {
 		if ([[self.fnArray objectAtIndex:i] integerValue] == oldVID) {
 			[self.fnArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInteger:newVID]];
 		}
 	}
+#if DEBUGFUNCTION
     DBGLog(@"fin fnArray= %@",self.fnArray);
+#endif
 	[self saveFnArray];
 	
 	for (i=0;i<2;i++) {
@@ -164,6 +168,7 @@
         //  -> no, could be editinging an already existing entry
         //    votWoSelf = [NSArray arrayWithArray:MyTracker.valObjTable];
         //} else {
+
             NSMutableArray *tvot = [NSMutableArray arrayWithCapacity:[MyTracker.valObjTable count]];
             for (valueObj *tvo in MyTracker.valObjTable) {
                 if (tvo.vid != self.vo.vid) {
@@ -174,12 +179,14 @@
             votWoSelf = [[NSArray alloc] initWithArray:tvot];
             // not needed? [tvot release];
         //}
+/*
         DBGLog(@"instantiate votWoSelf:");
         DBGLog(@"self.vo vid=%d  name= %@",self.vo.vid,self.vo.valueName);
         for (valueObj *mvo in votWoSelf) {
             DBGLog(@"  %d: %@",mvo.vid,mvo.valueName);
         }
         DBGLog(@".");
+*/
     }
     return votWoSelf;
 }
@@ -210,9 +217,13 @@
 	} else if (ep >= 0) {
 		// ep is vid
 		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d and val <> 0 and val <> '' order by date desc limit 1;",ep,maxdate]; // add val<>0,<>"" 5.vii.12
+#if DEBUGFUNCTION
         DBGLog(@"get ep qry: %@",to.sql);
+#endif
 		epDate = [to toQry2Int];
+#if DEBUGFUNCTION
 		DBGLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
+#endif
 	} else {
 		// ep is (offset * -1)+1 into epTitles, with optDict:frv0 multiplier
 
@@ -288,8 +299,9 @@
         
         
 		epDate = [targ timeIntervalSince1970];
-		DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
-		
+#if DEBUGFUNCTION
+        DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
+#endif
 		[gregorian release];
 		[offsetComponents release];
 	}
@@ -366,7 +378,7 @@
 	NSInteger vid=0;
 	trackerObj *to = MyTracker;
 
-#if DEBUGLOG
+#if DEBUGFUNCTION
     // print our complete function
 	NSInteger i;
     NSString *outstr=@"";
@@ -396,7 +408,9 @@
             //valueObj *valo = [to getValObj:vid];
             NSString *sv1 = [to getValObj:vid].value;
             double v1 = [sv1 doubleValue];
+#if DEBUGFUNCTION
             DBGLog(@"v1= %f", v1);
+#endif
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
                 case FN1ARGDELTA :
@@ -413,7 +427,9 @@
                     to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<=%d order by date desc limit 1;",vid,epd0];
                     
                     double v0 = [to toQry2Double];
+#if DEBUGFUNCTION
                     DBGLog(@"delta: v0= %f", v0);
+#endif
                     // do caclulation
                     result = v1 - v0;
                     break;
@@ -499,7 +515,9 @@
                 self.currFnNdx++;  // skip the bounding constant tok
         } else if (isFnTimeOp(currTok)) {
             result = (double) epd1 - epd0;
+#if DEBUGFUNCTION
             DBGLog(@" timefn: %f secs",result);
+#endif
             switch (currTok) {
                 case FNTIMEWEEKS:
                     result /= 7;            // 7 days /week
@@ -510,8 +528,9 @@
                     result /= d( 60 * 60 );  // 60 secs min * 60 secs hr
                     break;
             }
+#if DEBUGFUNCTION
             DBGLog(@" timefn: %f final units",result);
-            
+#endif
 		} else {
             // remaining option is we have some vid as currTok, return its value up the chain
             valueObj *lvo = [to getValObj:currTok];
@@ -614,6 +633,7 @@
 	
 	//return [rlab autorelease];
     DBGLog(@"fn voDisplay: %@", self.rlab.text);
+    //self.rlab.tag = kViewTag;
     return self.rlab;
 }
 

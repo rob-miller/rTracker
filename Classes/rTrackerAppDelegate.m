@@ -73,7 +73,7 @@
     // if (url != nil && [url isFileURL]) {
     //    [rootController handleOpenFileURL:url];
     //}
-    DBGLog(@"rt app delegate: app did finish launching");
+    //DBGLog(@"rt app delegate: app did finish launching");
 
     return YES;
 }
@@ -95,12 +95,12 @@
     
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
-	DBGLog(@"rt app delegate: app will terminate");
+	//DBGLog(@"rt app delegate: app will terminate");
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 	// Save data if appropriate
-	DBGLog(@"rt app delegate: app will resign active");
+	//DBGLog(@"rt app delegate: app will resign active");
     [((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).privacyObj lockDown];
 }
 
@@ -115,7 +115,7 @@
 	// rootViewController needs to possibly load files
     // useTrackerController needs to detect if displaying a private tracker
     
-	DBGLog(@"rt app delegate: app did become active");
+	//DBGLog(@"rt app delegate: app did become active");
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
 
     [self.navigationController.visibleViewController viewDidAppear:YES];
@@ -125,7 +125,7 @@
 #pragma mark Memory management
 
 - (void)dealloc {
-	DBGLog(@"rt app delegate: dealloc");
+	//DBGLog(@"rt app delegate: dealloc");
 	[navigationController release];
 	[window release];
 	[super dealloc];

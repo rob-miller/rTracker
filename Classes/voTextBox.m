@@ -43,7 +43,7 @@
 }
 
 - (void) dealloc {
-	DBGLog(@"dealloc voTextBox");
+	//DBGLog(@"dealloc voTextBox");
     
     //DBGLog(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
 	self.tbButton = nil;  // convenience constructor, do not own (enven tho retained???)
@@ -340,7 +340,7 @@
         tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];		
-        tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+        //tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
         [tbButton retain]; // rtm 06 feb 2012
     }
     return tbButton;

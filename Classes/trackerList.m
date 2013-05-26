@@ -31,7 +31,7 @@
 - (void) initTDb {
 	//int c;
 	
-	DBGLog(@"Initializing top level dtabase!");
+	//DBGLog(@"Initializing top level dtabase!");
 	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
@@ -39,7 +39,7 @@
 	[self toExecSql];
 	self.sql = @"select count(*) from toplevel;";
 
-	DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
+	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
 
 	self.sql = @"create table if not exists info (val integer, name text);";
 	[self toExecSql];
@@ -49,18 +49,20 @@
         DBGLog(@"rtdb_version not set");
         self.sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];
         [self toExecSql];
+/*
 #if DEBUGLOG
     } else {
         self.sql = @"select val from info where name='rtdb_version'";
         DBGLog(@"rtdb_version= %d",[self toQry2Int]);
 #endif
+ */
     }
     
 	self.sql = nil;	
 }	
 
 - (id) init {
-	DBGLog(@"init trackerList");
+	//DBGLog(@"init trackerList");
 	
 	if ((self = [super init])) {
 		topLayoutNames = [[NSMutableArray alloc] init];
@@ -73,7 +75,7 @@
 }
 
 - (void) dealloc {
-	DBGLog(@"trackerlist dealloc");
+	//DBGLog(@"trackerlist dealloc");
 	self.topLayoutNames = nil;
 	[topLayoutNames release];
 	self.topLayoutIDs = nil;
@@ -88,7 +90,7 @@
 #pragma mark TopLayoutTable <-> db support 
 
 - (void) loadTopLayoutTable {
-    DBGTLIST(self);
+    //DBGTLIST(self);
 	[self.topLayoutNames removeAllObjects];
 	[self.topLayoutIDs removeAllObjects];
     [self.topLayoutPriv removeAllObjects];
@@ -99,8 +101,8 @@
 	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
 	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
 	self.sql = nil;
-	//DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
-    DBGTLIST(self);
+	DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
+    //DBGTLIST(self);
 }
 
 - (void) addToTopLayoutTable:(trackerObj*) tObj {
@@ -116,8 +118,8 @@
 - (void) confirmTopLayoutEntry:(trackerObj *) tObj {
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
-    DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
-	DBGTLIST(self);
+    //DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
+	//DBGTLIST(self);
 	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
 	int rank = [self toQry2Int];  // returns 0 if not found 
 	if (rank == 0) {
@@ -146,20 +148,20 @@
 }
 
 - (void) reorderFromTLT {
-    DBGTLIST(self);
+    //DBGTLIST(self);
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
-		DBGLog(@" %@ to rank %d",tracker,nrank);
+		//DBGLog(@" %@ to rank %d",tracker,nrank);
 		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ self toSqlStr:tracker]];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
 	self.sql = nil;
-    DBGTLIST(self);
+    //DBGTLIST(self);
 }
 
 - (void) reloadFromTLT {
-    DBGTLIST(self);
+    //DBGTLIST(self);
 	int nrank=0;
 	self.sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
 	[self toExecSql];
@@ -167,7 +169,7 @@
 		NSInteger tid = [[self.topLayoutIDs objectAtIndex:nrank] intValue];
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
-		DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
+		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
 		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,[self toSqlStr:tracker], priv];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
@@ -279,11 +281,11 @@
 	[tID release];
     [tPriv release];
 
-	DBGTLIST(self);
+	//DBGTLIST(self);
 }
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO {
-	DBGLog(@"copyToConfig: src id= %d %@",srcTO.toid,srcTO.trackerName);
+	//DBGLog(@"copyToConfig: src id= %d %@",srcTO.toid,srcTO.trackerName);
 	trackerObj *newTO = [trackerObj alloc];
 	newTO.toid = [self getUnique];
 	newTO = [newTO init];
@@ -304,7 +306,7 @@
 	}
 	
 	[newTO saveConfig];
-	DBGLog(@"copyToConfig: copy id= %d %@",newTO.toid,newTO.trackerName);
+	//DBGLog(@"copyToConfig: copy id= %d %@",newTO.toid,newTO.trackerName);
 	
 	return newTO;
 }

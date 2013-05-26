@@ -258,11 +258,17 @@
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        DBGLog(@"new cell");
 	} else {
 		// the cell is being recycled, remove old embedded controls
+        
 		UIView *viewToRemove = nil;
-		while ((viewToRemove = [cell.contentView viewWithTag:kViewTag]))
+		while ((viewToRemove = [cell.contentView viewWithTag:kViewTag])) {
+            DBGLog(@"removing");
 			[viewToRemove removeFromSuperview];
+        }
+        
+        DBGLog(@"recycled cell");
 	}
 
 	cell.textLabel.text = self.vo.valueName;

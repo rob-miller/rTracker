@@ -178,7 +178,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    DBGLog(@"utc view did appear!");
+    //DBGLog(@"utc view did appear!");
      // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
     if ((nil != self.tracker)
         && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
@@ -192,7 +192,7 @@
 }
 - (void) viewWillAppear:(BOOL)animated
 {
-    DBGLog(@"utc: view will appear");
+    //DBGLog(@"utc: view will appear");
     
 	if (self.dpr) {
 		switch (self.dpr.action) {
@@ -272,7 +272,7 @@
 
 - (void) viewWillDisappear :(BOOL)animated
 {
-    DBGLog(@"utc view disappearing");
+    //DBGLog(@"utc view disappearing");
     //already done [self.tracker.activeControl resignFirstResponder];
 
     // unregister this tracker for value updated notifications
@@ -670,12 +670,12 @@
 	int postD = [self.tracker postDate];
 	int lastD = [self.tracker lastDate];
 	int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
-
+/*
 	DBGLog(@"prevD = %d %@",prevD,[NSDate dateWithTimeIntervalSince1970:prevD]);
 	DBGLog(@"currD = %d %@",currD,[NSDate dateWithTimeIntervalSince1970:currD]);
 	DBGLog(@"postD = %d %@",postD,[NSDate dateWithTimeIntervalSince1970:postD]);
 	DBGLog(@"lastD = %d %@",lastD,[NSDate dateWithTimeIntervalSince1970:lastD]);
-	
+*/	
 	self.currDateBtn = nil;
 	if (prevD ==0) 
 		[tbi addObject:self.fixed1SpaceButtonItem];
@@ -743,7 +743,7 @@
 
 - (void) doExport {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    DBGLog(@"start export");
+    //DBGLog(@"start export");
     
     [self.tracker export];
     [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
@@ -1030,12 +1030,13 @@
 	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
 	// [self.navigationController pushViewController:anotherViewController animated:YES];
 	// [anotherViewController release];
-	
+
 #if DEBUGLOG
 	NSUInteger row = [indexPath row];
 	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
 	DBGLog(@"selected row %d : %@", row, vo.valueName);
 #endif
+
     
 }
 

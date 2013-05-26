@@ -76,7 +76,7 @@ static BOOL InstallSamples;
 //-------------------
 
 - (void) loadTrackerCsvFiles {
-    DBGLog(@"loadTrackerCsvFiles");
+    //DBGLog(@"loadTrackerCsvFiles");
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
@@ -86,13 +86,13 @@ static BOOL InstallSamples;
         if ([[file pathExtension] isEqualToString: @"csv"]) {
             NSString *fname = [file lastPathComponent];
             NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
-            DBGLog(@"consider input: %@",fname);
+            //DBGLog(@"consider input: %@",fname);
             
             if (inmatch.location == NSNotFound) {
                 
             } else if (inmatch.length == 7) {  // matched all 7 chars of _in.csv at end of file name
                 NSString *tname = [fname substringToIndex:inmatch.location];
-                DBGLog(@"load input: %@ as %@",fname,tname);
+                DBGLog(@"csv load input: %@ as %@",fname,tname);
                 int ndx=0;
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
@@ -258,7 +258,7 @@ static BOOL InstallSamples;
     if (nil != dataDict) {
         trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
         
-        [to loadDataDict:dataDict]; // need to write this
+        [to loadDataDict:dataDict];
         [to recalculateFns];    // updates fn vals in database
         [to saveChoiceConfigs]; // in case input data had unrecognised choices
         
@@ -418,7 +418,7 @@ static BOOL InstallSamples;
 }
 
 - (void) refreshViewPart2 {
-    DBGLog(@"entry");
+    //DBGLog(@"entry");
 	[self.tlist loadTopLayoutTable];
 	[self.tableView reloadData];
     
@@ -479,6 +479,11 @@ static BOOL InstallSamples;
     csvLoadCount = [self countInputFiles:@"_in.csv"];
     plistLoadCount = [self countInputFiles:@"_in.plist"];
     int rtrkLoadCount = [self countInputFiles:@".rtrk"];
+
+#if RTRK_EXPORT
+    int rtrk_out = [self countInputFiles:@"_out.rtrk"];
+    rtrkLoadCount -= rtrk_out;
+#endif    
     
     // handle rtrks as plist + csv, just faster if only has data or only has tracker def
     csvLoadCount += rtrkLoadCount;
@@ -524,7 +529,7 @@ static BOOL InstallSamples;
     NSFileManager *dfltManager = [NSFileManager defaultManager];
     */
     
-    DBGLog(@"paths %@",paths  );
+    //DBGLog(@"paths %@",paths  );
 
         
     for (NSString *p in paths) {
@@ -579,10 +584,10 @@ static BOOL InstallSamples;
 - (void)scrollState {
     if (privacyObj && self.privacyObj.showing != PVNOSHOW) { // don't instantiate if not there
         self.tableView.scrollEnabled = NO;
-        DBGLog(@"no");
+        //DBGLog(@"no");
     } else {
         self.tableView.scrollEnabled = YES;
-        DBGLog(@"yes"); 
+        //DBGLog(@"yes");
     }
 }
 
@@ -606,7 +611,7 @@ static BOOL InstallSamples;
     // set up the title 
     
     NSString *devname = [[UIDevice currentDevice] name];
-    DBGLog(@"name = %@",devname);
+    //DBGLog(@"name = %@",devname);
     NSArray *words = [devname componentsSeparatedByString:@" "];
     
     NSUInteger i=0;
@@ -712,7 +717,7 @@ static BOOL InstallSamples;
 }
 
 - (void)viewDidLoad {
-	DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
+	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
     self.refreshLock = 0;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -820,7 +825,7 @@ static BOOL InstallSamples;
     BOOL resetPassPref = [sud boolForKey:@"reset_password_pref"];
     BOOL reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
     
-    DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
+    //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
     if (resetPassPref) [self.privacyObj resetPw];
     
@@ -841,13 +846,14 @@ static BOOL InstallSamples;
     self.initialPrefsLoad = NO;
     
     [sud synchronize];
-
+/*
 #if DEBUGLOG
     resetPassPref = [sud boolForKey:@"reset_password_pref"];
     reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
     
     DBGLog(@"exit prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 #endif
+*/
 }
 
 - (void) refreshView {
@@ -857,7 +863,7 @@ static BOOL InstallSamples;
         return;
     }
             
-    DBGLog(@"refreshView");
+    //DBGLog(@"refreshView");
 	[self scrollState];
 
     [self handlePrefs];
@@ -867,7 +873,7 @@ static BOOL InstallSamples;
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);	
+	//DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
     //[self loadInputFiles];  // do this here as restarts are infrequent
 	//[self refreshView];
     [super viewWillAppear:animated];
@@ -914,7 +920,7 @@ BOOL stashAnimated;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-	DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);	
+	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
 
     //TODO:0: rtm: test for rtrk_reading files, offer to delete or try again ( = rename to .rtrk)
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
@@ -969,7 +975,7 @@ BOOL stashAnimated;
 	// Release anything that can be recreated in viewDidLoad or on demand.
 	// e.g. self.myOutlet = nil;
 	
-	DBGLog(@"rvc viewDidUnload");
+	//DBGLog(@"rvc viewDidUnload");
 
 	self.title = nil;
 	self.navigationItem.rightBarButtonItem = nil;

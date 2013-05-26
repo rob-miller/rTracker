@@ -853,3 +853,15 @@ todo: if change vid, must change in fn!
 
 --- commit ---
 
+09 apr 2013
+   - remove release of rtrk obj as think not needed and apparently caused crash (trackerObj.m:export - rtrk_export section
+   - re-enable export rtrk, now to outbox dir
+   + after export rtrk, not getting odometer reloaded
+   + sadly cannot get to outbox in iTunes, but can save entire dir
+
+26 may 2013
+   - fix confirmTOdict() typo so wasn't loading valObjTable - affects both rtrk load and plist load
+   - comment out various noisy dbglog calls
+   - add kViewTag after voDisplay() return, so -all- cells get tag : solved problem of dity cells in tableview after scroll
+   - solved problem of always scrolling to top on main list - was just for me, part of EXPORT_RTRK
+

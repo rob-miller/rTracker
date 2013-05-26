@@ -157,7 +157,7 @@
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
 //- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
 
-- (void) describe;
+- (void) describe:(BOOL)od;
 - (UIView *) display:(CGRect)bounds;
 
 - (void) enableVO;
