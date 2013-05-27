@@ -262,7 +262,7 @@ static BOOL InstallSamples;
         [to recalculateFns];    // updates fn vals in database
         [to saveChoiceConfigs]; // in case input data had unrecognised choices
         
-        DBGLog(@"csv loaded:");
+        DBGLog(@"datadict loaded for open file url:");
 #if DEBUGLOG
         [to describe];
 #endif

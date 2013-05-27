@@ -366,7 +366,7 @@ in_vpriv:(NSInteger)in_vpriv
 #endif
 
 - (void) validate {
-    DBGLog(@"%@",VOINF);
+    //DBGLog(@"%@",VOINF);
     
     if (self.vtype < 0) {
         DBGErr(@"%@ invalid vtype (negative): %d",VOINF,self.vtype);

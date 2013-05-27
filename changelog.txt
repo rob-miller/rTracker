@@ -865,3 +865,10 @@ todo: if change vid, must change in fn!
    - add kViewTag after voDisplay() return, so -all- cells get tag : solved problem of dity cells in tableview after scroll
    - solved problem of always scrolling to top on main list - was just for me, part of EXPORT_RTRK
 
+--- commit ---
+
+   - few more DBGLog()s removed, fix debugFunction messages
+   - lockdown does not set state to pvquery if state is pwneedprivok
+   - submitted as 1.0.10
+
+--- commit ---

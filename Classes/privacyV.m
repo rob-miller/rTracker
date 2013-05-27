@@ -47,7 +47,9 @@ static int privacyValue=PRIVDFLT;
     DBGLog(@"privObj: lockdown");
     [self.ttv showKey:0];
     [self setPrivacyValue:MINPRIV]; 
-    self.pwState = PWQUERYPASS;
+    if (PWNEEDPRIVOK != self.pwState) {  // 27.v.2013 don't set to query if no pw setup yet
+        self.pwState = PWQUERYPASS;   
+    }
     self.showing = PVNOSHOW;
     //if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
 	//	self.showing = PVQUERY;
