@@ -43,6 +43,7 @@
     NSDateFormatter *dateOnlyFormatter;
     
     id togd;
+    NSInteger prevTID;
 }
 
 //@property (nonatomic) int tid;
@@ -58,6 +59,7 @@
 @property (nonatomic,retain) NSDateFormatter *dateFormatter;
 @property (nonatomic,retain) NSDateFormatter *dateOnlyFormatter;
 @property (nonatomic,retain) id togd;
+@property (nonatomic) NSInteger prevTID;
 
 - (id) init:(int) tid;
 - (id) initWithDict:(NSDictionary*)dict;
@@ -100,7 +102,7 @@
 - (NSString*) voGetNameForVID:(NSInteger)vid;
 
 - (BOOL) voVIDisUsed:(NSInteger)vid;
-- (void) voUpdateVID:(NSInteger)old new:(NSInteger)new;
+- (void) voUpdateVID:(valueObj*)vo newVID:(NSInteger)newVID;
 
 - (int) noCollideDate:(int)testDate;
 - (void) changeDate:(NSDate*)newdate;
@@ -108,12 +110,16 @@
 - (void) trackerUpdated:(NSNotification*)n;
 - (void) recalculateFns;
 
-- (void) export;
+- (NSString*) getPath:(NSString*)extension;
+- (NSString*) rtrkPath;
+- (BOOL) writeCSV;
+- (BOOL) writeRtrk:(BOOL)withData;
+- (void) cleanFiles;
+
+- (BOOL) saveToItunes;
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
 
-#if RTRK_EXPORT
 - (NSDictionary *) genRtrk:(BOOL)withData;
-#endif
 
 - (void) loadDataDict:(NSDictionary*)dataDict;
 

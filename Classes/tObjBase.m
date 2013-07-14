@@ -155,17 +155,14 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	dbgNSAssert(self.dbName, @"deleteTDb called with no dbName set");
 	sqlite3_close(tDb);
 	tDb = nil;
-	NSFileManager *fm = [[NSFileManager alloc] init];
-	BOOL didRemove = [fm removeItemAtPath:[rTracker_resource ioFilePath:self.dbName access:DBACCESS] error:NULL];
-	[fm release];
-	if (! didRemove) {
-		DBGErr(@"error removing tDb named %@",dbName);
-	} else {
+    if ([rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:self.dbName access:DBACCESS]]) {
 		self.dbName = nil;
-	}
+    } else {
+		DBGErr(@"error removing tDb named %@",dbName);
+    }
 }
 
-- (void) closeTDb 
+- (void) closeTDb
 {
 	if (tDb != nil) {
 		sqlite3_close(tDb);
@@ -217,6 +214,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 }
 
 - (NSString*) toSqlStr:(NSString*) instr {
+    //DBGLog(@"in: %@",instr);
     NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     //DBGLog(@"in: %@  out: %@",instr,outstr);
     return outstr;

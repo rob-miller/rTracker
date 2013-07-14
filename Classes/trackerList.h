@@ -38,8 +38,11 @@
 - (int) getTIDfromIndex:(NSUInteger)ndx;
 - (BOOL)checkTIDexists:(NSNumber*)tid;
 - (int) getTIDfromName:(NSString*)str;
+- (NSArray*) getTIDFromNameDb:(NSString*)str;
+
 - (void) fixDictTID:(NSDictionary*)tdict;
-- (void) updateTID:(NSNumber *)old new:(NSNumber*)new;
+- (void) updateTLtid:(int)old new:(int)new;
+- (void) updateTID:(int)old new:(int)new;
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 

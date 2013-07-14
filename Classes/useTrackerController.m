@@ -6,6 +6,7 @@
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //
 
+
 #import "useTrackerController.h"
 #import "graphTrackerVC.h"
 #import "rTracker-constants.h"
@@ -23,8 +24,8 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations;
-@synthesize saveBtn, exportBtn;
+@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, tlist;
+@synthesize saveBtn, menuBtn;
 
 //BOOL keyboardIsShown=NO;
 
@@ -50,7 +51,7 @@
 	[flexibleSpaceButtonItem release];
 	
     self.saveBtn = nil;
-    self.exportBtn = nil;
+    self.menuBtn = nil;
     
 	self.dpvc = nil;
 	[dpvc release];
@@ -72,8 +73,8 @@
 - (void) showSaveBtn {
 	if (self.needSave && self.navigationItem.rightBarButtonItem != self.saveBtn) {
 		[self.navigationItem setRightBarButtonItem:self.saveBtn animated:YES ];
-	} else if (!self.needSave && self.navigationItem.rightBarButtonItem != self.exportBtn) {
-		[self.navigationItem setRightBarButtonItem:self.exportBtn animated:YES ];
+	} else if (!self.needSave && self.navigationItem.rightBarButtonItem != self.menuBtn) {
+		[self.navigationItem setRightBarButtonItem:self.menuBtn animated:YES ];
 	}
 }
 
@@ -294,6 +295,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
+    
+    if (self.rejectable) {
+        [self.tlist updateTLtid:self.tracker.toid new:self.tracker.prevTID];  // revert topLevel to before
+        [rTracker_resource unStashTracker:self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID
+    }
     
     [super viewWillDisappear:animated];
 }
@@ -618,22 +624,38 @@
 - (UIBarButtonItem*) saveBtn {
     if (saveBtn == nil) {
         saveBtn =[[UIBarButtonItem alloc]
-                  initWithBarButtonSystemItem:UIBarButtonSystemItemSave 
-                  target:self 
+                  initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                  target:self
                   action:@selector(btnSave)];
     }
     return saveBtn;
 }
 
-- (UIBarButtonItem*) exportBtn {
-    if (exportBtn == nil) {
-        exportBtn = [[UIBarButtonItem alloc]
-                     initWithTitle:@"Export"
-                     style:UIBarButtonItemStyleBordered
-                     target:self
-                     action:@selector(btnExport)];
+- (UIBarButtonItem*) menuBtn {
+    if (menuBtn == nil) {
+        if ([MFMailComposeViewController canSendMail]) {
+            menuBtn = [[UIBarButtonItem alloc]
+                       initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                       //initWithTitle:@"menuBtn"
+                       //style:UIBarButtonItemStyleBordered
+                       target:self
+                       action:@selector(btnMenu)];
+        } else if (self.rejectable) {
+            menuBtn = [[UIBarButtonItem alloc]
+                       initWithTitle:@"Accept"
+                       style:UIBarButtonItemStyleBordered
+                       target:self
+                       action:@selector(btnAccept)];
+            menuBtn.tintColor=[UIColor greenColor];
+        } else {
+            menuBtn = [[UIBarButtonItem alloc]
+                       initWithTitle:@"Export"
+                       style:UIBarButtonItemStyleBordered
+                       target:self
+                       action:@selector(btnExport)];
+        }
     }
-    return  exportBtn;
+    return  menuBtn;
 }
 
 
@@ -727,7 +749,15 @@
 
 - (void)btnSave {
 	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
+
+    if (self.rejectable) {
+        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+        self.tracker.prevTID=0;
+        self.rejectable=NO;
+    }
+    
 	[self.tracker saveData];
+
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
 		if (![self.toolbarItems containsObject:postDateBtn])
@@ -741,14 +771,37 @@
 	}
 }
 
-- (void) doExport {
+- (void) doPlistExport {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     //DBGLog(@"start export");
     
-    [self.tracker export];
+    [self.tracker saveToItunes];
     [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
 
     [pool drain];
+}
+
+NSString *emEmailCsv = @"email CSV";
+NSString *emEmailTracker = @"email Tracker";
+NSString *emEmailTrackerData = @"email Tracker+Data";
+NSString *emItunesExport = @"save for iTunes";
+
+
+- (IBAction)btnMenu {
+	UIActionSheet *exportMenu = [[UIActionSheet alloc]
+                                              initWithTitle:[NSString stringWithFormat:
+                                                             @"export %@ tracker",
+                                                             self.tracker.trackerName]
+                                              delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              destructiveButtonTitle:nil //@"Yes, delete"
+                                              otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,nil];
+    //[exportMenu showInView:self.view];
+    //[exportMenu showFromRect:self.menuBtn.frame inView:self.view animated:YES];
+	//[exportMenu showFromToolbar:self.navigationController.toolbar];
+    [exportMenu showFromBarButtonItem:self.menuBtn animated:YES];
+	[exportMenu release];
+    
 }
 
 - (IBAction)btnExport {
@@ -759,9 +812,16 @@
 #endif    
     [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
     
-    [NSThread detachNewThreadSelector:@selector(doExport) toTarget:self withObject:nil];
+    [NSThread detachNewThreadSelector:@selector(doPlistExport) toTarget:self withObject:nil];
+}
 
-    
+- (IBAction)btnAccept:(id)sender {
+    DBGLog(@"accepting tracker");
+    [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+    self.tracker.prevTID=0;
+    self.rejectable=NO;
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void) btnPrevDate {
@@ -779,7 +839,7 @@
 - (datePickerVC*) dpvc
 { 
 	if (dpvc == nil) {
-		dpvc = [[datePickerVC alloc] init];;
+        dpvc = [[datePickerVC alloc] init];
 	}
 	return dpvc;
 }
@@ -952,25 +1012,127 @@
 	return delBtn;
 }
 
+#pragma mark -
+#pragma mark mail support
+
+- (BOOL) attachTrackerData:(MFMailComposeViewController*)mailer key:(NSString*)key {
+    BOOL result;
+    NSString *fp = [self.tracker getPath:RTRKext];
+    NSString *mimetype=@"application/rTracker";
+    NSError *err;
+    NSString *fname=[self.tracker.trackerName stringByAppendingString:RTRKext];
+    
+    if ([key isEqualToString:emEmailCsv]) {
+        if ((result = [self.tracker writeCSV])) {
+            fp = [self.tracker getPath:CSVext];
+            mimetype = @"text/csv";
+            fname=[self.tracker.trackerName stringByAppendingString:CSVext];
+        }
+    } else if ([key isEqualToString:emEmailTrackerData]) {
+        result = [self.tracker writeRtrk:YES];
+    } else if ([key isEqualToString:emEmailTracker]) {
+        result = [self.tracker writeRtrk:NO];
+    } else {
+        DBGLog(@"no match for key %@",key);
+        result=NO;
+    }
+    
+    if (result) {
+        NSData *fileData = [NSData dataWithContentsOfFile:fp options:NSDataReadingUncached error:&err];
+        if (nil != fileData) {
+            [mailer addAttachmentData:fileData mimeType:mimetype fileName:fname];
+        } else {
+            result=NO;
+        }
+    }
+    
+    return result;
+}
+
+- (void) openMail:(NSString*)btnTitle {
+    
+    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+    mailer.mailComposeDelegate = self;
+    //NSArray *toRecipients = [NSArray arrayWithObjects:@"fisrtMail@example.com", @"secondMail@example.com", nil];
+    //[mailer setToRecipients:toRecipients];
+    NSString *emailBody;
+    if ([emEmailCsv isEqualToString:btnTitle]) {
+        emailBody = [self.tracker.trackerName stringByAppendingString:@" tracker data file in CSV format attached.  Generated by <a href=\"http://www.realidata.com/cgi-bin/rTracker/iPhone/rTracker-main.pl\">rTracker</a>."];
+        [mailer setSubject:[self.tracker.trackerName stringByAppendingString:@" tracker CSV data"] ];
+    } else {
+        if ([emEmailTrackerData isEqualToString:btnTitle]) {
+            emailBody = [self.tracker.trackerName stringByAppendingString:@" tracker with data attached.  Open with <a href=\"http://www.realidata.com/cgi-bin/rTracker/iPhone/rTracker-main.pl\">rTracker</a>."];
+            [mailer setSubject:[self.tracker.trackerName stringByAppendingString:@" tracker with data"] ];
+            
+        } else {
+            emailBody = [self.tracker.trackerName stringByAppendingString:@" tracker attached.  Open with <a href=\"http://www.realidata.com/cgi-bin/rTracker/iPhone/rTracker-main.pl\">rTracker</a>."];
+            [mailer setSubject:[self.tracker.trackerName stringByAppendingString:@" tracker"] ];
+        }
+        
+    }
+    
+    [mailer setMessageBody:emailBody isHTML:YES];
+    if ([self attachTrackerData:mailer key:btnTitle]) {
+        [self presentModalViewController:mailer animated:YES];
+    }
+    [mailer release];
+    
+    [self.tracker cleanFiles];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            DBGLog(@"Mail cancelled: you cancelled the operation and no email message was queued.");
+            break;
+        case MFMailComposeResultSaved:
+            DBGLog(@"Mail saved: you saved the email message in the drafts folder.");
+            break;
+        case MFMailComposeResultSent:
+            DBGLog(@"Mail send: the email message is queued in the outbox. It is ready to send.");
+            break;
+        case MFMailComposeResultFailed:
+            DBGLog(@"Mail failed: the email message was not saved or queued, possibly due to an error.");
+            break;
+        default:
+            DBGLog(@"Mail not sent.");
+            break;
+    }
+    // Remove the mail view
+    [self dismissModalViewControllerAnimated:YES];
+}
 
 #pragma mark -
 #pragma mark UIActionSheet methods
 
-- (void)actionSheet:(UIActionSheet *)checkTrackerEntryDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	DBGLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+    if ([actionSheet.title hasPrefix:@"Really"]) {
+        DBGLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
-	if (buttonIndex == checkTrackerEntryDelete.destructiveButtonIndex) {
-		int targD = [self.tracker prevDate];
-		if (!targD) {
-			targD = [self.tracker postDate];
-		}
-		[self.tracker deleteCurrEntry];
-		[self setTrackerDate: targD];
-	} else {
-		DBGLog(@"cancelled");
-	}
-	
+        if (buttonIndex == actionSheet.destructiveButtonIndex) {
+            int targD = [self.tracker prevDate];
+            if (!targD) {
+                targD = [self.tracker postDate];
+            }
+            [self.tracker deleteCurrEntry];
+            [self setTrackerDate: targD];
+        } else {
+            DBGLog(@"cancelled");
+        }
+    } else {  // ([actionSheet.title hasPrefix:@"export"
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        if (buttonIndex == actionSheet.cancelButtonIndex) {
+            DBGLog(@"cancelled");
+        } else if ([buttonTitle isEqualToString:emItunesExport]) {
+            [self btnExport];
+        } else {
+            [self openMail:buttonTitle];
+        }
+    }
 }
 
 

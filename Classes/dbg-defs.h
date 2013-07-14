@@ -25,8 +25,6 @@
 #define DEBUGERR    1
 #define RELEASE     1
 
-#define RTRK_EXPORT 0
-
 #if SQLDEBUG 
 #define SQLDbg(args...) NSLog(@"%@",[NSString stringWithFormat: args])
 #else 

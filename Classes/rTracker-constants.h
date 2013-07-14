@@ -47,3 +47,11 @@
 
 // add to x and y axes to improve visibility of endpoints
 #define GRAPHSCALE d(0.02)
+
+// default preference for separateDateTimePicker
+
+#define SDTDFLT NO
+
+#define CSVext @".csv"
+#define RTRKext @".rtrk"
+

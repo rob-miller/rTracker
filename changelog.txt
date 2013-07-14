@@ -872,3 +872,33 @@ todo: if change vid, must change in fn!
    - submitted as 1.0.10
 
 --- commit ---
+
+02 jul 2013
+   - change to DateTime picker with preference option 
+
+03 jul 2013
+   - change useTracker 'export' button to menu button, initial actionSheet implementation
+
+06 jul 2013
+   - implement actionsheet methods - email csv, tracker, tracker+data
+
+07 jul 2013
+   - resignFirstResponder on textfield for add value on exit, was possible to leave with keyboard still up
+   - to/from sqlStr around trackerName save/load so can have tracker names with apostrophes
+
+10 jul 2013
+   - fixed bug in genRtrk : tid saved as 'toid' key not 'tid' key
+TODO: regen all .rtrks on website
+    - fixed loadTrackerDict to correctly go through all trackers with same name
+    - implemented 'accept' for supplied tracker - old tracker stashed and recovered or discarded as appropriate ; not tested yet
+
+11 jul 2013
+    + added more TODOs around rtrk valObj import!
+
+12/13/14 Jul 2013
+    - reworked confirmTOdict, think have all rtrk load implemented now except for sort valueObjs to match input after merge
+--- commit ---
+
++ test accept/reject
++ test what happens when valobjs changed -- see TODOs
+

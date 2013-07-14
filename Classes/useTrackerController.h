@@ -9,13 +9,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+
 #import "trackerObj.h"
 #import "valueObj.h"
 
 #import "datePickerVC.h"
 #import "dpRslt.h"
 
-@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate>
+#import "trackerList.h"
+
+@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 //UITableViewController 
 {
 	trackerObj *tracker;
@@ -24,6 +28,8 @@
 	CGRect saveFrame;
     BOOL needSave;
     BOOL fwdRotations;
+    BOOL rejectable;
+    trackerList *tlist;
 }
 
 @property(nonatomic,retain) trackerObj *tracker;
@@ -32,6 +38,8 @@
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) BOOL needSave;
 @property (nonatomic) BOOL fwdRotations;
+@property (nonatomic) BOOL rejectable;
+@property (nonatomic, retain) trackerList *tlist;
 
 // UI element properties 
 
@@ -45,7 +53,7 @@
 //@property (nonatomic, retain) UIBarButtonItem *testBtn;
 
 @property (nonatomic,retain) UIBarButtonItem *saveBtn;
-@property (nonatomic,retain) UIBarButtonItem *exportBtn;
+@property (nonatomic,retain) UIBarButtonItem *menuBtn;
 
 //@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 

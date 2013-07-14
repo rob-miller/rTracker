@@ -86,7 +86,7 @@
     if (0 != tid) {
         // get to root view controller, else get last view on stack 
         [self.navigationController popToRootViewControllerAnimated:NO];
-        [rootController openTracker:tid];
+        [rootController openTracker:tid rejectable:YES];
     }
     //}
     return YES;

@@ -14,6 +14,8 @@
 
 BOOL keyboardIsShown=NO;
 
+//---------------------------
+
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access {
     NSArray *paths; 
     if (access) {
@@ -28,6 +30,17 @@ BOOL keyboardIsShown=NO;
 	return [docsDir stringByAppendingPathComponent:fname];
 }
 
++ (BOOL) deleteFileAtPath:(NSString*)fp {
+    NSError *err;
+    if (YES != [[NSFileManager defaultManager] removeItemAtPath:fp error:&err]) {
+        DBGErr(@"Error deleting file: %@ error: %@", fp, err);
+        return NO;
+    }
+    return YES;
+}
+
+//---------------------------
+
 // from http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
 // Text Layout Programming Guide: Counting Lines of Text
 + (unsigned int) countLines:(NSString*)str {
@@ -41,6 +54,7 @@ BOOL keyboardIsShown=NO;
 }
 
 
+//---------------------------
 #pragma mark -
 #pragma mark navcontroller view transition
 
@@ -71,6 +85,8 @@ BOOL keyboardIsShown=NO;
      completion:NULL];
 }
 
+//---------------------------
+
 + (NSArray *) colorSet {
 	return [NSArray arrayWithObjects:
                 [UIColor redColor], [UIColor greenColor], [UIColor blueColor],
@@ -88,6 +104,8 @@ BOOL keyboardIsShown=NO;
             @"white", @"lightGray", @"darkGray", nil];
 }
 
+
+//---------------------------
 
 static UIActivityIndicatorView *activityIndicator=nil;
 
@@ -211,5 +229,56 @@ static BOOL localDisable;
     }
 }
 
+//---------------------------
 
+static BOOL separateDateTimePicker=SDTDFLT;
+
++ (BOOL)getSeparateDateTimePicker {
+	return separateDateTimePicker;
+}
+
++ (void)setSeparateDateTimePicker:(BOOL)sdt {
+	separateDateTimePicker = sdt;
+	DBGLog(@"updateSeparateDateTimePicker:%d",separateDateTimePicker);
+}
+
+//---------------------------
++ (void) stashTracker:(int)tid
+{
+    NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",tid];
+    NSString *newFname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
+    NSError *error;
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm copyItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
+                    toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
+        DBGLog(@"Unable to copy file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+    }
+}
+
++ (void) rmStashedTracker:(int)tid {
+    NSString *fname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
+    NSError *error;
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm removeItemAtPath:[rTracker_resource ioFilePath:fname access:DBACCESS] error:&error] != YES) {
+        DBGLog(@"Unable to delete file %@: %@", fname, [error localizedDescription]);
+    }
+    
+}
+
++ (void) unStashTracker:(int)tid {
+    NSString *oldFname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
+    NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",tid];
+    NSError *error;
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm removeItemAtPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
+        DBGLog(@"Unable to delete file %@: %@", newFname, [error localizedDescription]);
+    }
+    if ([fm moveItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
+                    toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
+        DBGLog(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+    }    
+}
 @end

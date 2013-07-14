@@ -18,6 +18,8 @@
 
 
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
++ (BOOL) deleteFileAtPath:(NSString*)fp;
+
 + (unsigned int) countLines:(NSString*)str;
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;
@@ -34,7 +36,12 @@
 + (void) bumpProgressBar;
 + (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 
++ (BOOL)getSeparateDateTimePicker;
 
++ (void)setSeparateDateTimePicker:(BOOL)sdt;
++ (void) stashTracker:(int)tid;
++ (void) rmStashedTracker:(int)tid;
++ (void) unStashTracker:(int)tid;
 @end
 
 extern BOOL keyboardIsShown;

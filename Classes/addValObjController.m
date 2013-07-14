@@ -250,7 +250,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     }
     
 	self.tempValObj.valueName = self.labelField.text;  // in case neglected to 'done' keyboard
-	
+	[self.labelField resignFirstResponder];
+    
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];
 	self.tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
 	row = [self.votPicker selectedRowInComponent:1];

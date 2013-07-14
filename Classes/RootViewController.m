@@ -119,7 +119,7 @@ static BOOL InstallSamples;
                         if (csvString)
                         {
                             BOOL csvLoadError=FALSE;
-                            trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
+                            trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];  // accept will take first if multiple with same name
 
                             NSDate *toDate = to.trackerDate;  // date is right now
                             
@@ -149,11 +149,7 @@ static BOOL InstallSamples;
                             DBGLog(@"rename old: %@  to new: %@",target,newpath);
                              */
                             if (! csvLoadError) {
-                                NSError *err;
-                                BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
-                                if (!rslt) {
-                                    DBGLog(@"Error deleting file: %@", err);
-                                }
+                                [rTracker_resource deleteFileAtPath:target];
                             }
                             
                             [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];                    
@@ -186,79 +182,76 @@ static BOOL InstallSamples;
 //
 //  added nov 2012
 //
-- (void) loadTrackerDict:(NSDictionary*)tdict tname:(NSString*)tname {
+//TODO: working here - loadTrackerDict
+- (int) loadTrackerDict:(NSDictionary*)tdict tname:(NSString*)tname {
     
+    // get input tid
     NSNumber *newTID = [tdict objectForKey:@"tid"];
     DBGLog(@"load input: %@ tid %@",tname, newTID);
     
     int newTIDi = [newTID intValue];
     int matchTID = -1;
+    NSArray *tida = [self.tlist getTIDFromNameDb:tname];
     
-    for (NSString *tracker in self.tlist.topLayoutNames) {
-        if ([tracker isEqualToString:tname]) {
-            int tid = [self.tlist getTIDfromName:tracker];
-            if ((-1 == matchTID) || (tid == newTIDi)) // first tid with same name, or tid for matching name if exists
-                matchTID = tid;
-            
-            DBGLog(@"   match to: %@ tid %d matchTID= %d",tracker,tid,matchTID);
-        }
+    // find tracker with same name and tid, or just same name
+    for (NSNumber *tid in tida) {
+        if ((-1 == matchTID) || ([tid isEqualToNumber:newTID])) // first tid with same name, or tid for matching name if exists
+            matchTID = [tid intValue];
     }
+    
+    DBGLog(@"matchTID= %d",matchTID);
     
     trackerObj *inputTO;
     
-    if (-1 != matchTID) {
-        [self.tlist updateTID:[NSNumber numberWithInt:matchTID] new:newTID];
+    if (-1 != matchTID) {  // found tracker with same name and maybe same tid
+        [rTracker_resource stashTracker:matchTID];                            // make copy of current tracker so can reject newTID later
         
-        inputTO = [[trackerObj alloc] init:newTIDi];
+        [self.tlist updateTID:matchTID new:newTIDi];                          // change existing tracker tid to match new (restore if we discard later)
+        inputTO = [[trackerObj alloc] init:newTIDi];                          // load up existing tracker config
         
-        [inputTO confirmTOdict:tdict];
-        [inputTO saveConfig];
-
+        [inputTO confirmTOdict:tdict];                                        // merge valObjs
+        [inputTO saveConfig];                                                 // write to db
+        inputTO.prevTID = matchTID;
+        
         DBGLog(@"updated %@",tname);
         
         //  need to test !  rtm here
         //DBGLog(@"skip load plist file as already have %@",tname);
-    } else {
-        [self.tlist fixDictTID:tdict];
-        inputTO = [[trackerObj alloc] initWithDict:tdict];
-        [inputTO saveConfig];
-        [self.tlist addToTopLayoutTable:inputTO];
+    } else {              // new tracker coming in
+        [self.tlist fixDictTID:tdict];                                        // move any existing TIDs out of way
+        inputTO = [[trackerObj alloc] initWithDict:tdict];                    // create new tracker with input data
+        [inputTO saveConfig];                                                 // write to db
+        [self.tlist addToTopLayoutTable:inputTO];                             // insert in top list
         DBGLog(@"loaded new %@",tname);        
-    }
-    
-    NSDictionary *tdata = [tdict objectForKey:@"dataDict"];
-    if (nil != tdata) {
-        [inputTO loadDataDict:tdata];
     }
     
     [inputTO release];
     
+    return newTIDi;
 }
 
-#pragma mark load .plists ad .rtrks for input trackers
+#pragma mark load .plists and .rtrks for input trackers
 
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
+    int tid;
     
-    
-    if (nil != tname) {
+    if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
-    } else {
+    } else {  // else is an rtrk
         NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfURL:url];
         tname = [rtdict objectForKey:@"trackerName"];
         tdict = [rtdict objectForKey:@"configDict"];
         dataDict = [rtdict objectForKey:@"dataDict"];        
     }
 
-    if (nil != tdict) {  // rtrk might not have configDict
-        [self loadTrackerDict:tdict tname:tname];
-    }
+    tid = [self loadTrackerDict:tdict tname:tname];
     
     if (nil != dataDict) {
-        trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];
+        trackerObj *to = [[trackerObj alloc] init:tid];
         
-        [to loadDataDict:dataDict];
+        [to loadDataDict:dataDict];  // vids ok because confirmTOdict updated as needed
         [to recalculateFns];    // updates fn vals in database
         [to saveChoiceConfigs]; // in case input data had unrecognised choices
         
@@ -269,7 +262,7 @@ static BOOL InstallSamples;
         [to release];
     }
     
-    return [self.tlist getTIDfromName:tname];
+    return tid;
 }
 
 
@@ -297,17 +290,17 @@ static BOOL InstallSamples;
                 [filesToProcess addObject:file];
             }
         } else if ([[file pathExtension] isEqualToString: @"rtrk"]) {
-#if RTRK_EXPORT
+/*
             NSRange inmatch = [fname rangeOfString:@"_out.rtrk" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _out.rtrk at end of file name
-                // so skip -- debug code -- rtm here  //TODO:0:decide if can export .rtrk to file
+ 
             } else {
-#endif
+*/
                 [filesToProcess addObject:file];
-#if RTRK_EXPORT
+/*
             }
-#endif
+*/
         }
     }
     
@@ -479,12 +472,12 @@ static BOOL InstallSamples;
     csvLoadCount = [self countInputFiles:@"_in.csv"];
     plistLoadCount = [self countInputFiles:@"_in.plist"];
     int rtrkLoadCount = [self countInputFiles:@".rtrk"];
-
+/*
 #if RTRK_EXPORT
     int rtrk_out = [self countInputFiles:@"_out.rtrk"];
     rtrkLoadCount -= rtrk_out;
 #endif    
-    
+*/    
     // handle rtrks as plist + csv, just faster if only has data or only has tracker def
     csvLoadCount += rtrkLoadCount;
     plistLoadCount += rtrkLoadCount;
@@ -825,11 +818,13 @@ static BOOL InstallSamples;
     BOOL resetPassPref = [sud boolForKey:@"reset_password_pref"];
     BOOL reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
     
+    [rTracker_resource setSeparateDateTimePicker:[sud boolForKey:@"separate_date_time_pref"]];
+    
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
     if (resetPassPref) [self.privacyObj resetPw];
     
-    if (reloadSamplesPref 
+    if (reloadSamplesPref
         || 
         (self.initialPrefsLoad && [self samplesNeeded]) 
         ) { 
@@ -896,9 +891,7 @@ BOOL stashAnimated;
             target = [docsDir stringByAppendingPathComponent:file];
             
             if (0 == buttonIndex) {   // delete it
-                if (YES != [localFileManager removeItemAtPath:target error:&err]) {
-                    DBGLog(@"Error deleting file: %@", err);
-                }
+                [rTracker_resource deleteFileAtPath:target];
             } else {                  // try again -- rename from .rtrk_reading to .rtrk
                 NSString *newTarget;
                 newTarget = [target stringByReplacingOccurrencesOfString:@"rtrk_reading" withString:@"rtrk"];
@@ -922,7 +915,6 @@ BOOL stashAnimated;
 - (void) viewDidAppear:(BOOL)animated {
 	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
 
-    //TODO:0: rtm: test for rtrk_reading files, offer to delete or try again ( = rename to .rtrk)
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     //TODO: fix to use default file manager as per saved web page
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
@@ -1217,12 +1209,15 @@ BOOL stashAnimated;
     return cell;
 }
 
-- (void) openTracker:(int)tid {
+- (void)openTracker:(int)tid rejectable:(BOOL)rejectable {
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 
 	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
 	utc.tracker = to;
+    utc.rejectable = rejectable;
+    utc.tlist = self.tlist;  // required so reject can fix topLevel list
+    
 	[self.navigationController pushViewController:utc animated:YES];
     
     //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
@@ -1242,7 +1237,7 @@ BOOL stashAnimated;
 	//NSUInteger row = [indexPath row];
 	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
-    [self openTracker:[self.tlist getTIDfromIndex:[indexPath row]]];
+    [self openTracker:[self.tlist getTIDfromIndex:[indexPath row]] rejectable:NO];
 	
 }
 

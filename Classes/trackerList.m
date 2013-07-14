@@ -190,6 +190,7 @@
     return FALSE;
 }
 
+// return tid for first matching name
 - (int) getTIDfromName:(NSString *)str {
     int ndx=0;
     for (NSString *tname in self.topLayoutNames) {
@@ -198,6 +199,16 @@
         ndx++;
     }
     return 0;
+}
+
+// return aaray of TIDs which match name, order by rank
+- (NSArray*) getTIDFromNameDb:(NSString*)str {
+    NSMutableArray *i1 = [[NSMutableArray alloc] init];
+    self.sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[self toSqlStr:str]];
+    [self toQry2AryI:i1];
+    NSArray *ra = [NSArray arrayWithArray:i1];
+    [i1 release];
+    return ra;
 }
 
 ////
@@ -212,33 +223,39 @@
     if ([self checkTIDexists:tid]) {
         //[tdict setValue:[NSNumber numberWithInt:[self getUnique]] forKey:@"tid"];
         //DBGLog(@"  changed to: %@",[tdict objectForKey:@"tid"]);
-        [self updateTID:tid new:[NSNumber numberWithInt:[self getUnique]]];
+        [self updateTID:[tid intValue] new:[self getUnique]];
     }
 }
 
-- (void) updateTID:(NSNumber *)old new:(NSNumber*)new {
+- (void) updateTLtid:(int)old new:(int)new {
+    self.sql = [NSString stringWithFormat:@"update toplevel set id=%d where id=%d",new, old ];
+    [self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+    self.sql = nil;
+    
+    [self loadTopLayoutTable];
+    
+    DBGLog(@"changed toplevel TID %D to %d",old,new);
+}
+
+- (void) updateTID:(int)old new:(int)new {
 
     if (old == new) return;
-    if ([self checkTIDexists:new]) {
-        [self updateTID:new new:[NSNumber numberWithInt:[self getUnique]]];
+    if ([self checkTIDexists:[NSNumber numberWithInt:new]]) {
+        [self updateTID:new new:[self getUnique]];
     }
 
     // rename file
-    NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",[old intValue]];
-    NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",[new intValue]];
+    NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",old];
+    NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",new];
     NSError *error;
 
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm moveItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
                     toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
-        DBGLog(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+        DBGErr(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
     } else {
-        // update toplevel if file rename went ok
-        self.sql = [NSString stringWithFormat:@"update toplevel set id=%@ where id=%@",new, old ];
-        [self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
-        self.sql = nil;
-        
-        DBGLog(@"changed TID %@ to %@",old,new);
+        // update toplevel if file rename went ok;
+        [self updateTLtid:old new:new];
     }
 }
 
@@ -337,7 +354,7 @@
     
     for (NSNumber *tid in self.topLayoutIDs) {
         trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
-        [to export];
+        [to saveToItunes];
         [to release];
         
         [rTracker_resource setProgressVal:(ndx/all)];

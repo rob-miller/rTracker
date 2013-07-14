@@ -35,6 +35,7 @@
 @property (nonatomic,retain) IBOutlet UIButton *entryNewBtn;
 @property (nonatomic,retain) IBOutlet UIButton *dateSetBtn;
 @property (nonatomic,retain) IBOutlet UIButton *dateGotoBtn;
+@property (nonatomic,retain) IBOutlet UISegmentedControl *dtSegmentedControl;
 
 - (IBAction) entryNewBtnAction;
 - (IBAction) dateSetBtnAction;

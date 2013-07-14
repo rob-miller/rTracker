@@ -8,6 +8,7 @@
 
 #import "datePickerVC.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation datePickerVC
 
@@ -33,6 +34,11 @@
 	self.toolBar.items = [NSArray arrayWithObjects: cancelBtn, nil];
 	[cancelBtn release];
 	
+    if (![rTracker_resource getSeparateDateTimePicker]) {
+        self.dtSegmentedControl.hidden = YES;
+        self.datePicker.datePickerMode = UIDatePickerModeDateAndTime;
+    }
+    
 	self.datePicker.locale = [NSLocale currentLocale];
 	self.datePicker.maximumDate = [NSDate date];
 	self.datePicker.date = self.dpr.date;

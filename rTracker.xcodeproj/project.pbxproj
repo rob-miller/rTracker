@@ -156,6 +156,7 @@
 		D4F0239B137BFFA10097AC16 /* gtXAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239A137BFFA10097AC16 /* gtXAxV.m */; };
 		D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239D137BFFB30097AC16 /* gtYAxV.m */; };
 		D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
+		D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4FE66C8178617720056B463 /* MessageUI.framework */; };
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
@@ -319,6 +320,7 @@
 		D4F0239F137BFFD70097AC16 /* gtVONameV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtVONameV.h; sourceTree = "<group>"; };
 		D4F023A0137BFFD80097AC16 /* gtVONameV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtVONameV.m; sourceTree = "<group>"; };
 		D4F023A2137C1D7A0097AC16 /* graphTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "graphTracker-constants.h"; sourceTree = "<group>"; };
+		D4FE66C8178617720056B463 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -327,6 +329,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */,
 				D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -395,6 +398,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				D4FE66C8178617720056B463 /* MessageUI.framework */,
 				D414DDBD1632D5B100010847 /* Default-568h@2x.png */,
 				D40518B613787B5500F001BA /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,

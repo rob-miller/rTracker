@@ -21,10 +21,24 @@
 			<false/>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Privacy</string>
 			<key>Type</key>
-			<string>PSGroupSpecifier</string>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Separate date, time</string>
+			<key>Key</key>
+			<string>separate_date_time_pref</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string></string>
+			<key>Key</key>
+			<string></string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>

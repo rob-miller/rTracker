@@ -50,6 +50,6 @@
 - (void) refreshToolBar:(BOOL)animated;
 - (void) refreshEditBtn;
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname;
-- (void) openTracker:(int)tid;
+- (void) openTracker:(int)tid rejectable:(BOOL)rejectable;
 
 @end
