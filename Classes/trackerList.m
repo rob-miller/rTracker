@@ -228,8 +228,14 @@
 }
 
 - (void) updateTLtid:(int)old new:(int)new {
-    self.sql = [NSString stringWithFormat:@"update toplevel set id=%d where id=%d",new, old ];
-    [self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+    if (-1 == new) {
+        self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%d",old];
+    } else if (old == new) {
+        return;
+    } else {
+        self.sql = [NSString stringWithFormat:@"update toplevel set id=%d where id=%d",new, old ];
+    }
+    [self toExecSql];  
     self.sql = nil;
     
     [self loadTopLayoutTable];
@@ -312,7 +318,7 @@
 	//newTO.trackerName = nTN;
 	// release as well
 	newTO.trackerName = [NSString stringWithString:oTN];
-	
+    
 	//NSEnumerator *enumer = [srcTO.valObjTable objectEnumerator];
 	//valueObj *vo;
 	//while (vo = (valueObj *) [enumer nextObject]) {
@@ -371,6 +377,7 @@
     return FALSE;
 }
 
+// add _n to trackername - used only when adding samples
 - (void) deConflict:(trackerObj*)newTracker {
     if (! [self testConflict:newTracker.trackerName])
         return;
@@ -380,7 +387,6 @@
     
     while ([self testConflict:(tstr = [NSString stringWithFormat:@"%@ %d",newTracker.trackerName,i++])]) ;
     newTracker.trackerName = tstr;
-    [newTracker.optDict setObject:tstr forKey:@"name"];
 }
 
 @end

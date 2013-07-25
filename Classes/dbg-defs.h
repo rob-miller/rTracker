@@ -20,12 +20,17 @@
 
 #define DEBUGFUNCTION     0
 
+//********       vvvvvv //
+
+#define RELEASE     1
 #define DEBUGLOG    0
+
+//********       ^^^^^^ //
+
 #define DEBUGWARN   1
 #define DEBUGERR    1
-#define RELEASE     1
 
-#if SQLDEBUG 
+#if SQLDEBUG
 #define SQLDbg(args...) NSLog(@"%@",[NSString stringWithFormat: args])
 #else 
 #define SQLDbg(args...)

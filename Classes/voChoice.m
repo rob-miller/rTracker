@@ -271,23 +271,6 @@
         [self.vo.optDict removeObjectForKey:[NSString stringWithFormat:@"cv%d",i]];
     }
     
-    /*
-	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
-	UIButton *b = [self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dbtn",i]];
-	if ([tf.text isEqualToString:@""]) {
-		b.backgroundColor = [UIColor clearColor];
-		[self.vo.optDict removeObjectForKey:cc];
-		//TODO: should offer to delete any stored data
-	} else {
-		NSNumber *ncol = [self.vo.optDict objectForKey:cc];
-		
-		if (ncol == nil) {
-			NSInteger col = [self.vo.parentTracker nextColor];
-			[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
-			b.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
-		}
-	}
-    */
 	//if (++i<CHOICES) {
 		[[self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
 	//} else {

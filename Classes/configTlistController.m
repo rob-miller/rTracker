@@ -57,21 +57,98 @@ UITableView *deleteTableView;
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
 }
 
+#if !RELEASE
+
+- (void) btnWipeOrphans {
+    self.tlist.sql = @"select id, name from toplevel order by id";
+    NSMutableArray *i1 = [[NSMutableArray alloc]init];
+    NSMutableArray *s1 = [[NSMutableArray alloc]init];
+    [self.tlist toQry2AryIS:i1 s1:s1];
+    NSMutableDictionary *dictTid2Ndx = [[NSMutableDictionary alloc]init];
+    NSUInteger c = [i1 count];
+    NSUInteger i;
+    for (i=0;i<c;i++) {
+        [dictTid2Ndx setObject:[NSNumber numberWithUnsignedInt:i] forKey:[i1 objectAtIndex:i]];
+    }
+    
+    NSError *err;
+    NSArray *fileList = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[rTracker_resource ioFilePath:@"" access:DBACCESS] error:&err];
+    NSMutableDictionary *dictTid2Filename = [[NSMutableDictionary alloc]init];
+    
+    if (nil == fileList) {
+        DBGLog(@"error getting file list: %@",err);
+    } else {
+        NSString *fn;
+        for (fn in fileList) {
+            int ftid = [[fn substringFromIndex:4] intValue];
+            if (ftid) {
+                [dictTid2Filename setObject:fn forKey:[NSNumber numberWithInt:ftid]];
+                NSNumber *ftidNdx = [dictTid2Ndx objectForKey:[NSNumber numberWithInt:ftid]];
+                if (ftidNdx) {
+                    DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
+                } else {
+                    BOOL doDel=YES;
+                    if (doDel) {
+                        DBGLog(@"deleting orphan %d file %@",ftid,fn);
+                        [rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
+                    } else {
+                        trackerObj *to = [[trackerObj alloc]init:ftid];
+                        DBGLog(@"%@ iv: %d orphan file: %@",fn, ftid, to.trackerName );
+                        [to release];
+                    }
+                }
+            
+            } else if ([fn hasPrefix:@"stash_trkr"]) {
+                DBGLog(@"deleting stashed tracker %@",fn);
+                [rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
+            }
+        }
+        NSNumber *tlTid;
+        i=0;
+        for (tlTid in i1) {
+            NSString *tltidFilename = [dictTid2Filename objectForKey:tlTid];
+            if (tltidFilename) {
+                DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
+            } else {
+                NSString *tname = [s1 objectAtIndex:i];
+                DBGLog(@"tid %@ name %@ no file found",tlTid,tname);
+                self.tlist.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
+                [self.tlist toExecSql];
+            }
+            i++;
+        }
+    }
+    
+    [i1 release];
+    [s1 release];
+    [dictTid2Ndx release];
+    [dictTid2Filename release];
+    self.tlist.sql = nil;
+}
+
+#endif
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
 	self.title = @"Edit trackers";
     
-    
-    
-    
-    
+#if RELEASE
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"Export all"
 								  style:UIBarButtonItemStyleBordered
 								  target:self
 								  action:@selector(btnExport)];
-	
+#else
+    // wipe orphans
+	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
+								  initWithTitle:@"wipe orphans"
+								  style:UIBarButtonItemStyleBordered
+								  target:self
+								  action:@selector(btnWipeOrphans)];
+
+#endif
+    
 	//NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
 	//self.toolbarItems = tbArray;
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];

@@ -24,7 +24,7 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, tlist;
+@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, goSubview, tlist;
 @synthesize saveBtn, menuBtn;
 
 //BOOL keyboardIsShown=NO;
@@ -114,6 +114,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	self.fwdRotations = YES;
+    
 	//DBGLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
 	
 	self.title = self.tracker.trackerName;
@@ -194,7 +195,9 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     //DBGLog(@"utc: view will appear");
-    
+
+    self.goSubview=NO;
+
 	if (self.dpr) {
 		switch (self.dpr.action) {
 			case DPA_NEW:
@@ -296,8 +299,10 @@
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
     
-    if (self.rejectable) {
+    if (self.rejectable && !self.goSubview) {
+        DBGLog(@"rejecting input tracker %d %@  prevTID= %d", self.tracker.toid,self.tracker.trackerName, self.tracker.prevTID);
         [self.tlist updateTLtid:self.tracker.toid new:self.tracker.prevTID];  // revert topLevel to before
+        [self.tracker deleteTrackerDB];
         [rTracker_resource unStashTracker:self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID
     }
     
@@ -423,6 +428,7 @@
 
 - (void) doGT {
     DBGLog(@"start present graph");
+    self.goSubview=YES;
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
     gt.tracker = self.tracker;
@@ -633,20 +639,20 @@
 
 - (UIBarButtonItem*) menuBtn {
     if (menuBtn == nil) {
-        if ([MFMailComposeViewController canSendMail]) {
-            menuBtn = [[UIBarButtonItem alloc]
-                       initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                       //initWithTitle:@"menuBtn"
-                       //style:UIBarButtonItemStyleBordered
-                       target:self
-                       action:@selector(btnMenu)];
-        } else if (self.rejectable) {
+        if (self.rejectable) {
             menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Accept"
                        style:UIBarButtonItemStyleBordered
                        target:self
                        action:@selector(btnAccept)];
             menuBtn.tintColor=[UIColor greenColor];
+        } else if ([MFMailComposeViewController canSendMail]) {
+            menuBtn = [[UIBarButtonItem alloc]
+                       initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                       //initWithTitle:@"menuBtn"
+                       //style:UIBarButtonItemStyleBordered
+                       target:self
+                       action:@selector(btnMenu)];
         } else {
             menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Export"
@@ -751,8 +757,10 @@
 	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
 
     if (self.rejectable) {
-        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
-        self.tracker.prevTID=0;
+        if (self.tracker.prevTID) {
+            [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+            self.tracker.prevTID=0;
+        }
         self.rejectable=NO;
     }
     
@@ -815,10 +823,12 @@ NSString *emItunesExport = @"save for iTunes";
     [NSThread detachNewThreadSelector:@selector(doPlistExport) toTarget:self withObject:nil];
 }
 
-- (IBAction)btnAccept:(id)sender {
+- (IBAction)btnAccept {
     DBGLog(@"accepting tracker");
-    [rTracker_resource rmStashedTracker:self.tracker.prevTID];
-    self.tracker.prevTID=0;
+    if (self.tracker.prevTID) {
+        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+        self.tracker.prevTID=0;
+    }
     self.rejectable=NO;
 
     [self.navigationController popViewControllerAnimated:YES];
@@ -855,6 +865,7 @@ NSString *emItunesExport = @"save for iTunes";
 - (void) btnCurrDate {
 	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
 	
+    self.goSubview = YES;
 	
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
 	self.dpr.date = self.tracker.trackerDate;
@@ -1053,8 +1064,8 @@ NSString *emItunesExport = @"save for iTunes";
     
     MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
     mailer.mailComposeDelegate = self;
-    //NSArray *toRecipients = [NSArray arrayWithObjects:@"fisrtMail@example.com", @"secondMail@example.com", nil];
-    //[mailer setToRecipients:toRecipients];
+    NSArray *toRecipients = [NSArray arrayWithObjects:[self.tracker.optDict objectForKey:@"dfltEmail"], nil];
+    [mailer setToRecipients:toRecipients];
     NSString *emailBody;
     if ([emEmailCsv isEqualToString:btnTitle]) {
         emailBody = [self.tracker.trackerName stringByAppendingString:@" tracker data file in CSV format attached.  Generated by <a href=\"http://www.realidata.com/cgi-bin/rTracker/iPhone/rTracker-main.pl\">rTracker</a>."];

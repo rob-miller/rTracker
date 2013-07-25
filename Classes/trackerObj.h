@@ -24,7 +24,7 @@
 
 
 @interface trackerObj : tObjBase {
-	//int tid;
+	//NSInteger toid;
 	NSString *trackerName;
 	NSDate *trackerDate;
 	NSMutableDictionary *optDict;
@@ -42,7 +42,7 @@
     NSDateFormatter *dateFormatter;
     NSDateFormatter *dateOnlyFormatter;
     
-    id togd;
+    id togd;                    // tracker obj graph data
     NSInteger prevTID;
 }
 

@@ -899,6 +899,39 @@ TODO: regen all .rtrks on website
     - reworked confirmTOdict, think have all rtrk load implemented now except for sort valueObjs to match input after merge
 --- commit ---
 
-+ test accept/reject
-+ test what happens when valobjs changed -- see TODOs
+15 jul 2013
+   - added sort valueObjs to match input rtrk
 
+16 jul 2013
+   - debugging input rtrk
+
+17 jul 2013
+   - added wipeOrphans button in place of 'export all' if RELEASE=0 - wipe both files without toplevel entries and toplevel entries without files
+
+19 jul 2013
+   - implemented getter/setter for trackerName, maxLabel
+
+20 jul 2013
+   - implemented getter/setter for prevTID
+   - input rtrk - reject of completely new seems to work; fail on reject new version of existing
+
+21 jul 2013
+   -?
+
+25 jul 2013
+   - seems to work for variations of accept/reject with existing tracker, merges changes.
+   - implemented default email
+   - checked through todos
+   - removed file manager alloc/init/release's, replaced with defaultManager
+   - fixed copy tracker to copy valObj optDicts as well
+   - make confirmTOdict rescan vid-vo dictionary on changing vid
+   - make confirmTOdict search by name if doesn't find anything for vid - was just if vid does not match
+   - delete input trkr db on reject (solve orphan problem?)
+   - make wipeOrphans delete stash_trlrs
+   - delete db data from voConfig, voInfo in saveConfig in case input rtrk has changed some vids
+   - added goGraph bool to useTrackerController so do not reject input tracker & delete db when go to graph
+   - improved replacement of vids in fnStr -- need to break into component parts
+   - made voUpdateVID write to database as well -- data was lost
+   - confirmed working if bringing in fn with same name as data, should move data to _data
+
+--- commit ---

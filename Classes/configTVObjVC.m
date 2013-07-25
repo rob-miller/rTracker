@@ -442,6 +442,9 @@
 	} else if ( tf == [self.wDict objectForKey:@"gmdTF"] ) {
 		okey = @"graphMaxDays";
 		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"deTF"] ) {
+		okey = @"dfltEmail";
+		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
 		okey = @"frv0";
 		nkey = nil;
@@ -718,11 +721,44 @@
 					 text:gMaxDays
 					addsv:YES ];
     
-    //-- graph max _ days label 2  
+    //-- graph max _ days label 2  
     
     frame.origin.x += tfWidth + SPACE;
     //labframe =
     [self configLabel:@"days" frame:frame key:@"gl2Lab" addsv:YES];
+    
+    //-- graph max _ days label
+	
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+	labframe = [self configLabel:@"Graph limit:" frame:frame key:@"glLab" addsv:YES];
+	
+    //-- default email label
+	
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+	labframe = [self configLabel:@"Default email:" frame:frame key:@"deLab" addsv:YES];
+	
+	//-- default email _ textfield
+	
+	frame.origin.x += labframe.size.width + SPACE;
+	
+	//tfWidth = [@"" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	frame.size.width = self.view.frame.size.width - (2*SPACE) - labframe.size.width - MARGIN;
+	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+	
+    NSString *dfltEmail = [self.to.optDict objectForKey:@"dfltEmail"];
+        
+	[self configTextField:frame
+					  key:@"deTF"
+				   target:nil
+				   action:nil
+					  num:YES
+					place:@" "
+					 text:dfltEmail
+					addsv:YES ];
     
 
 }

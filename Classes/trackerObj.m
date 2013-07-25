@@ -26,9 +26,9 @@
 @implementation trackerObj
 
 
-@synthesize trackerName, trackerDate, valObjTable, optDict;
+@synthesize trackerDate, valObjTable, optDict;  //trackerName
 @synthesize nextColor, votArray;
-@synthesize maxLabel,activeControl,vc, dateFormatter, dateOnlyFormatter, togd, prevTID;
+@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, togd; // prevTID  // maxLabel
 
 #define f(x) ((CGFloat) (x))
 
@@ -44,6 +44,7 @@
  *	   field='privacy'   : user specified privacy value for trackerObj
  *     field='savertn'   : bool - save button returns to tracker list (else reset for new tracker data)
  *     field='graphMaxDays' : max number of days to plot on graph Y axis ; 0 = no limit
+ *     field='dfltEmail' : email address to populate to: with
  *	   field='rtdb_version' : database version this tracker created for (these set on load tracker as new with v 1.0.7)
  *	   field='rtfn_version' : function token set version this tracker created for
  *	   field='rt_version':  rTracker version this tracker created for/with
@@ -87,6 +88,62 @@
  ******************************/
 #pragma mark -
 #pragma mark core object methods and support
+
+// getters and setters
+
+- (NSString*) trackerName {
+    if (! trackerName) {
+        trackerName = [[self.optDict objectForKey:@"name"] retain];
+    }
+    return trackerName;
+}
+
+- (void) setTrackerName:(NSString *)trackerNameValue {
+    if (trackerName != trackerNameValue) {
+        [trackerNameValue retain];
+        [trackerName release];
+        trackerName = trackerNameValue;
+        if (trackerNameValue) { // if not nil
+            [self.optDict setObject:trackerNameValue forKey:@"name"];
+        } else {
+            [self.optDict removeObjectForKey:@"name"];
+        }
+    }
+}
+
+- (CGSize) maxLabel {
+    if ((! maxLabel.height) || (! maxLabel.width)) {
+        CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
+        CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
+        maxLabel = (CGSize) {w,h};
+    }
+    return maxLabel;
+}
+
+- (void) setMaxLabel:(CGSize)maxLabelValue {
+    if ((maxLabel.height != maxLabelValue.height) || (maxLabel.width != maxLabelValue.width)) {
+        maxLabel = maxLabelValue;
+        if (maxLabel.height != 0.0 && maxLabel.width != 0.0) {
+            [self.optDict setObject:[NSNumber numberWithFloat:maxLabel.width] forKey:@"width"];
+            [self.optDict setObject:[NSNumber numberWithFloat:maxLabel.height] forKey:@"height"];
+        } else {
+            [self.optDict removeObjectForKey:@"width"];
+            [self.optDict removeObjectForKey:@"height"];
+        }
+    }
+}
+
+- (NSInteger) prevTID {
+    return [(NSNumber*) [self.optDict objectForKey:@"prevTID"] integerValue];
+}
+
+- (void) setPrevTID:(NSInteger)prevTIDvalue {
+    if (prevTIDvalue) {
+        [self.optDict setObject:[NSNumber numberWithInteger:prevTIDvalue] forKey:@"prevTID"];
+    } else {
+        [self.optDict removeObjectForKey:@"prevTID"];
+    }
+}
 
 - (void) initTDb {
 	int c;
@@ -170,9 +227,37 @@
     
     // fix it
     [self voUpdateVID:vo newVID:[self getUnique]];
+    
     vo.valueName = [vo.valueName stringByAppendingString:@"_data"];
     
     return YES;
+}
+
+- (void) sortVoTableByArray:(NSArray*)arr {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    NSUInteger ndx1=0, ndx2=0, c=0, c2=0;
+    valueObj *vo;
+    for (vo in self.valObjTable) {
+        [dict setObject:[NSNumber numberWithInteger:ndx1] forKey:[NSNumber numberWithInt:vo.vid]];
+        ndx1++;
+    }
+    
+    c = [self.valObjTable count];
+    c2 = [arr count];
+    for (ndx1=0,ndx2=0; ndx1<c && ndx2<c2; ndx1++,ndx2++) {
+        int currVid = ((valueObj*)[self.valObjTable objectAtIndex:ndx1]).vid;
+        int targVid = ((valueObj*)[arr objectAtIndex:ndx2]).vid;
+        if (currVid != targVid) {
+            NSUInteger targNdx = [((NSNumber*)[dict objectForKey:[NSNumber numberWithInt:targVid]]) unsignedIntegerValue];
+            [self.valObjTable exchangeObjectAtIndex:ndx1 withObjectAtIndex:targNdx];
+            [dict setObject:[NSNumber numberWithUnsignedInt:currVid] forKey:[NSNumber numberWithInt:targNdx]];
+            [dict setObject:[NSNumber numberWithUnsignedInt:targVid] forKey:[NSNumber numberWithInt:ndx1]];
+        }
+        
+    }
+    
+    [dict release];
+
 }
 
 - (void) voSetFromDict:(valueObj*)vo dict:(NSDictionary*)dict {
@@ -183,9 +268,15 @@
     vo.vGraphType = [(NSNumber*) [dict objectForKey:@"vGraphType"] integerValue];
 }
 
+- (void) rescanVoIds:(NSMutableDictionary*)existingVOs {
+    [existingVOs removeAllObjects];
+    for (valueObj *vo in self.valObjTable) {
+        [existingVOs setObject:vo forKey:[NSNumber numberWithInt:vo.vid]];
+    }
+}
+
 // make self trackerObj conform to incoming dict = trackerObj optdict, valobj array of vid, name
 // handle voConfig voInfo; voData to be handled by loadDataDict
-
 - (void) confirmTOdict:(NSDictionary*)dict {
 
     NSDictionary *newOptDict = [dict objectForKey:@"optDict"];
@@ -197,9 +288,7 @@
     NSArray *newValObjs = [dict objectForKey:@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
     
     NSMutableDictionary *existingVOs = [[NSMutableDictionary alloc] init];
-    for (valueObj *vo in self.valObjTable) {
-        [existingVOs setObject:vo forKey:[NSNumber numberWithInt:vo.vid]];
-    }
+    [self rescanVoIds:existingVOs];
     
     for (NSDictionary *voDict in newValObjs) {
         NSNumber *nVidN = [voDict objectForKey:@"vid"];                // new VID
@@ -211,44 +300,119 @@
         if (eVO) {                                          // self has vid;
             if ([nVname isEqualToString:eVO.valueName]) {       // name matches same vid
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
-                    eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+                    [self rescanVoIds:existingVOs];                     // re-validate
+                    eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo 
                 } else {
                     addVO=NO;     // name and VID match so we overwrite existing vo
                     [self voSetFromDict:eVO dict:voDict];
                 }
             } else {                                           // name does not match
                 [self voUpdateVID:eVO newVID:[self getUnique]];    // shift eVO to another vid
-                BOOL foundMatch=NO;
-                for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
-                    if (! foundMatch) {                            //  (only take first match)
-                        if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
-                            foundMatch=YES;
-                            if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
-                                eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
-                            } else {                                        // did not mv due to fn-data clash - so overwrite
-                                [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
-                                eVO = vo;
-                                addVO = NO;
-                                [self voSetFromDict:eVO dict:voDict];
-                            }
+                [self rescanVoIds:existingVOs];                     // re-validate
+                eVO = nil;                                          // scan names below
+            }
+        }
+        
+        if (!eVO) { // self does not have vid, or has vid and name does not match and self's vid moved out of way
+            BOOL foundMatch=NO;
+            for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
+                if (! foundMatch) {                            //  (only take first match)
+                    if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
+                        foundMatch=YES;
+                        if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
+                            [self rescanVoIds:existingVOs];                     // re-validate
+                            //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+                        } else {                                        // did not mv due to fn-data clash - so overwrite
+                            [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
+                            [self rescanVoIds:existingVOs];                     // re-validate
+                            eVO = vo;
+                            addVO = NO;
+                            [self voSetFromDict:eVO dict:voDict];
                         }
                     }
                 }
             }
-        } else {                                            // self does not have vid
-            eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
+            if (! foundMatch) {
+                eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
+            }
         }
-        
+                  
         if (addVO) {
             [self addValObj:eVO];
+            [self rescanVoIds:existingVOs];                     // re-validate
         }
     }
     
     [existingVOs release];
-    
-//TODO: sort self.valObjTable to same order as newValObjs
 }
 
+/*
+ // version 0 with code duplication
+ 
+ if (eVO) {                                          // self has vid;
+     if ([nVname isEqualToString:eVO.valueName]) {       // name matches same vid
+         if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
+             eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+         } else {
+             addVO=NO;     // name and VID match so we overwrite existing vo
+             [self voSetFromDict:eVO dict:voDict];
+         }
+     } else {                                           // name does not match
+         [self voUpdateVID:eVO newVID:[self getUnique]];    // shift eVO to another vid
+         [self rescanVoIds:existingVOs];                     // re-validate
+         // code duplication!!!
+         BOOL foundMatch=NO;
+         for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
+             if (! foundMatch) {                            //  (only take first match)
+                 if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
+                     foundMatch=YES;
+                     if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
+                         //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+                     } else {                                        // did not mv due to fn-data clash - so overwrite
+                         [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
+                         [self rescanVoIds:existingVOs];                     // re-validate
+                         eVO = vo;
+                         addVO = NO;
+                         [self voSetFromDict:eVO dict:voDict];
+                     }
+                 }
+             }
+         }
+         if (! foundMatch) {
+             eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
+         }
+     }
+ 
+ } else {                                            // self does not have vid
+     // code duplication!
+     BOOL foundMatch=NO;
+     for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
+         if (! foundMatch) {                            //  (only take first match)
+             if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
+                 foundMatch=YES;
+                 if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
+                     //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+                 } else {                                        // did not mv due to fn-data clash - so overwrite
+                     [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
+                     [self rescanVoIds:existingVOs];                     // re-validate
+                     eVO = vo;
+                     addVO = NO;
+                     [self voSetFromDict:eVO dict:voDict];
+                 }
+             }
+         }
+     }
+     if (! foundMatch) {
+         eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
+     }
+ }
+ 
+if (addVO) {
+    [self addValObj:eVO];
+    [self rescanVoIds:existingVOs];                     // re-validate
+}
+ 
+*/
 
 /*
  
@@ -365,7 +529,7 @@
     
     DBGLog(@"to optdict: %@",self.optDict);
     
-	self.trackerName = [self.optDict objectForKey:@"name"];
+	//self.trackerName = [self.optDict objectForKey:@"name"];
 
     DBGLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
 	
@@ -462,13 +626,13 @@
     [self setTrackerVersion];
     [self setToOptDictDflts];  // probably redundant
     
-	self.trackerName = [self.optDict objectForKey:@"name"];
+	//self.trackerName = [self.optDict objectForKey:@"name"];
     
     DBGLog(@"tObj loadConfigFromDict toid:%d name:%@",self.toid,self.trackerName);
 	
-    CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
-	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
-	self.maxLabel = (CGSize) {w,h};
+    //CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
+	//CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
+	//self.maxLabel = (CGSize) {w,h};
 	
     NSArray *voda = [dict objectForKey:@"valObjTable"];
     for (NSDictionary *vod in voda) {
@@ -599,7 +763,7 @@
 }
 
 - (void) saveConfig {
-	DBGLog(@"tObj saveConfig: trackerName= %@",trackerName) ;
+	DBGLog(@"tObj saveConfig: trackerName= %@",self.trackerName) ;
 	
 	[self confirmDb];
 	
@@ -616,6 +780,12 @@
 		}
 	}
 	
+    // remove previous data - input rtrk may renumber and then some vids become obsolete
+    self.sql = @"delete from voConfig";
+    [self toExecSql];
+    self.sql = @"delete from voInfo";
+    [self toExecSql];
+    
 	// now save
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
@@ -638,7 +808,7 @@
 }
 
 - (void) saveChoiceConfigs {  // for csv load, need to update vo optDict if vo is VOT_CHOICE
-	DBGLog(@"tObj saveChoiceConfig: trackerName= %@",trackerName) ;
+	DBGLog(@"tObj saveChoiceConfig: trackerName= %@",self.trackerName) ;
 	BOOL NeedSave=NO;
 	for (valueObj *vo in self.valObjTable) {
         if (VOT_CHOICE == vo.vtype) {
@@ -888,7 +1058,7 @@
     }
     // configDict not optional -- always need tid for load of data
     NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:   // think this does not need release as is not alloc'd?
-                              [NSString stringWithFormat:@"%d",self.toid],@"tid",
+                              [NSString stringWithFormat:@"%d",self.toid],@"tid",     // changed from 'toid' key 10 july
                               self.trackerName,@"trackerName",
                               [self dictFromTO],@"configDict",
                               [[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
@@ -900,7 +1070,7 @@
     return rtrkDict;
 }
 
-//TODO: working here - loadDataDict
+// import data for a tracker
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
     for (dateIntStr in dataDict) {
@@ -1254,15 +1424,15 @@
 	}
 	
 	DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
-	[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
-	[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
+	//[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
+	//[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
 	
 	self.maxLabel = lsize;
 }
 
 
 - (void) addValObj:(valueObj *) valObj {
-	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",self.trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
 	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
@@ -1362,23 +1532,31 @@
 	DBGLog(@"voGetVIDNameForName failed for name %@",vname);
 	//return [NSString stringWithFormat:@"vid %d not found",vid];
     return 0;
-}
+}<#(NSUInteger)#>
 */
 
 - (void) updateVIDinFns:(NSInteger)old new:(NSInteger)new {
-    NSString *oldstr = [NSString stringWithFormat:@" %d ",old];
-	for (valueObj *vo in self.valObjTable) {
+    NSString *oldstr = [NSString stringWithFormat:@"%d",old];
+    NSString *newstr = [NSString stringWithFormat:@"%d",new];
+    for (valueObj *vo in self.valObjTable) {
 		if (VOT_FUNC == vo.vtype) {
             NSString *fnstr = [vo.optDict objectForKey:@"func"];
-            NSRange match = [fnstr rangeOfString:oldstr];
-            if (NSNotFound != match.location) {
-                fnstr = [fnstr stringByReplacingOccurrencesOfString:oldstr withString:[NSString stringWithFormat:@" %d ",new]];
-                [vo.optDict setObject:fnstr forKey:@"func"];
-                /*
-                self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func",fnstr,vo.vid];
-                [self toExecSql];
-                 */
+            
+            NSMutableArray *fMarray = [NSMutableArray arrayWithArray:[fnstr componentsSeparatedByString:@" "]];
+            NSInteger i,c;
+            c = [fMarray count];
+            for (i=0;i<c;i++) {
+                if ([oldstr isEqualToString:[fMarray objectAtIndex:i]]) {
+                    [fMarray replaceObjectAtIndex:i withObject:newstr];
+               }
             }
+            fnstr = [fMarray componentsJoinedByString:@" "];
+            [vo.optDict setObject:fnstr forKey:@"func"];
+
+            
+            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func",fnstr,vo.vid]; // keep consistent
+            [self toExecSql];
+            
         }
 
 	}
@@ -1393,6 +1571,7 @@
     return NO;
 }
 
+
 - (void) voUpdateVID:(valueObj*)vo newVID:(NSInteger)newVID {
     
     if (vo.vid == newVID) return;
@@ -1403,19 +1582,19 @@
         }
     }
 
-    /* need to update in memory structs, write to db later
-    self.sql= [NSString stringWithFormat: @"update voData set id=%d where id=%d", new, old];
+    // need to update at least voData, will write voInfo, voConfing out later but lets stay consistent
+    self.sql= [NSString stringWithFormat: @"update voData set id=%d where id=%d", newVID, vo.vid];
     [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voInfo set id=%d where id=%d", new, old];
+    self.sql= [NSString stringWithFormat: @"update voInfo set id=%d where id=%d", newVID, vo.vid];
     [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voConfig set id=%d where id=%d", new, old];
+    self.sql= [NSString stringWithFormat: @"update voConfig set id=%d where id=%d", newVID, vo.vid];
     [self toExecSql];
 
     self.sql = nil;
-    */
+    
     
     [self updateVIDinFns:vo.vid new:newVID];
-    
+    DBGLog(@"changed %d to %d",vo.vid,newVID);
     vo.vid = newVID;
 }
 
@@ -1512,7 +1691,12 @@
 	newVO.vtype = srcVO.vtype;
 	newVO.valueName = [NSString stringWithString:srcVO.valueName];
 	//newVO.valueName = [[NSString alloc] initWithString:srcVO.valueName];  
-	//[newVO.valueName release];  
+	//[newVO.valueName release];
+    
+    NSString *key;
+    for (key in srcVO.optDict) {
+        [newVO.optDict setObject:[srcVO.optDict objectForKey:key] forKey:key];
+    }
 	
 	return newVO;
 }

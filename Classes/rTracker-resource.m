@@ -32,6 +32,7 @@ BOOL keyboardIsShown=NO;
 
 + (BOOL) deleteFileAtPath:(NSString*)fp {
     NSError *err;
+    DBGLog(@"deleting file at path %@",fp);
     if (YES != [[NSFileManager defaultManager] removeItemAtPath:fp error:&err]) {
         DBGErr(@"Error deleting file: %@ error: %@", fp, err);
         return NO;
@@ -257,6 +258,9 @@ static BOOL separateDateTimePicker=SDTDFLT;
 }
 
 + (void) rmStashedTracker:(int)tid {
+    if (-1 == tid) {
+        return;
+    }
     NSString *fname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSError *error;
     
@@ -268,6 +272,9 @@ static BOOL separateDateTimePicker=SDTDFLT;
 }
 
 + (void) unStashTracker:(int)tid {
+    if (-1 == tid) {
+        return;
+    }
     NSString *oldFname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",tid];
     NSError *error;

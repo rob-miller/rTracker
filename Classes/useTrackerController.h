@@ -29,6 +29,7 @@
     BOOL needSave;
     BOOL fwdRotations;
     BOOL rejectable;
+    BOOL goSubview;
     trackerList *tlist;
 }
 
@@ -39,6 +40,7 @@
 @property (nonatomic) BOOL needSave;
 @property (nonatomic) BOOL fwdRotations;
 @property (nonatomic) BOOL rejectable;
+@property (nonatomic) BOOL goSubview;
 @property (nonatomic, retain) trackerList *tlist;
 
 // UI element properties 
