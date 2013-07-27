@@ -26,12 +26,14 @@
 	privacyV *privacyObj;
     int32_t refreshLock;
     BOOL initialPrefsLoad;
+    NSNumber *stashedPriv;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
 @property (nonatomic, retain) privacyV *privacyObj;
 @property (atomic) int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
+@property (nonatomic,retain) NSNumber *stashedPriv;
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
@@ -51,5 +53,9 @@
 - (void) refreshEditBtn;
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname;
 - (void) openTracker:(int)tid rejectable:(BOOL)rejectable;
+
+- (void) jumpMaxPriv;
+- (void) restorePriv;
+
 
 @end

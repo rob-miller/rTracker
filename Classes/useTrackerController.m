@@ -24,7 +24,7 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, goSubview, tlist;
+@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, viewDisappearing, tlist;
 @synthesize saveBtn, menuBtn;
 
 //BOOL keyboardIsShown=NO;
@@ -196,7 +196,7 @@
 {
     //DBGLog(@"utc: view will appear");
 
-    self.goSubview=NO;
+    self.viewDisappearing=NO;
 
 	if (self.dpr) {
 		switch (self.dpr.action) {
@@ -276,6 +276,8 @@
 
 - (void) viewWillDisappear :(BOOL)animated
 {
+    self.viewDisappearing=YES;
+    
     //DBGLog(@"utc view disappearing");
     //already done [self.tracker.activeControl resignFirstResponder];
 
@@ -299,15 +301,28 @@
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
     
-    if (self.rejectable && !self.goSubview) {
-        DBGLog(@"rejecting input tracker %d %@  prevTID= %d", self.tracker.toid,self.tracker.trackerName, self.tracker.prevTID);
-        [self.tlist updateTLtid:self.tracker.toid new:self.tracker.prevTID];  // revert topLevel to before
-        [self.tracker deleteTrackerDB];
-        [rTracker_resource unStashTracker:self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID
-    }
-    
     [super viewWillDisappear:animated];
 }
+
+/*
+ - (void)willMoveToParentViewController:(UIViewController *)parent {
+    DBGLog(@"will move to parent view controller");
+}
+*/
+
+- (void) rejectTracker {
+    DBGLog(@"rejecting input tracker %d %@  prevTID= %d", self.tracker.toid,self.tracker.trackerName, self.tracker.prevTID);
+    [self.tlist updateTLtid:self.tracker.toid new:self.tracker.prevTID];  // revert topLevel to before
+    [self.tracker deleteTrackerDB];
+    [rTracker_resource unStashTracker:self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID    
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    if (self.rejectable && self.viewDisappearing) {
+        [self rejectTracker];
+    }
+}
+
 
 # pragma mark view rotation methods
 
@@ -428,7 +443,7 @@
 
 - (void) doGT {
     DBGLog(@"start present graph");
-    self.goSubview=YES;
+
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
     gt.tracker = self.tracker;
@@ -864,8 +879,6 @@ NSString *emItunesExport = @"save for iTunes";
 
 - (void) btnCurrDate {
 	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
-	
-    self.goSubview = YES;
 	
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
 	self.dpr.date = self.tracker.trackerDate;

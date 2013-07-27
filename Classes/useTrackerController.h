@@ -29,7 +29,7 @@
     BOOL needSave;
     BOOL fwdRotations;
     BOOL rejectable;
-    BOOL goSubview;
+    BOOL viewDisappearing;
     trackerList *tlist;
 }
 
@@ -40,7 +40,7 @@
 @property (nonatomic) BOOL needSave;
 @property (nonatomic) BOOL fwdRotations;
 @property (nonatomic) BOOL rejectable;
-@property (nonatomic) BOOL goSubview;
+@property (nonatomic) BOOL viewDisappearing;
 @property (nonatomic, retain) trackerList *tlist;
 
 // UI element properties 
@@ -63,6 +63,8 @@
 - (void) setTrackerDate:(int) targD;
 - (void) doGT;
 - (void) returnFromGraph;
+- (void) rejectTracker;
+
 //- (BOOL) automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers;
 
 

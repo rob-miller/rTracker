@@ -1025,6 +1025,7 @@ if (addVO) {
 - (NSDictionary *) genRtrk:(BOOL)withData {
     // would be nice to jump temporarily to maxpriv so everything is written out, but no mechanism to get up to root VC's privacyObj
     // int currPriv = [privacyV getPrivacyValue];
+    // in fact prefer not to raise privacy as sending tracker via email should only send what is seen
     
     NSMutableDictionary *tData = [[NSMutableDictionary alloc] init];
     
@@ -1070,7 +1071,7 @@ if (addVO) {
     return rtrkDict;
 }
 
-// import data for a tracker
+// import data for a tracker -- direct in db so privacy not observed
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
     for (dateIntStr in dataDict) {

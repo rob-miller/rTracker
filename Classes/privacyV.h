@@ -64,5 +64,6 @@
 - (void) resetPw;
 
 + (int)getPrivacyValue;
+- (void)setPrivacyValue:(int)priv;
 
 @end

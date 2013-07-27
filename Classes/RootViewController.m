@@ -25,7 +25,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv;
 
 
 #pragma mark -
@@ -41,6 +41,8 @@
     [addBtn release];
     self.editBtn = nil;
     [editBtn release];
+    self.stashedPriv=nil;
+    [stashedPriv release];
     
     [super dealloc];
 }
@@ -202,8 +204,8 @@ static BOOL InstallSamples;
     trackerObj *inputTO;
     if (-1 != matchTID) {  // found tracker with same name and maybe same tid
         [rTracker_resource stashTracker:matchTID];                            // make copy of current tracker so can reject newTID later
-        
         [self.tlist updateTID:matchTID new:newTIDi];                          // change existing tracker tid to match new (restore if we discard later)
+
         inputTO = [[trackerObj alloc] init:newTIDi];                          // load up existing tracker config
         
         [inputTO confirmTOdict:tdict];                                        // merge valObjs
@@ -244,6 +246,9 @@ static BOOL InstallSamples;
         dataDict = [rtdict objectForKey:@"dataDict"];        
     }
 
+    int currPriv = [privacyV getPrivacyValue];
+    [self.privacyObj setPrivacyValue:MAXPRIV];                            // jump to max so we laod all valObjs
+    
     tid = [self loadTrackerDict:tdict tname:tname];
     
     if (nil != dataDict) {
@@ -259,6 +264,8 @@ static BOOL InstallSamples;
 #endif
         [to release];
     }
+
+    [self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
 
     [rTracker_resource deleteFileAtPath:[url path]];
     
@@ -722,6 +729,8 @@ static BOOL InstallSamples;
     
     [self refreshToolBar:NO];
     
+    self.stashedPriv = nil;
+    
     //self.navigationController.toolbar.translucent = YES;
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
     //self.navigationController.toolbar.translucent = YES;
@@ -862,11 +871,30 @@ static BOOL InstallSamples;
     [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
 }
 
+- (void) jumpMaxPriv {
+    if (nil == self.stashedPriv) {
+        self.stashedPriv = [NSNumber numberWithInt:[privacyV getPrivacyValue]];
+    }
+
+    [self.privacyObj setPrivacyValue:MAXPRIV];  // temporary max privacy level so see all
+}
+- (void) restorePriv {
+    if (nil == self.stashedPriv) {
+        return;
+    }
+    [self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
+    self.stashedPriv = nil;
+    
+}
+
 - (void)viewWillAppear:(BOOL)animated {
 
 	//DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
     //[self loadInputFiles];  // do this here as restarts are infrequent
 	//[self refreshView];
+
+    [self restorePriv];
+    
     [super viewWillAppear:animated];
 }
 
@@ -1202,6 +1230,9 @@ BOOL stashAnimated;
 }
 
 - (void)openTracker:(int)tid rejectable:(BOOL)rejectable {
+    if (rejectable) {
+        [self jumpMaxPriv];
+    }
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 
@@ -1210,7 +1241,8 @@ BOOL stashAnimated;
     utc.rejectable = rejectable;
     utc.tlist = self.tlist;  // required so reject can fix topLevel list
     
-	[self.navigationController pushViewController:utc animated:YES];
+	//[self.navigationController pushViewController:utc animated:YES];
+    [self.navigationController pushViewController:utc animated:NO];
     
     //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
     

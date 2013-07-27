@@ -111,7 +111,7 @@ UITableView *deleteTableView;
                 DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
             } else {
                 NSString *tname = [s1 objectAtIndex:i];
-                DBGLog(@"tid %@ name %@ no file found",tlTid,tname);
+                DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
                 self.tlist.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
                 [self.tlist toExecSql];
             }

@@ -935,3 +935,20 @@ TODO: regen all .rtrks on website
    - confirmed working if bringing in fn with same name as data, should move data to _data
 
 --- commit ---
+
+26 jul 2013
+   - reject action happens on resign active, so attempting to reload multiple rtrks not a problem 
+
+27 jul 2013
+   - added jumpMaxPriv, restorePriv in rootViewController so privacy is non-issue when loading rtrks
+
+--- commit ---
+
+   - problems:
+   + loading takes long, need dispatched thread and spinner
+   + nice if could restore rank to match loaded rtrk
+
+   + toplevel privacy not set to match loaded rtrk -- ** document that need to edit & tap 'save' button to set this -- private stays private even if loaded someone elses
+   + opening twice f's up stash file (?)  - fixed so reject happens on resign active
+   + test input on private tracker - fixed, jumpMaxPriv
+   

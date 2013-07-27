@@ -250,6 +250,8 @@ static BOOL separateDateTimePicker=SDTDFLT;
     NSString *newFname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSError *error;
     
+    DBGLog(@"stashing tracker %d",tid);
+    
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm copyItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
                     toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
@@ -263,6 +265,8 @@ static BOOL separateDateTimePicker=SDTDFLT;
     }
     NSString *fname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSError *error;
+    
+    DBGLog(@"dumping stashed tracker %d",tid);
     
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm removeItemAtPath:[rTracker_resource ioFilePath:fname access:DBACCESS] error:&error] != YES) {
@@ -278,6 +282,8 @@ static BOOL separateDateTimePicker=SDTDFLT;
     NSString *oldFname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",tid];
     NSError *error;
+
+    DBGLog(@"restoring stashed tracker %d",tid);
     
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm removeItemAtPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {

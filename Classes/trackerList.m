@@ -182,12 +182,9 @@
 }
 
 - (BOOL) checkTIDexists:(NSNumber*)tid {
-    for (NSNumber *i in self.topLayoutIDs) {
-        if ([tid isEqualToNumber:i]) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+    self.sql = [NSString stringWithFormat:@"select id from toplevel where id=%d",[tid intValue]];
+    int rslt = [self toQry2Int];
+    return (0 != rslt);
 }
 
 // return tid for first matching name
