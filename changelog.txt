@@ -941,14 +941,15 @@ TODO: regen all .rtrks on website
 
 27 jul 2013
    - added jumpMaxPriv, restorePriv in rootViewController so privacy is non-issue when loading rtrks
+**   + toplevel privacy not set to match loaded rtrk -- ** document that need to edit & tap 'save' button to set this -- private stays private even if loaded someone elses
 
 --- commit ---
 
-   - problems:
-   + loading takes long, need dispatched thread and spinner
-   + nice if could restore rank to match loaded rtrk
+29 jul 2013
+   - added sort to match incoming rtrk
+   - added create eVO for case of diff vid, voName match, old is data, new is fn ... was commented out, tested
+   - added noFileLoad flag to stop main thread from loading files while progressBar'd thread is running -- caused privacy bug until realised need to clear refreshLock when skipping load due to this flag
+   - enabled progressBar for loading rtrk from url -- wanted activity indicator but could not get displayed; bar updates for each valobj in config, then each date in data
 
-   + toplevel privacy not set to match loaded rtrk -- ** document that need to edit & tap 'save' button to set this -- private stays private even if loaded someone elses
-   + opening twice f's up stash file (?)  - fixed so reject happens on resign active
-   + test input on private tracker - fixed, jumpMaxPriv
-   
+
+think done?  - full test round again

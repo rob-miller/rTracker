@@ -845,7 +845,7 @@ NSString *emItunesExport = @"save for iTunes";
         self.tracker.prevTID=0;
     }
     self.rejectable=NO;
-
+    //[self.tlist loadTopLayoutTable];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

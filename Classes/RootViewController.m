@@ -25,7 +25,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv,noFileLoad;
 
 
 #pragma mark -
@@ -246,8 +246,9 @@ static BOOL InstallSamples;
         dataDict = [rtdict objectForKey:@"dataDict"];        
     }
 
-    int currPriv = [privacyV getPrivacyValue];
-    [self.privacyObj setPrivacyValue:MAXPRIV];                            // jump to max so we laod all valObjs
+    [self jumpMaxPriv];
+    //int currPriv = [privacyV getPrivacyValue];
+    //[self.privacyObj setPrivacyValue:MAXPRIV];                            // jump to max so we laod all valObjs
     
     tid = [self loadTrackerDict:tdict tname:tname];
     
@@ -265,8 +266,9 @@ static BOOL InstallSamples;
         [to release];
     }
 
-    [self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
-
+    //[self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
+    [self restorePriv];
+    
     [rTracker_resource deleteFileAtPath:[url path]];
     
     return tid;
@@ -471,7 +473,10 @@ static BOOL InstallSamples;
 }
 
 - (void) loadInputFiles {
-    
+    if (self.noFileLoad) {
+        self.refreshLock = 0;
+        return;
+    }
     csvLoadCount = [self countInputFiles:@"_in.csv"];
     plistLoadCount = [self countInputFiles:@"_in.plist"];
     int rtrkLoadCount = [self countInputFiles:@".rtrk"];
@@ -874,14 +879,17 @@ static BOOL InstallSamples;
 - (void) jumpMaxPriv {
     if (nil == self.stashedPriv) {
         self.stashedPriv = [NSNumber numberWithInt:[privacyV getPrivacyValue]];
+        DBGLog(@"stashed priv %@",self.stashedPriv);
     }
 
     [self.privacyObj setPrivacyValue:MAXPRIV];  // temporary max privacy level so see all
+    DBGLog(@"priv jump!");
 }
 - (void) restorePriv {
     if (nil == self.stashedPriv) {
         return;
     }
+    DBGLog(@"restore priv to %@",self.stashedPriv);
     [self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
     self.stashedPriv = nil;
     
@@ -889,11 +897,12 @@ static BOOL InstallSamples;
 
 - (void)viewWillAppear:(BOOL)animated {
 
-	//DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
     //[self loadInputFiles];  // do this here as restarts are infrequent
 	//[self refreshView];
 
     [self restorePriv];
+    //[self refreshViewPart2];
     
     [super viewWillAppear:animated];
 }
@@ -1001,6 +1010,16 @@ BOOL stashAnimated;
     
     [super viewDidUnload];
 	
+}
+
+- (void) startActivityIndicator {
+    //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+}
+- (void) finishActivityIndicator {
+    //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
 }
 
 
@@ -1241,9 +1260,11 @@ BOOL stashAnimated;
     utc.rejectable = rejectable;
     utc.tlist = self.tlist;  // required so reject can fix topLevel list
     
-	//[self.navigationController pushViewController:utc animated:YES];
-    [self.navigationController pushViewController:utc animated:NO];
-    
+    //if (rejectable) {
+    //    [self.navigationController pushViewController:utc animated:NO];
+    //} else {
+        [self.navigationController pushViewController:utc animated:YES];
+    //}
     //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
     
 	[utc release];

@@ -247,11 +247,13 @@
     for (ndx1=0,ndx2=0; ndx1<c && ndx2<c2; ndx1++,ndx2++) {
         int currVid = ((valueObj*)[self.valObjTable objectAtIndex:ndx1]).vid;
         int targVid = ((valueObj*)[arr objectAtIndex:ndx2]).vid;
+        //DBGLog(@"ndx2: %d  targVid:%d",ndx2,targVid);
         if (currVid != targVid) {
             NSUInteger targNdx = [((NSNumber*)[dict objectForKey:[NSNumber numberWithInt:targVid]]) unsignedIntegerValue];
             [self.valObjTable exchangeObjectAtIndex:ndx1 withObjectAtIndex:targNdx];
-            [dict setObject:[NSNumber numberWithUnsignedInt:currVid] forKey:[NSNumber numberWithInt:targNdx]];
-            [dict setObject:[NSNumber numberWithUnsignedInt:targVid] forKey:[NSNumber numberWithInt:ndx1]];
+            [dict setObject:[NSNumber numberWithInt:targNdx] forKey:[NSNumber numberWithUnsignedInt:currVid]];
+            [dict setObject:[NSNumber numberWithInt:ndx1] forKey:[NSNumber numberWithUnsignedInt:targVid]];
+
         }
         
     }
@@ -286,8 +288,11 @@
     }
     
     NSArray *newValObjs = [dict objectForKey:@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
+    [rTracker_resource stashProgressBarMax:[newValObjs count]];
     
     NSMutableDictionary *existingVOs = [[NSMutableDictionary alloc] init];
+    NSMutableArray *newVOs = [[NSMutableArray alloc]init];
+    
     [self rescanVoIds:existingVOs];
     
     for (NSDictionary *voDict in newValObjs) {
@@ -321,7 +326,7 @@
                         foundMatch=YES;
                         if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
                             [self rescanVoIds:existingVOs];                     // re-validate
-                            //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
+                            //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo --> do below
                         } else {                                        // did not mv due to fn-data clash - so overwrite
                             [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
                             [self rescanVoIds:existingVOs];                     // re-validate
@@ -332,7 +337,7 @@
                     }
                 }
             }
-            if (! foundMatch) {
+            if ((! foundMatch) || (! eVO)) {
                 eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
             }
         }
@@ -341,9 +346,16 @@
             [self addValObj:eVO];
             [self rescanVoIds:existingVOs];                     // re-validate
         }
+        
+        [newVOs addObject:eVO];
+        //DBGLog(@"** added eVO vid %d",eVO.vid);
+
+        [rTracker_resource bumpProgressBar];
     }
     
     [existingVOs release];
+    [self sortVoTableByArray:newVOs];
+    [newVOs release];
 }
 
 /*
@@ -1074,6 +1086,8 @@ if (addVO) {
 // import data for a tracker -- direct in db so privacy not observed
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
+    [rTracker_resource stashProgressBarMax:[dataDict count]];
+    
     for (dateIntStr in dataDict) {
         NSDate *tdate= [NSDate dateWithTimeIntervalSinceReferenceDate:[dateIntStr doubleValue]];
         int tdi = [tdate timeIntervalSince1970];
@@ -1095,6 +1109,7 @@ if (addVO) {
         }
         self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",tdi,mp];
         [self toExecSql];
+        [rTracker_resource bumpProgressBar];
     }
 }
 

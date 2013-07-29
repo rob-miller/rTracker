@@ -80,6 +80,55 @@
     return YES;
 }
 
+- (void) doOpenTracker:(NSNumber*)nsnTid {
+    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    [rootController openTracker:[nsnTid intValue] rejectable:YES];
+    rootController.noFileLoad=NO;
+}
+
+- (void) doOpenURL:(NSURL*)url {
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    //if (url != nil && [url isFileURL]) {
+
+    int tid = [rootController handleOpenFileURL:url tname:nil];
+    if (0 != tid) {
+        // get to root view controller, else get last view on stack
+        //[rootController openTracker:tid rejectable:YES];
+        [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:NO];
+    }
+    //}
+    
+    [rootController finishActivityIndicator];
+    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
+    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
+    
+    [pool drain];
+}
+
+- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    DBGLog(@"openURL %@",url);
+    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    rootController.noFileLoad = YES;
+    [self.navigationController popToRootViewControllerAnimated:NO];
+
+    [rootController startActivityIndicator];
+
+    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
+    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
+    
+    [NSThread detachNewThreadSelector:@selector(doOpenURL:) toTarget:self withObject:url];
+    //[self doOpenURL:url];
+    
+    return YES;
+        
+}
+
+
+/*
 - (void) doOpenURL:(NSURL*)url {
     
     //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -109,9 +158,12 @@
     [self doOpenURL:url];
     
     return YES;
-        
-}
     
+}
+*/
+ 
+
+
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
 	//DBGLog(@"rt app delegate: app will terminate");
