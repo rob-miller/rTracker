@@ -732,7 +732,7 @@
 	frame.origin.x = MARGIN;
 	//frame.origin.x += frame.size.width + MARGIN + SPACE;
 	frame.origin.y += MARGIN + frame.size.height;
-	labframe = [self configLabel:@"Graph limit:" frame:frame key:@"glLab" addsv:YES];
+	/*labframe = */ [self configLabel:@"Graph limit:" frame:frame key:@"glLab" addsv:YES];
 	
     //-- default email label
 	

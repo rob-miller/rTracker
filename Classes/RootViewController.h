@@ -27,7 +27,7 @@
     int32_t refreshLock;
     BOOL initialPrefsLoad;
     NSNumber *stashedPriv;
-    BOOL noFileLoad;
+    BOOL openUrlLock;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
@@ -35,7 +35,7 @@
 @property (atomic) int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
 @property (nonatomic,retain) NSNumber *stashedPriv;
-@property (nonatomic) BOOL noFileLoad;
+@property (nonatomic) BOOL openUrlLock;
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
@@ -59,7 +59,7 @@
 - (void) jumpMaxPriv;
 - (void) restorePriv;
 
-- (void) startActivityIndicator;
-- (void) finishActivityIndicator;
+- (void) startRvcActivityIndicator;
+- (void) finishRvcActivityIndicator;
 
 @end

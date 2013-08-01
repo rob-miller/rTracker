@@ -25,7 +25,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv,noFileLoad;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv,openUrlLock;
 
 
 #pragma mark -
@@ -246,9 +246,6 @@ static BOOL InstallSamples;
         dataDict = [rtdict objectForKey:@"dataDict"];        
     }
 
-    [self jumpMaxPriv];
-    //int currPriv = [privacyV getPrivacyValue];
-    //[self.privacyObj setPrivacyValue:MAXPRIV];                            // jump to max so we laod all valObjs
     
     tid = [self loadTrackerDict:tdict tname:tname];
     
@@ -333,7 +330,7 @@ static BOOL InstallSamples;
             didSomething = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
             //tname = [fname substringToIndex:inmatch.location];
             //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
-            [rTracker_resource deleteFileAtPath:newTarget];
+            // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
         } else {   // .rtrk file
             didSomething = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
             /*
@@ -473,42 +470,39 @@ static BOOL InstallSamples;
 }
 
 - (void) loadInputFiles {
-    if (self.noFileLoad) {
-        self.refreshLock = 0;
-        return;
-    }
-    csvLoadCount = [self countInputFiles:@"_in.csv"];
-    plistLoadCount = [self countInputFiles:@"_in.plist"];
-    int rtrkLoadCount = [self countInputFiles:@".rtrk"];
-/*
-#if RTRK_EXPORT
-    int rtrk_out = [self countInputFiles:@"_out.rtrk"];
-    rtrkLoadCount -= rtrk_out;
-#endif    
-*/    
-    // handle rtrks as plist + csv, just faster if only has data or only has tracker def
-    csvLoadCount += rtrkLoadCount;
-    plistLoadCount += rtrkLoadCount;
-    
-    if (InstallSamples)
-        plistLoadCount += [self loadSamples:NO];
-    
-    // set rvc:static numerators for progress bars
-    csvReadCount=1;
-    plistReadCount=1;
-    
-    if ( 0 < (plistLoadCount + csvLoadCount) ) {
-        [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
+    if (!self.openUrlLock) {
+        csvLoadCount = [self countInputFiles:@"_in.csv"];
+        plistLoadCount = [self countInputFiles:@"_in.plist"];
+        int rtrkLoadCount = [self countInputFiles:@".rtrk"];
+        /*
+         #if RTRK_EXPORT
+         int rtrk_out = [self countInputFiles:@"_out.rtrk"];
+         rtrkLoadCount -= rtrk_out;
+         #endif
+         */
+        // handle rtrks as plist + csv, just faster if only has data or only has tracker def
+        csvLoadCount += rtrkLoadCount;
+        plistLoadCount += rtrkLoadCount;
         
-        [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
-
-        [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
-        // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
+        if (InstallSamples)
+            plistLoadCount += [self loadSamples:NO];
         
-        DBGLog(@"returning main thread, lock on, UI disabled, activity spinning,  files to load");
-        return;
+        // set rvc:static numerators for progress bars
+        csvReadCount=1;
+        plistReadCount=1;
+        
+        if ( 0 < (plistLoadCount + csvLoadCount) ) {
+            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
+            
+            [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+            
+            [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
+            // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
+            
+            DBGLog(@"returning main thread, lock on, UI disabled, activity spinning,  files to load");
+            return;
+        }
     }
-
     [self refreshViewPart2];
     // if here, no files to load, this thread set the lock and refresh is done now 
     self.refreshLock = 0;
@@ -735,7 +729,8 @@ static BOOL InstallSamples;
     [self refreshToolBar:NO];
     
     self.stashedPriv = nil;
-    
+    self.openUrlLock = NO;
+
     //self.navigationController.toolbar.translucent = YES;
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
     //self.navigationController.toolbar.translucent = YES;
@@ -758,7 +753,8 @@ static BOOL InstallSamples;
     
     //[self.tlist release];  // rtm 05 feb 2012 +1 for alloc, +1 when put in self.tlist
 
-     
+    
+    [self.tlist wipeOrphans];        // added 30.vii.13
     [self.tlist loadTopLayoutTable];  // was loadinputfiles
     
 	/*
@@ -889,6 +885,9 @@ static BOOL InstallSamples;
     if (nil == self.stashedPriv) {
         return;
     }
+    if (YES == self.openUrlLock) {
+        return;
+    }
     DBGLog(@"restore priv to %@",self.stashedPriv);
     [self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
     self.stashedPriv = nil;
@@ -1012,12 +1011,12 @@ BOOL stashAnimated;
 	
 }
 
-- (void) startActivityIndicator {
+- (void) startRvcActivityIndicator {
     //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
     [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
 }
-- (void) finishActivityIndicator {
+- (void) finishRvcActivityIndicator {
     //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
     [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
 }
@@ -1249,9 +1248,9 @@ BOOL stashAnimated;
 }
 
 - (void)openTracker:(int)tid rejectable:(BOOL)rejectable {
-    if (rejectable) {
-        [self jumpMaxPriv];
-    }
+    //if (rejectable) {
+    //    [self jumpMaxPriv];
+    //}
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 

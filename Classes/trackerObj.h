@@ -114,12 +114,11 @@
 - (NSString*) rtrkPath;
 - (BOOL) writeCSV;
 - (BOOL) writeRtrk:(BOOL)withData;
-- (void) cleanFiles;
 
 - (BOOL) saveToItunes;
 - (void) writeTrackerCSV:(NSFileHandle*)nsfh;
 
-- (NSDictionary *) genRtrk:(BOOL)withData;
+//- (NSDictionary *) genRtrk:(BOOL)withData;
 
 - (void) loadDataDict:(NSDictionary*)dataDict;
 

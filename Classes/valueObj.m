@@ -50,7 +50,7 @@ in_vpriv:(NSInteger)in_vpriv
 {
 	//DBGLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	if ((self = [super init])) {
-		self.useVO = NO;	
+
 		self.parentTracker = parentTO;
 		self.vid = in_vid ;
 		self.vtype = in_vtype;
@@ -71,7 +71,7 @@ in_vpriv:(NSInteger)in_vpriv
            (NSString*) [dict objectForKey:@"valueName"]);
      */
 	if ((self = [super init])) {
-		self.useVO = NO;	
+		self.useVO = YES;
 		self.parentTracker = parentTO;
 		self.vid = [(NSNumber*) [dict objectForKey:@"vid"] integerValue];
         [(trackerObj*) self.parentTracker minUniquev:self.vid];
@@ -79,7 +79,7 @@ in_vpriv:(NSInteger)in_vpriv
         self.optDict = (NSMutableDictionary*) [dict objectForKey:@"optDict"];
         self.vpriv = [(NSNumber*) [dict objectForKey:@"vpriv"] integerValue];
 		self.vtype = [(NSNumber*) [dict objectForKey:@"vtype"] integerValue];
-		
+        // setting vtype sets vo.useVO through vos init
 		self.vcolor = [(NSNumber*) [dict objectForKey:@"vcolor"] integerValue];
 		self.vGraphType = [(NSNumber*) [dict objectForKey:@"vGraphType"] integerValue];
         
@@ -176,8 +176,9 @@ in_vpriv:(NSInteger)in_vpriv
 - (void) resetData {
     [self.vos resetData];
 	[self.value setString:@""];
+    
     //self.retrievedData = NO;
-	self.useVO = NO;  // disableVO
+    // do self.useVO in vos resetData
     //DBGLog(@"vo resetData %@",self.valueName);
 }
 
@@ -286,6 +287,8 @@ in_vpriv:(NSInteger)in_vpriv
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
 	//self.useVO = !self.useVO;
 
+    //TODO: re-write to use voStates as appropriate, vos:update returns '' if disabled so could keep values or should clear .value here
+    
 	if ((self.useVO = !self.useVO)) { // if new state=TRUE (toggle useVO and set)   // enableVO ... disableVO
 		checkImage = [UIImage imageNamed:@"checked.png"];
         //   do in update():

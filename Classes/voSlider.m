@@ -13,6 +13,17 @@
 
 @synthesize sliderCtl,sdflt;
 
+- (id) initWithVO:(valueObj *)valo {
+	if ((self = [super initWithVO:valo])) {
+        self.vo.useVO=NO;
+	}
+	return self;
+}
+
+- (void) resetData {
+    self.vo.useVO=NO;
+}
+
 - (void) dealloc {
     self.sliderCtl = nil;
     [sliderCtl release];

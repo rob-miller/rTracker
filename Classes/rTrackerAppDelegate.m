@@ -83,7 +83,6 @@
 - (void) doOpenTracker:(NSNumber*)nsnTid {
     RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
     [rootController openTracker:[nsnTid intValue] rejectable:YES];
-    rootController.noFileLoad=NO;
 }
 
 - (void) doOpenURL:(NSURL*)url {
@@ -97,14 +96,15 @@
     if (0 != tid) {
         // get to root view controller, else get last view on stack
         //[rootController openTracker:tid rejectable:YES];
-        [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:YES];
     }
     //}
     
-    [rootController finishActivityIndicator];
+    [rootController finishRvcActivityIndicator];
     //UIViewController *topController = [self.navigationController.viewControllers lastObject];
     //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
     
+    rootController.openUrlLock=NO;
     [pool drain];
 }
 
@@ -112,10 +112,12 @@
     
     DBGLog(@"openURL %@",url);
     RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    rootController.noFileLoad = YES;
+    rootController.openUrlLock = YES;
+    [rootController jumpMaxPriv];
+    
     [self.navigationController popToRootViewControllerAnimated:NO];
 
-    [rootController startActivityIndicator];
+    [rootController startRvcActivityIndicator];
 
     //UIViewController *topController = [self.navigationController.viewControllers lastObject];
     //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];

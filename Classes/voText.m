@@ -87,6 +87,7 @@
     if (nil != dtf) { // not self, do not instantiate
         self.dtf.text = @"";   
     }
+    self.vo.useVO = YES;
 }
 
 - (UIView*)voDisplay:(CGRect)bounds {

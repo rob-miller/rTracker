@@ -41,7 +41,12 @@
 }
 
 - (NSString*) update:(NSString*)instr {   // place holder so fn can update on access; also confirm textfield updated
-    return instr;
+                                        // added return "" if disabled 30.vii.13
+    if (self.vo.useVO) {
+        return instr;
+    } else {
+        return @"";
+    }
 }
 
 - (void) loadConfig {
@@ -325,6 +330,7 @@
 
 - (void) resetData {
 	// subclass overrides if need to do anything
+    self.vo.useVO=YES;
 }
 
 - (NSString*) mapValue2Csv {

@@ -918,7 +918,7 @@ TODO: regen all .rtrks on website
 21 jul 2013
    -?
 
-25 jul 2013
+25 jul 2013  [travel to US]
    - seems to work for variations of accept/reject with existing tracker, merges changes.
    - implemented default email
    - checked through todos
@@ -951,5 +951,22 @@ TODO: regen all .rtrks on website
    - added noFileLoad flag to stop main thread from loading files while progressBar'd thread is running -- caused privacy bug until realised need to clear refreshLock when skipping load due to this flag
    - enabled progressBar for loading rtrk from url -- wanted activity indicator but could not get displayed; bar updates for each valobj in config, then each date in data
 
+30 jul 2013
+   - added wipeOrphans to rootViewController viewDidLoad
+   - added vos:update now returns "" if vo is disabled -- corrects fn recalc when disable/enable slider or choice
+   - change valObj init to useVO=YES, voChoice and voSlider init overloads to set to NO 
+   - add alert if accepting tracker with tracker priv or valObj priv >PRIVDFLT
+   - add stashedPrivLock to stop race if tracker shown when rtrk import starts (jumpMaxPriv(), but other thread closes shown tracker which calls restorePriv() -- stashedPrivLock on until end of openTracker)
 
-think done?  - full test round again
+31 jul 2013
+   - change noFileLoad, stashedPrivLock to openUrlLock
+   - refactor openUrl so openUrlLock always goes off
+   - refactor loadInputFiles so refreshViewPart2 called if openUrlLock is on
+
+01 aug 2013
+   - move genrtrk into writeRtrk in attempt to quell analyse complaints; failed, but at least got alloc/release warnings together
+   - fix memory leak on create/destroy rtrk
+   - ready to submit as 1.1.0
+
+--- commit ---
+

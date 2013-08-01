@@ -280,7 +280,7 @@
 // make self trackerObj conform to incoming dict = trackerObj optdict, valobj array of vid, name
 // handle voConfig voInfo; voData to be handled by loadDataDict
 - (void) confirmTOdict:(NSDictionary*)dict {
-
+    
     NSDictionary *newOptDict = [dict objectForKey:@"optDict"];
     NSString *key;
     for (key in newOptDict) {               // overwrite options with new input
@@ -300,13 +300,15 @@
         NSString *nVname = [voDict objectForKey:@"valueName"];
         NSInteger nVtype = [(NSNumber*)[voDict objectForKey:@"vtype"] integerValue];
         BOOL addVO=YES;
+        BOOL createdVO=NO;
         
         valueObj *eVO = [existingVOs objectForKey:nVidN];
         if (eVO) {                                          // self has vid;
             if ([nVname isEqualToString:eVO.valueName]) {       // name matches same vid
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
                     [self rescanVoIds:existingVOs];                     // re-validate
-                    eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo 
+                    eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo
+                    createdVO=YES;
                 } else {
                     addVO=NO;     // name and VID match so we overwrite existing vo
                     [self voSetFromDict:eVO dict:voDict];
@@ -326,7 +328,7 @@
                         foundMatch=YES;
                         if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
                             [self rescanVoIds:existingVOs];                     // re-validate
-                            //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo --> do below
+                            //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo --> do below  (eVO is nil)
                         } else {                                        // did not mv due to fn-data clash - so overwrite
                             [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
                             [self rescanVoIds:existingVOs];                     // re-validate
@@ -339,6 +341,7 @@
             }
             if ((! foundMatch) || (! eVO)) {
                 eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
+                createdVO=YES;
             }
         }
                   
@@ -349,7 +352,10 @@
         
         [newVOs addObject:eVO];
         //DBGLog(@"** added eVO vid %d",eVO.vid);
-
+        
+        if (createdVO) {
+            [eVO release];
+        }
         [rTracker_resource bumpProgressBar];
     }
     
@@ -877,7 +883,12 @@ if (addVO) {
 			//dbgNSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
                 DBGLog(@"vo id %d newValue: %@",vid,newVal);
-                vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
+                
+                if ((VOT_CHOICE == vo.vtype) || (VOT_SLIDER == vo.vtype)) {
+                    vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
+                } else {
+                    vo.useVO = YES;
+                }
 				[vo.value setString:newVal];  // results not saved for func so not in db table to be read
 				//vo.retrievedData = YES;
 			}
@@ -972,24 +983,62 @@ if (addVO) {
 
 - (BOOL) writeRtrk:(BOOL)withData {
     BOOL result=YES;
-    NSDictionary *rtrk = [self genRtrk:withData];
+    //NSDictionary *rtrk = [self genRtrk:withData];
+    
+    NSMutableDictionary *tData = [[NSMutableDictionary alloc] init];
+    
+    if (withData) {
+        // save current trackerDate (NSDate->int)
+        int currDate = (int) [self.trackerDate timeIntervalSince1970];
+        int nextDate = [self firstDate];
+        
+        float ndx = 1.0;
+        float all = [self getDateCount];
+        
+        do {
+            [self loadData:nextDate];
+            NSMutableDictionary *vData = [[NSMutableDictionary alloc] init];
+            for (valueObj *vo in self.valObjTable) {
+                [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
+                //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
+            }
+            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]] ];
+            //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
+            [vData release];    // analyzer complains but released below
+            //DBGLog(@"genRtrk: tData= %@",tData);
+            [rTracker_resource setProgressVal:(ndx/all)];
+            ndx += 1.0;
+        } while ((nextDate = [self postDate]));    // iterate through dates
+        
+        // restore current date
+        [self loadData:currDate];
+        
+    }
+    // configDict not optional -- always need tid for load of data
+    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:   // think this does not need release as is not alloc'd?
+                              [NSString stringWithFormat:@"%d",self.toid],@"tid",     // changed from 'toid' key 10 july
+                              self.trackerName,@"trackerName",
+                              [self dictFromTO],@"configDict",
+                              tData,@"dataDict",
+                              //[[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
+                              nil];
+    
+    
     NSString *fp = [self getPath:RTRKext];
-    if(! ([rtrk writeToFile:fp atomically:YES])) {
+    if(! ([rtrkDict writeToFile:fp atomically:YES])) {
         DBGErr(@"problem writing file %@",fp);
         result=NO;
     }
-    NSDictionary *tData = [rtrk objectForKey:@"dataDict"];
-    for (NSString *k in tData) {
-        [[tData objectForKey:k] release];
-    }
-    //[rtrk release];  // think not needed?
     
-    return result;
-}
+    for (NSString *k in tData) {
+        NSDictionary *vData = [tData objectForKey:k];
+        [vData release];
+    }
 
-- (void) cleanFiles {
-    [rTracker_resource deleteFileAtPath:[self getPath:CSVext]];
-    [rTracker_resource deleteFileAtPath:[self getPath:RTRKext]];
+    [tData release];
+    // rtrkDict sub-dictionaries not alloc'd so autoreleased
+
+    return result;
 }
 
 
@@ -1032,55 +1081,6 @@ if (addVO) {
             voda,@"valObjTable",
             nil];
     
-}
-
-- (NSDictionary *) genRtrk:(BOOL)withData {
-    // would be nice to jump temporarily to maxpriv so everything is written out, but no mechanism to get up to root VC's privacyObj
-    // int currPriv = [privacyV getPrivacyValue];
-    // in fact prefer not to raise privacy as sending tracker via email should only send what is seen
-    
-    NSMutableDictionary *tData = [[NSMutableDictionary alloc] init];
-    
-    if (withData) {
-        // save current trackerDate (NSDate->int)
-        int currDate = (int) [self.trackerDate timeIntervalSince1970];
-        int nextDate = [self firstDate];
-        
-        float ndx = 1.0;
-        float all = [self getDateCount];
-        
-        do {
-            [self loadData:nextDate];
-            NSMutableDictionary *vData = [[NSMutableDictionary alloc] init];
-            for (valueObj *vo in self.valObjTable) {
-                [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
-                //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
-            }
-            //[NSNumber numberWithDouble:[self.trackerDate timeIntervalSinceReferenceDate]] ];
-            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]] ];
-            //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
-            [vData release];
-            //DBGLog(@"genRtrk: tData= %@",tData);
-            [rTracker_resource setProgressVal:(ndx/all)];
-            ndx += 1.0;
-        } while ((nextDate = [self postDate]));    // iterate through dates
-        
-        // restore current date
-        [self loadData:currDate];
-        
-    }
-    // configDict not optional -- always need tid for load of data
-    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:   // think this does not need release as is not alloc'd?
-                              [NSString stringWithFormat:@"%d",self.toid],@"tid",     // changed from 'toid' key 10 july
-                              self.trackerName,@"trackerName",
-                              [self dictFromTO],@"configDict",
-                              [[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
-                              nil];
-    
-    [tData release];
-    // rtrkDict sub-dictionaries not alloc'd so autoreleased
-
-    return rtrkDict;
 }
 
 // import data for a tracker -- direct in db so privacy not observed
