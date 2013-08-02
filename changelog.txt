@@ -970,3 +970,9 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+02 aug 2013
+   - problem with useVO initialisation for normal use, reject binary at app store
+   - add privacy warning alert if modify a rejectable tracker and save
+   - re-submit as 1.1.0
+
+--- commit ---

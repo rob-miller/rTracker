@@ -25,6 +25,7 @@
 - (id) initWithVO:(valueObj *)valo {
 	if ((self = [super init])) {
 		self.vo = valo;
+        self.vo.useVO=YES;
 	}
 	return self;
 }

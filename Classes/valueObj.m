@@ -50,10 +50,11 @@ in_vpriv:(NSInteger)in_vpriv
 {
 	//DBGLog(@"init vObj with args vid: %d vtype: %d vname: %@",in_vid, in_vtype, in_vname);
 	if ((self = [super init])) {
+		//self.useVO = YES;
 
 		self.parentTracker = parentTO;
 		self.vid = in_vid ;
-		self.vtype = in_vtype;
+		self.vtype = in_vtype;  // sets useVO
 		
 		self.valueName = in_vname;
 		self.vcolor = in_vcolor;

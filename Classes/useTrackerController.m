@@ -778,6 +778,7 @@
             self.tracker.prevTID=0;
         }
         self.rejectable=NO;
+        [self checkPrivWarn];
     }
     
 	[self.tracker saveData];
@@ -860,17 +861,10 @@ NSString *emItunesExport = @"save for iTunes";
     
 }
 
-- (IBAction)btnAccept {
-    DBGLog(@"accepting tracker");
-    if (self.tracker.prevTID) {
-        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
-        self.tracker.prevTID=0;
-    }
-    self.rejectable=NO;
-    //[self.tlist loadTopLayoutTable];
+- (void) checkPrivWarn {
     NSInteger tpriv = [[self.tracker.optDict objectForKey:@"privacy"] integerValue];
     NSInteger vprivmax = PRIVDFLT;
-
+    
 	for (valueObj *vo in self.tracker.valObjTable) {
         vo.vpriv = [[vo.optDict objectForKey:@"privacy"] integerValue];
         if (vo.vpriv > vprivmax) {
@@ -881,7 +875,18 @@ NSString *emItunesExport = @"save for iTunes";
     if ((tpriv > PRIVDFLT) || (vprivmax > PRIVDFLT)) {
         [self privAlert:tpriv vpm:vprivmax];
     }
+    
+}
 
+- (IBAction)btnAccept {
+    DBGLog(@"accepting tracker");
+    if (self.tracker.prevTID) {
+        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+        self.tracker.prevTID=0;
+    }
+    self.rejectable=NO;
+    //[self.tlist loadTopLayoutTable];
+    [self checkPrivWarn];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
