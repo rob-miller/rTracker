@@ -55,6 +55,7 @@
 
 - (void) deConflict:(trackerObj*)newTracker;
 - (void) wipeOrphans;
+- (BOOL) recoverOrphans;
 
 
 @end

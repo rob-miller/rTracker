@@ -14,6 +14,8 @@
 #import "voFunction.h"
 #import "dbg-defs.h"
 
+#import "notifyReminderViewController.h"
+
 //  private methods including properties can go here!
 
 
@@ -120,7 +122,8 @@
 		self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
 	}
 	[doneBtn release];
-	
+
+	    
     [super viewDidLoad];
 }
 
@@ -396,7 +399,10 @@
 	//imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	//imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 	
-	[self.wDict setObject:button forKey:key];
+	if (nil != key) {
+        [self.wDict setObject:button forKey:key];
+    }
+    
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 	
 	[self.view addSubview:button];
@@ -643,6 +649,17 @@
 #pragma mark -
 #pragma mark general opts for all 
 
+- (void) notifyReminderView {
+    DBGLog(@"notify reminder view!");
+    notifyReminderViewController *nrvc = [[notifyReminderViewController alloc] initWithNibName:@"notifyReminderViewController" bundle:nil ];
+    //nrvc.view.hidden = NO;
+    nrvc.tracker = self.to;
+    //[self.navigationController pushViewController:nrvc animated:YES];
+    [self presentModalViewController:nrvc animated:YES];
+    [nrvc release];
+    
+}
+
 //- (void) drawGeneralVoOpts 
 //{
 //}
@@ -727,12 +744,6 @@
     //labframe =
     [self configLabel:@"days" frame:frame key:@"gl2Lab" addsv:YES];
     
-    //-- graph max _ days label
-	
-	frame.origin.x = MARGIN;
-	//frame.origin.x += frame.size.width + MARGIN + SPACE;
-	frame.origin.y += MARGIN + frame.size.height;
-	/*labframe = */ [self configLabel:@"Graph limit:" frame:frame key:@"glLab" addsv:YES];
 	
     //-- default email label
 	
@@ -761,6 +772,15 @@
 					addsv:YES ];
     
 
+/*
+ // reminder config button:
+    
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+    
+    [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
+ */   
 }
 
 #pragma mark main config region methods

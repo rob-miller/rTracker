@@ -453,4 +453,105 @@
     self.sql = nil;
     
 }
+
+- (void) restoreTracker:(NSString*)fn ndx:(NSUInteger)ndx {
+    int ftid = [[fn substringFromIndex:ndx] intValue];
+    trackerObj *to;
+    
+    if ([self checkTIDexists:[NSNumber numberWithInt:ftid]]) {
+        int newTid = [self getUnique];
+        NSString *newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSError *error;
+
+        if ([fm moveItemAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]
+                        toPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
+            DBGLog(@"Unable to move file %@ to %@: %@", fn, newFn, [error localizedDescription]);  // only if gtUnique fails ?
+        }    
+
+        ftid = newTid;
+    }
+    to = [[trackerObj alloc] init:ftid];
+    NSString *newName = [@"recovered: " stringByAppendingString:to.trackerName];
+    to.trackerName = newName;
+    [self addToTopLayoutTable:to];
+}
+
+- (BOOL) recoverOrphans {
+    BOOL didRecover=NO;
+    self.sql = @"select id, name from toplevel order by id";
+    NSMutableArray *i1 = [[NSMutableArray alloc]init];
+    NSMutableArray *s1 = [[NSMutableArray alloc]init];
+    [self toQry2AryIS:i1 s1:s1];
+    NSMutableDictionary *dictTid2Ndx = [[NSMutableDictionary alloc]init];
+    NSUInteger c = [i1 count];
+    NSUInteger i;
+    for (i=0;i<c;i++) {
+        [dictTid2Ndx setObject:[NSNumber numberWithUnsignedInt:i] forKey:[i1 objectAtIndex:i]];
+    }
+    
+    NSError *err;
+    NSArray *fileList = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[rTracker_resource ioFilePath:@"" access:DBACCESS] error:&err];
+    NSMutableDictionary *dictTid2Filename = [[NSMutableDictionary alloc]init];
+    
+    if (nil == fileList) {
+        DBGLog(@"error getting file list: %@",err);
+    } else {
+        NSString *fn;
+        for (fn in fileList) {
+            
+            int ftid = [[fn substringFromIndex:4] intValue];
+            if (ftid && [fn hasPrefix:@"trkr"] && [fn hasSuffix:@"sqlite3"]) {
+                [dictTid2Filename setObject:fn forKey:[NSNumber numberWithInt:ftid]];
+                NSNumber *ftidNdx = [dictTid2Ndx objectForKey:[NSNumber numberWithInt:ftid]];
+                if (ftidNdx) {
+                    DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
+                } else {
+                    [self restoreTracker:fn ndx:4];
+                    didRecover = YES;
+                    /*
+                    BOOL doDel=YES;
+                    if (doDel) {
+                        DBGLog(@"deleting orphan %d file %@",ftid,fn);
+                        [rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
+                    } else {
+                        trackerObj *to = [[trackerObj alloc]init:ftid];
+                        DBGLog(@"%@ iv: %d orphan file: %@",fn, ftid, to.trackerName );
+                        [to release];
+                    }
+                     */
+                }
+                
+            } else if ([fn hasPrefix:@"stash_trkr"]) {
+                [self restoreTracker:fn ndx:10];
+                didRecover=YES;
+                //DBGLog(@"deleting stashed tracker %@",fn);
+                //[rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
+            }
+        }
+        NSNumber *tlTid;
+        i=0;
+        for (tlTid in i1) {
+            NSString *tltidFilename = [dictTid2Filename objectForKey:tlTid];
+            if (tltidFilename) {
+                DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
+            } else {
+                NSString *tname = [s1 objectAtIndex:i];
+                DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
+                self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
+                [self toExecSql];
+            }
+            i++;
+        }
+    }
+    
+    [i1 release];
+    [s1 release];
+    [dictTid2Ndx release];
+    [dictTid2Filename release];
+    self.sql = nil;
+    
+    return didRecover;
+}
+
 @end

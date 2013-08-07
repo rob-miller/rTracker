@@ -976,3 +976,12 @@ TODO: regen all .rtrks on website
    - re-submit as 1.1.0
 
 --- commit ---
+
+06 aug 2013
+   - initial implementation notifyReminderViewController
+   - oops, extraneous graph limit: label; removed
+   - replace wipeOrphans with recoverOrphans
+   - submit as 1.1.1
+
+--- commit ---
+

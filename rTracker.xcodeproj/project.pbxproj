@@ -129,6 +129,9 @@
 		D4AE7C49148C0E290085EB78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4AE7C48148C0E290085EB78 /* Default@2x.png */; };
 		D4B3009315A9B51A0042319D /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4B3009215A9B51A0042319D /* sampleTrackers */; };
 		D4B5E7C414478A1C002E30F2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D4B5E7C314478A1C002E30F2 /* Default.png */; };
+		D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */; };
+		D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */; };
+		D4B634BC17B2073E00E96BC1 /* toReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634BB17B2073E00E96BC1 /* toReminder.m */; };
 		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
 		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
 		D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
@@ -270,6 +273,11 @@
 		D4AE7C48148C0E290085EB78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		D4B3009215A9B51A0042319D /* sampleTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sampleTrackers; sourceTree = "<group>"; };
 		D4B5E7C314478A1C002E30F2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminderViewController.h; sourceTree = "<group>"; };
+		D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderViewController.m; sourceTree = "<group>"; };
+		D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderViewController.xib; sourceTree = "<group>"; };
+		D4B634BA17B2073E00E96BC1 /* toReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toReminder.h; sourceTree = "<group>"; };
+		D4B634BB17B2073E00E96BC1 /* toReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = toReminder.m; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
 		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
@@ -574,6 +582,8 @@
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
 				D4A700CB13798874005E0E23 /* togd.h */,
 				D4A700CC13798874005E0E23 /* togd.m */,
+				D4B634BA17B2073E00E96BC1 /* toReminder.h */,
+				D4B634BB17B2073E00E96BC1 /* toReminder.m */,
 			);
 			name = "trackerObj classes";
 			sourceTree = "<group>";
@@ -613,6 +623,9 @@
 				D4A317B21192B7C800F062AC /* configTlistController.m */,
 				D49854AD12312A400009E458 /* useTrackerController.h */,
 				D49854AE12312A400009E458 /* useTrackerController.m */,
+				D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */,
+				D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */,
+				D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */,
 				D4956B2112E0717400B0BB9B /* graphing */,
 				D4956B2312E076E100B0BB9B /* date picker */,
 				D4956B3A12E0886E00B0BB9B /* privacy */,
@@ -772,6 +785,7 @@
 				D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */,
 				D4B3009315A9B51A0042319D /* sampleTrackers in Resources */,
 				D414DDBE1632D5B100010847 /* Default-568h@2x.png in Resources */,
+				D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -886,6 +900,8 @@
 				D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */,
 				D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */,
 				D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */,
+				D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */,
+				D4B634BC17B2073E00E96BC1 /* toReminder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

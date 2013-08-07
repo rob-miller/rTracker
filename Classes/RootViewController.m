@@ -754,7 +754,17 @@ static BOOL InstallSamples;
     //[self.tlist release];  // rtm 05 feb 2012 +1 for alloc, +1 when put in self.tlist
 
     
-    [self.tlist wipeOrphans];        // added 30.vii.13
+    //[self.tlist wipeOrphans];        // added 30.vii.13
+    if ([self.tlist recoverOrphans]) {     // added 07.viii.13
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"Recovered files" message:@"One or more tracker files were recovered, please delete if not needed."
+                              delegate:nil
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        
+    }
     [self.tlist loadTopLayoutTable];  // was loadinputfiles
     
 	/*
