@@ -125,7 +125,7 @@ static unsigned int theKey;
 - (void) sDraw:(NSString*)str {
 	
 	//[str drawAtPoint:self.currRect.origin withFont:myFont];
-	[str drawInRect:self.currRect withFont:myFont lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[str drawInRect:self.currRect withFont:myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	
 }
 

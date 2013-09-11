@@ -985,3 +985,61 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+09 aug 2013
+   - 1.1.1 on sale now
+   - created recoverValues routine, but was mistake - better to simply load a saved plist
+   - moved simple 'ok' UIAlerts to rTracker_resource:alert
+   
+   + see TODO - leave a stash file when loading plist
+
+26 aug 2013
+   - working on notifyReminderView
+   - build for ios7
+
+27 aug 2013
+   - set cell color for tables - root and utc - to clearColor
+   - remove spiral from notebook page -- remove '   ' before tracker label
+   - functionality seems to be there for ios7?
+
+28 aug 2013
+   - icons for retina
+   - added test for ios7 to color bars in rootViewController for pre-ios7
+   - implemented min, max, count functions
+
+02 sept 2013 
+   - add alternate ios7 xib for addValObj
+   - add section header spec for edit tracker - ios 7
+
+03 sept 2013
+   - add  alternate ios7 xib for configTList
+   - working on glasses graphic for ios 7
+
+04 sept 2013
+   - re-worked glasses icons for ios7
+   - made top and bottom bars show graph paper background image but would really like bottom bar to really be translucent ... enough for image now though.
+
+05 sept 2013
+   - launch images done for all versions
+   - several .xib files set to open in 4.6 for compiles
+
+10 sept 2013
+   - ios7 gm build xcode
+   - fix avg divisor to not count null value entries 
+   - add graph paper background image on most screens some table cells still need (?)
+
+11 sept 2013
+   - privacy view background set to graph paper
+   - changed size params for password requester
+   - started on preferred font but actually think better with selected pt sizes
+   - fix enable cell if choice value = 0 but selected
+
+
+
++ add -[n] entries thing
++ add entry_count as a fn piece -- count of entries over range, so avg could be sum()/entry_count
+
++ make graph bars brighter / less opaque when selected ?
++ add track it all to with various functions to default trackers
+
+
+

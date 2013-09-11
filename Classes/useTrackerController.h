@@ -59,6 +59,8 @@
 
 //@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 
+- (void) updateUTC:(NSNotification*)n;
+
 - (void) updateToolBar;
 - (void) setTrackerDate:(int) targD;
 - (void) doGT;

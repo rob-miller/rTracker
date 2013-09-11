@@ -407,22 +407,25 @@
             vid = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
             //valueObj *valo = [to getValObj:vid];
             NSString *sv1 = [to getValObj:vid].value;
+            BOOL nullV1 = (nil == sv1 || [@"" isEqualToString:sv1]);
             double v1 = [sv1 doubleValue];
+            to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",vid,epd0,epd1];
+            int ci= [to toQry2Int];
 #if DEBUGFUNCTION
             DBGLog(@"v1= %f", v1);
 #endif
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
                 case FN1ARGDELTA :
-                    if (sv1 == nil || [sv1 isEqualToString:@""])
+                    if (nullV1)
                         return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
                     // epd1 value is ok, get from db value for epd0
                     //to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
                     // with per calendar date calcs, epd0 may not match a datapoint
                     // - so get val coming into this time segment or skip for beginning - rtm 17.iii.13
-                    to.sql= [NSString stringWithFormat:@"select count(*) from voData where id=%d and date<=%d;",vid,epd0];
-                    int c= [to toQry2Int];
-                    if (0 == c)
+                    to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%d and date<=%d;",vid,epd0];
+                    ci= [to toQry2Int]; // slightly different for delta
+                    if (0 == ci)
                         return nil; // skip for beginning
                     to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<=%d order by date desc limit 1;",vid,epd0];
                     
@@ -443,14 +446,64 @@
                     double c = [[self.vo.optDict objectForKey:@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
                     // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
                     if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
-                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
+                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and val <> '' and date >=%d and date <%d;",
                                   vid,epd0,epd1];
-                        c = [to toQry2Float] + 1.0f;  // +1 for current on screen
+                        c = [to toQry2Float] + (nullV1 ? 0.0f : 1.0f);  // +1 for current on screen
                     }
                     
+                    if (c == 0.0f) {
+                        return nil;
+                    }
                     to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%d and date >=%d and date <%d;",
                               vid,epd0,epd1];
-                    result = ([to toQry2Float] + v1) / c;  // c>0 because at least 1 from above
+                    double v =  [to toQry2Float];
+                    result = (v + v1) / c ;
+#if DEBUGFUNCTION
+                    DBGLog(@"avg: v= %f v1= %f (v+v1)= %f c= %f rslt= %f ",v,v1,(v+v1),c,result);
+#endif
+                    break;
+                }
+                case FN1ARGMIN :
+                {
+                    if (0 == ci && nullV1) {
+                        return nil;
+                    } else if (0 == ci) {
+                        result = v1;
+                    } else {
+                        to.sql = [NSString stringWithFormat:@"select min(val) from voData where id=%d and date >=%d and date <%d;",
+                              vid,epd0,epd1];
+                        result = [to toQry2Float];
+                        if (!nullV1 && v1 < result) {
+                            result = v1;
+                        
+                        }
+                    }
+                    break;
+                }
+                case FN1ARGMAX :
+                {
+                    if (0 == ci && nullV1) {
+                        return nil;
+                    } else if (0 == ci) {
+                        result = v1;
+                    } else {
+                        to.sql = [NSString stringWithFormat:@"select max(val) from voData where id=%d and date >=%d and date <%d;",
+                              vid,epd0,epd1];
+                        result = [to toQry2Float];
+                        if (!nullV1 && v1>result) {
+                            result = v1;
+                        }
+                    }
+                    break;
+                }
+                case FN1ARGCOUNT :
+                {
+                    to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
+                              vid,epd0,epd1];
+                    result = [to toQry2Float];
+                    if (!nullV1) {
+                        result += 1.0f;
+                    }
                     break;
                 }
                 default:

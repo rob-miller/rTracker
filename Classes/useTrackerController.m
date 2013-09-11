@@ -841,24 +841,17 @@ NSString *emItunesExport = @"save for iTunes";
 }
 
 - (void) privAlert:(NSInteger)tpriv vpm:(NSInteger)vpm {
-    NSString *title;
+    NSString *msg;
     if (vpm > tpriv) {
         if (tpriv > PRIVDFLT) {
-            title = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker, and greater than %d to see all items in it",tpriv,self.tracker.trackerName, vpm];
+            msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker, and greater than %d to see all items in it",tpriv,self.tracker.trackerName, vpm];
         } else {
-            title = [NSString stringWithFormat:@"Set a privacy level greater than %d to see all items in the %@ tracker",vpm, self.tracker.trackerName];
+            msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see all items in the %@ tracker",vpm, self.tracker.trackerName];
         }
     } else {
-        title = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker",tpriv,self.tracker.trackerName];
+        msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker",tpriv,self.tracker.trackerName];
     }
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"Privacy alert" message:title
-                          delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil];
-    [alert show];
-    [alert release];
-    
+    [rTracker_resource alert:@"Privacy alert" msg:msg];    
 }
 
 - (void) checkPrivWarn {

@@ -123,7 +123,12 @@
 	}
 	[doneBtn release];
 
-	    
+    // set graph paper background
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+    [bg release];
+	   
     [super viewDidLoad];
 }
 
@@ -659,6 +664,37 @@
     [nrvc release];
     
 }
+#if 0
+/* don't do this - better to just reload plist */
+
+- (void) recoverValuesBtn {
+    int recoverCount=0;
+    NSMutableArray *Ids = [[NSMutableArray alloc]init];
+    self.to.sql = @"select distinct id from voData order by id";
+    [self.to toQry2AryI:Ids];
+    for (NSNumber *ni in Ids) {
+        int i = [ni intValue];
+        self.to.sql = [NSString stringWithFormat:@"select id from voConfig where id=%d",i];
+        if (i != [self.to toQry2Int]) {
+            NSString *recoverName = [NSString stringWithFormat:@"recover%d",i];
+            self.to.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
+                           i, 0, VOT_NUMBER, recoverName, 0, VOG_DOTS, PRIVDFLT];
+            [self.to toExecSql];
+            recoverCount++;
+        }
+    }
+    [Ids release];
+    NSString *msg;
+    if (recoverCount) {
+        msg = [NSString stringWithFormat:@"%d",recoverCount];
+    } else {
+        msg = @"no";
+    }
+    
+    [rTracker_resource alert:@"Recovered Values" msg:[msg stringByAppendingString:@" values recovered"]];
+    
+}
+#endif
 
 //- (void) drawGeneralVoOpts 
 //{
@@ -772,7 +808,8 @@
 					addsv:YES ];
     
 
-/*
+#if !RELEASE
+    
  // reminder config button:
     
 	frame.origin.x = MARGIN;
@@ -780,7 +817,21 @@
 	frame.origin.y += MARGIN + frame.size.height;
     
     [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
- */   
+
+    /* don't do this - better to just reload plist
+     
+    // recover values button:
+    
+	frame.origin.x = MARGIN;
+	//frame.origin.x += frame.size.width + MARGIN + SPACE;
+	frame.origin.y += MARGIN + frame.size.height;
+    
+    [self configActionBtn:frame key:nil label:@"Recover values" target:self action:@selector(recoverValuesBtn)];
+    */
+    
+
+#endif
+    
 }
 
 #pragma mark main config region methods

@@ -90,7 +90,16 @@ UITableView *deleteTableView;
 	//self.toolbarItems = tbArray;
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
 	[exportBtn release];
-	    
+
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    //self.table.backgroundView = bg;
+    
+    // set graph paper background
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+    [bg release];
+
 	[super viewDidLoad];
 }
 

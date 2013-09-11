@@ -8,6 +8,7 @@
 
 #import "voImage.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voImage
 
@@ -80,14 +81,7 @@
         [self.devc presentViewController:picker animated:YES completion:NULL];
 		[picker release];
 	} else {
-		UIAlertView *alert = [[UIAlertView alloc]
-							  initWithTitle:@"Error accessing photo library"
-							  message:@"Device does not support a photo library" 
-							  delegate:nil 
-							  cancelButtonTitle:@"Cancel"
-							  otherButtonTitles:nil];
-		[alert show];
-		[alert release];
+        [rTracker_resource alert:@"Error accessing photo library" msg:@"Device does not support a photo library"];
 	}
 }
 

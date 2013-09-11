@@ -11,6 +11,10 @@
 // make sqlite db files available from itunes? (perhaps prefs option later)
 #define DBACCESS NO
 
+// Sample code from iOS 7 Transistion Guide
+// Loading Resources Conditionally
+NSUInteger DeviceSystemMajorVersion();
+#define kIS_LESS_THAN_IOS7 (DeviceSystemMajorVersion() < 7)
 
 @interface rTracker_resource : NSObject {
     
@@ -21,6 +25,8 @@
 + (BOOL) deleteFileAtPath:(NSString*)fp;
 
 + (unsigned int) countLines:(NSString*)str;
++ (void) alert:(NSString*)title msg:(NSString*)msg;
+
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;
 + (NSArray*) colorSet;
@@ -42,6 +48,8 @@
 + (void) stashTracker:(int)tid;
 + (void) rmStashedTracker:(int)tid;
 + (void) unStashTracker:(int)tid;
+
+
 @end
 
 extern BOOL keyboardIsShown;

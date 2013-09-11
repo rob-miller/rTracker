@@ -95,6 +95,16 @@ NSMutableArray *deleteVOs=nil;
 	
 	[self.table setEditing:YES animated:YES];
 	self.table.allowsSelection = NO;  
+
+    // set graph paper background
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    self.table.backgroundView = bg;
+    
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+    [bg release];
+
 	
 	[super viewDidLoad];
 }
@@ -319,13 +329,7 @@ DBGLog(@"btnAddValue was pressed!");
 		[self.navigationController popViewControllerAnimated:YES];
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 	} else {
-		UIAlertView *alert = [[UIAlertView alloc]
-							  initWithTitle:@"save Tracker" message:@"Please set a name for this tracker to save"
-							  delegate:nil 
-							  cancelButtonTitle:@"Ok"
-							  otherButtonTitles:nil];
-		[alert show];
-		[alert release];
+        [rTracker_resource alert:@"save Tracker" msg:@"Please set a name for this tracker to save"];
 	}
 }
 
@@ -404,6 +408,17 @@ DBGLog(@"btnAddValue was pressed!");
 //- (NSInteger)tableView:(UITableView *)tableView numberOfSections: (UITableView *) tableView {
 - (NSInteger)numberOfSectionsInTableView: (UITableView *) tableView {
 		return (NSInteger) 2;
+}
+
+//TODO: tweak this to get section headers right ios7
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 6.0;
+    /*
+    if (section == 0)
+        return 6.0;
+    else return UITableViewAutomaticDimension;
+     */
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *) indexPath {
@@ -599,7 +614,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
         }
         
-		addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+		addValObjController *avc;
+        if (kIS_LESS_THAN_IOS7) {
+            avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+        } else {
+            avc = [[addValObjController alloc] initWithNibName:@"addValObjController7" bundle:nil ];
+        }
 		avc.parentTrackerObj = self.tempTrackerObj;
 		[self.navigationController pushViewController:avc animated:YES];
 		[avc release];
@@ -609,7 +629,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) addValObj:(NSUInteger) row {
-	addValObjController *avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+	addValObjController *avc;
+    if (kIS_LESS_THAN_IOS7) {
+        avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
+    } else {
+        avc = [[addValObjController alloc] initWithNibName:@"addValObjController7" bundle:nil ];
+    }
 	avc.parentTrackerObj = self.tempTrackerObj;
 	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 	[avc stashVals];

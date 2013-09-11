@@ -111,7 +111,7 @@
 
 - (void) segmentAction:(id) sender
 {
-    if ([sender selectedSegmentIndex] == [self getSegmentIndexForValue])
+    if (([sender selectedSegmentIndex] == [self getSegmentIndexForValue]) && self.vo.useVO) // check useVO in case programmed value is same as index 
         return;
 	DBGLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];

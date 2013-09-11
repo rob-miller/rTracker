@@ -13,6 +13,7 @@
 #import "privDefs.h"
 #import "dbg-defs.h"
 #import "RootViewController.h"
+#import "rTracker-resource.h"
 
 #define CFGBTNCONFIG @" Setup "
 #define CFGBTNLOCK   @" Lock  "
@@ -79,7 +80,16 @@ static int privacyValue=PRIVDFLT;
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
 		self.pwState = PWNEEDPRIVOK; //PWNEEDPASS;
-		self.backgroundColor = [UIColor darkGrayColor];
+        if (kIS_LESS_THAN_IOS7) {
+            self.backgroundColor = [UIColor darkGrayColor];
+        } else {
+            //self.backgroundColor = [UIColor whiteColor];
+            // set graph paper background
+            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+            [self addSubview:bg];
+            [self sendSubviewToBack:bg];
+            [bg release];
+        }
         self.layer.cornerRadius = 8;
 		showing = PVNOSHOW;
         //self.hidden = YES;
@@ -438,7 +448,12 @@ static NSTimeInterval lastShow=0;
 
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg {
 	UIButton *rbtn = [UIButton buttonWithType:UIButtonTypeRoundedRect ];
-	CGRect bframe = (CGRect) {borg, [btitle sizeWithFont:[UIFont systemFontOfSize:18]]};
+    CGRect bframe;
+    if (kIS_LESS_THAN_IOS7) {
+        bframe = (CGRect) {borg, [btitle sizeWithFont:[UIFont systemFontOfSize:18]]};
+    } else {
+        bframe = (CGRect) {borg, [btitle sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]]};
+    }
 	bframe.origin.x -= bframe.size.width/2.0f;  // center now we know btn title size
 	rbtn.frame = bframe;
 	[rbtn setTitle:btitle forState:UIControlStateNormal];
@@ -453,6 +468,7 @@ static NSTimeInterval lastShow=0;
 							   self.frame.size.height * TICTACVRTFRAC}];
 		[clearBtn addTarget:self action:@selector(doClear:) forControlEvents:UIControlEventTouchUpInside ];		
         clearBtn.layer.cornerRadius = BTNRADIUS;
+        //clearBtn.backgroundColor = [UIColor whiteColor];
 	}
 	return clearBtn;
 }
@@ -473,6 +489,7 @@ static NSTimeInterval lastShow=0;
          */
 		[configBtn addTarget:self action:@selector(showConfig:) forControlEvents:UIControlEventTouchUpInside ];
         configBtn.layer.cornerRadius = BTNRADIUS;
+        //configBtn.backgroundColor = [UIColor whiteColor];
 	}
 	return configBtn;
 }

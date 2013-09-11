@@ -27,6 +27,8 @@
 	<string>Icon.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
+		<string>icon80</string>
+		<string>icon120</string>
 		<string>Icon.png</string>
 		<string>Icon@2x.png</string>
 		<string>Icon-72.png</string>
@@ -47,13 +49,38 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1083</string>
+	<string>1373</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>UILaunchImageFile</key>
+	<string>Default</string>
+	<key>UILaunchImages</key>
+	<array>
+		<dict>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+			<key>UILaunchImageName</key>
+			<string>launchRetina4_7</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageSize</key>
+			<string>{320, 568}</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>7.0</string>
+			<key>UILaunchImageName</key>
+			<string>launchRetina_7</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+			<key>UILaunchImageSize</key>
+			<string>{320, 480}</string>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

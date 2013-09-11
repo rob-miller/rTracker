@@ -21,7 +21,10 @@
 #define FN1ARGPOSTSUM	(FN1ARGSUM-1)
 #define FN1ARGPRESUM	(FN1ARGPOSTSUM-1)
 #define FN1ARGAVG		(FN1ARGPRESUM-1)
-#define FN1ARGLAST		FN1ARGAVG
+#define FN1ARGMIN		(FN1ARGAVG-1)
+#define FN1ARGMAX		(FN1ARGMIN-1)
+#define FN1ARGCOUNT		(FN1ARGMAX-1)
+#define FN1ARGLAST		FN1ARGCOUNT
 
 #define isFn1Arg(i)		((i<=FN1ARGFIRST) && (i>=FN1ARGLAST))
 
@@ -56,10 +59,10 @@
 #define FNCONSTANT_TITLE @"constant"
 
 // FnArrStrs must be same order as #defines above
-#define FnArrStrs	@"change_in", @"sum", @"post-sum", @"pre-sum", @"avg", @"+", @"-", @"*", @"/", @"(", @")",@"weeks",@"days",@"hours", FNCONSTANT_TITLE
+#define FnArrStrs	@"change_in", @"sum", @"post-sum", @"pre-sum", @"avg", @"min", @"max", @"count", @"+", @"-", @"*", @"/", @"(", @")",@"weeks",@"days",@"hours", FNCONSTANT_TITLE
 
-#define FN1ARGSET       FN1ARGDELTA,FN1ARGSUM,FN1ARGAVG
-#define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
+//#define FN1ARGSET       FN1ARGDELTA,FN1ARGSUM,FN1ARGAVG
+//#define FNOPSET			FNOPPLUS,FNOPMINUS,FNOPTIMES,FNOPDIVIDE
 //#define FNTIMESET       FNTIMEWEEKS,FNTIMEDAYS,FNTIMEHRS
 
 

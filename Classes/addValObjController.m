@@ -117,6 +117,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	colorCount = [[rTracker_resource colorSet] count];
 
+    self.votPicker.showsSelectionIndicator = YES;
+    
 	if (self.tempValObj == nil) {
 		tempValObj = [[valueObj alloc] init];
 		tempValObj.parentTracker = (id) self.parentTrackerObj;
@@ -148,8 +150,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	}
 
 	self.title = @"Item";
-	
-	self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+	if (kIS_LESS_THAN_IOS7) {
+        self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+    } else {
+        self.labelField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    }
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
@@ -158,6 +163,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		forControlEvents:UIControlEventEditingDidEndOnExit];
 //	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
+// set graph paper background
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+    [bg release];
+
 	[super viewDidLoad];
 }
 
@@ -238,13 +249,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//DBGLog(@"addVObjC: btnSave was pressed!");
     
     if ([self.labelField.text length] == 0) {
-		UIAlertView *alert = [[UIAlertView alloc]
-							  initWithTitle:@"save Item" message:@"Please set a name for this item to save"
-							  delegate:nil 
-							  cancelButtonTitle:@"Ok"
-							  otherButtonTitles:nil];
-		[alert show];
-		[alert release];
+        [rTracker_resource alert:@"save Item" msg:@"Please set a name for this item to save"];
         return;
     
     }
@@ -344,7 +349,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//NSString *s;
 	//while ( s = (NSString *) [e nextObject]) {
 	for (NSString *s in arr) {
-		CGSize tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
+		CGSize tsize;
+        if (kIS_LESS_THAN_IOS7) {
+            tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
+        } else {
+            tsize = [s sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]];
+        }
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
 		}
@@ -419,14 +429,18 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	switch (component) {
 		case 0:
 			frame.size = sizeVOTLabel;
-			frame.size.width += FONTSIZE;
+            frame.size.width += FONTSIZE;
 			//CGFloat lfs = [UIFont labelFontSize]; // 17
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
 			label.text = [self.parentTrackerObj.votArray objectAtIndex:row];
-			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
+            //if (kIS_LESS_THAN_IOS7) {
+                label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
+            //} else {
+            //    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+            //}
 			break;
 		case 1:
 			frame.size.height = 1.2*COLORSIDE;
@@ -447,7 +461,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			label = [[UILabel alloc] initWithFrame:frame];
 									  label.backgroundColor = [UIColor clearColor]; //greenColor];
 			label.text = [self.graphTypes objectAtIndex:row];
-			label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
+            //if (kIS_LESS_THAN_IOS7) {
+                label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
+            //} else {
+            //    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+            //}
+
 			break;
 		default:
 			dbgNSAssert(0,@"bad component for avo picker");

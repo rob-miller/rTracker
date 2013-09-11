@@ -328,6 +328,7 @@ static BOOL InstallSamples;
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
         if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
             didSomething = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
+            //TODO:need to delete stash file now!!!
             //tname = [fname substringToIndex:inmatch.location];
             //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
             // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
@@ -715,13 +716,18 @@ static BOOL InstallSamples;
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
     self.refreshLock = 0;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
     
+    if (kIS_LESS_THAN_IOS7) {
+        self.navigationController.navigationBar.barStyle = UIBarStyleBlack;  //rm for ios7
+    } else {
+        //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"] forBarMetrics:UIBarMetricsDefault];
+    }
     self.navigationItem.rightBarButtonItem = self.addBtn;
 	//[self.addBtn release];
 	    
-    self.navigationItem.leftBarButtonItem = self.editBtn;
+    //self.navigationItem.leftBarButtonItem = self.editBtn;
+    self.navigationItem.backBarButtonItem = self.editBtn;
 	//[self.editBtn release];
 
     [self initTitle];
@@ -730,12 +736,23 @@ static BOOL InstallSamples;
     
     self.stashedPriv = nil;
     self.openUrlLock = NO;
-
-    //self.navigationController.toolbar.translucent = YES;
-    self.navigationController.toolbar.barStyle = UIBarStyleBlack;
-    //self.navigationController.toolbar.translucent = YES;
+    //DBGLog(@"dsmv= %@",[[UIDevice currentDevice] systemVersion] );
     
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd1-320-460.png"]];
+    //self.navigationController.toolbar.translucent = YES;
+    //if (SYSTEM_VERSION_LESS_THAN(@"7.0")) {
+    if (kIS_LESS_THAN_IOS7) {
+        self.navigationController.toolbar.barStyle = UIBarStyleBlack;  // rm for ios7
+    } else {
+        self.navigationController.toolbar.translucent = YES;
+        ///*  // not really translucent -- cannot see list behind toolbar
+        [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]
+                                                forToolbarPosition:0
+                                                barMetrics:UIBarMetricsDefault];
+         //*/
+        self.navigationController.toolbar.backgroundColor =[UIColor clearColor];
+
+    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     self.tableView.backgroundView = bg;
     [bg release];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -756,14 +773,7 @@ static BOOL InstallSamples;
     
     //[self.tlist wipeOrphans];        // added 30.vii.13
     if ([self.tlist recoverOrphans]) {     // added 07.viii.13
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Recovered files" message:@"One or more tracker files were recovered, please delete if not needed."
-                              delegate:nil
-                              cancelButtonTitle:@"Ok"
-                              otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-        
+        [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed."];
     }
     [self.tlist loadTopLayoutTable];  // was loadinputfiles
     
@@ -912,7 +922,7 @@ static BOOL InstallSamples;
 
     [self restorePriv];
     //[self refreshViewPart2];
-    
+
     [super viewWillAppear:animated];
 }
 
@@ -1052,8 +1062,14 @@ BOOL stashAnimated;
     //BOOL shwng = (self.privacyObj.showing == PVNOSHOW); 
     BOOL minprv = ( [privacyV getPrivacyValue] > MINPRIV );
     
-    NSString *btnImg = ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
-                                : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) );
+    NSString *btnImg = ( kIS_LESS_THAN_IOS7 ?
+                        ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
+                         : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) )
+                        :
+                        ( noshow ? ( minprv ? @"shadeview-button-7.png" : @"closedview-button-7.png" )
+                         : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
+                        )
+                        ;
     
     [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
 }
@@ -1063,7 +1079,8 @@ BOOL stashAnimated;
 	if (privateBtn == nil) {
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
-        [pbtn setImage:[UIImage imageNamed:@"closedview-button.png"] forState:UIControlStateNormal];
+        [pbtn setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"closedview-button.png" : @"closedview-button-7.png")]
+              forState:UIControlStateNormal];
         pbtn.frame = CGRectMake(0, 0, ( pbtn.currentImage.size.width * 1.5 ), pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
         privateBtn = [[UIBarButtonItem alloc]
@@ -1078,7 +1095,8 @@ BOOL stashAnimated;
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
             [(UIButton *)privateBtn.customView 
-             setImage:[UIImage imageNamed:@"fullview-button-blue.png"] forState:UIControlStateNormal];
+             setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"fullview-button-blue.png" : @"fullview-button-blue-7.png")]
+             forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
             [self privBtnSetImg:(UIButton *)privateBtn.customView noshow:noshow];
@@ -1182,7 +1200,12 @@ BOOL stashAnimated;
     if (PVNOSHOW != self.privacyObj.showing) {
         return;
     }
-	configTlistController *ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
+    configTlistController *ctlc;
+    if(kIS_LESS_THAN_IOS7) {
+        ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
+    } else {
+        ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController7" bundle:nil ];
+    }
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
     
@@ -1242,16 +1265,17 @@ BOOL stashAnimated;
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 
-        //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]];
+        //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]]; // note needs to be @2x.png for retina
         //[cell setBackgroundView:bg];
         //[bg release];
-        
+
+        cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [NSString stringWithFormat:@"      %@",[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
+	cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
     //cell.textLabel.backgroundColor = [UIColor clearColor];
 
     return cell;

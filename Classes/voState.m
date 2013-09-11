@@ -236,6 +236,8 @@
 
     label.backgroundColor = [UIColor clearColor];
     //label.textColor = [UIColor blackColor];
+    cell.backgroundColor = [UIColor clearColor];
+
 	[cell.contentView addSubview:label];
 	[label release];
 	
@@ -281,6 +283,7 @@
     //DBGLog(@"text= %@",cell.textLabel.text);
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor clearColor];
 	//cell.textLabel.tag = kViewTag;
 	bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
 	bounds.origin.y = maxLabel.height - (MARGIN);

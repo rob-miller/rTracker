@@ -17,7 +17,7 @@
 
 @synthesize tracker, startHr, startMin, finishHr, finishMin, repeatTimes, finishSlider, intervalButton;
 
-- (void)btnDone:(UIButton *)btn
+- (void)btnDone:(id)sender
 {
 	//ios6 [self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
@@ -43,7 +43,7 @@
 								initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 								target:self
 								action:@selector(btnDone:)];
-    self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
+    self.toolbarItems = [NSArray arrayWithObjects: doneBtn, nil];
 
 	[doneBtn release];
 
@@ -55,6 +55,38 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+// 3rd 5th 7th 10th day of each month
+// every n hrs / days / weeks / months
+// n hrs / days / weeks / months from last save
+
+- (IBAction)fromSaveBtn:(id)sender {
+    DBGLog(@"fromSaveBtn");
+}
+- (IBAction)prevBtn:(id)sender {
+    DBGLog(@"prevBtn");
+}
+- (IBAction)nextAddBtn:(id)sender {
+    DBGLog(@"nextAddBtn");
+}
+- (IBAction)everyBtn:(id)sender {
+    DBGLog(@"everyBtn");
+}
+- (IBAction)btnHelp:(id)sender {
+    DBGLog(@"btnHelp");
+}
+
+- (IBAction)monthDaysChange:(id)sender {
+    DBGLog(@"monthDaysChange");
+}
+- (IBAction)everyTFChange:(id)sender {
+    DBGLog(@"everyTFChange");
+}
+
+- (IBAction)weekMonthEveryChange:(id)sender {
+    DBGLog(@"weekMonthEveryChange");
 }
 
 -(IBAction) wdBtn:(id)sender {

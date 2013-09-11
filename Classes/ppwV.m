@@ -30,14 +30,27 @@
 	CGRect frame = pv.frame;
 	DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	frame.origin.y = frame.size.height;// - 10.0f;
-	frame.origin.x = frame.size.width * 0.2f;
-	frame.size.width *= 0.8f;
-	frame.size.height *=0.25f;
-	
+	if (kIS_LESS_THAN_IOS7) {
+        frame.size.height *=0.25f;
+        frame.origin.x = frame.size.width * 0.2f;
+        frame.size.width *= 0.8f;
+	} else {
+        frame.size.height *=0.35f;
+    }
+    
 	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
-		self.backgroundColor = [UIColor lightGrayColor];   //blueColor
+        if (kIS_LESS_THAN_IOS7) {
+            self.backgroundColor = [UIColor darkGrayColor];
+        } else {
+            //self.backgroundColor = [UIColor whiteColor];
+            // set graph paper background
+            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+            [self addSubview:bg];
+            [self sendSubviewToBack:bg];
+            [bg release];
+        }
         self.layer.cornerRadius=8;
 		self.parentView = pv;
 		
@@ -153,6 +166,9 @@
 	//DBGLog(@"ppwv check pass");
 	[self setUpPass:okState cancel:cancelState];
 	self.topLabel.text = @"Please enter password:";
+    if (kIS_LESS_THAN_IOS7) {
+        self.topLabel.textColor = [UIColor whiteColor];
+    }
 	[self.topTF addTarget:self action:@selector(testp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -163,6 +179,9 @@
 	[self setUpPass:okState cancel:cancelState];
 
 	self.topLabel.text = @"Please set a password:";
+    if (kIS_LESS_THAN_IOS7) {
+        self.topLabel.textColor = [UIColor whiteColor];
+    }
 	[self.topTF addTarget:self action:@selector(setp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -290,7 +309,11 @@
 
 - (UILabel*) topLabel {
 	if (nil == topLabel) {
-		topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
+        if (kIS_LESS_THAN_IOS7) {
+            topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
+        } else {
+            topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.15f]];
+        }
 		//[topLabel setHidden:TRUE];
 		topLabel.backgroundColor = [UIColor clearColor];
 		[self addSubview:topLabel];
