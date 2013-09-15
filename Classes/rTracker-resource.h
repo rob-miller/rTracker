@@ -49,6 +49,9 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) rmStashedTracker:(int)tid;
 + (void) unStashTracker:(int)tid;
 
++ (NSString*) fromSqlStr:(NSString*) instr;
++ (NSString*) toSqlStr:(NSString*) instr;
+
 
 @end
 

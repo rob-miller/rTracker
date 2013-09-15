@@ -538,7 +538,7 @@ if (addVO) {
 	NSEnumerator *e2 = [s2 objectEnumerator];
 	
 	for ( NSString *key in s1 ) {
-		[self.optDict setObject:([key isEqualToString:@"name"] ? [self fromSqlStr:[e2 nextObject]] : [e2 nextObject])
+		[self.optDict setObject:([key isEqualToString:@"name"] ? [rTracker_resource fromSqlStr:[e2 nextObject]] : [e2 nextObject])
                          forKey:key];
 	}
 
@@ -768,7 +768,7 @@ if (addVO) {
 	
 	for (NSString *key in self.optDict) {
 		self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('%@', '%@');",
-					key, ([key isEqualToString:@"name"] ? [self toSqlStr:[self.optDict objectForKey:key]] : [self.optDict objectForKey:key])];
+					key, ([key isEqualToString:@"name"] ? [rTracker_resource toSqlStr:[self.optDict objectForKey:key]] : [self.optDict objectForKey:key])];
 		[self toExecSql];
 	}
 	
@@ -810,7 +810,7 @@ if (addVO) {
 
 		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
-					vo.vid, i++, vo.vtype, [self toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
+					vo.vid, i++, vo.vtype, [rTracker_resource toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
 		[self toExecSql];
 		
 		[self clearVoOptDict:vo];
@@ -929,7 +929,7 @@ if (addVO) {
             haveData = YES;
             minPriv = MIN(vo.vpriv,minPriv);
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-                        vo.vid, tdi, [self toSqlStr:vo.value]];
+                        vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
         }
         [self toExecSql];
                         
@@ -1100,7 +1100,7 @@ if (addVO) {
             //NSString *val = [vo.vos mapCsv2Value:[vdata objectForKey:vids]];
             NSString *val = [vdata objectForKey:vids];
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        vid,tdi,val];
+                        vid,tdi,[rTracker_resource toSqlStr:val]];
             [self toExecSql];
             
             if (vo.vpriv < mp) {
@@ -1256,21 +1256,21 @@ if (addVO) {
 	{
         DBGLog(@" key= %@", key);
         if (! [key isEqualToString:TIMESTAMP_LABEL]) { // not timestamp 
-            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
+            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:key]];
             int valobjID,valobjPriv,valobjType;
             [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
             DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
             
             //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
             
-            NSString *val2Store = [self toSqlStr:[aRecord objectForKey:key]];
+            NSString *val2Store = [rTracker_resource toSqlStr:[aRecord objectForKey:key]];
             if ((![@"" isEqualToString:val2Store]) && (VOT_CHOICE == valobjType)) {
                 valueObj *vo = [self getValObj:valobjID];
                 val2Store = [vo.vos mapCsv2Value:val2Store];
             } 
             
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        valobjID,its,val2Store];
+                        valobjID,its,[rTracker_resource toSqlStr:val2Store]];
             [self toExecSql];
             
             if (![@"" isEqualToString:[aRecord objectForKey:key]])  {   // only fields with data
@@ -1358,7 +1358,7 @@ if (addVO) {
 
             // update value data
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        [[idDict objectForKey:key] intValue],its,[self toSqlStr:[aRecord objectForKey:key]]];
+                        [[idDict objectForKey:key] intValue],its,[rTracker_resource toSqlStr:[aRecord objectForKey:key]]];
             [self toExecSql];
             
             // update trkrData - date easy, need minpriv
@@ -1570,7 +1570,7 @@ if (addVO) {
             [vo.optDict setObject:fnstr forKey:@"func"];
 
             
-            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func",fnstr,vo.vid]; // keep consistent
+            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func'",fnstr,vo.vid]; // keep consistent
             [self toExecSql];
             
         }

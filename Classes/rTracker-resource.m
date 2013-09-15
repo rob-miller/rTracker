@@ -139,7 +139,8 @@ static UIActivityIndicatorView *activityIndicator=nil;
     
     if (disable) {
         view.userInteractionEnabled = NO;
-        [navItem setHidesBackButton:YES animated:YES];
+        //[navItem setHidesBackButton:YES animated:YES];
+        navItem.leftBarButtonItem.enabled = NO;
         navItem.rightBarButtonItem.enabled = NO;
     }
     
@@ -152,7 +153,7 @@ static UIActivityIndicatorView *activityIndicator=nil;
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
 // note needs performSelectorOnMainThread fix for ios5
     if (disable) {
-        [navItem setHidesBackButton:NO animated:YES];
+        //[navItem setHidesBackButton:NO animated:YES];
         navItem.rightBarButtonItem.enabled = YES;
         view.userInteractionEnabled = YES;
     }
@@ -168,7 +169,8 @@ static UIProgressView *progressBar=nil;
     
     if (disable) {
         view.userInteractionEnabled = NO;
-        [navItem setHidesBackButton:YES animated:YES];
+        //[navItem setHidesBackButton:YES animated:YES];
+        navItem.leftBarButtonItem.enabled = NO;
         navItem.rightBarButtonItem.enabled = NO;
     }
     
@@ -224,7 +226,8 @@ static BOOL localDisable;
 
 + (void) doFinishProgressBar {
     if (localDisable) {
-        [localNavItem setHidesBackButton:NO animated:YES];
+        //[localNavItem setHidesBackButton:NO animated:YES];
+        localNavItem.leftBarButtonItem.enabled = YES;
         localNavItem.rightBarButtonItem.enabled = YES;
         localView.userInteractionEnabled = YES;
     }
@@ -269,6 +272,8 @@ static BOOL separateDateTimePicker=SDTDFLT;
 }
 
 //---------------------------
+static int lastStashedTid=0;
+
 + (void) stashTracker:(int)tid
 {
     NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",tid];
@@ -280,7 +285,9 @@ static BOOL separateDateTimePicker=SDTDFLT;
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm copyItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
                     toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
-        DBGLog(@"Unable to copy file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+        DBGWarn(@"Unable to copy file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+    } else {
+        lastStashedTid=tid;
     }
 }
 
@@ -288,6 +295,14 @@ static BOOL separateDateTimePicker=SDTDFLT;
     if (-1 == tid) {
         return;
     }
+    if (0 == tid) {
+        if (lastStashedTid) {
+            tid = lastStashedTid;
+        } else {
+            return;
+        }
+    }
+    
     NSString *fname= [NSString stringWithFormat:@"stash_trkr%d.sqlite3",tid];
     NSError *error;
     
@@ -295,8 +310,9 @@ static BOOL separateDateTimePicker=SDTDFLT;
     
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm removeItemAtPath:[rTracker_resource ioFilePath:fname access:DBACCESS] error:&error] != YES) {
-        DBGLog(@"Unable to delete file %@: %@", fname, [error localizedDescription]);
+        DBGWarn(@"Unable to delete file %@: %@", fname, [error localizedDescription]);
     }
+    lastStashedTid=0;
     
 }
 
@@ -316,9 +332,24 @@ static BOOL separateDateTimePicker=SDTDFLT;
     }
     if ([fm moveItemAtPath:[rTracker_resource ioFilePath:oldFname access:DBACCESS]
                     toPath:[rTracker_resource ioFilePath:newFname access:DBACCESS] error:&error] != YES) {
-        DBGLog(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
+        DBGWarn(@"Unable to move file %@ to %@: %@", oldFname, newFname, [error localizedDescription]);
     }    
 }
+
+
++ (NSString*) fromSqlStr:(NSString*) instr {
+    NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"''" withString:@"'"];
+    //DBGLog(@"in: %@  out: %@",instr,outstr);
+    return outstr;
+}
+
++ (NSString*) toSqlStr:(NSString*) instr {
+    //DBGLog(@"in: %@",instr);
+    NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+    //DBGLog(@"in: %@  out: %@",instr,outstr);
+    return outstr;
+}
+
 
 
 @end

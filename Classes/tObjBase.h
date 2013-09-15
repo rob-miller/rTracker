@@ -33,9 +33,6 @@
 - (int) getUnique;
 - (void) minUniquev:(int) minU;
 
-- (NSString*) fromSqlStr:(NSString*) instr;
-- (NSString*) toSqlStr:(NSString*) instr;
-
 - (void) toQry2AryS : (NSMutableArray *) inAry;
 - (void) toQry2AryIS : (NSMutableArray *) i1 s1: (NSMutableArray *) s1;
 - (void) toQry2AryISI : (NSMutableArray *) i1 s1: (NSMutableArray *) s1 i2: (NSMutableArray *) i2;

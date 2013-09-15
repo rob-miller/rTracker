@@ -96,6 +96,7 @@ static BOOL InstallSamples;
                 NSString *tname = [fname substringToIndex:inmatch.location];
                 DBGLog(@"csv load input: %@ as %@",fname,tname);
                 int ndx=0;
+                [self jumpMaxPriv];
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
                         DBGLog(@"match to: %@",tracker);
@@ -162,8 +163,8 @@ static BOOL InstallSamples;
                         ndx++;
                     }
                 }
+                [self restorePriv];
             }
-            
         }
     }
 }
@@ -237,6 +238,8 @@ static BOOL InstallSamples;
     NSDictionary *dataDict = nil;
     int tid;
     
+    [self jumpMaxPriv];
+    
     if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
     } else {  // else is an rtrk
@@ -270,7 +273,6 @@ static BOOL InstallSamples;
     
     return tid;
 }
-
 
 
 - (BOOL) loadTrackerPlistFiles {
@@ -322,7 +324,7 @@ static BOOL InstallSamples;
         
         NSError *err;
         if ([localFileManager moveItemAtPath:target toPath:newTarget error:&err] != YES)
-            DBGLog(@"Error on move %@ to %@: %@",target, newTarget, err);
+            DBGErr(@"Error on move %@ to %@: %@",target, newTarget, err);
             //DBGLog(@"Unable to move file: %@", [err localizedDescription]);
 
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
@@ -341,7 +343,9 @@ static BOOL InstallSamples;
             dataDict = [rtdict objectForKey:@"dataDict"];
              */
         }
-        
+        if (didSomething) {
+            [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
+        }
     
     
         [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];
@@ -656,9 +660,9 @@ static BOOL InstallSamples;
         CGFloat bw1=0.0f;
         CGFloat bw2=0.0f;
         UIView *view = [self.editBtn valueForKey:@"view"];
-        bw1 = view ? ([view frame].size.width + [view frame].origin.x) : (CGFloat)0.0;
+        bw1 = view ? ([view frame].size.width + [view frame].origin.x) : (CGFloat)53.0; // hardcode after change from leftBarButton to backBarButton
         UIView *view2 = [self.addBtn valueForKey:@"view"];
-        bw2 = view2 ? [view2 frame].origin.x : (CGFloat)0.0;
+        bw2 = view2 ? [view2 frame].origin.x : (CGFloat)282.0;
 
         if ((0.0f == bw1) || (0.0f==bw2)) {
             self.title = @"rTracker";
@@ -726,12 +730,10 @@ static BOOL InstallSamples;
     self.navigationItem.rightBarButtonItem = self.addBtn;
 	//[self.addBtn release];
 	    
-    //self.navigationItem.leftBarButtonItem = self.editBtn;
-    self.navigationItem.backBarButtonItem = self.editBtn;
+    self.navigationItem.leftBarButtonItem = self.editBtn;
+    //self.navigationItem.backBarButtonItem = self.editBtn;
 	//[self.editBtn release];
 
-    [self initTitle];
-    
     [self refreshToolBar:NO];
     
     self.stashedPriv = nil;
@@ -752,6 +754,9 @@ static BOOL InstallSamples;
         self.navigationController.toolbar.backgroundColor =[UIColor clearColor];
 
     }
+
+    [self initTitle];
+    
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     self.tableView.backgroundView = bg;
     [bg release];
@@ -794,7 +799,19 @@ static BOOL InstallSamples;
 }
 
 - (void) refreshEditBtn {
-    
+
+/*
+	if ([self.tlist.topLayoutNames count] == 0) {
+		if (self.navigationItem.backBarButtonItem != nil) {
+			self.navigationItem.backBarButtonItem = nil;
+		}
+	} else {
+		if (self.navigationItem.backBarButtonItem == nil) {
+			self.navigationItem.backBarButtonItem = self.editBtn;
+			//[editBtn release];
+		}
+	}
+*/
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			self.navigationItem.leftBarButtonItem = nil;
@@ -802,7 +819,7 @@ static BOOL InstallSamples;
 	} else {
 		if (self.navigationItem.leftBarButtonItem == nil) {
 			self.navigationItem.leftBarButtonItem = self.editBtn;
-			[editBtn release];
+			//[editBtn release];
 		}
 	}
     
@@ -1129,7 +1146,7 @@ BOOL stashAnimated;
                  action:@selector(btnAddTracker)];
 
         [addBtn setStyle:UIBarButtonItemStyleDone];
-         
+        
 	} 
 	return addBtn;
 }
@@ -1142,7 +1159,9 @@ BOOL stashAnimated;
                    //style:UIBarButtonItemStyleBordered 
                    target:self
                    action:@selector(btnEdit)];
-	} 
+    
+        [editBtn setStyle:UIBarButtonItemStylePlain];
+	}
 	return editBtn;
 }
 

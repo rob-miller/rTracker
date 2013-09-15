@@ -1032,7 +1032,27 @@ TODO: regen all .rtrks on website
    - changed size params for password requester
    - started on preferred font but actually think better with selected pt sizes
    - fix enable cell if choice value = 0 but selected
+   -- binary submit & reject
+   - fix 'edit' btn has no view so don't set "owner's tracks" title
+   - count/min/max fns f'd up previous function defns!!!
 
+12 sept 2013
+   - working on fn token re-work, not there yet.  result will be having more function_id space to add easily in future
+
+15 sept 2013
+   - fn token re-work appears to be done, testing.
+   - handle exceptions on restoreTracker if trackerName is nil - may have only reached this config due to testing but safer now
+   - fix readCSV to escape apostrophes in voName
+   - fix updateVIDinFns() bug - 'func without final apostrophe
+   - condense sql errors to subroutine
+   - breakpoints on all DBGErr messages
+   - fix loadDataDict needed toSqlStr ; also csvReceiveRecord, setFnVal (prob only numeric but safer)
+   - move to.from sqlStr to rTracker_resource
+   - fromSqlStr when testing priv password
+   - clean up load input files - jumpPriv/restorePriv around plist, rtrk, csv loads; plist load dumps stashed tracker
+
+
+++ 
 
 
 + add -[n] entries thing

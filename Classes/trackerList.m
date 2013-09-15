@@ -140,7 +140,7 @@
     int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
     privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
 	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
-				rank, tObj.toid, [self toSqlStr:tObj.trackerName], privVal]; 
+				rank, tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal];
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -152,7 +152,7 @@
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
 		//DBGLog(@" %@ to rank %d",tracker,nrank);
-		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ self toSqlStr:tracker]];
+		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ rTracker_resource toSqlStr:tracker]];
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
@@ -170,7 +170,7 @@
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
 		
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,[self toSqlStr:tracker], priv];  // rank in db always non-0
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,[rTracker_resource toSqlStr:tracker], priv];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -201,7 +201,7 @@
 // return aaray of TIDs which match name, order by rank
 - (NSArray*) getTIDFromNameDb:(NSString*)str {
     NSMutableArray *i1 = [[NSMutableArray alloc] init];
-    self.sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[self toSqlStr:str]];
+    self.sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[rTracker_resource toSqlStr:str]];
     [self toQry2AryI:i1];
     NSArray *ra = [NSArray arrayWithArray:i1];
     [i1 release];
@@ -457,24 +457,40 @@
 - (void) restoreTracker:(NSString*)fn ndx:(NSUInteger)ndx {
     int ftid = [[fn substringFromIndex:ndx] intValue];
     trackerObj *to;
+    int newTid = ftid;
     
     if ([self checkTIDexists:[NSNumber numberWithInt:ftid]]) {
-        int newTid = [self getUnique];
-        NSString *newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSError *error;
-
-        if ([fm moveItemAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]
-                        toPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
-            DBGLog(@"Unable to move file %@ to %@: %@", fn, newFn, [error localizedDescription]);  // only if gtUnique fails ?
-        }    
-
-        ftid = newTid;
+        newTid = [self getUnique];
     }
+    NSString *newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *error;
+
+    while ([fm fileExistsAtPath:[rTracker_resource ioFilePath:newFn access:DBACCESS]]) {
+        newTid = [self getUnique];
+        newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
+    }
+    
+    if ([fm moveItemAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]
+                    toPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
+        DBGWarn(@"Unable to move file %@ to %@: %@", fn, newFn, [error localizedDescription]);  // only if gtUnique fails ?
+    }
+
+    ftid = newTid;
+    
     to = [[trackerObj alloc] init:ftid];
-    NSString *newName = [@"recovered: " stringByAppendingString:to.trackerName];
-    to.trackerName = newName;
-    [self addToTopLayoutTable:to];
+    if (nil == to.trackerName) {
+        DBGWarn(@"deleting empty tracker file %@",newFn);
+        if ([fm removeItemAtPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
+            DBGLog(@"Unable to delete file %@: %@", newFn, [error localizedDescription]); 
+        }
+        [to release];
+        to=nil;
+    } else {
+        NSString *newName = [@"recovered: " stringByAppendingString:to.trackerName];
+        to.trackerName = newName;
+        [self addToTopLayoutTable:to];
+    }
 }
 
 - (BOOL) recoverOrphans {

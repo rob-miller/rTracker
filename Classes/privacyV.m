@@ -104,6 +104,8 @@ static int privacyValue=PRIVDFLT;
 		[self addSubview:self.nextBtn];
 		[self addSubview:self.ssValLab];
 		
+        [self bringSubviewToFront:self.ttv];
+        
 		[self.parentView addSubview:self];
     }
     return self;

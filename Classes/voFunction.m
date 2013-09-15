@@ -21,20 +21,27 @@
 
 @implementation voFunction
 
-@synthesize epTitles, fnTitles, fnStrs, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab, votWoSelf;
+@synthesize fnStrDict, fn1args, fn2args, fnTimeOps, epTitles, fnTitles, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab, votWoSelf;
 
 #pragma mark -
 #pragma mark core object methods and support
 
 - (void) dealloc {
+    self.fnStrDict = nil;
+	[fnStrDict release];
+    self.fn1args = nil;
+	[fn1args release];
+    self.fn2args = nil;
+	[fn2args release];
+    self.fnTimeOps = nil;
+	[fnTimeOps release];
+	
 	self.epTitles = nil;
 	[epTitles release];
 	
 	self.fnArray = nil;
 	[fnArray release];
-	self.fnStrs = nil;
-	[fnStrs release];
-	
+    
 	self.fnTitles = nil;
 	[fnTitles release];
 	
@@ -71,7 +78,7 @@
 	for (NSString *s in tmp) {
         if (![@"" isEqualToString:s]) {
             //[self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
-            [self.fnArray addObject:[NSNumber numberWithDouble:[s doubleValue]]];
+            [self.fnArray addObject:[NSNumber numberWithDouble:[s doubleValue]]];  // because of constant
         }
 	}
 }
@@ -138,6 +145,7 @@
 	return epTitles;
 }
 
+// current titles to display in picker for building function
 - (NSMutableArray*) fnTitles {
 	if (fnTitles == nil) {
 		fnTitles = [[NSMutableArray alloc] init];
@@ -145,6 +153,7 @@
 	return fnTitles;
 }
 
+// function as built so far
 - (NSMutableArray*) fnArray {
 	if (fnArray == nil) {
 		fnArray = [[NSMutableArray alloc] init];
@@ -152,7 +161,81 @@
 	return fnArray;
 }
 
+
+// enumerate function class tokens
+
+- (NSArray*) fn1args {
+    if (nil == fn1args) {
+        int fn1argToks[] = { ARG1FNS };
+        NSNumber *fn1argsArr[ARG1CNT];
+        int i;
+        for (i=0;i<ARG1CNT;i++) {
+            fn1argsArr[i] = [NSNumber numberWithInt:fn1argToks[i]];
+        }
+        fn1args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn1argsArr count:ARG1CNT] copyItems:YES];
+    }
+    return fn1args;
+}
+
+- (NSArray*) fn2args {
+    if (nil == fn2args) {
+        int fn2argToks[] = { ARG2FNS };
+        NSNumber *fn2argsArr[ARG2CNT];
+        int i;
+        for (i=0;i<ARG2CNT;i++) {
+            fn2argsArr[i] = [NSNumber numberWithInt:fn2argToks[i]];
+        }
+        fn2args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn2argsArr count:ARG2CNT] copyItems:YES];
+    }
+
+    return fn2args;
+}
+
+- (NSArray*) fnTimeOps {
+    if (nil == fnTimeOps) {
+        int fnTimeOpToks[] = { TIMEFNS };
+        NSNumber *fnTimeOpsArr[TIMECNT];
+        int i;
+        for (i=0;i<TIMECNT;i++) {
+            fnTimeOpsArr[i] = [NSNumber numberWithInt:fnTimeOpToks[i]];
+        }
+        fnTimeOps = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fnTimeOpsArr count:TIMECNT] copyItems:YES];
+    }
+    return fnTimeOps;
+}
+
+
+// map from token, vid to str
+
+- (NSDictionary*) fnStrDict {
+    if (nil == fnStrDict) {
+        int fnTokArr[] = { PARENFNS, OTHERFNS };
+        NSString *fnStrArr[] = { ARG1STRS, ARG2STRS, TIMESTRS, PARENSTRS, OTHERSTRS };
+        NSNumber *fnTokNSNarr[TOTFNCNT];
+        
+        int i,j=0;
+        for (i=0; i< ARG1CNT; i++) {
+            fnTokNSNarr[j++] = [self.fn1args objectAtIndex:i];
+        }
+        for (i=0; i< ARG2CNT; i++) {
+            fnTokNSNarr[j++] = [self.fn2args objectAtIndex:i];
+        }
+        for (i=0; i< TIMECNT; i++) {
+            fnTokNSNarr[j++] = [self.fnTimeOps objectAtIndex:i];
+        }
+        for (i=0; i< (PARENCNT+OTHERCNT); i++) {
+            fnTokNSNarr[j++] = [NSNumber numberWithInt:fnTokArr[i]];
+        }
+        //fnStrDict = [NSDictionary dictionaryWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
+        fnStrDict = [[NSDictionary alloc] initWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
+    }
+    return fnStrDict;
+}
+
+/*
 - (NSMutableArray*) fnStrs {
+    
+    // don't actually use vo.valuename entries
 	if (fnStrs == nil) {
 		fnStrs = [[NSMutableArray alloc] initWithObjects:FnArrStrs,nil];
 		for (valueObj* valo in MyTracker.valObjTable) {
@@ -161,6 +244,7 @@
 	}
 	return fnStrs;
 }
+*/
 
 - (NSArray*)votWoSelf {
     if (nil == votWoSelf) {
@@ -412,7 +496,7 @@
             to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",vid,epd0,epd1];
             int ci= [to toQry2Int];
 #if DEBUGFUNCTION
-            DBGLog(@"v1= %f", v1);
+            DBGLog(@"v1= %f nullV1=%d", v1, nullV1);
 #endif
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
@@ -463,7 +547,7 @@
 #endif
                     break;
                 }
-                case FN1ARGMIN :
+               case FN1ARGMIN :
                 {
                     if (0 == ci && nullV1) {
                         return nil;
@@ -478,6 +562,9 @@
                         
                         }
                     }
+#if DEBUGFUNCTION
+                    DBGLog(@"min: result= %f", result);
+#endif
                     break;
                 }
                 case FN1ARGMAX :
@@ -494,6 +581,9 @@
                             result = v1;
                         }
                     }
+#if DEBUGFUNCTION
+                    DBGLog(@"max: result= %f", result);
+#endif
                     break;
                 }
                 case FN1ARGCOUNT :
@@ -504,6 +594,9 @@
                     if (!nullV1) {
                         result += 1.0f;
                     }
+#if DEBUGFUNCTION
+                    DBGLog(@"count: result= %f", result);
+#endif
                     break;
                 }
                 default:
@@ -517,19 +610,31 @@
                             //to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
                             //		  vid,epd0,epd1];
                             //break;
+#if DEBUGFUNCTION
+                            DBGLog(@"presum: fall through");
+#endif
                         case FN1ARGSUM :
                             // (date<%d) because add in v1 below
                             to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
                                       vid,epd0,epd1];
+#if DEBUGFUNCTION
+                            DBGLog(@"sum: set sql");
+#endif
                             break;
                         case FN1ARGPOSTSUM :
                             // (date<%d) because add in v1 below
                             to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >%d and date <%d;",vid,epd0,epd1];
+#if DEBUGFUNCTION
+                            DBGLog(@"postsum: set sql");
+#endif
                             break;
                     }
                     result = [to toQry2Float];
                     if (currTok != FN1ARGPRESUM)
                         result += v1;
+#if DEBUGFUNCTION
+                    DBGLog(@"pre/post/sum: result= %f", result);
+#endif
                     break;
             }
 		} else if (isFn2ArgOp(currTok)) {
@@ -540,18 +645,33 @@
                     // now just combine with what we have so far
 				case FN2ARGPLUS :
 					result += nextResult;
+#if DEBUGFUNCTION
+                    DBGLog(@"plus: result= %f", result);
+#endif
 					break;
 				case FN2ARGMINUS :
 					result -= nextResult;
+#if DEBUGFUNCTION
+                    DBGLog(@"minus: result= %f", result);
+#endif
 					break;
 				case FN2ARGTIMES :
 					result *= nextResult;
+#if DEBUGFUNCTION
+                    DBGLog(@"times: result= %f", result);
+#endif
 					break;
 				case FN2ARGDIVIDE :
 					if (nrnum != nil && nextResult != 0.0f) {
 						result /= nextResult;
+#if DEBUGFUNCTION
+                        DBGLog(@"divide: result= %f", result);
+#endif
 					} else {
 						//result = nil;
+#if DEBUGFUNCTION
+                        DBGLog(@"divide: rdivide by zero!");
+#endif
 						return nil;
 					}
 					break;
@@ -560,12 +680,21 @@
             // open paren means just recurse and return the result up
 			NSNumber *nrnum = [self calcFunctionValueWithCurrent:epd0]; // currFnNdx now at next place already
 			result = [nrnum doubleValue];
+#if DEBUGFUNCTION
+            DBGLog(@"paren open: result= %f", result);
+#endif
 		} else if (currTok == FNPARENCLOSE) {
             // close paren means we are there, return what we have
+#if DEBUGFUNCTION
+            DBGLog(@"paren close: result= %f", result);
+#endif
 			return [NSNumber numberWithDouble:result];
         } else if (FNCONSTANT == currTok) {
                 result = [[self.fnArray objectAtIndex:self.currFnNdx++] doubleValue];
                 self.currFnNdx++;  // skip the bounding constant tok
+#if DEBUGFUNCTION
+            DBGLog(@"constant: result= %f", result);
+#endif
         } else if (isFnTimeOp(currTok)) {
             result = (double) epd1 - epd0;
 #if DEBUGFUNCTION
@@ -588,6 +717,9 @@
             // remaining option is we have some vid as currTok, return its value up the chain
             valueObj *lvo = [to getValObj:currTok];
             result = [lvo.value doubleValue];
+#if DEBUGFUNCTION
+            DBGLog(@"vid %d: result= %f", lvo.vid,result);
+#endif
 			//result = [[to getValObj:currTok].value doubleValue];
 			//self.currFnNdx++;  // on to next  // already there - postinc on read
 		}
@@ -912,8 +1044,9 @@
                     constantPending = YES;
                 }
             } else {
-                NSInteger ndx = (i * -1) -1;
-                [fstr appendString:[self.fnStrs objectAtIndex:ndx]];
+                //NSInteger ndx = (i * -1) -1;
+                //[fstr appendString:[self.fnStrs objectAtIndex:ndx]];  xxx   // get str for token
+                [fstr appendString:[self.fnStrDict objectForKey:[NSNumber numberWithInt:i]]];
                 if (isFn1Arg(i)) {
                     [fstr appendString:@"["];
                     closePending=YES;
@@ -941,7 +1074,7 @@
 - (void) btnAdd:(id)sender {
 	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
 	NSInteger row = [pkr selectedRowInComponent:0];
-	NSNumber *ntok = [self.fnTitles objectAtIndex:row];
+	NSNumber *ntok = [self.fnTitles objectAtIndex:row];    // get tok from fnTitle and add to fnArray
 	[self.fnArray addObject:ntok];
     if (FNCONSTANT == [ntok intValue]) {  // constant has const_tok on both sides to help removal
         UITextField *vtf= [self.ctvovcp.wDict objectForKey:CTFKEY];
@@ -1272,24 +1405,33 @@
 
 - (void) ftAddFnSet {
 	int i;
-	for (i=FN1ARGFIRST;i>=FN1ARGLAST;i--) {
-		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
-	}
+	//for (i=FN1ARGFIRST;i>=FN1ARGLAST;i--) {
+	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];   xxx // add nsnumber token, enumerated by fn class
+	//}
+    for (i=0; i<ARG1CNT; i++) {
+        [self.fnTitles addObject:[self.fn1args objectAtIndex:i]];
+    }
     [self.fnTitles addObject:[NSNumber numberWithInt:FNCONSTANT]];
 }
 
 - (void) ftAddTimeSet {
 	int i;
-	for (i=FNTIMEFIRST;i>=FNTIMELAST;i--) {
-		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
-	}
+    for (i=0; i<TIMECNT; i++) {
+        [self.fnTitles addObject:[self.fnTimeOps objectAtIndex:i]];
+    }
+	//for (i=FNTIMEFIRST;i>=FNTIMELAST;i--) {
+	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];   xxx
+	//}
 }
 
 - (void) ftAdd2OpSet {
 	int i;
-	for (i=FN2ARGFIRST;i>=FN2ARGLAST;i--) {
-		[self.fnTitles addObject:[NSNumber numberWithInt:i]];
-	}
+    for (i=0;i<ARG2CNT;i++) {
+        [self.fnTitles addObject:[self.fn2args objectAtIndex:i]];
+    }
+	//for (i=FN2ARGFIRST;i>=FN2ARGLAST;i--) {
+	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];  xxx
+	//}
 }
 
 - (void) ftAddVOs {
@@ -1321,7 +1463,7 @@
 	[self ftAddVOs];
 }
 
-- (void) updateFnTitles {
+- (void) updateFnTitles {  // create array fnTitles of nsnumber tokens which should be presented in picker for current last of fn being built
 	[self.fnTitles removeAllObjects];
     [self hideConstTF];
     DBGLog(@"fnArray= %@",self.fnArray);
@@ -1347,10 +1489,11 @@
 	}
 }
 
-- (NSString*) fnTokenToStr:(NSInteger)tok {
+- (NSString*) fnTokenToStr:(NSInteger)tok {  // convert token to str
 	if (isFn(tok)) {
-		tok = (tok * -1) -1;
-		return [self.fnStrs objectAtIndex:tok];
+        return [self.fnStrDict objectForKey:[NSNumber numberWithInt:tok] ];
+		//tok = (tok * -1) -1;
+		//return [self.fnStrs objectAtIndex:tok];
 	} else {	
 		for (valueObj *valo in MyTracker.valObjTable) {
 			if (valo.vid == tok)
@@ -1362,7 +1505,7 @@
 }
 
 - (NSString*) fndRowTitle:(NSInteger)row {
-	return [self fnTokenToStr:[[self.fnTitles objectAtIndex:row] integerValue]];
+	return [self fnTokenToStr:[[self.fnTitles objectAtIndex:row] integerValue]];   // get nsnumber(tok) from fnTitles, convert to int, convert to str to be placed in specified picker rox
 }
 
 - (NSInteger) fnrRowCount:(NSInteger)component {
@@ -1428,7 +1571,7 @@
     [((UIView*) [self.ctvovcp.wDict objectForKey:CLKEY]) removeFromSuperview];
 }
 
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component  
 {	
 	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
 		NSInteger votc = [self.votWoSelf count]; //[MyTracker.valObjTable count];
@@ -1576,7 +1719,7 @@
             MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
         } else {
             MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-                        self.vo.vid, nextDate, self.vo.value];
+                        self.vo.vid, nextDate, [rTracker_resource toSqlStr:self.vo.value]];
         }
         [MyTracker toExecSql];
         

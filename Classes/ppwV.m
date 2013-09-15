@@ -244,14 +244,14 @@
 
 - (BOOL) dbTestPass:(NSString*)try {
 	self.tob.sql = @"select val from priv0 where key=0;";
-	if ([try isEqualToString:[self.tob toQry2Str]])
+	if ([try isEqualToString:[rTracker_resource fromSqlStr:[self.tob toQry2Str]]])
 		return TRUE;
 	else 
 		return FALSE;
 }
 
 - (void) dbSetPass:(NSString*)pass {
-	self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[self.tob toSqlStr:pass]];
+	self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[rTracker_resource toSqlStr:pass]];
 	[self.tob toExecSql];
 }
 
