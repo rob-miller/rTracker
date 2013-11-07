@@ -13,6 +13,8 @@
 @implementation rTracker_resource
 
 BOOL keyboardIsShown=NO;
+UIView *currKeyboardView=nil;
+CGRect currKeyboardSaveFrame;
 
 //---------------------------
 
@@ -55,6 +57,16 @@ NSUInteger DeviceSystemMajorVersion() {
     return YES;
 }
 
+//---------------------------
+BOOL hasAmPm=NO;
+
++ (void) initHasAmPm {
+    NSString *formatStringForHours = [NSDateFormatter dateFormatFromTemplate:@"j" options:0 locale:[NSLocale currentLocale]];
+    
+    NSRange containsA = [formatStringForHours rangeOfString:@"a"];
+    hasAmPm = containsA.location != NSNotFound;
+    
+}
 //---------------------------
 
 // from http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
@@ -350,6 +362,90 @@ static int lastStashedTid=0;
     return outstr;
 }
 
+
++ (UITextField*) rrConfigTextField:(CGRect)frame key:(NSString*)key target:(id)target delegate:(id)delegate action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text
+{
+	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
+	rtf.clearsOnBeginEditing = NO;
+    
+	[rtf setDelegate:delegate];
+	rtf.returnKeyType = UIReturnKeyDone;
+	rtf.borderStyle = UITextBorderStyleRoundedRect;
+
+	dbgNSAssert((action != nil), @"nil action");
+	dbgNSAssert((target != nil), @"nil action");
+	
+	[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEndOnExit];
+    //[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd|UIControlEventEditingDidEndOnExit];
+    [rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd];
+    
+	if (num) {
+		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+		rtf.textAlignment = UITextAlignmentRight;
+	}
+	rtf.placeholder = place;
+	
+	if (text)
+		rtf.text = text;
+	
+    return rtf;
+}
+
+//---------------------------------------
+
++ (void) willShowKeyboard:(NSNotification*)n view:(UIView*)view boty:(CGFloat)boty {
+
+    if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
+        return;
+    }
+	
+	DBGLog(@"handling keyboard will show: %@",[n object]);
+
+    currKeyboardView = view;
+	currKeyboardSaveFrame = view.frame;
+
+    NSDictionary* userInfo = [n userInfo];
+	
+    // get the size of the keyboard
+    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey
+    CGSize keyboardSize = [boundsValue CGRectValue].size;
+	
+	CGRect viewFrame = view.frame;
+
+    CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+	if (boty <= topk) {
+		DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
+	} else {
+		DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
+		
+		viewFrame.origin.y -= (boty - topk);
+		//viewFrame.size.height -= self.navigationController.toolbar.frame.size.height;
+		
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		[UIView setAnimationDuration:kAnimationDuration];
+		
+		[view setFrame:viewFrame];
+		
+		[UIView commitAnimations];
+	}
+	
+    keyboardIsShown = YES;
+
+}
+
++ (void) willHideKeyboard {
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:kAnimationDuration];
+	
+	[currKeyboardView setFrame:currKeyboardSaveFrame];
+	
+	[UIView commitAnimations];
+	
+    keyboardIsShown = NO;
+    currKeyboardView = nil;
+}
 
 
 @end

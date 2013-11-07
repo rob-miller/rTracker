@@ -77,6 +77,7 @@
     //}
     //DBGLog(@"rt app delegate: app did finish launching");
 
+    [rTracker_resource initHasAmPm];
     return YES;
 }
 

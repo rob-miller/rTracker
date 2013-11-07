@@ -532,6 +532,25 @@
 - (void)keyboardWillShow:(NSNotification *)n
 {
     DBGLog(@"UTC keyboardwillshow");
+    
+	CGPoint coff = self.table.contentOffset;
+	//DBGLog(@"coff x=%f y=%f",coff.x,coff.y);
+    //DBGLog(@"k will show, y= %f",viewFrame.origin.y);
+    
+	CGFloat boty;
+    
+    if (kIS_LESS_THAN_IOS7) {
+        boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
+        // activeField.superview.superview.frame.origin.y - coff.y ;
+        //+ activeField.superview.superview.frame.size.height + MARGIN;
+    } else {
+        boty = self.tracker.activeControl.superview.superview.superview.frame.origin.y - coff.y;
+        boty += self.tracker.activeControl.superview.superview.superview.frame.size.height;
+    }
+
+    [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
+    
+    /*
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }
@@ -547,10 +566,20 @@
 	
 	CGRect viewFrame = self.view.frame;
 	CGPoint coff = self.table.contentOffset;
-	//DBGLog(@"coff x=%f y=%f",coff.x,coff.y);
-	//DBGLog(@"k will show, y= %f",viewFrame.origin.y);
-	CGFloat boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;  // activeField.superview.superview.frame.origin.y - coff.y ;  //+ activeField.superview.superview.frame.size.height + MARGIN;
-	CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
+	DBGLog(@"coff x=%f y=%f",coff.x,coff.y);
+	DBGLog(@"k will show, y= %f",viewFrame.origin.y);
+
+	CGFloat boty;
+    
+    if (kIS_LESS_THAN_IOS7) {
+        boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
+        // activeField.superview.superview.frame.origin.y - coff.y ;
+        //+ activeField.superview.superview.frame.size.height + MARGIN;
+    } else {
+        boty = self.tracker.activeControl.superview.superview.superview.frame.origin.y - coff.y;
+        boty += self.tracker.activeControl.superview.superview.superview.frame.size.height;
+    }
+    CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
 	if (boty <= topk) {
 		DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
@@ -569,12 +598,14 @@
 	}
 	
     keyboardIsShown = YES;
-	
+	*/
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
 	DBGLog(@"handling keyboard will hide");
-	
+    [rTracker_resource willHideKeyboard];
+    
+	/*
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
@@ -583,7 +614,8 @@
 	
 	[UIView commitAnimations];
 	
-    keyboardIsShown = NO;	
+    keyboardIsShown = NO;
+     */
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

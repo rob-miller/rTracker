@@ -1051,6 +1051,55 @@ TODO: regen all .rtrks on website
    - fromSqlStr when testing priv password
    - clean up load input files - jumpPriv/restorePriv around plist, rtrk, csv loads; plist load dumps stashed tracker
 
+--- commit ---
+    - submit as 1.1.2
+
+18 sept 2013
+   - back to notifyReminderVC
+
+19 sept 2013
+   -bit further on ui - week/month/every
+
+26 sept 2013
+   - got keyboard bits working from interfaceBuilder, still need to implement scroll up for keyboard
+
+06 oct 2013
+   - fix text field did not scroll up from keyboard as needed under ios7
+
+08 oct 2013
+   - move keyboard will show / will hide to rTracker resource
+   - more on notification ui - keyboards working in textfields, hightlight some buttons
+
+09 oct 2013
+   - fixed notification view for 3.5 and 4 inc devices
+   - textfields working with keyboard
+   - all hide/unhide appropriately (? does at/until make sense for 'every hours/days' ?)
+   - still need slider response in at/until textfields, fix checkboxes
+
+10 oct 2013
+   - fixed checkboxes
+
+   + need to hide sliders etc - need outlets to ref - for 'every'
+   + need to link sliders to hrs/mins
+
+15 oct 2013
+   - start on slider -> hr, min textfields
+
+17 oct 2013
+   - mostly finished gui
+   -- still need decisions on how 'every' works, hiding start/finish times
+   - start data structure for notification
+
+22 oct 2013
+   - implemented display rules for everyBtn
+   - think gui finished
+
+07 nov 2013
+   - starting to implement notifyReminder class
+   - textboxes disappeared from configTOopts - not in 1.1.2 release, only tested in simulator
+
+--- commit ---
+
 
 ++ 
 

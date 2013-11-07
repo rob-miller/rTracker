@@ -26,7 +26,7 @@
 @implementation trackerObj
 
 
-@synthesize trackerDate, valObjTable, optDict;  //trackerName
+@synthesize trackerDate, valObjTable, reminders, optDict;  //trackerName
 @synthesize nextColor, votArray;
 @synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, togd; // prevTID  // maxLabel
 

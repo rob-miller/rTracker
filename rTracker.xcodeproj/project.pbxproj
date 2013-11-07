@@ -113,6 +113,7 @@
 		D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */; };
 		D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
+		D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4620056182C046E00F6F2C2 /* notifyReminder.m */; };
 		D46D15D617CE8FB500BB3EBE /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D517CE8FB500BB3EBE /* icon120.png */; };
 		D46D15D817CE8FFF00BB3EBE /* icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D717CE8FFF00BB3EBE /* icon80.png */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
@@ -147,7 +148,6 @@
 		D4B3009315A9B51A0042319D /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4B3009215A9B51A0042319D /* sampleTrackers */; };
 		D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */; };
 		D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */; };
-		D4B634BC17B2073E00E96BC1 /* toReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634BB17B2073E00E96BC1 /* toReminder.m */; };
 		D4B6AE68127EC33500C036ED /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
 		D4B6AE6D127EC34D00C036ED /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
 		D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
@@ -263,6 +263,8 @@
 		D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button-blue.png"; path = "Resources/png/shadeview-button-blue.png"; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
+		D4620055182C046E00F6F2C2 /* notifyReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminder.h; sourceTree = "<group>"; };
+		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminder.m; sourceTree = "<group>"; };
 		D46D15D517CE8FB500BB3EBE /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon120.png; path = Resources/png/icon120.png; sourceTree = "<group>"; };
 		D46D15D717CE8FFF00BB3EBE /* icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon80.png; path = Resources/png/icon80.png; sourceTree = "<group>"; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
@@ -310,8 +312,6 @@
 		D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminderViewController.h; sourceTree = "<group>"; };
 		D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderViewController.m; sourceTree = "<group>"; };
 		D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderViewController.xib; sourceTree = "<group>"; };
-		D4B634BA17B2073E00E96BC1 /* toReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toReminder.h; sourceTree = "<group>"; };
-		D4B634BB17B2073E00E96BC1 /* toReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = toReminder.m; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
 		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
 		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
@@ -637,8 +637,8 @@
 				D482D275114FEB7500CE6BC8 /* trackerObj.m */,
 				D4A700CB13798874005E0E23 /* togd.h */,
 				D4A700CC13798874005E0E23 /* togd.m */,
-				D4B634BA17B2073E00E96BC1 /* toReminder.h */,
-				D4B634BB17B2073E00E96BC1 /* toReminder.m */,
+				D4620055182C046E00F6F2C2 /* notifyReminder.h */,
+				D4620056182C046E00F6F2C2 /* notifyReminder.m */,
 			);
 			name = "trackerObj classes";
 			sourceTree = "<group>";
@@ -958,6 +958,7 @@
 				D4B6AE68127EC33500C036ED /* voNumber.m in Sources */,
 				D4B6AE6D127EC34D00C036ED /* voText.m in Sources */,
 				D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */,
+				D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */,
 				D4B6AE77127EC36E00C036ED /* voSlider.m in Sources */,
 				D4B6AE7C127EC38300C036ED /* voChoice.m in Sources */,
 				D4B6AE83127EC39800C036ED /* voBoolean.m in Sources */,
@@ -978,7 +979,6 @@
 				D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */,
 				D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */,
 				D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */,
-				D4B634BC17B2073E00E96BC1 /* toReminder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -231,6 +231,10 @@
 - (void)keyboardWillShow:(NSNotification *)n
 {
     //DBGLog(@"configTVObjVC keyboardwillshow");
+    CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
+    [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
+    
+    /*
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
         return;
     }
@@ -268,12 +272,14 @@
 	}
 	
     keyboardIsShown = YES;
-	
+	*/
 }
 - (void)keyboardWillHide:(NSNotification *)n
 {
 	//DBGLog(@"handling keyboard will hide");
-	
+	[rTracker_resource willHideKeyboard];
+    
+    /*
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
@@ -283,6 +289,7 @@
 	[UIView commitAnimations];
 	
     keyboardIsShown = NO;	
+     */
 }
 
 
@@ -496,35 +503,14 @@
 - (void) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
 {
 	frame.origin.y -= TFXTRA;
-	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
-	rtf.clearsOnBeginEditing = NO;
-        
-	[rtf setDelegate:self];
-	rtf.returnKeyType = UIReturnKeyDone;
-	rtf.borderStyle = UITextBorderStyleRoundedRect;
+	UITextField *rtf = [rTracker_resource rrConfigTextField:frame
+                                                        key:key target:(target ? target : self)
+                                                   delegate:self
+                                                     action:(action ? action : @selector(tfDone:))
+                                                        num:num
+                                                      place:place text:text];
+    	
 	[self.wDict setObject:rtf forKey:key];
-	
-	if (action == nil) 
-		action = @selector(tfDone:);
-	if (target == nil) 
-		target = self;
-	
-	[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEndOnExit];
-    //[rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd|UIControlEventEditingDidEndOnExit];
-    [rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd];
-    
-	if (num) {
-		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-		rtf.textAlignment = UITextAlignmentRight;
-	}
-	rtf.placeholder = place;
-	
-	if (text)
-		rtf.text = text;
-	
-	if (addsv)
-		[self.view addSubview:rtf];
-	
 	[rtf release];
 }
 
@@ -659,8 +645,14 @@
     notifyReminderViewController *nrvc = [[notifyReminderViewController alloc] initWithNibName:@"notifyReminderViewController" bundle:nil ];
     //nrvc.view.hidden = NO;
     nrvc.tracker = self.to;
-    //[self.navigationController pushViewController:nrvc animated:YES];
-    [self presentModalViewController:nrvc animated:YES];
+    nrvc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+        [self presentViewController:nrvc animated:YES completion:NULL];
+    //} else {
+    //    [self presentModalViewController:nrvc animated:YES];
+    //}
+        //[self.navigationController pushViewController:nrvc animated:YES];
+    
     [nrvc release];
     
 }
@@ -859,6 +851,9 @@
 
 - (void) addVOFields:(NSInteger) vot
 {
+    
+    //TODO: can't we get rid of switch() here?
+    
 	switch(vot) {
 		case VOT_NUMBER: 
 			// uilabel 'autoscale graph'   uibutton checkbutton

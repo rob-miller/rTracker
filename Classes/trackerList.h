@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "/usr/include/sqlite3.h"
+//#import "/usr/include/sqlite3.h"
+#import <sqlite3.h>
 
 #import "tObjBase.h"
 #import "trackerObj.h"

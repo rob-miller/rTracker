@@ -25,6 +25,8 @@ NSUInteger DeviceSystemMajorVersion();
 + (BOOL) deleteFileAtPath:(NSString*)fp;
 
 + (unsigned int) countLines:(NSString*)str;
++ (void) initHasAmPm;
+
 + (void) alert:(NSString*)title msg:(NSString*)msg;
 
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
@@ -52,8 +54,13 @@ NSUInteger DeviceSystemMajorVersion();
 + (NSString*) fromSqlStr:(NSString*) instr;
 + (NSString*) toSqlStr:(NSString*) instr;
 
++ (UITextField*) rrConfigTextField:(CGRect)frame key:(NSString*)key target:(id)target delegate:(id)delegate action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text;
+
++ (void) willShowKeyboard:(NSNotification*)n view:(UIView*)view boty:(CGFloat)boty;
++ (void) willHideKeyboard;
 
 @end
 
 extern BOOL keyboardIsShown;
+extern BOOL hasAmPm;
 

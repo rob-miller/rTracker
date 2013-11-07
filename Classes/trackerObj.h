@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "/usr/include/sqlite3.h"
+#import <sqlite3.h>
 
 #import "tObjBase.h"
 #import "valueObj.h"
@@ -30,6 +30,8 @@
 	NSMutableDictionary *optDict;
     
 	NSMutableArray *valObjTable;
+    NSMutableArray *reminders;
+    
 	CGSize maxLabel;
 	NSInteger nextColor;
 	
@@ -51,6 +53,7 @@
 @property (nonatomic,retain) NSDate *trackerDate;
 @property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
+@property (nonatomic,retain) NSMutableArray *reminders;
 @property (nonatomic) CGSize maxLabel;
 @property (nonatomic) NSInteger nextColor;
 @property (nonatomic,retain) NSArray *votArray;
