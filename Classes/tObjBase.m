@@ -218,7 +218,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) tobDoneCheck:(int)rslt {
     if (rslt != SQLITE_DONE) {
-        DBGErr(@"tob error not SQL_DONE -> %@ <- : %s toid %d dbName %@", self.sql, sqlite3_errmsg(tDb), self.toid, self.dbName);
+        DBGErr(@"tob error not SQL_DONE (%d) -> %@ <- : %s toid %d dbName %@", rslt, self.sql, sqlite3_errmsg(tDb), self.toid, self.dbName);
     }
 }
 
@@ -609,8 +609,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 				cols = [cols stringByAppendingString:@" "];
 			}
 			NSLog(@"%@",cols);
-            [self tobDoneCheck:rslt];
         }
+        [self tobDoneCheck:rslt];
     } else {
 		[self tobPrepError];
 	}

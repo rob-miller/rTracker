@@ -333,6 +333,10 @@
 		}
 	} else if ( btn == [self.wDict objectForKey:@"csbBtn"] ) {  
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"cevBtn"] ) {
+		okey = @"exportvalb"; dfltState=EXPORTVALBDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"sisBtn"] ) {
+		okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
@@ -511,6 +515,10 @@
                                                       place:place text:text];
     	
 	[self.wDict setObject:rtf forKey:key];
+    
+    if (addsv)
+		[self.view addSubview:rtf];
+
 	[rtf release];
 }
 
@@ -656,9 +664,10 @@
     [nrvc release];
     
 }
-#if 0
-/* don't do this - better to just reload plist */
 
+
+/* prefer don't do this - better to just reload plist */
+// added plist/dict load code so match on vid and valueName='recover%d' will overwrite
 - (void) recoverValuesBtn {
     int recoverCount=0;
     NSMutableArray *Ids = [[NSMutableArray alloc]init];
@@ -679,6 +688,7 @@
     NSString *msg;
     if (recoverCount) {
         msg = [NSString stringWithFormat:@"%d",recoverCount];
+        [self.to loadConfig];
     } else {
         msg = @"no";
     }
@@ -686,8 +696,48 @@
     [rTracker_resource alert:@"Recovered Values" msg:[msg stringByAppendingString:@" values recovered"]];
     
 }
-#endif
 
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (0 != buttonIndex) {
+        [self recoverValuesBtn];
+    }
+}
+
+- (void) dbInfoBtn {
+    self.to.sql = @"select count(*) from trkrData";
+    int dateEntries = [self.to toQry2Int];
+    self.to.sql = @"select count(*) from voData";
+    int dataPoints = [self.to toQry2Int];
+    self.to.sql = @"select count(*) from voConfig";
+    int itemCount = [self.to toQry2Int];
+    self.to.sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
+    int orphanDatapoints = [self.to toQry2Int];
+    
+    
+    UIAlertView *alert;
+    if (0 < orphanDatapoints) {
+        alert = [[UIAlertView alloc]
+                 initWithTitle:self.to.trackerName
+                 message:[NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points\n%d missing item data points",
+                          self.to.toid, itemCount, dateEntries,dataPoints,orphanDatapoints]
+                 delegate:self
+                 cancelButtonTitle:@"Ok"
+                otherButtonTitles: @"recover missing items",nil];
+    } else {
+        alert = [[UIAlertView alloc]
+                 initWithTitle:self.to.trackerName
+                 message:[NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points",
+                          self.to.toid, itemCount, dateEntries,dataPoints]
+                 delegate:nil
+                 cancelButtonTitle:@"Ok"
+                 otherButtonTitles:nil];
+    }
+    [alert show];
+    [alert release];
+}
+
+#
 //- (void) drawGeneralVoOpts 
 //{
 //}
@@ -810,20 +860,15 @@
     
     [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
 
-    /* don't do this - better to just reload plist
-     
-    // recover values button:
+#endif
+    
+    // dbInfo values button:
     
 	frame.origin.x = MARGIN;
 	//frame.origin.x += frame.size.width + MARGIN + SPACE;
 	frame.origin.y += MARGIN + frame.size.height;
     
-    [self configActionBtn:frame key:nil label:@"Recover values" target:self action:@selector(recoverValuesBtn)];
-    */
-    
-
-#endif
-    
+    [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
 }
 
 #pragma mark main config region methods

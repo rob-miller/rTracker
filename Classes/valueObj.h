@@ -59,6 +59,8 @@
 #define AUTOSCALEDFLT   YES
 #define ASFROMZERODFLT  YES
 #define SHRINKBDFLT     NO 
+#define EXPORTVALBDFLT  NO
+#define INTEGERSTEPSBDFLT  NO
 #define TBNLDFLT        NO
 #define TBNIDFLT        YES
 #define TBHIDFLT        NO

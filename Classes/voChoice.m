@@ -325,6 +325,9 @@
     if (nil == [self.vo.optDict objectForKey:@"shrinkb"]) 
         [self.vo.optDict setObject:(SHRINKBDFLT ? @"1" : @"0") forKey:@"shrinkb"];
 
+    if (nil == [self.vo.optDict objectForKey:@"exportvalb"])
+        [self.vo.optDict setObject:(EXPORTVALBDFLT ? @"1" : @"0") forKey:@"exportvalb"];
+    
     return [super setOptDictDflts];
 }
 
@@ -333,12 +336,19 @@
     NSString *val = [self.vo.optDict objectForKey:key];
     if (nil == val) 
         return YES;
+    
     if (([key isEqualToString:@"shrinkb"] && [val isEqualToString:(SHRINKBDFLT ? @"1" : @"0")])
         ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
     }
-    
+
+    if (([key isEqualToString:@"exportvalb"] && [val isEqualToString:(EXPORTVALBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+
     return [super cleanOptDictDflts:key];
 }
 
@@ -429,8 +439,26 @@
                         state:[[self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
+
+    // export values option
+
+	frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
 	
+	labframe = [ctvovc configLabel:@"CSV read/write values (not labels):" frame:frame key:@"cevLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[ctvovc configCheckButton:frame
+                          key:@"cevBtn"
+                        state:[[self.vo.optDict objectForKey:@"exportvalb"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
+    
+
+    
 	ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
+    
 	[super voDrawOptions:ctvovc];
 }	
 /*
@@ -445,6 +473,9 @@
     return [[vogd alloc] initAsNum:self.vo];
 }
 
+/* rtm here : export value option 
+ */
+
 - (NSString*) mapValue2Csv {
 #if DEBUGLOG
     DBGLog(@"val= %@ indexForval= %d obj= %@",
@@ -452,11 +483,21 @@
            [self getSegmentIndexForValue],
            [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]] );
 #endif
-    return [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]];
+    if ([(NSString*) [self.vo.optDict objectForKey:@"exportvalb"] isEqualToString:@"1"]) {
+        return (NSString*) self.vo.value;
+    } else {
+        return [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]];
+    }
 }
+
+/* rtm here : export value option -- need to parse and match value if choice did not match
+ */
 
 - (NSString*) mapCsv2Value:(NSString*)inCsv {
     NSMutableDictionary *optDict = self.vo.optDict;
+    if ([(NSString*) [optDict objectForKey:@"exportvalb"] isEqualToString:@"1"]) {
+        return inCsv;
+    }
     int ndx;
     int count = [optDict count];
     int maxc=0;

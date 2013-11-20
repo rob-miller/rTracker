@@ -63,6 +63,7 @@
  *    field='ngmax'     :  user specified Y-axis max for number graph
  *    field='nswl'      : bool - number should start with last saved value
  *    field='shrinkb'   : bool - adjust width of choice buttons to match text in each
+ *    field='exportvalb': bool - in csv, export value assigned to choice instead of button label
  *    field='tbnl'      : bool - use number of lines in textbox as number when graphing; add graph opts back to picker if set
  *    field='tbni'      : bool - show names index component in picker for textbox display
  *    field='tbhi'      : bool - show history index component in picker for textbox display
@@ -294,7 +295,8 @@
     NSMutableArray *newVOs = [[NSMutableArray alloc]init];
     
     [self rescanVoIds:existingVOs];
-    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^recover\\d+$" options:0 error:NULL];
+
     for (NSDictionary *voDict in newValObjs) {
         NSNumber *nVidN = [voDict objectForKey:@"vid"];                // new VID
         NSString *nVname = [voDict objectForKey:@"valueName"];
@@ -303,8 +305,9 @@
         BOOL createdVO=NO;
         
         valueObj *eVO = [existingVOs objectForKey:nVidN];
+        NSUInteger recoveredName = [regex numberOfMatchesInString:eVO.valueName options:0 range:NSMakeRange(0, [eVO.valueName length])];
         if (eVO) {                                          // self has vid;
-            if ([nVname isEqualToString:eVO.valueName]) {       // name matches same vid
+            if ([nVname isEqualToString:eVO.valueName] || (1==recoveredName)) {       // name matches same vid or name is recovered1234
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
                     [self rescanVoIds:existingVOs];                     // re-validate
                     eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo

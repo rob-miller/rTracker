@@ -54,6 +54,11 @@
 	if (!self.vo.useVO)
 		[self.vo enableVO];
 
+    if ([(NSString*) [self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"]) {
+        UISlider *slider = (UISlider *)sender;
+        int ival = (int) slider.value + 0.5;        
+        [slider setValue:(float) ival animated:YES];
+    }
 	[self.vo.value setString:[NSString stringWithFormat:@"%f",self.sliderCtl.value]];
 
 	//DBGLog(@"slider action value = %f valstr= %@ vs dbl= %f", ((UISlider *)sender).value, self.vo.value, [self.vo.value doubleValue]);
@@ -61,6 +66,19 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
+/*
+- (void)sliderTouchUp:(UISlider *)sender
+{
+    UISlider *slider = (UISlider *)sender;
+    int ival = (int) slider.value + 0.5;
+    
+    [slider setValue:(float) ival animated:YES];
+    [self.vo.value setString:[NSString stringWithFormat:@"%f",self.sliderCtl.value]];
+
+    DBGLog(@"slider touch up value = %f", slider.value);
+	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+}
+*/
 
 - (UISlider*) sliderCtl {
     if (nil == sliderCtl) {
@@ -69,7 +87,12 @@
         
         sliderCtl = [[UISlider alloc] initWithFrame:self.vosFrame];
         [sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
-        
+/*
+        if ([(NSString*) [self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"]) {
+            [sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+            [sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpOutside];
+        }
+*/
         // in case the parent view draws with a custom color or gradient, use a transparent color
         sliderCtl.backgroundColor = [UIColor clearColor];
         
@@ -85,7 +108,8 @@
         sliderCtl.maximumValue = smax;
         sliderCtl.continuous = YES;
         // Add an accessibility label that describes the slider.
-        [sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
+        //[sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
+        [sliderCtl setAccessibilityLabel:[NSString stringWithFormat:@"%@ slider", self.vo.valueName]];
         
         //sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 
@@ -182,6 +206,9 @@
     if (nil == [self.vo.optDict objectForKey:@"sdflt"]) 
         [self.vo.optDict setObject:[NSString stringWithFormat:@"%3.1f",SLIDRDFLTDFLT] forKey:@"sdflt"];
     
+    if (nil == [self.vo.optDict objectForKey:@"integerstepsb"])
+        [self.vo.optDict setObject:(INTEGERSTEPSBDFLT ? @"1" : @"0") forKey:@"integerstepsb"];
+
     return [super setOptDictDflts];
 }
 
@@ -200,6 +227,13 @@
         [self.vo.optDict removeObjectForKey:key];
         return YES;
     }
+
+    if (([key isEqualToString:@"integerstepsb"] && [val isEqualToString:(INTEGERSTEPSBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
     
     return [super cleanOptDictDflts:key];
 }
@@ -269,7 +303,23 @@
 	//-- title label
 	
 	labframe = [ctvovc configLabel:@"Other options:" frame:frame key:@"soLab" addsv:YES];
+
 	
+	frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
+	
+	labframe = [ctvovc configLabel:@"integer steps:" frame:frame key:@"sisLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[ctvovc configCheckButton:frame
+                          key:@"sisBtn"
+                        state:[[self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
+    
+    
+
 	ctvovc.lasty = frame.origin.y + labframe.size.height + MARGIN;
 	[super voDrawOptions:ctvovc];
 }

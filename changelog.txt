@@ -1100,6 +1100,26 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+12 nov 2013
+   - fix textboxes disappeard from configTOopts - problem from refactoring rTrackerResource rrConfigTextField
+
+13 nov 2013
+   - implement dbInfo button, recoverItems if there are vo datapoints with item IDs not in voConfig
+   - change to:laodFromDict to overwrite if name is recover%d and vID matches
+
+17 nov 2013
+   - tested db values recover; added loadConfig, else seems ot work.
+   - start export value option
+
+19 nov 2013
+   - completed and tested 'CSV read/write values (not labels)' option for choices
+   - implemented and tested 'integer steps' option for slider
+   - renewed iOS developer certificate (60 quid Order Number: W465913770
+
+20 nov 2013
+
+--- commit ---
+)
 
 ++ 
 
