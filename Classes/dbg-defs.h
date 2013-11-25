@@ -22,7 +22,7 @@
 
 //********       vvvvvv //
 
-#define RELEASE     0
+#define RELEASE     1
 #define DEBUGLOG    0
 
 //********       ^^^^^^ //

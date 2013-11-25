@@ -37,6 +37,7 @@
 
     int rid;
     
+    
     uint32_t monthDays;
     uint8_t weekDays;
     uint8_t everyMode;
@@ -46,11 +47,11 @@
     int until;
     int times;
 
+    NSString *msg;
+
     NSInteger tid;
     
-    NSString *msg;
     UILocalNotification *localNotif;
-    
     trackerObj *to;
 }
 
@@ -70,5 +71,8 @@
 @property (nonatomic,retain) NSString *msg;
 @property (nonatomic,retain) UILocalNotification *localNotif;
 @property (nonatomic,retain) trackerObj *to;
+
+-(id) init:(trackerObj*) tObjIn;
+-(void) nextRid;
 
 @end

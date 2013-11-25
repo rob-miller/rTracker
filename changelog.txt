@@ -1119,7 +1119,15 @@ TODO: regen all .rtrks on website
 20 nov 2013
 
 --- commit ---
-)
+
+21 nov 2013
+   - working on notifyReminder class
+
+25 nov 2013
+   - submit as 1.1.3 (notifyReminders disabled)
+
+--- commit ---
+
 
 ++ 
 

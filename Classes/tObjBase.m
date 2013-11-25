@@ -449,8 +449,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 - (void) toQry2IntIntInt:(int *)i1 i2:(int*)i2 i3:(int*)i3 {
 	
-	SQLDbg(@"toQry2AryIII: %@ => _%@_",self.dbName,self.sql);
-	dbgNSAssert(tDb,@"toQry2AryIII called with no tDb");
+	SQLDbg(@"toQry2IntIntInt: %@ => _%@_",self.dbName,self.sql);
+	dbgNSAssert(tDb,@"toQry2IntIntInt called with no tDb");
 	
 	sqlite3_stmt *stmt;
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
@@ -518,6 +518,36 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	SQLDbg(@"  returns _%@_",srslt);
 	
 	return srslt;
+}
+
+- (NSString *) toQry2I8aS1:(int *)arr {
+	
+	SQLDbg(@"toQry2AryI8S1: %@ => _%@_",self.dbName,self.sql);
+	dbgNSAssert(tDb,@"toQry2AryI8S1 called with no tDb");
+	
+	sqlite3_stmt *stmt;
+    NSString *srslt=@"";
+
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt,i;
+        for (i=0;i<8;i++) {
+            arr[i]=0;
+        }
+        
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+            for (i=0;i<8;i++) {
+                arr[i] = sqlite3_column_int(stmt, i);
+            }
+                srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 8)]];
+			SQLDbg(@"  rslt: %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],srslt);
+		}
+		[self tobDoneCheck:rslt];
+	} else {
+		[self tobPrepError];
+	}
+	sqlite3_finalize(stmt);
+	SQLDbg(@"  returns %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],srslt);
+    return srslt;
 }
 
 - (float) toQry2Float {

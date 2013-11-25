@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "trackerObj.h"
+#import "notifyReminder.h"
 
 /*
  weekdays : 7 bits
@@ -35,6 +36,8 @@
 @interface notifyReminderViewController : UIViewController <UITextFieldDelegate>
 {
     trackerObj *tracker;
+    notifyReminder *nr;
+    
     UIImage *chkImg;
     UIImage *unchkImg;
 }
