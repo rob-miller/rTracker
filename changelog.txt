@@ -1128,7 +1128,19 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+03 dec 2013
+   - begin implementing load NotifyReminder code from nr obj
 
+10 dec 2013
+   - fixed loss of hidden valObjs on edit/save tracker config (introduced with rtrk load)
+   - fixed crash on loading _in.plist if no existing VOs
+
+11 dec 2013
+   - fixed problem of progressbar not displaying in ios7 for useTrackerController (hidden by nav bar because navbar not in xib) and graph
+   - fixed crash when recalculating graph and rotate back to tracker - implement trackerObj.goRecalculate boolean ; not needed when rootVC recalcs on url load because processing paused
+
+--- commit ---
+ 
 ++ 
 
 

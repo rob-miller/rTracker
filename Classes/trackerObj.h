@@ -46,6 +46,8 @@
     
     id togd;                    // tracker obj graph data
     NSInteger prevTID;
+    
+    BOOL goRecalculate;
 }
 
 //@property (nonatomic) int tid;
@@ -63,6 +65,7 @@
 @property (nonatomic,retain) NSDateFormatter *dateOnlyFormatter;
 @property (nonatomic,retain) id togd;
 @property (nonatomic) NSInteger prevTID;
+@property (nonatomic) BOOL goRecalculate;
 
 - (id) init:(int) tid;
 - (id) initWithDict:(NSDictionary*)dict;

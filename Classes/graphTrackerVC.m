@@ -249,8 +249,13 @@
 
 - (void) doRecalculateFns {  // and re-create graphs 
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    self.tracker.goRecalculate = YES;
     [self.tracker recalculateFns];
-    [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
+    
+    if (self.tracker.goRecalculate) {
+        [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
+        self.tracker.goRecalculate = NO;
+    }
     
     //[rTracker_resource finishActivityIndicator:self.scrollView navItem:nil disable:NO];
     [rTracker_resource finishProgressBar:self.scrollView navItem:nil disable:NO];
@@ -278,7 +283,7 @@
         // we are first one here
         
         //[rTracker_resource startActivityIndicator:self.scrollView navItem:nil disable:NO];
-        [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO];
+        [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO yloc:20.0f];
 
         [self fireRecalculateFns];
     }
@@ -451,6 +456,7 @@
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
+            self.tracker.goRecalculate=NO; // stop!!!!
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);

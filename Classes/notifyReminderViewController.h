@@ -43,6 +43,7 @@
 }
 
 @property (nonatomic,retain) trackerObj *tracker;
+@property (nonatomic,retain) notifyReminder *nr;
 @property (nonatomic,retain) UIImage *chkImg;
 @property (nonatomic,retain) UIImage *unchkImg;
 

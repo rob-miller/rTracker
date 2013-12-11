@@ -1726,12 +1726,14 @@
         [rTracker_resource setProgressVal:(ndx/all)];
         ndx += 1.0;
         
-    } while ((nextDate = [MyTracker postDate]));    // iterate through dates
+    } while (MyTracker.goRecalculate && (nextDate = [MyTracker postDate]));    // iterate through dates
     
     NSInteger frep0 = [[self.vo.optDict objectForKey:@"frep0"] integerValue];
     if (ISCALFREP(frep0)
         &&
         (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])
+        &&
+        MyTracker.goRecalculate
         ) {
         [self trimFnVals:frep0];
     }

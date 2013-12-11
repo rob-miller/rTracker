@@ -28,7 +28,7 @@
 
 @synthesize trackerDate, valObjTable, reminders, optDict;  //trackerName
 @synthesize nextColor, votArray;
-@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, togd; // prevTID  // maxLabel
+@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, togd, goRecalculate; // prevTID  // maxLabel
 
 #define f(x) ((CGFloat) (x))
 
@@ -196,6 +196,7 @@
 												   object:nil];
 		*/
 		//DBGLog(@"init trackerObj New");
+        goRecalculate=NO;
 	}
 	
 	return self;
@@ -305,8 +306,8 @@
         BOOL createdVO=NO;
         
         valueObj *eVO = [existingVOs objectForKey:nVidN];
-        NSUInteger recoveredName = [regex numberOfMatchesInString:eVO.valueName options:0 range:NSMakeRange(0, [eVO.valueName length])];
         if (eVO) {                                          // self has vid;
+            NSUInteger recoveredName = [regex numberOfMatchesInString:eVO.valueName options:0 range:NSMakeRange(0, [eVO.valueName length])];
             if ([nVname isEqualToString:eVO.valueName] || (1==recoveredName)) {       // name matches same vid or name is recovered1234
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
                     [self rescanVoIds:existingVOs];                     // re-validate
@@ -801,10 +802,10 @@ if (addVO) {
 		}
 	}
 	
-    // remove previous data - input rtrk may renumber and then some vids become obsolete
-    self.sql = @"delete from voConfig";
+    // remove previous data - input rtrk may renumber and then some vids become obsolete -- if reading rtrk have done jumpMaxPriv
+    self.sql = [NSString stringWithFormat:@"delete from voConfig where priv <=%d",[privacyV getPrivacyValue]];  // 10.xii.2013 don't delete hidden items
     [self toExecSql];
-    self.sql = @"delete from voInfo";
+    self.sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
     [self toExecSql];
     
 	// now save
@@ -1743,17 +1744,21 @@ if (addVO) {
 	DBGLog(@"tracker id %d name %@ dbname %@ recalculateFns", self.toid, self.trackerName, self.dbName);
     
 	for (valueObj *vo in self.valObjTable) {
-        if (VOT_FUNC == vo.vtype) {
+        if (self.goRecalculate && (VOT_FUNC == vo.vtype)) {
             [rTracker_resource setProgressVal:0.0f];
             [vo.vos recalculate];
         }
 	}
     
-    [self.optDict removeObjectForKey:@"dirtyFns"];
-    self.sql = @"delete from trkrInfo where field='dirtyFns';";
-    [self toExecSql];
-    self.sql = nil;
-
+    if (self.goRecalculate) {
+        [self.optDict removeObjectForKey:@"dirtyFns"];
+        self.sql = @"delete from trkrInfo where field='dirtyFns';";
+        [self toExecSql];
+        self.sql = nil;
+        
+        self.goRecalculate = NO;
+    }
+    
 }
 
 - (NSInteger) nextColor

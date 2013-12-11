@@ -20,11 +20,13 @@
 
 @implementation notifyReminderViewController
 
-@synthesize tracker, chkImg, unchkImg, startHr, startMin, startTimeAmPm, startSlider, finishHr, finishMin, finishTimeAmPm, repeatTimes, finishSlider, intervalButton, toolBar, activeField;
+@synthesize tracker, nr, chkImg, unchkImg, startHr, startMin, startTimeAmPm, startSlider, finishHr, finishMin, finishTimeAmPm, repeatTimes, finishSlider, intervalButton, toolBar, activeField;
 
 -(void)dealloc {
     self.tracker = nil;
     [tracker release];
+    self.nr = nil;
+    [nr release];
     self.chkImg = nil;
     [chkImg release];
     self.unchkImg = nil;
@@ -86,6 +88,13 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    if (0 < [self.tracker.reminders count]) {
+        self.nextAddBarButton.title = @">";
+        self.nr = [self.tracker.reminders objectAtIndex:0];
+    } else {
+        self.nr = [[notifyReminder alloc] init:self.tracker];
+    }
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillShow:)
 												 name:UIKeyboardWillShowNotification
@@ -112,6 +121,36 @@
 }
 
 
+- (void) loadNR {
+    // if rid == 0 return
+    
+    if (nr.monthDays) {
+        self.weekMonthEvery.selectedSegmentIndex=SEGMONTH;
+    } else if (nr.weekDays) {
+        self.weekMonthEvery.selectedSegmentIndex=SEGWEEK;
+        
+    } else if (nr.everyMode) {
+        self.weekMonthEvery.selectedSegmentIndex=SEGEVERY;
+        
+    }
+    [self weekMonthEveryChange:self.weekMonthEvery];
+}
+
+- (void) saveNR {
+/*
+    [compute nr data from gui]
+    if computed_nr is null_event
+     if 0 != rid : delete rid from db and array
+    else (non-null setting)
+     if (0 == rid)
+        set computed_nr as new nr in db
+     else
+        update <rid> nr in db
+ 
+ 
+ */
+}
+
 // 3rd 5th 7th 10th day of each month
 // every n hrs / days / weeks / months
 // n hrs / days / weeks / months from last save
@@ -126,7 +165,6 @@
         [self.fromSaveButton setImage:self.chkImg forState:UIControlStateNormal];
         [self enableStartControls:NO];
     }
-    
 }
 - (IBAction)prevBtn:(id)sender {
     DBGLog(@"prevBtn");

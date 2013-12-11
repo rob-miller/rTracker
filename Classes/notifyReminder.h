@@ -37,7 +37,6 @@
 
     int rid;
     
-    
     uint32_t monthDays;
     uint8_t weekDays;
     uint8_t everyMode;

@@ -37,7 +37,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 
-+ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
++ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable yloc:(CGFloat)yloc;
 + (void) setProgressVal:(float)progressVal;
 //+ (void) updateProgressBar;
 + (void) stashProgressBarMax:(int) total;

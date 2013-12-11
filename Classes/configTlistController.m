@@ -52,7 +52,9 @@ UITableView *deleteTableView;
 - (void) btnExport {
     
     DBGLog(@"export all");
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+    CGRect navframe = [[self.navigationController navigationBar] frame];
+
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES yloc:(navframe.size.height + navframe.origin.y)];
     
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
 }

@@ -133,8 +133,9 @@ static BOOL InstallSamples;
                                 csvLoadError = TRUE;
                                 DBGLog(@"error on date from loading csv data");
                             }
-                            
+                            to.goRecalculate=YES;
                             [to recalculateFns];    // updates fn vals in database
+                            to.goRecalculate=NO;
                             [to saveChoiceConfigs]; // in case csv data had unrecognised choices
                             
                             DBGLog(@"csv loaded:");
@@ -256,7 +257,9 @@ static BOOL InstallSamples;
         trackerObj *to = [[trackerObj alloc] init:tid];
         
         [to loadDataDict:dataDict];  // vids ok because confirmTOdict updated as needed
+        to.goRecalculate=YES;
         [to recalculateFns];    // updates fn vals in database
+        to.goRecalculate=NO;
         [to saveChoiceConfigs]; // in case input data had unrecognised choices
         
         DBGLog(@"datadict loaded for open file url:");
@@ -498,8 +501,8 @@ static BOOL InstallSamples;
         
         if ( 0 < (plistLoadCount + csvLoadCount) ) {
             [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
-            
-            [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+            // CGRect navframe = [[self.navigationController navigationBar] frame]; // (navframe.size.height + navframe.origin.y)
+            [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:0.0f];
             
             [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
             // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
@@ -1051,7 +1054,8 @@ BOOL stashAnimated;
 - (void) startRvcActivityIndicator {
     //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+    CGRect navframe = [[self.navigationController navigationBar] frame];
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y)];
 }
 - (void) finishRvcActivityIndicator {
     //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];

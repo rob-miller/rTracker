@@ -177,7 +177,7 @@ static UIActivityIndicatorView *activityIndicator=nil;
 
 static UIProgressView *progressBar=nil;
 
-+ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
++ (void) startProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable yloc:(CGFloat)yloc {
     
     if (disable) {
         view.userInteractionEnabled = NO;
@@ -186,14 +186,21 @@ static UIProgressView *progressBar=nil;
         navItem.rightBarButtonItem.enabled = NO;
     }
     
-    progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault ];
+    //progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault ];
+    progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar ];
     CGRect pbFrame = progressBar.frame;
     CGRect vFrame = view.frame;
     pbFrame.size.width = vFrame.size.width;
+    
+    //pbFrame.origin.y = 70.0;
+    pbFrame.origin.y = yloc;
+    
+    //pbFrame.size.height = 550;
     progressBar.frame = pbFrame;
     
     //progressBar.center = view.center;
     [view addSubview:progressBar];
+    //[view bringSubviewToFront:progressBar];
     //[progressBar startAnimating];
     
 /*

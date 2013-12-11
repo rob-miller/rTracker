@@ -867,8 +867,10 @@ NSString *emItunesExport = @"save for iTunes";
 #if DEBUGLOG
     [self.tracker describe];
 #endif    
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
-    
+    //[rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+    CGRect navframe = [[self.navigationController navigationBar] frame];
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y) ];
+    //[rTracker_resource startProgressBar:self.navigationController.view navItem:self.navigationItem disable:YES];
     [NSThread detachNewThreadSelector:@selector(doPlistExport) toTarget:self withObject:nil];
 }
 
