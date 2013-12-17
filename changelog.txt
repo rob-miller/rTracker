@@ -1140,6 +1140,21 @@ TODO: regen all .rtrks on website
    - fixed crash when recalculating graph and rotate back to tracker - implement trackerObj.goRecalculate boolean ; not needed when rootVC recalcs on url load because processing paused
 
 --- commit ---
+
+12 dec 2013
+   - fix crash when enter recalculateFns while already running
+   - show progress bar when recalc fns runs if detect dirty fns on graph entry
+   - add alerts and handle no history, contacts access
+   - handle user may or may not have provided access to contacts
+
+17 dec 2013
+   - added alert before leaving dirty record
+   - tweaked style, color on next and prev buttons
+
+   - ready to submit as 1.1.4
+
+--- commit ---
+
  
 ++ 
 

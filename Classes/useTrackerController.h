@@ -31,7 +31,12 @@
     BOOL rejectable;
     BOOL viewDisappearing;
     trackerList *tlist;
+    int alertResponse;
+    int saveTargD;
 }
+
+#define CSCANCEL    1
+#define CSSETDATE   2
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property (nonatomic, retain) datePickerVC *dpvc;
@@ -42,6 +47,8 @@
 @property (nonatomic) BOOL rejectable;
 @property (nonatomic) BOOL viewDisappearing;
 @property (nonatomic, retain) trackerList *tlist;
+@property (nonatomic) int alertResponse;
+@property (nonatomic) int saveTargD;
 
 // UI element properties 
 

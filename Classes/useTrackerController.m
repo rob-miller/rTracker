@@ -25,7 +25,7 @@
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
 @synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, viewDisappearing, tlist;
-@synthesize saveBtn, menuBtn;
+@synthesize saveBtn, menuBtn, alertResponse, saveTargD;
 
 //BOOL keyboardIsShown=NO;
 
@@ -33,6 +33,13 @@
 #pragma mark core object methods and support
 
 - (void)dealloc {
+    /*
+    if (self.needSave) {
+        self.alertResponse=CSCANCEL;
+        [self alertChkSave];
+        return;
+    }
+*/
 	self.prevDateBtn = nil;
 	[prevDateBtn release];
 	self.currDateBtn = nil;
@@ -135,6 +142,17 @@
 	
 	self.tracker.vc = self;
 	
+    self.alertResponse=0;
+    self.saveTargD=0;
+
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"< rTracker"
+                                                                   style:UIBarButtonItemStyleBordered
+                                                                  target:self
+                                                                  action:@selector(btnCancel)];
+    self.navigationItem.leftBarButtonItem = backButton;
+    [backButton release];
+
+    
     [super viewDidLoad];
 }
 
@@ -277,6 +295,12 @@
 - (void) viewWillDisappear :(BOOL)animated
 {
     self.viewDisappearing=YES;
+/*
+ if (self.needSave) {
+        self.alertResponse=CSCANCEL;
+        [self alertChkSave];
+    }
+ */
     
     //DBGLog(@"utc view disappearing");
     //already done [self.tracker.activeControl resignFirstResponder];
@@ -772,8 +796,57 @@
 	[tbi release];
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (0 == buttonIndex) {  // cancel
+        return;
+    } else if (1 == buttonIndex) {  // save
+        [self saveActions];
+    } else if (2 == buttonIndex) {  // discard
+    }
+    self.needSave=NO;
+    if (CSSETDATE==self.alertResponse) {
+        int tsdate = self.saveTargD;
+        self.alertResponse=0;
+        self.saveTargD=0;
+        [self setTrackerDate:tsdate];
+    } else if (CSCANCEL==self.alertResponse) {
+        self.alertResponse=0;
+        [self btnCancel];
+        //[self dealloc];
+    }
+}
+/*
+xxx stuck here - how to get back to setTrackerDate or btnCancel ?
+
+save targD somewhere
+if targd exists then do settrackerdate
+else do btnCancel/btnSave
+*/
+
+- (void) alertChkSave {
+
+    UIAlertView *alert;
+    alert = [[UIAlertView alloc]
+             initWithTitle:[self.tracker.trackerName stringByAppendingString:@" modified"]
+             message:@"Save this record before leaving?"
+             delegate:self
+             cancelButtonTitle:@"Cancel"
+             otherButtonTitles: @"Save",@"Discard",nil];
+
+    [alert show];
+    [alert release];
+
+}
+
 - (void) setTrackerDate:(int) targD {
 	
+    if (self.needSave) {
+        self.alertResponse=CSSETDATE;
+        self.saveTargD=targD;
+        [self alertChkSave];
+        return;
+    }
+    
 	if (targD == 0) {
 		DBGLog(@" setTrackerDate: %d = reset to now",targD);
 		[self.tracker resetData];
@@ -795,15 +868,19 @@
     DBGLog(@"HEY!");
 }
 
-- (IBAction)btnCancel {   // not used 
+- (IBAction)btnCancel {   // back button
     
-	//DBGLog(@"btnCancel was pressed!");
+	DBGLog(@"btnCancel was pressed!");
+    if (self.needSave) {
+        self.alertResponse=CSCANCEL;
+        [self alertChkSave];
+        return;
+    }
+
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)btnSave {
-	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
-
+- (void) saveActions {
     if (self.rejectable) {
         if (self.tracker.prevTID) {
             [rTracker_resource rmStashedTracker:self.tracker.prevTID];
@@ -814,6 +891,12 @@
     }
     
 	[self.tracker saveData];
+    
+}
+    
+- (void)btnSave {
+	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
+    [self saveActions];
 
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
@@ -1033,10 +1116,11 @@ NSString *emItunesExport = @"save for iTunes";
 - (UIBarButtonItem *) prevDateBtn {
 	if (prevDateBtn == nil) {
 		prevDateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle: @"Prev"    // @"<"
+					   initWithTitle:@"<-" // @"Prev"    // @"<"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPrevDate)];
+        prevDateBtn.tintColor = [UIColor darkGrayColor];
 	}
 	return prevDateBtn;
 }
@@ -1044,10 +1128,11 @@ NSString *emItunesExport = @"save for iTunes";
 - (UIBarButtonItem *) postDateBtn {
 	if (postDateBtn == nil) {
 		postDateBtn = [[UIBarButtonItem alloc]
-					   initWithTitle:@"Next"    //@">"
+					   initWithTitle:@"->" // @"Next"    //@">"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPostDate)];
+        postDateBtn.tintColor = [UIColor darkGrayColor];
 	}
 	
 	return postDateBtn;
@@ -1099,6 +1184,7 @@ NSString *emItunesExport = @"save for iTunes";
 				  style:UIBarButtonItemStyleBordered
 				  target:self
 				  action:@selector(btnDel)];
+        delBtn.tintColor = [UIColor redColor];
 	}
 	
 	return delBtn;

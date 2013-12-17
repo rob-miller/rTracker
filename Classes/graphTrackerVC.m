@@ -269,6 +269,7 @@
 }
 
 - (void) fireRecalculateFns {
+    [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO yloc:20.0f];
     [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
 }
 
@@ -279,11 +280,13 @@
             // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
             return;
         }
-        
+        if (self.tracker.goRecalculate) {
+            // recalculate is already running
+            return;
+        }
         // we are first one here
         
         //[rTracker_resource startActivityIndicator:self.scrollView navItem:nil disable:NO];
-        [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO yloc:20.0f];
 
         [self fireRecalculateFns];
     }

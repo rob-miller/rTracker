@@ -238,14 +238,23 @@
 		row = [self.pv selectedRowInComponent:0];
 	}
 	if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-		str = [NSString stringWithFormat:@"%@\n",[(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row])autorelease]];
+        if (0 == [self.namesArray count]) {
+            [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here"];
+        } else {
+            str = [NSString stringWithFormat:@"%@\n",[(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row])autorelease]];
+        }
 	} else {
-		str = [NSString stringWithFormat:@"%@\n",[self.historyArray objectAtIndex:row]];
+        if (0 == [self.historyArray count]) {
+            [rTracker_resource alert:@"No history" msg:@"Use the keyboard to create some entries, then find them in the history"];
+        } else {
+            str = [NSString stringWithFormat:@"%@\n",[self.historyArray objectAtIndex:row]];
+        }
 	}
 	
 	//DBGLog(@"add picker data %@",str);
-	
-	self.textView.text = [self.textView.text stringByAppendingString:str];
+	if (nil != str) {
+        self.textView.text = [self.textView.text stringByAppendingString:str];
+    }
 }
 
 - (IBAction) segmentChanged:(id)sender {
@@ -258,8 +267,17 @@
 		self.addButton.hidden = YES;
 		self.textView.inputView = nil;
 	} else {
-		self.addButton.hidden = NO;
-		if (
+        if (SEGPEOPLE == ndx) {
+            if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+                self.addButton.hidden = YES;
+            } else {
+                self.addButton.hidden = NO;
+            }
+        } else {
+            self.addButton.hidden = NO;
+        }
+        if (
             ((SEGPEOPLE == ndx)  && ([(NSString*) [self.vo.optDict objectForKey:@"tbni"] isEqualToString:@"1"]))
 			|| 
             ((SEGHISTORY == ndx) && ([(NSString*) [self.vo.optDict objectForKey:@"tbhi"] isEqualToString:@"1"]))
@@ -270,7 +288,7 @@
 			}
 		
 		//if (nil == self.textView.inputView) 
-			self.textView.inputView = self.pv;
+        self.textView.inputView = self.pv;
 	}
 	
 	[self.textView resignFirstResponder];
@@ -478,8 +496,33 @@
 
 
 - (NSArray*) namesArray {
+    ABAddressBookRef addressBook = ABAddressBookCreate();
 	if (nil == namesArray) {
-		ABAddressBookRef addressBook = ABAddressBookCreate();
+        __block BOOL accessGranted = NO;
+        
+        if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
+            if (ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
+                dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+                ABAddressBookRef addressBook = ABAddressBookCreate();
+                ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+                    accessGranted = granted;
+                    dispatch_semaphore_signal(sema);
+                });
+                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+                dispatch_release(sema);
+                CFRelease(addressBook);
+            }
+            
+            if (! accessGranted) {
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            }
+        }
+        
+        if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
+            //[rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            return nil;
+        }
+        
 		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
 		// /*
 		CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
