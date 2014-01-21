@@ -178,16 +178,17 @@
     UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
     UIViewController *topController = [self.navigationController.viewControllers lastObject];
     
-    [((RootViewController *)rootController).privacyObj lockDown];
+    [((RootViewController *)rootController).privacyObj lockDown];  // hiding is handled after startup - viewDidAppear() below
     
     SEL rtSelector = NSSelectorFromString(@"rejectTracker");
     
-    if ( [topController respondsToSelector:rtSelector] ) {
+    if ( [topController respondsToSelector:rtSelector] ) {  // leaving so reject tracker if it is rejectable
         if (((useTrackerController *) topController).rejectable) {
             //[((useTrackerController *) topController) rejectTracker];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
+    
 }
 
 /*
@@ -201,7 +202,7 @@
 	// rootViewController needs to possibly load files
     // useTrackerController needs to detect if displaying a private tracker
     
-	//DBGLog(@"rt app delegate: app did become active");
+	DBGLog(@"rt app delegate: app did become active");
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
 
     [self.navigationController.visibleViewController viewDidAppear:YES];

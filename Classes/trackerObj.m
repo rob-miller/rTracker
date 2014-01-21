@@ -784,6 +784,20 @@ if (addVO) {
 	}
 }
 
+// create minimal valobj in db tables to handle column in CSV data that does not match existing valObj
+- (int) createVOinDb:(NSString*)name {
+    NSInteger vid = [self getUnique];
+    self.sql = @"select max(rank) from voConfig";
+    
+    NSInteger rank = [self toQry2Int] +1;
+    
+    self.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
+                vid, rank, 0, [rTracker_resource toSqlStr:name], 0, 0, MINPRIV];
+    [self toExecSql];
+    
+    return vid;
+}
+
 - (void) saveConfig {
 	DBGLog(@"tObj saveConfig: trackerName= %@",self.trackerName) ;
 	
@@ -793,6 +807,7 @@ if (addVO) {
 
 	[self saveToOptDict];
 	
+    NSMutableArray *vids = [[NSMutableArray alloc] initWithCapacity:[self.valObjTable count]];
 	// put valobjs in state for saving 
 	for (valueObj *vo in self.valObjTable) {
 		if (vo.vid <= 0) {
@@ -800,18 +815,26 @@ if (addVO) {
 			vo.vid = [self getUnique];
 			[self updateVORefs:vo.vid old:old];
 		}
+        [vids addObject:[NSString stringWithFormat:@"%d",vo.vid]];
 	}
 	
     // remove previous data - input rtrk may renumber and then some vids become obsolete -- if reading rtrk have done jumpMaxPriv
-    self.sql = [NSString stringWithFormat:@"delete from voConfig where priv <=%d",[privacyV getPrivacyValue]];  // 10.xii.2013 don't delete hidden items
+    self.sql = [NSString stringWithFormat:@"delete from voConfig where priv <=%d and id not in (%@)",
+                [privacyV getPrivacyValue],                 // 10.xii.2013 don't delete privacy hidden items
+                [vids componentsJoinedByString:@","]];      // 18.i.2014 don't wipe all in case user quits before we finish
+    
+    [vids release];
+    
     [self toExecSql];
+    
     self.sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
     [self toExecSql];
     
 	// now save
+    
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
-
+        
 		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
 					vo.vid, i++, vo.vtype, [rTracker_resource toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
@@ -827,6 +850,7 @@ if (addVO) {
 	}
 	
 	self.sql = nil;
+    
 }
 
 - (void) saveChoiceConfigs {  // for csv load, need to update vo optDict if vo is VOT_CHOICE
@@ -1256,15 +1280,19 @@ if (addVO) {
     //NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
 
     int mp = BIGPRIV;
-	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
+	for (NSString *key in aRecord)   // need min used privacy this record, collect ids  // would be better for added VOs if could sort!
 	{
         DBGLog(@" key= %@", key);
         if (! [key isEqualToString:TIMESTAMP_LABEL]) { // not timestamp 
             self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:key]];
             int valobjID,valobjPriv,valobjType;
             [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
-            DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
+            DBGLog(@"name=%@ val=%@ id=%d priv=%d type=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjType);
             
+            if (0 == valobjID) {  // no vo exists with this name
+                valobjID = [self createVOinDb:key];
+                DBGLog(@"created new valObj with id=%d",valobjID);
+            }
             //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
             
             NSString *val2Store = [rTracker_resource toSqlStr:[aRecord objectForKey:key]];

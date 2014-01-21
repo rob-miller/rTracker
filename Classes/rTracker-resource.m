@@ -146,8 +146,10 @@ BOOL hasAmPm=NO;
 //---------------------------
 
 static UIActivityIndicatorView *activityIndicator=nil;
+static UIView *outerView;
+static UILabel *captionLabel;
 
-+ (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
++ (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str {
     
     if (disable) {
         view.userInteractionEnabled = NO;
@@ -156,10 +158,35 @@ static UIActivityIndicatorView *activityIndicator=nil;
         navItem.rightBarButtonItem.enabled = NO;
     }
     
+    outerView = [[UIView alloc] initWithFrame:CGRectMake(75, 155, 170, 170)];
+    outerView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    outerView.clipsToBounds = YES;
+    outerView.layer.cornerRadius = 10.0;
+
+    
     activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
-    activityIndicator.center = view.center;
-    [view addSubview:activityIndicator];
+    //activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray ];
+    //activityIndicator.frame = CGRectMake(0.0, 0.0, 60.0, 60.0);
+    activityIndicator.frame = CGRectMake(65, 40, activityIndicator.bounds.size.width, activityIndicator.bounds.size.height);
+
+    //activityIndicator.backgroundColor = [UIColor blackColor];
+    
+    //activityIndicator.center = outerView.center;
+    
+    [outerView addSubview:activityIndicator];
     [activityIndicator startAnimating];
+
+    captionLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 115, 130, 22)];
+    captionLabel.backgroundColor = [UIColor clearColor];
+    captionLabel.textColor = [UIColor whiteColor];
+    captionLabel.adjustsFontSizeToFitWidth = YES;
+    captionLabel.textAlignment = UITextAlignmentCenter;
+    captionLabel.text = str;
+    [outerView addSubview:captionLabel];
+
+    //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
+
+    [view addSubview:outerView];
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
@@ -170,9 +197,15 @@ static UIActivityIndicatorView *activityIndicator=nil;
         view.userInteractionEnabled = YES;
     }
     
-    [activityIndicator stopAnimating];
+    //[activityIndicator stopAnimating];
+    [activityIndicator performSelectorOnMainThread:@selector(stopAnimating) withObject:nil waitUntilDone:NO];
+
     [activityIndicator release];
     activityIndicator = nil;
+    [captionLabel release];
+    captionLabel = nil;
+    [outerView release];
+    outerView = nil;
 }
 
 static UIProgressView *progressBar=nil;

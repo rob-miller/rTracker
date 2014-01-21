@@ -19,6 +19,8 @@
 	trackerList *tlist;
 	trackerObj *tempTrackerObj;
     UIBarButtonItem *copyBtn;
+
+    //UIActivityIndicatorView *spinner;
 }
 
 @property (nonatomic, retain) trackerList *tlist;
@@ -28,6 +30,9 @@
 @property (nonatomic, retain) IBOutlet UITableView *table;
 @property (nonatomic, retain) UITextField *nameField;
 @property (nonatomic, retain) UIBarButtonItem *copyBtn;
+
+//@property (nonatomic,retain) UIActivityIndicatorView *spinner;
+
 
 - (void)configureToolbarItems;
 

@@ -22,6 +22,9 @@
 @synthesize nameField;
 @synthesize copyBtn;
 
+//@synthesize spinner;
+
+
 NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 UITableView *deleteTableView;
 NSMutableArray *deleteVOs=nil;
@@ -305,6 +308,24 @@ DBGLog(@"btnAddValue was pressed!");
 }
 
 
+-(void) btnSaveSlowPart {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    //[self.spinner performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
+
+    [self.tempTrackerObj saveConfig];
+    
+    [self.tlist addToTopLayoutTable:self.tempTrackerObj];
+    //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
+    [self.tlist loadTopLayoutTable];
+    
+    [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
+
+    [pool drain];
+    
+}
 - (IBAction)btnSave {
 	DBGLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, (unsigned int) tlist);
 
@@ -316,18 +337,24 @@ DBGLog(@"btnAddValue was pressed!");
 		deleteVOs = nil;
 	}
 	
+    [self.nameField resignFirstResponder];
+    
 	if ([self.nameField.text length] > 0) {
 		self.tempTrackerObj.trackerName = self.nameField.text;
 
 		if (! self.tempTrackerObj.toid) {
 			self.tempTrackerObj.toid = [self.tlist getUnique];
 		}
-		[self.tempTrackerObj saveConfig];
-        [self.tlist addToTopLayoutTable:self.tempTrackerObj];
-		//[self.tlist confirmTopLayoutEntry:tempTrackerObj];
-		[self.tlist loadTopLayoutTable];
-		[self.navigationController popViewControllerAnimated:YES];
-        //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
+        if (20 < [self.tempTrackerObj.valObjTable count]) {
+            [rTracker_resource startActivityIndicator:self.view navItem:self.navigationItem disable:YES str:@"Saving..."];
+        }
+        //self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
+        //self.spinner.hidesWhenStopped = YES;
+        //[self.spinner startAnimating];
+        
+        [NSThread detachNewThreadSelector:@selector(btnSaveSlowPart) toTarget:self withObject:nil];
+        
+        
 	} else {
         [rTracker_resource alert:@"save Tracker" msg:@"Please set a name for this tracker to save"];
 	}

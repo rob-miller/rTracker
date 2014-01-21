@@ -44,8 +44,10 @@ static int privacyValue=PRIVDFLT;
 	//[self.pvc.tableView reloadData ];
 }
 
-- (void) lockDown {
+- (int) lockDown {
     DBGLog(@"privObj: lockdown");
+    int currP = privacyValue;
+    
     [self.ttv showKey:0];
     [self setPrivacyValue:MINPRIV]; 
     if (PWNEEDPRIVOK != self.pwState) {  // 27.v.2013 don't set to query if no pw setup yet
@@ -55,6 +57,7 @@ static int privacyValue=PRIVDFLT;
     //if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
 	//	self.showing = PVQUERY;
     //}
+    return currP;
 }
 
 

@@ -48,7 +48,7 @@
 - (void) toQry2IntInt:(int*)i1 i2:(int*)i2;
 - (void) toQry2IntIntInt:(int*)i1 i2:(int*)i2 i3:(int*)i3;
 - (NSString *) toQry2Str;
-- (NSString *) toQry2I8aS1:(int *)arr;
+- (NSString *) toQry2I11aS1:(int *)arr;
 - (float) toQry2Float;
 - (double) toQry2Double;
 

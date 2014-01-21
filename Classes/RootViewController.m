@@ -105,7 +105,7 @@ static BOOL InstallSamples;
                         NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
                         
                         // TODO: could count lines with rTracker-resource here, but need to to know how many done / to go
-                        // or add orutine to just bump progress bar with current step -- but then problem with diff tasks 
+                        // or add routine to just bump progress bar with current step -- but then problem with diff tasks 
                         // updating progress bar....
                         
                         [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];

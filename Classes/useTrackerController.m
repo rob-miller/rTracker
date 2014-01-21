@@ -202,7 +202,9 @@
      // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
     if ((nil != self.tracker)
         && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
-            [self.navigationController popViewControllerAnimated:YES];
+            //[self.navigationController popViewControllerAnimated:YES];
+            [self.tracker.activeControl resignFirstResponder];
+            [self btnCancel];
         }
     
     //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
@@ -799,20 +801,24 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (0 == buttonIndex) {  // cancel
         return;
-    } else if (1 == buttonIndex) {  // save
-        [self saveActions];
-    } else if (2 == buttonIndex) {  // discard
     }
-    self.needSave=NO;
-    if (CSSETDATE==self.alertResponse) {
-        int tsdate = self.saveTargD;
-        self.alertResponse=0;
-        self.saveTargD=0;
-        [self setTrackerDate:tsdate];
-    } else if (CSCANCEL==self.alertResponse) {
-        self.alertResponse=0;
-        [self btnCancel];
-        //[self dealloc];
+    
+    if (self.alertResponse) {
+        if (1 == buttonIndex) {  // save
+            [self saveActions];
+        } else if (2 == buttonIndex) {  // discard
+        }
+        self.needSave=NO;
+        if (CSSETDATE==self.alertResponse) {
+            int tsdate = self.saveTargD;
+            self.alertResponse=0;
+            self.saveTargD=0;
+            [self setTrackerDate:tsdate];
+        } else if (CSCANCEL==self.alertResponse) {
+            self.alertResponse=0;
+            [self btnCancel];
+            //[self dealloc];
+        }
     }
 }
 /*

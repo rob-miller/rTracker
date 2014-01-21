@@ -1155,7 +1155,47 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
- 
+18 Dec 2013
+   - tweak alert handler for leaving dirty record to ignore other alert causes
+   - new distribution profile
+   - submit as 1.1.4
+
+19 dec
+   - working on get NR from current GUI
+   + need to handle user preferred first day of week [[NSCalendar currentCalendar] firstWeekday] -- think gives integers 1=sun 2=mon
+
+09 jan 2014
+   - implement weekday button names from users calendar
+   - further work on get NR from current GUI
+
+11 jan 2014
+   - changed reminder GUI to support 'from last : tracker / value' instead of 'from save'
+   - implement everyMode bit flags instead of checking button title
+   - further on get NR from current GUI
+
+12 jan 2014
+   - r/w from db implemented, now debugging save/restore one nr
+
+15 jan 2014
+   - load/save from db apparently working but not fully tested. 
+   - working on next/prev buttons
+
+18 jan 2014
+   - detour for user Steve with crash on 50-100 valueObjs
+   - modify CSV load so creates new VO in database on datapoint for column where header name does not match existing VO
+
+19 jan 2014
+   - spinner while saving >20 valobj tracker from addTracker
+   - modify addTracker save so just does changes instead of previous delete config and re-write
+
+21 jan 2012
+   - leaving useTrackerController on reappear - only if privacy not high enough, give option to save
+   - checked for memory leaks 
+
+
+
+-> notifyReminder class to manage db to/from nsarray for rtrk
+
 ++ 
 
 

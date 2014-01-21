@@ -60,7 +60,7 @@
 - (id) initWithParentView:(UIView*)pv;
 - (void) togglePrivacySetter;
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg;
-- (void) lockDown;
+- (int) lockDown;
 - (void) resetPw;
 
 + (int)getPrivacyValue;

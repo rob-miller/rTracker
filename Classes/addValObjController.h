@@ -18,6 +18,7 @@
 	valueObj *tempValObj;
 	trackerObj *parentTrackerObj;
 	NSArray *graphTypes;
+    
 }
 
 @property (nonatomic,retain) valueObj *tempValObj;

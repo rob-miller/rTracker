@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1072" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
@@ -7,20 +7,23 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="notifyReminderViewController">
             <connections>
+                <outlet property="enableButton" destination="paO-m9-63J" id="oRl-OO-5nk"/>
                 <outlet property="enableFinishButton" destination="19" id="1Nd-3w-WIu"/>
                 <outlet property="everyButton" destination="966" id="1159"/>
                 <outlet property="everyTF" destination="938" id="1158"/>
+                <outlet property="everyTrackerButton" destination="JMq-ZV-ChT" id="M8B-PM-zmd"/>
                 <outlet property="finishColon" destination="8" id="N5V-sD-kkI"/>
                 <outlet property="finishHr" destination="6" id="157"/>
                 <outlet property="finishLabel" destination="24" id="Sej-2E-bBo"/>
                 <outlet property="finishMin" destination="7" id="158"/>
                 <outlet property="finishSlider" destination="5" id="308"/>
                 <outlet property="finishTimeAmPm" destination="IrX-P7-jyf" id="Q7M-jL-Swn"/>
-                <outlet property="fromSaveButton" destination="1018" id="1160"/>
-                <outlet property="fromSaveLabel" destination="1054" id="1161"/>
+                <outlet property="fromLastButton" destination="1018" id="7vU-RA-HsW"/>
+                <outlet property="fromLastLabel" destination="1054" id="6ck-bB-YMw"/>
                 <outlet property="intervalButton" destination="20" id="309"/>
                 <outlet property="monthDays" destination="911" id="1154"/>
                 <outlet property="monthDaysLabel" destination="907" id="1153"/>
+                <outlet property="msgTF" destination="313" id="3Dp-pQ-bsH"/>
                 <outlet property="navBar" destination="143" id="306"/>
                 <outlet property="nextAddBarButton" destination="365" id="1167"/>
                 <outlet property="prevBarButton" destination="366" id="1168"/>
@@ -58,7 +61,7 @@
                                     <action selector="prevBtn:" destination="-1" id="1165"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem key="rightBarButtonItem" systemItem="add" id="365">
+                            <barButtonItem key="rightBarButtonItem" enabled="NO" title="+>" id="365">
                                 <inset key="imageInsets" minX="0.0" minY="15" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <action selector="nextAddBtn:" destination="-1" id="1166"/>
@@ -142,7 +145,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="911">
+                <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="1,8,15,22,29" minimumFontSize="17" id="911">
                     <rect key="frame" x="70" y="112" width="230" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -175,23 +178,33 @@
                     </connections>
                 </button>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1018">
-                    <rect key="frame" x="179" y="132" width="37" height="30"/>
+                    <rect key="frame" x="179" y="97" width="37" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <state key="normal" image="unchecked.png" backgroundImage="unchecked.png">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="fromSaveBtn:" destination="-1" eventType="touchUpInside" id="1169"/>
+                        <action selector="fromLastBtn:" destination="-1" eventType="touchUpInside" id="khH-Fg-777"/>
                     </connections>
                 </button>
-                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="from save" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1054">
-                    <rect key="frame" x="224" y="137" width="81" height="20"/>
+                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="from last" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1054">
+                    <rect key="frame" x="224" y="102" width="81" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="JMq-ZV-ChT">
+                    <rect key="frame" x="141" y="132" width="146" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="-tracker-">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="everyTrackerBtn:" destination="-1" eventType="touchUpInside" id="KWg-Ic-Aen"/>
+                    </connections>
+                </button>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="340">
                     <rect key="frame" x="19" y="57" width="280" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -204,7 +217,7 @@
                         <action selector="weekMonthEveryChange:" destination="-1" eventType="valueChanged" id="1157"/>
                     </connections>
                 </segmentedControl>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="From" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="23">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="At" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="23">
                     <rect key="frame" x="20" y="189" width="40" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -297,7 +310,7 @@
                         <action selector="finishSliderAction:" destination="-1" eventType="valueChanged" id="163"/>
                     </connections>
                 </slider>
-                <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="21">
+                <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2" borderStyle="roundedRect" minimumFontSize="17" id="21">
                     <rect key="frame" x="19" y="343" width="37" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -325,15 +338,15 @@
                         <action selector="intervalBtn:" destination="-1" eventType="touchUpInside" id="161"/>
                     </connections>
                 </button>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Message:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="310">
-                    <rect key="frame" x="15" y="391" width="75" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Text:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="310">
+                    <rect key="frame" x="15" y="391" width="41" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="313">
-                    <rect key="frame" x="99" y="387" width="200" height="30"/>
+                    <rect key="frame" x="59" y="387" width="195" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" returnKeyType="done"/>
@@ -374,6 +387,17 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="paO-m9-63J">
+                    <rect key="frame" x="262" y="387" width="37" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <state key="normal" image="checked.png" backgroundImage="checked.png">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="enableBtn:" destination="-1" eventType="touchUpInside" id="gJ2-Tu-aTb"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -398,6 +422,7 @@
         </button>
     </objects>
     <resources>
+        <image name="checked.png" width="44" height="44"/>
         <image name="unchecked.png" width="44" height="44"/>
     </resources>
 </document>

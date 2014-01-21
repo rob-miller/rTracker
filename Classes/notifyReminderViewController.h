@@ -21,7 +21,7 @@
  times : int
  
  bools:
- fromSave
+ fromLast
  until
  interval/random
  
@@ -38,14 +38,28 @@
     trackerObj *tracker;
     notifyReminder *nr;
     
+    NSArray *weekdayBtns;
+    NSArray *everyTrackerNames;
     UIImage *chkImg;
     UIImage *unchkImg;
+    NSUInteger firstWeekDay;
+    NSUInteger everyTrackerNdx;
+    uint8_t everyMode;
+    NSUInteger weekdays[7];
+    NSString *lastDefaultMsg;
 }
 
 @property (nonatomic,retain) trackerObj *tracker;
 @property (nonatomic,retain) notifyReminder *nr;
+@property (nonatomic,retain) NSArray *weekdayBtns;
+@property (nonatomic,retain) NSArray *everyTrackerNames;
 @property (nonatomic,retain) UIImage *chkImg;
 @property (nonatomic,retain) UIImage *unchkImg;
+@property (nonatomic,retain) NSString *lastDefaultMsg;
+
+@property (nonatomic) NSUInteger firstWeekDay;
+@property (nonatomic) NSUInteger everyTrackerNdx;
+@property (nonatomic) uint8_t everyMode;
 
 @property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
 @property (nonatomic,retain) IBOutlet UIBarButtonItem *prevBarButton;
@@ -53,6 +67,12 @@
 
 - (IBAction)prevBtn:(id)sender;
 - (IBAction)nextAddBtn:(id)sender;
+
+@property (retain, nonatomic) IBOutlet UITextField *msgTF;
+
+@property (retain, nonatomic) IBOutlet UIButton *enableButton;
+- (IBAction)enableBtn:(id)sender;
+
 
 @property (nonatomic,retain) IBOutlet UIButton *wdButton1;
 @property (nonatomic,retain) IBOutlet UIButton *wdButton2;
@@ -72,13 +92,17 @@
 
 @property (nonatomic,retain) IBOutlet UITextField *everyTF;
 @property (nonatomic,retain) IBOutlet UIButton *everyButton;
-@property (nonatomic,retain) IBOutlet UIButton *fromSaveButton;
-@property (nonatomic,retain) IBOutlet UILabel *fromSaveLabel;
+@property (nonatomic,retain) IBOutlet UIButton *fromLastButton;
+@property (nonatomic,retain) IBOutlet UILabel *fromLastLabel;
+@property (nonatomic,retain) IBOutlet UIButton *everyTrackerButton;
 
 - (IBAction)everyTFChange:(id)sender;
 - (IBAction)everyBtn:(id)sender;
-- (IBAction)fromSaveBtn:(id)sender;
+- (IBAction)fromLastBtn:(id)sender;
+- (IBAction)everyTrackerBtn:(id)sender;
+
 - (IBAction)TFdidBeginEditing:(id)sender;
+
 @property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
 
 @property (nonatomic,retain) IBOutlet UISegmentedControl *weekMonthEvery;
