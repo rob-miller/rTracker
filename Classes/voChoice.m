@@ -496,18 +496,21 @@
 - (NSString*) mapCsv2Value:(NSString*)inCsv {
     NSMutableDictionary *optDict = self.vo.optDict;
     if ([(NSString*) [optDict objectForKey:@"exportvalb"] isEqualToString:@"1"]) {
+        // we simply store the value, up to the user to provide a choice to match it
         return inCsv;
     }
     int ndx;
     int count = [optDict count];
-    int maxc=0;
+    int maxc=-1;
     int firstBlank = -1;
+    int lastColor=-1;
     DBGLog(@"inCsv= %@",inCsv);
     for (ndx=0; ndx <count;ndx++) {
         NSString *key = [NSString stringWithFormat:@"c%d",ndx];
         NSString *val = [optDict objectForKey:key];
         if (nil != val) {
             maxc = ndx;
+            lastColor = [[optDict objectForKey:[NSString stringWithFormat:@"cc%d",ndx]] integerValue];
             if ([val isEqualToString:inCsv]) {
                 //DBGLog(@"matched, returning %d",ndx+1);
                 //return [NSString stringWithFormat:@"%d",ndx+1];    // found match, return 1-based index and be done
@@ -525,10 +528,10 @@
     
     // is inCsv a digit from a pre-1.0.5 csv save file?
     // TODO: remove this because is only for upgrade to 1.0.5
-    int intval = [inCsv intValue];
-    if ((0<intval) && (intval < CHOICES+1)) {
-        return inCsv;
-    }
+    //int intval = [inCsv intValue];
+    //if ((0<intval) && (intval < CHOICES+1)) {
+    //    return inCsv;
+    //}
         
     // need to add a new object to optDict
     
@@ -540,8 +543,17 @@
     }
     
     [optDict setObject:inCsv forKey:[NSString stringWithFormat:@"c%d",maxc]];
+
+    if (++lastColor >= [[rTracker_resource colorSet] count])
+        lastColor=0;
+    
+    [optDict setObject:[NSNumber numberWithInteger:lastColor] forKey:[NSString stringWithFormat:@"cc%d",maxc]];
+
+    DBGLog(@"created choice %@ choice c%d color %d",inCsv,maxc,lastColor);
     
     maxc++;  // +1 because value not 0-based, while c%d key is
+    
+    // for exportvalb=false, stored value is segment index
     return [NSString stringWithFormat:@"%d",maxc];
 }
 

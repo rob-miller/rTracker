@@ -89,6 +89,35 @@ in_vpriv:(NSInteger)in_vpriv
 	return self;
 }
 
+- (id) initFromDB:(trackerObj*)parentTO
+             in_vid:(NSInteger)in_vid
+{
+	if ((self = [super init])) {
+		//self.useVO = YES;
+        
+		self.parentTracker = parentTO;
+		self.vid = in_vid ;
+        
+        parentTO.sql = [NSString stringWithFormat:@"select type, color, graphtype from voConfig where id=%d",in_vid];
+        
+        NSInteger in_vtype;
+        NSInteger in_vcolor;
+        NSInteger in_vgraphtype;
+        
+        [parentTO toQry2IntIntInt:&in_vtype i2:&in_vcolor i3:&in_vgraphtype];
+        
+		self.vtype = in_vtype;  // sets useVO
+        self.vcolor = in_vcolor;
+		self.vGraphType = in_vgraphtype;
+        
+        parentTO.sql = [NSString stringWithFormat:@"select name from voConfig where id==%d",in_vid];
+        self.valueName = [parentTO toQry2Str];
+	}
+	
+	return self;
+    
+}
+
 - (void) dealloc 
 {
 	//DBGLog(@"dealloc valueObj: %@",valueName);

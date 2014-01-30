@@ -1192,6 +1192,49 @@ TODO: regen all .rtrks on website
    - leaving useTrackerController on reappear - only if privacy not high enough, give option to save
    - checked for memory leaks 
 
+--- commit ---
+
+22 jan 2014
+   - csv loader will now detect line 1 with/without timestamp for configuring new VO (18 jan) with voType and voColor
+
+23 jan 2014
+   - implemented read, use vid from rtcsv data if specified and valid
+   - change csv reader to pass 'header:<pos>' so can order new valObjs
+
+24 jan 2014
+   - think debugged csv load to get rank, type, choices, color
+
+25 jan 2014
+   - initial implementation store/use value for yes/no
+   - make y/n, text, textb values display at top of graph not bottom
+   - make dots on graph filled and bigger for selectec vo
+   - draw selected vo last on graph so can see highlighting
+   - implement pref for 'offer to save private after exit', tested ok
+   - implement pref for save rtcsv - works, tested ok
+
+26 jan 2014
+   - alert user on problems loading csv files
+   - initial implementation of recognise, create tracker for, load .rtcsv files - works for recognise existing, create new
+
+28 jan 2014
+   - reviewed choice load when exportvalb set true -> just stores value in db, up to user to supply choice for that value
+   - found that db saving val='' entries, not sure where/when; added code to clean out and log with warning message
+   - just starting on rtcsv file type
+
+29 jan 2014
+   - .rtcsv working as loadable file type
+   - working on various activity indicators for loading big files
+
+30 jan 2014
+   - think have activity indicators running at all delay points when loading big files
+
+--- commit ---
+
+-> see if can fix progress bar several lines down sometimes
+-> ready for release?
+
+
+
 
 
 -> notifyReminder class to manage db to/from nsarray for rtrk

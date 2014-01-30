@@ -34,9 +34,9 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string></string>
+			<string>Reset password</string>
 			<key>Key</key>
-			<string></string>
+			<string>reset_password_pref</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
@@ -44,11 +44,21 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Reset password</string>
+			<string>CSV with format info (.rtcsv)</string>
 			<key>Key</key>
-			<string>reset_password_pref</string>
+			<string>rtcsv_out_pref</string>
 			<key>DefaultValue</key>
 			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Offer to save private after exit</string>
+			<key>Key</key>
+			<string>save_priv_pref</string>
+			<key>DefaultValue</key>
+			<true/>
 		</dict>
 	</array>
 	<key>StringsTable</key>

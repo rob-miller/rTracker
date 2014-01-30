@@ -60,6 +60,16 @@
             NSNumber *nmax = [self.vo.optDict objectForKey:@"smax"];
             self.minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
             self.maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
+        } else if (self.vo.vtype == VOT_BOOLEAN) {
+            double offVal = 0.0;
+            double onVal = [[self.vo.optDict objectForKey:@"boolval"] doubleValue];
+            if (offVal < onVal) {
+                self.minVal = offVal;
+                self.maxVal = onVal;
+            } else {
+                self.minVal = onVal;
+                self.maxVal = offVal;
+            }
         } else if (self.vo.vtype == VOT_CHOICE) {
             self.minVal=d(0);
             self.maxVal=d(0);
@@ -171,16 +181,23 @@
         trackerObj *myTracker = self.vo.parentTracker;
         togd * myTOGD = myTracker.togd;
         
+        self.vScale = d(myTOGD.rect.size.height) / d(1.0 + GRAPHSCALE) ;  // (self.maxVal - self.minVal);
+        //self.vScale = d(myTOGD.rect.size.height); // / d(1.05) ;  // (self.maxVal - self.minVal);
+        
         NSMutableArray *mxdat = [[NSMutableArray alloc] init];
         NSMutableArray *mydat = [[NSMutableArray alloc] init];
         
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
-        NSMutableArray *s1 = [[NSMutableArray alloc] init];
         
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' order by date;",self.vo.vid];
-        [myTracker toQry2AryIS:i1 s1:s1];
+        //NSMutableArray *s1 = [[NSMutableArray alloc] init];
+        
+        //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        //[myTracker toQry2AryIS:i1 s1:s1];
+        //NSEnumerator *e = [s1 objectEnumerator];
+
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        [myTracker toQry2AryI:i1];
         myTracker.sql=nil;
-        NSEnumerator *e = [s1 objectEnumerator];
         
         for (NSNumber *ni in i1) {
             
@@ -192,12 +209,12 @@
             //d+= border;
             
             [mxdat addObject:[NSNumber numberWithDouble:d]];
-            [mydat addObject:[e nextObject]];
+            [mydat addObject: [NSNumber numberWithDouble:self.vScale]];  //[e nextObject]];
         }
         
         
         [i1 release];
-        [s1 release];
+        //[s1 release];
         
         self.xdat = [NSArray arrayWithArray:mxdat];
         self.ydat = [NSArray arrayWithArray:mydat];
@@ -210,6 +227,9 @@
 
 }
 
+
+// not used - boolean treated as number
+/*
 - (id) initAsBool:(valueObj*)inVO {
     if ((self = [super init])) {
         
@@ -223,7 +243,7 @@
         //NSMutableArray *mydat = [[NSMutableArray alloc] init];
         
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
-        myTracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val='1' order by date;",self.vo.vid];
+        myTracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val !='' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         [myTracker toQry2AryI:i1];
         myTracker.sql=nil;
         
@@ -252,6 +272,7 @@
     return self;
     
 }
+*/
 
 - (id) initAsTBoxLC:(valueObj*)inVO {
 
@@ -269,7 +290,7 @@
         NSMutableArray *s1 = [[NSMutableArray alloc] init];
         NSMutableArray *i2 = [[NSMutableArray alloc] init];
         
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL order by date;",self.vo.vid];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         [myTracker toQry2AryIS:i1 s1:s1];
         myTracker.sql=nil;
         

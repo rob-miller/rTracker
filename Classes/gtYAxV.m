@@ -91,15 +91,32 @@
                 vstr = [self.vogd.vo.optDict objectForKey:ch];
                 break;
             }
-            case VOT_TEXT:
             case VOT_BOOLEAN:
-            //case VOT_IMAGE:
-                vstr = @"";
+                if (1 == i) {
+                    vstr = [self.vogd.vo.optDict objectForKey:@"boolval"];
+                    y = 0.2 * step;
+                } else {
+                    vstr = @"";
+                }
+                break;
+                
+            case VOT_TEXT:
+                //case VOT_IMAGE:
+                if (1 == i) {
+                    vstr = @"1";
+                    y = 0.2 * step;
+                } else {
+                    vstr = @"";
+                }
                 break;
                 
             case VOT_TEXTB:
                 if ([(NSString*) [self.vogd.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
                     // fall through to default - handle as number
+                } else if (1 == i) {
+                    vstr = @"1";
+                    y = 0.2 * step;
+                    break;
                 } else {
                     vstr = @"";
                     break;
@@ -108,7 +125,7 @@
                 //case VOT_NUMBER:
                 //case VOT_SLIDER:
                 //case VOT_FUNC:
-                
+
             default:
                 if (vtype == VOT_FUNC) {
                     int fnddp = [[self.vogd.vo.optDict objectForKey:@"fnddp"] intValue];

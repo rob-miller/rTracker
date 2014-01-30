@@ -471,6 +471,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8D1107310486CEB800E47090 /* Info.plist */,
 				D40607D517D7CB5A00C05A38 /* closedview-button-7.png */,
 				D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */,
 				D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */,
@@ -514,7 +515,6 @@
 				D4A317B31192B7C800F062AC /* configTlistController.xib */,
 				D487D7731260A77800298C1D /* configTVObjVC.xib */,
 				D4FF224712304E050047518A /* rt-types.plist */,
-				8D1107310486CEB800E47090 /* Info.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
 				D44386CF13A2216800268248 /* bkgnd1-320-460.png */,

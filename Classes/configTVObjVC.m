@@ -476,6 +476,9 @@
 	} else if ( tf == [self.wDict objectForKey:@"fnddpTF"] ) {
 		okey = @"fnddp";
 		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"bvalTF"] ) {
+		okey = @"boolval";
+		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:CTFKEY] ) {
 		okey = LCKEY;
 		nkey = nil;

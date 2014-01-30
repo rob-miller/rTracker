@@ -77,96 +77,145 @@ static BOOL InstallSamples;
 //  appreciated but not required.
 //-------------------
 
+-(void) doCSVLoad:(NSString*)csvString to:(trackerObj*)to fname:(NSString*)fname {
+    
+    DBGLog(@"start csv parser %@",to.trackerName);
+    CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
+    to.csvProblem=nil;
+    to.csvReadFlags=0;
+    [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
+    [parser release];
+    DBGLog(@"csv parser done %@",to.trackerName);
+    
+    //[to reloadVOtable];
+    [to loadConfig];
+    
+    if (to.csvReadFlags & (CSVCREATEDVO | CSVCONFIGVO | CSVLOADRECORD)) {
+        
+        to.goRecalculate=YES;
+        [to recalculateFns];    // updates fn vals in database
+        to.goRecalculate=NO;
+        DBGLog(@"functions recalculated %@",to.trackerName);
+        
+        [to saveChoiceConfigs]; // in case csv data had unrecognised choices
+        
+        DBGLog(@"csv loaded:");
+#if DEBUGLOG
+        [to describe];
+#endif
+    }
+    if (to.csvReadFlags & CSVNOTIMESTAMP) {
+        [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have 'timestamp' as the first column.",fname]];
+    } else if (to.csvReadFlags & CSVNOREADDATE) {
+        [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like %@ are not compatible with your device's calendar settings.  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem]];
+    }
+    
+    [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];
+    csvReadCount++;
+    
+    
+}
+-(void) startLoadCsvActivityIndicator:(NSString*)tname {
+    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@ rtcsv",tname]];
+}
+
 - (void) loadTrackerCsvFiles {
     //DBGLog(@"loadTrackerCsvFiles");
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager=[NSFileManager defaultManager];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+    BOOL newRtcsvTracker=NO;
     
     NSString *file;
+
+    [self jumpMaxPriv];
+    
     while ((file = [dirEnum nextObject])) {
         if ([[file pathExtension] isEqualToString: @"csv"]) {
             NSString *fname = [file lastPathComponent];
             NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             
-            if (inmatch.location == NSNotFound) {
-                
-            } else if (inmatch.length == 7) {  // matched all 7 chars of _in.csv at end of file name
+            if ((inmatch.location != NSNotFound) && (inmatch.length == 7)) {  // matched all 7 chars of _in.csv at end of file name
+
                 NSString *tname = [fname substringToIndex:inmatch.location];
                 DBGLog(@"csv load input: %@ as %@",fname,tname);
-                int ndx=0;
-                [self jumpMaxPriv];
+                //int ndx=0;
+                
                 for (NSString *tracker in self.tlist.topLayoutNames) {
                     if ([tracker isEqualToString:tname]) {
                         DBGLog(@"match to: %@",tracker);
+                        trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];  // accept will take first if multiple with same name
+
                         NSString *target = [docsDir stringByAppendingPathComponent:file];
-                        //NSError *error = nil;
                         NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
-                        
-                        // TODO: could count lines with rTracker-resource here, but need to to know how many done / to go
-                        // or add routine to just bump progress bar with current step -- but then problem with diff tasks 
-                        // updating progress bar....
                         
                         [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
                         
-                        /*
-                        if (!csvString)
-                        {
-                         DBGErr(@"Couldn't read file at path %s\n. Error: %s",
-                                   [file UTF8String],
-                                   [[error localizedDescription] ? [error localizedDescription] : [error description] UTF8String]);
-                            dbgNSAssert(0,@"file issue.");
-                        }
-                        */
                         if (csvString)
                         {
-                            BOOL csvLoadError=FALSE;
-                            trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];  // accept will take first if multiple with same name
+                            [self doCSVLoad:csvString to:to fname:fname];
+                            [rTracker_resource deleteFileAtPath:target];
 
-                            NSDate *toDate = to.trackerDate;  // date is right now
-                            
-                            CSVParser *parser = [[CSVParser alloc] initWithString:csvString separator:@"," hasHeader:YES fieldNames:nil];
-                            [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
-                            [parser release];
-                            if (toDate == to.trackerDate) {  // date set by csv data, so if unchanged then CSV load failed
-                                csvLoadError = TRUE;
-                                DBGLog(@"error on date from loading csv data");
-                            }
-                            to.goRecalculate=YES;
-                            [to recalculateFns];    // updates fn vals in database
-                            to.goRecalculate=NO;
-                            [to saveChoiceConfigs]; // in case csv data had unrecognised choices
-                            
-                            DBGLog(@"csv loaded:");
-#if DEBUGLOG
-                            [to describe];
-#endif                            
-                            [to release];
-                            
-                            /*
-                            NSString *newfile = [file stringByReplacingOccurrencesOfString:@"_in.csv" 
-                                                                                withString:@"_read.csv" 
-                                                                                   options:0 
-                                                                                     range:inmatch];
-                            NSString *newpath = [docsDir stringByAppendingPathComponent:newfile];
-                            DBGLog(@"rename old: %@  to new: %@",target,newpath);
-                             */
-                            if (! csvLoadError) {
-                                [rTracker_resource deleteFileAtPath:target];
-                            }
-                            
-                            [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];                    
-                            csvReadCount++;
-                            // apparently cannot rename in but can delete from application's Document folder
-                            //*/
                         }
-                        ndx++;
+                            
+                        [to release];
+                        
+                        //ndx++;
                     }
                 }
-                [self restorePriv];
+            }
+        } else if ([[file pathExtension] isEqualToString: @"rtcsv"]) {
+            NSString *fname = [file lastPathComponent];
+            NSRange inmatch = [fname rangeOfString:@".rtcsv" options:NSBackwardsSearch|NSAnchoredSearch];
+            //DBGLog(@"consider input: %@",fname);
+            
+            if ((inmatch.location != NSNotFound) && (inmatch.length == 6)) {  // matched all 7 chars of _in.csv at end of file name
+                
+                NSString *tname = [fname substringToIndex:inmatch.location];
+                [self performSelectorOnMainThread:@selector(startLoadCsvActivityIndicator:) withObject:tname waitUntilDone:NO];
+
+                DBGLog(@"rtcsv load input: %@ as %@",fname,tname);
+                trackerObj *to;
+                int tid = [self.tlist getTIDfromName:tname];
+                if (tid) {
+                    to = [[trackerObj alloc]init:tid];
+                    DBGLog(@" found existing tracker tid %d with matching name",tid);
+                } else {
+                    to = [[trackerObj alloc] init];
+                    to.trackerName = tname;
+                    to.toid = [self.tlist getUnique];
+                    [to saveConfig];
+                    [self.tlist addToTopLayoutTable:to];
+                    newRtcsvTracker = YES;
+                }
+                
+                NSString *target = [docsDir stringByAppendingPathComponent:file];
+                
+                NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
+
+                [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
+               
+                if (csvString)
+                {
+                    [self doCSVLoad:csvString to:to fname:fname];
+                    [rTracker_resource deleteFileAtPath:target];
+                    
+                }
+                
+                [to release];
+                
+                [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+                
+                
             }
         }
+    }
+
+    [self restorePriv];
+
+    if (newRtcsvTracker) {
+        [self refreshViewPart2];
     }
 }
 
@@ -234,10 +283,21 @@ static BOOL InstallSamples;
 
 #pragma mark load .plists and .rtrks for input trackers
 
+-(void) startLoadConfigActivityIndicator:(NSString*)tname {
+    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@ configuration",tname]];
+}
+
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
     int tid;
+    
+    DBGLog(@"open url %@",url);
+    
+    if ([@"rtcsv" isEqualToString:[url pathExtension]]) {
+        [self loadTrackerCsvFiles];
+        return 0;
+    }
     
     [self jumpMaxPriv];
     
@@ -250,9 +310,15 @@ static BOOL InstallSamples;
         dataDict = [rtdict objectForKey:@"dataDict"];        
     }
 
+    int c = [(NSArray *)[tdict objectForKey:@"valObjTable"] count];
+    int c2 = (nil == dataDict ? 0 : [dataDict count]);
+    if ((c>20) || (c2>20))
+        [self performSelectorOnMainThread:@selector(startLoadConfigActivityIndicator:) withObject:tname waitUntilDone:NO];
     
+    DBGLog(@"ltd enter dict= %d",[tdict count]);
+
     tid = [self loadTrackerDict:tdict tname:tname];
-    
+
     if (nil != dataDict) {
         trackerObj *to = [[trackerObj alloc] init:tid];
         
@@ -269,10 +335,15 @@ static BOOL InstallSamples;
         [to release];
     }
 
+    DBGLog(@"ltd/ldd finish");
+    
     //[self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
     [self restorePriv];
     
     [rTracker_resource deleteFileAtPath:[url path]];
+    //if ((c>20) || (c2>20))
+        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+    
     
     return tid;
 }
@@ -482,6 +553,8 @@ static BOOL InstallSamples;
         csvLoadCount = [self countInputFiles:@"_in.csv"];
         plistLoadCount = [self countInputFiles:@"_in.plist"];
         int rtrkLoadCount = [self countInputFiles:@".rtrk"];
+        csvLoadCount += [self countInputFiles:@".rtcsv"];   //TODO: rtm here
+        
         /*
          #if RTRK_EXPORT
          int rtrk_out = [self countInputFiles:@"_out.rtrk"];
@@ -865,6 +938,8 @@ static BOOL InstallSamples;
     BOOL reloadSamplesPref = [sud boolForKey:@"reload_sample_trackers_pref"];
     
     [rTracker_resource setSeparateDateTimePicker:[sud boolForKey:@"separate_date_time_pref"]];
+    [rTracker_resource setRtcsvOutput:[sud boolForKey:@"rtcsv_out_pref"]];
+    [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
     
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 

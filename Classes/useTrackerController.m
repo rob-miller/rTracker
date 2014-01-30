@@ -203,15 +203,20 @@
     if ((nil != self.tracker)
         && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
             //[self.navigationController popViewControllerAnimated:YES];
-            [self.tracker.activeControl resignFirstResponder];
+        [self.tracker.activeControl resignFirstResponder];
+        
+        if ([rTracker_resource getSavePrivate]) {
             [self btnCancel];
+        } else {
+            [self.navigationController popViewControllerAnimated:YES];
         }
-    
+    }
     //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
     [self.table reloadData];
 
     [super viewDidAppear:animated];
 }
+
 - (void) viewWillAppear:(BOOL)animated
 {
     //DBGLog(@"utc: view will appear");

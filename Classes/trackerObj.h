@@ -44,6 +44,9 @@
     NSDateFormatter *dateFormatter;
     NSDateFormatter *dateOnlyFormatter;
     
+    NSUInteger csvReadFlags;
+    NSString *csvProblem;
+    
     id togd;                    // tracker obj graph data
     NSInteger prevTID;
     
@@ -63,6 +66,8 @@
 @property (nonatomic,assign) UIViewController *vc;
 @property (nonatomic,retain) NSDateFormatter *dateFormatter;
 @property (nonatomic,retain) NSDateFormatter *dateOnlyFormatter;
+@property (nonatomic) NSUInteger csvReadFlags;
+@property (nonatomic,retain) NSString *csvProblem;
 @property (nonatomic,retain) id togd;
 @property (nonatomic) NSInteger prevTID;
 @property (nonatomic) BOOL goRecalculate;
@@ -77,6 +82,8 @@
 - (void) saveChoiceConfigs;
 
 - (NSDictionary*) dictFromTO;
+
+//- (void) reloadVOtable;
 
 - (void) loadConfig;
 - (void) loadConfigFromDict:(NSDictionary*)dict;
@@ -134,5 +141,12 @@
 
 - (void) setTOGD:(CGRect)inRect;
 - (int) getPrivacyValue;
+
+
+#define CSVNOTIMESTAMP (0x01<<0)
+#define CSVNOREADDATE  (0x01<<1)
+#define CSVCREATEDVO   (0x01<<2)
+#define CSVCONFIGVO    (0x01<<3)
+#define CSVLOADRECORD  (0x01<<4)
 
 @end

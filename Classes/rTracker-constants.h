@@ -24,6 +24,7 @@
 #define TMPUNIQSTART		1000
 
 #define TIMESTAMP_LABEL @"timestamp"
+#define TIMESTAMP_KEY   @"timestamp:0"
 
 #define MINPRIV         1
 #define MAXPRIV         100
@@ -51,6 +52,8 @@
 // default preference for separateDateTimePicker
 
 #define SDTDFLT NO
+#define RTCSVOUTDFLT NO
+#define SAVEPRIVDFLT YES
 
 #define CSVext @".csv"
 #define RTRKext @".rtrk"

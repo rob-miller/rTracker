@@ -75,7 +75,8 @@
 //#define PRIVDFLT		0
 #define FREPDFLT		-1
 #define FDDPDFLT		2
-
+#define BOOLVALDFLT     1.0
+#define BOOLVALDFLTSTR  @"1"
 
 
 
@@ -154,6 +155,10 @@
            in_vpriv:(NSInteger)in_vpriv;
 
 - (id) initWithDict:(id)parentTO dict:(NSDictionary*)dict;
+
+- (id) initFromDB:(id)parentTO
+           in_vid:(NSInteger)in_vid;
+
 
 - (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;

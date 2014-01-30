@@ -92,8 +92,8 @@
     
     RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
     //if (url != nil && [url isFileURL]) {
-
     int tid = [rootController handleOpenFileURL:url tname:nil];
+    
     if (0 != tid) {
         // get to root view controller, else get last view on stack
         //[rootController openTracker:tid rejectable:YES];

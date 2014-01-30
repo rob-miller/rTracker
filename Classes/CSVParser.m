@@ -264,7 +264,8 @@
 			fieldNamesCount++;
 		}
 		
-		[record setObject:field forKey:fieldName];
+		[record setObject:field forKey:[fieldName stringByAppendingFormat:@":%d",fieldCount]];
+        
 		fieldCount++;
 
 		if (![self parseSeparator])

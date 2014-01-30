@@ -204,6 +204,7 @@ static UILabel *captionLabel;
     activityIndicator = nil;
     [captionLabel release];
     captionLabel = nil;
+    [outerView removeFromSuperview];
     [outerView release];
     outerView = nil;
 }
@@ -322,6 +323,29 @@ static BOOL separateDateTimePicker=SDTDFLT;
 	separateDateTimePicker = sdt;
 	DBGLog(@"updateSeparateDateTimePicker:%d",separateDateTimePicker);
 }
+
+static BOOL rtcsvOutput=RTCSVOUTDFLT;
+
++ (BOOL)getRtcsvOutput {
+	return rtcsvOutput;
+}
+
++ (void)setRtcsvOutput:(BOOL)rtcsvOut {
+	rtcsvOutput = rtcsvOut;
+	DBGLog(@"updateRtcsvOutput:%d",rtcsvOutput);
+}
+
+static BOOL savePrivate=SAVEPRIVDFLT;
+
++ (BOOL)getSavePrivate {
+	return savePrivate;
+}
+
++ (void)setSavePrivate:(BOOL)savePriv {
+	savePrivate = savePriv;
+	DBGLog(@"updateSavePrivate:%d",savePrivate);
+}
+
 
 //---------------------------
 static int lastStashedTid=0;

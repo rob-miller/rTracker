@@ -25,7 +25,7 @@
 
 @implementation graphTrackerV
 
-@synthesize tracker,gtvCurrVO,doDrawGraph,xMark,parentGTVC;
+@synthesize tracker,gtvCurrVO,selectedVO,doDrawGraph,xMark,parentGTVC;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -163,7 +163,11 @@
         if (going) {
             //DBGLog(@"addline %f %f",x,y);
             AddLineTo(x,y);
-            AddCircle(x,y);
+            if (self.selectedVO) {
+                AddFilledCircle(x,y);
+            } else {
+                AddCircle(x,y);
+            }
             if (x > maxX)
                 break; //going=NO;   // done
         } else {  // not started yet
@@ -176,10 +180,17 @@
                     MoveTo(x,y);
                     AddCircle(x,y);
                 } else { // past 1st data point, need to show lastX plus current
-                    MoveTo(lastX, lastY);
-                    AddCircle(lastX,lastY);
-                    AddLineTo(x,y);
-                    AddCircle(x,y);
+                    if (self.selectedVO) {
+                        MoveTo(lastX, lastY);
+                        AddFilledCircle(lastX,lastY);
+                        AddLineTo(x,y);
+                        AddFilledCircle(x,y);
+                    } else {
+                        MoveTo(lastX, lastY);
+                        AddCircle(lastX,lastY);
+                        AddLineTo(x,y);
+                        AddCircle(x,y);
+                    }
                 }
                 going=YES;
             } 
@@ -210,8 +221,12 @@
         if (going) {
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,y);
-            AddCircle(x,y);
-            if (bigger)
+            if (self.selectedVO) {
+                AddFilledCircle(x,y);
+            } else {
+                AddCircle(x,y);
+            }
+            if (bigger && !self.selectedVO)
                 AddBigCircle(x,y);
             if (vogd.vo.vtype == VOT_CHOICE)
                 Stroke;
@@ -229,8 +244,12 @@
             }
             going=YES;    // going, show current
             MoveTo(x,y);
-            AddCircle(x,y);
-            if (bigger)
+            if (self.selectedVO) {
+                AddFilledCircle(x,y);
+            } else {
+                AddCircle(x,y);
+            }
+            if (bigger && !self.selectedVO)
                 AddBigCircle(x,y);
             
             if (vogd.vo.vtype == VOT_CHOICE)
@@ -259,6 +278,7 @@
 }
 */
 
+/* not used
 - (void) plotVO_dotsNoY:(vogd *)vogd context:(CGContextRef)context
 {
 	CGRect bbox = CGContextGetClipBoundingBox(context);
@@ -269,7 +289,7 @@
     CGFloat lastY=LXNOTSTARTED;
     BOOL going=NO;
         
-    /*
+    / *
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
     BOOL doText=NO;
     if ((VOT_TEXT == vogd.vo.vtype) && (vogd.vo == self.currVO)) {
@@ -277,7 +297,7 @@
         CGContextSelectFont(context, FONTNAME, FONTSIZE, kCGEncodingMacRoman);
         CGContextSetTextDrawingMode(context, kCGTextFill);
     }
-    */
+    * /
     
 	for (NSNumber *nx in vogd.xdat) {
 		CGFloat x = [nx floatValue];
@@ -307,6 +327,7 @@
     
 	Stroke;
 }
+*/
 
 - (void) plotVO_bar:(vogd *)vogd context:(CGContextRef)context barCount:(int)barCount
 {
@@ -386,8 +407,10 @@
         }
         
         CGContextSetLineWidth(context, DBL_LINE_WIDTH);
+        self.selectedVO=YES;
     } else {
         CGContextSetLineWidth(context, STD_LINE_WIDTH);
+        self.selectedVO=NO;
     }
     
     if (vo.vtype != VOT_CHOICE) {
@@ -396,25 +419,25 @@
     }
 
 	switch (vo.vGraphType) {
-		case VOG_DOTS:
+		case VOG_DOTS:  // 25.i.14  bool and text/textbox plot as 1 (or boolval) at top of graph
             switch (vo.vtype) {
                 case VOT_NUMBER:
                 case VOT_SLIDER:
                 case VOT_CHOICE:
                 case VOT_FUNC:
-                    [self plotVO_dots:currVogd context:context];
-                    break;
-                case VOT_TEXT:
                 case VOT_BOOLEAN:
+                    //[self plotVO_dots:currVogd context:context];
+                    //break;
+                case VOT_TEXT:
                 //case VOT_IMAGE:
-                    [self plotVO_dotsNoY:currVogd context:context];
-                    break;
+                    //[self plotVO_dotsNoY:currVogd context:context];
+                    //break;
                 default:   // VOT_TEXTB
-                    if ([(NSString*) [vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
+                    //if ([(NSString*) [vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
                         [self plotVO_dots:currVogd context:context];
-                    } else {
-                        [self plotVO_dotsNoY:currVogd context:context];
-                    }
+                    //} else {
+                    //    [self plotVO_dotsNoY:currVogd context:context];
+                    //}
                     break;
             }
 			break;
@@ -451,15 +474,25 @@
     barCount /= -2;
     
 	for (valueObj *vo in self.tracker.valObjTable) {
-		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
-            //DBGLog(@"drawGraph %@",vo.valueName);
-			[self plotVO:vo context:context barCount:barCount];
-            if (VOG_BAR == vo.vGraphType) {
-                barCount++;
+        if (vo != self.gtvCurrVO) {
+            if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+                //DBGLog(@"drawGraph %@",vo.valueName);
+                [self plotVO:vo context:context barCount:barCount];
+                if (VOG_BAR == vo.vGraphType) {
+                    barCount++;
+                }
             }
         }
 	}
-		
+    // plot selected last for best hightlight
+    if (![[self.gtvCurrVO.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+        //DBGLog(@"drawGraph %@",vo.valueName);
+        [self plotVO:self.gtvCurrVO context:context barCount:barCount];
+        if (VOG_BAR == self.gtvCurrVO.vGraphType) {
+            barCount++;
+        }
+    }
+
     if (self.xMark != NOXMARK) {
         CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
         CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);

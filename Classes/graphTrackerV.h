@@ -15,6 +15,7 @@
 @interface graphTrackerV : UIScrollView {
 	trackerObj *tracker;
     valueObj *gtvCurrVO;
+    BOOL selectedVO;
     BOOL doDrawGraph;
     CGFloat xMark;
     id parentGTVC;
@@ -22,6 +23,7 @@
 
 @property(nonatomic,retain) trackerObj *tracker;
 @property(nonatomic,retain) valueObj *gtvCurrVO;
+@property(nonatomic) BOOL selectedVO;
 @property(nonatomic) BOOL doDrawGraph;
 @property(nonatomic) CGFloat xMark;
 @property(nonatomic,retain) id parentGTVC;

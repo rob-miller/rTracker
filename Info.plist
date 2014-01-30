@@ -18,6 +18,7 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtrk</string>
+				<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtcsv</string>
 			</array>
 		</dict>
 	</array>
@@ -49,7 +50,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1973</string>
+	<string>2132</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -102,6 +103,23 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<string>rtrk</string>
+				<key>public.mime-type</key>
+				<string>application/rTracker</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>rTracker Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtcsv</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<string>rtcsv</string>
 				<key>public.mime-type</key>
 				<string>application/rTracker</string>
 			</dict>

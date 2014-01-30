@@ -627,6 +627,11 @@
                     maxw = [self testDblWidth:( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) ) max:maxw];
                     break;
                 }
+                case VOT_BOOLEAN: {
+                    NSNumber *bval = [vo.optDict objectForKey:@"boolval"];
+                    maxw = [self testDblWidth:( bval ? [bval doubleValue] : d(BOOLVALDFLT) ) max:maxw];
+                    break;
+                }
                 case VOT_CHOICE: {
                     int i;
                     for (i=0;i<CHOICES;i++) {

@@ -45,8 +45,17 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
 
 + (BOOL)getSeparateDateTimePicker;
-
 + (void)setSeparateDateTimePicker:(BOOL)sdt;
+
++ (BOOL)getRtcsvOutput;
++ (void)setRtcsvOutput:(BOOL)rtcsvOut;
+
++ (BOOL)getSavePrivate;
++ (void)setSavePrivate:(BOOL)savePriv;
+
+
+    
+    
 + (void) stashTracker:(int)tid;
 + (void) rmStashedTracker:(int)tid;
 + (void) unStashTracker:(int)tid;
