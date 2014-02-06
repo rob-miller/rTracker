@@ -81,51 +81,14 @@
     return YES;
 }
 
-- (void) doOpenTracker:(NSNumber*)nsnTid {
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    [rootController openTracker:[nsnTid intValue] rejectable:YES];
-}
-
-- (void) doOpenURL:(NSURL*)url {
-    
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //if (url != nil && [url isFileURL]) {
-    int tid = [rootController handleOpenFileURL:url tname:nil];
-    
-    if (0 != tid) {
-        // get to root view controller, else get last view on stack
-        //[rootController openTracker:tid rejectable:YES];
-        [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:YES];
-    }
-    //}
-    
-    [rootController finishRvcActivityIndicator];
-    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
-    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
-    
-    rootController.openUrlLock=NO;
-    [pool drain];
-}
-
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     DBGLog(@"openURL %@",url);
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    rootController.openUrlLock = YES;
-    [rootController jumpMaxPriv];
+    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    //rootController.inputURL=url;
     
-    [self.navigationController popToRootViewControllerAnimated:NO];
+    //[self.navigationController popToRootViewControllerAnimated:NO];
 
-    [rootController startRvcActivityIndicator];
-
-    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
-    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
-    
-    [NSThread detachNewThreadSelector:@selector(doOpenURL:) toTarget:self withObject:url];
-    //[self doOpenURL:url];
-    
     return YES;
         
 }
@@ -179,6 +142,7 @@
     UIViewController *topController = [self.navigationController.viewControllers lastObject];
     
     [((RootViewController *)rootController).privacyObj lockDown];  // hiding is handled after startup - viewDidAppear() below
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     
     SEL rtSelector = NSSelectorFromString(@"rejectTracker");
     

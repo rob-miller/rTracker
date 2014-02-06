@@ -27,7 +27,10 @@
     int32_t refreshLock;
     BOOL initialPrefsLoad;
     NSNumber *stashedPriv;
-    BOOL openUrlLock;
+    //BOOL openUrlLock;
+    //NSURL *inputURL;
+    BOOL readingFile;
+    NSMutableArray *stashedTIDs;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
@@ -35,7 +38,10 @@
 @property (atomic) int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
 @property (nonatomic,retain) NSNumber *stashedPriv;
-@property (nonatomic) BOOL openUrlLock;
+//@property (nonatomic) BOOL openUrlLock;
+//@property (nonatomic,retain) NSURL *inputURL;
+@property (nonatomic) BOOL readingFile;
+@property (nonatomic,retain) NSMutableArray *stashedTIDs;
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;

@@ -1230,11 +1230,25 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
--> see if can fix progress bar several lines down sometimes
--> ready for release?
+01 feb 2014
+   - moved openURL code from appDelegate to rootViewController
+   - fixed progress bar for openURL (was simply displaying at wrong yloc)
+   - think made icon bigger for email, web page .rtrk .rtcsv files
 
+02 feb 2014
+   - flag readingFile so don't offer to delete .rtk_reading if left and came back
+   - re-enable idle timer if app resigning active
+   - disable idle timer if reading file and rootViewController did appear
+   -> realised all openURL stuff not needed as input file goes to inbox, which dirEnum finds
 
+05 feb 2014
+   - removed openurl code, all handled by dirEnum.
+   - added array for stashed TIDs, so rtrks queue up for approval even if loaded through itunes
 
+06 feb 2014 
+   - re-worked rt/csv, rtrk/plist file loaders - tested
+
+--- commit ---
 
 
 -> notifyReminder class to manage db to/from nsarray for rtrk

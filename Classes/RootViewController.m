@@ -25,8 +25,8 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv,openUrlLock;
-
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv, readingFile, stashedTIDs;
+//openUrlLock, inputURL,
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -43,6 +43,10 @@
     [editBtn release];
     self.stashedPriv=nil;
     [stashedPriv release];
+    //self.inputURL = nil;
+    //[inputURL release];
+    self.stashedTIDs = nil;
+    [stashedTIDs release];
     
     [super dealloc];
 }
@@ -115,8 +119,8 @@ static BOOL InstallSamples;
     
     
 }
--(void) startLoadCsvActivityIndicator:(NSString*)tname {
-    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@ rtcsv",tname]];
+-(void) startLoadActivityIndicator:(NSString*)str {
+    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:str];
 }
 
 - (void) loadTrackerCsvFiles {
@@ -125,77 +129,116 @@ static BOOL InstallSamples;
     NSFileManager *localFileManager=[NSFileManager defaultManager];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
     BOOL newRtcsvTracker=NO;
+    BOOL rtcsv=NO;
     
     NSString *file;
 
     [self jumpMaxPriv];
     
     while ((file = [dirEnum nextObject])) {
+        trackerObj *to = nil;
+        NSString *fname = [file lastPathComponent];
+        NSString *tname = nil;
+        NSRange inmatch;
+        BOOL validMatch=NO;
+        NSString *loadObj;
+        
         if ([[file pathExtension] isEqualToString: @"csv"]) {
-            NSString *fname = [file lastPathComponent];
-            NSRange inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
+            loadObj = @"csv";
+            inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             
-            if ((inmatch.location != NSNotFound) && (inmatch.length == 7)) {  // matched all 7 chars of _in.csv at end of file name
-
-                NSString *tname = [fname substringToIndex:inmatch.location];
-                DBGLog(@"csv load input: %@ as %@",fname,tname);
-                //int ndx=0;
-                
-                for (NSString *tracker in self.tlist.topLayoutNames) {
-                    if ([tracker isEqualToString:tname]) {
-                        DBGLog(@"match to: %@",tracker);
-                        trackerObj *to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];  // accept will take first if multiple with same name
-
-                        NSString *target = [docsDir stringByAppendingPathComponent:file];
-                        NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
-                        
-                        [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
-                        
-                        if (csvString)
-                        {
-                            [self doCSVLoad:csvString to:to fname:fname];
-                            [rTracker_resource deleteFileAtPath:target];
-
-                        }
-                            
-                        [to release];
-                        
-                        //ndx++;
-                    }
-                }
+            if ((inmatch.location != NSNotFound) && (inmatch.length == 7)) {  // matched all 7 chars of _in.csv at end of file name  (must test not _out.csv)
+                validMatch=YES;
             }
+            
         } else if ([[file pathExtension] isEqualToString: @"rtcsv"]) {
-            NSString *fname = [file lastPathComponent];
-            NSRange inmatch = [fname rangeOfString:@".rtcsv" options:NSBackwardsSearch|NSAnchoredSearch];
+            rtcsv=YES;
+            loadObj = @"rtcsv";
+            
+            inmatch = [fname rangeOfString:@".rtcsv" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             
-            if ((inmatch.location != NSNotFound) && (inmatch.length == 6)) {  // matched all 7 chars of _in.csv at end of file name
-                
-                NSString *tname = [fname substringToIndex:inmatch.location];
-                [self performSelectorOnMainThread:@selector(startLoadCsvActivityIndicator:) withObject:tname waitUntilDone:NO];
+            if ((inmatch.location != NSNotFound) && (inmatch.length == 6)) {  // matched all 6 chars of .rtcsv at end of file name  (unlikely to fail but need inmatch to get tname)
+                validMatch=YES;
+            }
+        }
 
-                DBGLog(@"rtcsv load input: %@ as %@",fname,tname);
-                trackerObj *to;
-                int tid = [self.tlist getTIDfromName:tname];
-                if (tid) {
-                    to = [[trackerObj alloc]init:tid];
-                    DBGLog(@" found existing tracker tid %d with matching name",tid);
-                } else {
-                    to = [[trackerObj alloc] init];
-                    to.trackerName = tname;
-                    to.toid = [self.tlist getUnique];
-                    [to saveConfig];
-                    [self.tlist addToTopLayoutTable:to];
-                    newRtcsvTracker = YES;
+        if (validMatch) {
+            DBGLog(@"%@ load input: %@ as %@",loadObj,fname,tname);
+
+            tname = [fname substringToIndex:inmatch.location];
+            [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,loadObj] waitUntilDone:NO];
+
+            int tid = [self.tlist getTIDfromName:tname];
+            if (tid) {
+                to = [[trackerObj alloc]init:tid];
+                DBGLog(@" found existing tracker tid %d with matching name",tid);
+            } else if (rtcsv) {
+                to = [[trackerObj alloc] init];
+                to.trackerName = tname;
+                to.toid = [self.tlist getUnique];
+                [to saveConfig];
+                [self.tlist addToTopLayoutTable:to];
+                newRtcsvTracker = YES;
+                DBGLog(@"created new tracker for rtcsv, id= %d",to.toid);
+            }
+
+            if (nil != to) {
+                NSString *target = [docsDir stringByAppendingPathComponent:file];
+                NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
+                
+                [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
+
+                if (csvString)
+                {
+                    [UIApplication sharedApplication].idleTimerDisabled = YES;
+                    [self doCSVLoad:csvString to:to fname:fname];
+                    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
+                    [rTracker_resource deleteFileAtPath:target];
                 }
+                
+                [to release];
+                [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+            }
+            
+        }
+        
+    }
+    
+    [self restorePriv];
+    
+    if (newRtcsvTracker) {
+        [self refreshViewPart2];
+    }
+}
+
+
+/*
+
+if ([[file pathExtension] isEqualToString: @"csv"]) {
+ 
+    inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
+    //DBGLog(@"consider input: %@",fname);
+ 
+    if ((inmatch.location != NSNotFound) && (inmatch.length == 7)) {  // matched all 7 chars of _in.csv at end of file name
+        validMatch=YES;
+ 
+        tname = [fname substringToIndex:inmatch.location];
+        DBGLog(@"csv load input: %@ as %@",fname,tname);
+        //int ndx=0;
+        
+        for (NSString *tracker in self.tlist.topLayoutNames) {
+            if ([tracker isEqualToString:tname]) {
+                DBGLog(@"match to: %@",tracker);
+                to = [[trackerObj alloc] init:[self.tlist getTIDfromName:tname]];  // accept will take first if multiple with same name
                 
                 NSString *target = [docsDir stringByAppendingPathComponent:file];
-                
                 NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
-
+                
                 [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
-               
+                
                 if (csvString)
                 {
                     [self doCSVLoad:csvString to:to fname:fname];
@@ -205,19 +248,67 @@ static BOOL InstallSamples;
                 
                 [to release];
                 
-                [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
-                
-                
+                //ndx++;
             }
         }
     }
-
-    [self restorePriv];
-
-    if (newRtcsvTracker) {
-        [self refreshViewPart2];
+} else if ([[file pathExtension] isEqualToString: @"rtcsv"]) {
+    rtcsv=YES;
+    inmatch = [fname rangeOfString:@".rtcsv" options:NSBackwardsSearch|NSAnchoredSearch];
+    //DBGLog(@"consider input: %@",fname);
+    
+    if ((inmatch.location != NSNotFound) && (inmatch.length == 6)) {  // matched all 6 chars of .rtcsv at end of file name  (unlikely to fail)
+        validMatch=YES;
+        
+        NSString *tname = [fname substringToIndex:inmatch.location];
+        
+        
+        
+        [self performSelectorOnMainThread:@selector(startLoadCsvActivityIndicator:) withObject:tname waitUntilDone:NO];
+        
+        DBGLog(@"rtcsv load input: %@ as %@",fname,tname);
+        trackerObj *to;
+        int tid = [self.tlist getTIDfromName:tname];
+        if (tid) {
+            to = [[trackerObj alloc]init:tid];
+            DBGLog(@" found existing tracker tid %d with matching name",tid);
+        } else {
+            to = [[trackerObj alloc] init];
+            to.trackerName = tname;
+            to.toid = [self.tlist getUnique];
+            [to saveConfig];
+            [self.tlist addToTopLayoutTable:to];
+            newRtcsvTracker = YES;
+        }
+        
+        NSString *target = [docsDir stringByAppendingPathComponent:file];
+        
+        NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
+        
+        [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
+        
+        if (csvString)
+        {
+            [self doCSVLoad:csvString to:to fname:fname];
+            [rTracker_resource deleteFileAtPath:target];
+            
+        }
+        
+        [to release];
+        
+        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+        
+        
     }
 }
+}
+*/
+
+
+
+
+
+
 
 // load a tracker from NSDictionary generated by trackerObj:dictFromTO()
 //    [consists of tid, optDict and valObjTable]
@@ -265,7 +356,6 @@ static BOOL InstallSamples;
         
         DBGLog(@"updated %@",tname);
         
-        //  need to test !  rtm here
         //DBGLog(@"skip load plist file as already have %@",tname);
     } else {              // new tracker coming in
         [self.tlist fixDictTID:tdict];                                        // move any existing TIDs out of way
@@ -283,40 +373,40 @@ static BOOL InstallSamples;
 
 #pragma mark load .plists and .rtrks for input trackers
 
--(void) startLoadConfigActivityIndicator:(NSString*)tname {
-    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@ configuration",tname]];
-}
-
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
     int tid;
+    NSString *objName;
     
     DBGLog(@"open url %@",url);
-    
+    /*
+     // was needed when called for arbitrary url
     if ([@"rtcsv" isEqualToString:[url pathExtension]]) {
         [self loadTrackerCsvFiles];
         return 0;
     }
+    */
     
     [self jumpMaxPriv];
     
     if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
+        objName = @"plist";
     } else {  // else is an rtrk
         NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfURL:url];
         tname = [rtdict objectForKey:@"trackerName"];
         tdict = [rtdict objectForKey:@"configDict"];
-        dataDict = [rtdict objectForKey:@"dataDict"];        
+        dataDict = [rtdict objectForKey:@"dataDict"];
+        objName = @"rtrk";
     }
 
     int c = [(NSArray *)[tdict objectForKey:@"valObjTable"] count];
     int c2 = (nil == dataDict ? 0 : [dataDict count]);
     if ((c>20) || (c2>20))
-        [self performSelectorOnMainThread:@selector(startLoadConfigActivityIndicator:) withObject:tname waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,objName] waitUntilDone:NO];
     
     DBGLog(@"ltd enter dict= %d",[tdict count]);
-
     tid = [self loadTrackerDict:tdict tname:tname];
 
     if (nil != dataDict) {
@@ -353,7 +443,7 @@ static BOOL InstallSamples;
     // called on refresh, loads any _in.plist files as trackers
     // also called if any .rtrk files exist
     DBGLog(@"loadTrackerPlistFiles");
-    BOOL didSomething=NO;
+    int rtrkTid=0;
     
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager= [NSFileManager defaultManager];
@@ -389,27 +479,33 @@ static BOOL InstallSamples;
         //NSString *tname = nil;
         NSString *target;
         NSString *newTarget;
+        BOOL plistFile=NO;
         
         NSString *fname = [file lastPathComponent];
         DBGLog(@"process input: %@",fname);
 
         target = [docsDir stringByAppendingPathComponent:file];
-        newTarget = [[target stringByAppendingString:@"_reading"] stringByReplacingOccurrencesOfString:@"Documents/Inbox" withString:@"Documents/"];
+        
+        newTarget = [[target stringByAppendingString:@"_reading"] stringByReplacingOccurrencesOfString:@"Documents/Inbox/" withString:@"Documents/"];
         
         NSError *err;
         if ([localFileManager moveItemAtPath:target toPath:newTarget error:&err] != YES)
             DBGErr(@"Error on move %@ to %@: %@",target, newTarget, err);
             //DBGLog(@"Unable to move file: %@", [err localizedDescription]);
-
+        self.readingFile=YES;
+        
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
+
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+
         if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
-            didSomething = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
+            rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
             //TODO:need to delete stash file now!!!
             //tname = [fname substringToIndex:inmatch.location];
             //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
             // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
         } else {   // .rtrk file
-            didSomething = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
+            rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
             /*
             NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
             tname = [rtdict objectForKey:@"trackerName"];
@@ -417,10 +513,16 @@ static BOOL InstallSamples;
             dataDict = [rtdict objectForKey:@"dataDict"];
              */
         }
-        if (didSomething) {
+
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+        
+        if (plistFile) {
             [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
+        } else {
+            [self.stashedTIDs addObject:[NSNumber numberWithInt:rtrkTid]];
         }
-    
+        
+        self.readingFile=NO;
     
         [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];
         plistReadCount++;
@@ -470,13 +572,16 @@ static BOOL InstallSamples;
  */
     [filesToProcess release];  // added 13 feb 2013
     // not the default manager [localFileManager release];
-    return(didSomething);
+    return(rtrkTid);
 }
 
 
 - (void) doLoadCsvFiles {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     [self loadTrackerCsvFiles];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     
     // file load done, enable userInteraction
     
@@ -487,6 +592,11 @@ static BOOL InstallSamples;
     
     DBGLog(@"csv data loaded, UI enabled, lock off");
     
+    if (0< [self.stashedTIDs count]) {
+        [self doRejectableTracker];
+    }
+    
+
     [pool drain];
     
     // thread finished
@@ -549,7 +659,7 @@ static BOOL InstallSamples;
 }
 
 - (void) loadInputFiles {
-    if (!self.openUrlLock) {
+    //if (!self.openUrlLock) {
         csvLoadCount = [self countInputFiles:@"_in.csv"];
         plistLoadCount = [self countInputFiles:@"_in.plist"];
         int rtrkLoadCount = [self countInputFiles:@".rtrk"];
@@ -583,7 +693,7 @@ static BOOL InstallSamples;
             DBGLog(@"returning main thread, lock on, UI disabled, activity spinning,  files to load");
             return;
         }
-    }
+    //}
     [self refreshViewPart2];
     // if here, no files to load, this thread set the lock and refresh is done now 
     self.refreshLock = 0;
@@ -813,7 +923,9 @@ static BOOL InstallSamples;
     [self refreshToolBar:NO];
     
     self.stashedPriv = nil;
-    self.openUrlLock = NO;
+    //self.openUrlLock = NO;
+    self.readingFile=NO;
+    
     //DBGLog(@"dsmv= %@",[[UIDevice currentDevice] systemVersion] );
     
     //self.navigationController.toolbar.translucent = YES;
@@ -985,6 +1097,7 @@ static BOOL InstallSamples;
     [self handlePrefs];
     
     [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
+    
 }
 
 - (void) jumpMaxPriv {
@@ -1000,9 +1113,9 @@ static BOOL InstallSamples;
     if (nil == self.stashedPriv) {
         return;
     }
-    if (YES == self.openUrlLock) {
-        return;
-    }
+    //if (YES == self.openUrlLock) {
+    //    return;
+    //}
     DBGLog(@"restore priv to %@",self.stashedPriv);
     [self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
     self.stashedPriv = nil;
@@ -1058,29 +1171,91 @@ BOOL stashAnimated;
     [super viewDidAppear:stashAnimated];
 }
 
+- (void) doOpenTracker:(NSNumber*)nsnTid {
+    [self openTracker:[nsnTid intValue] rejectable:YES];
+}
+
+/*
+- (void) doOpenURL:(NSURL*)url {
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    //if (url != nil && [url isFileURL]) {
+    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+    int tid = [self handleOpenFileURL:url tname:nil];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    
+    if (0 != tid) {
+        // get to root view controller, else get last view on stack
+        //[rootController openTracker:tid rejectable:YES];
+        [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:YES];
+    }
+    //}
+    
+    [self finishRvcActivityIndicator];
+    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
+    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
+    
+    self.openUrlLock=NO;
+    self.inputURL=nil;
+    [pool drain];
+}
+
+
+- (void) openInputURL {
+    
+    [self startRvcActivityIndicator];
+    
+    //UIViewController *topController = [self.navigationController.viewControllers lastObject];
+    //[rTracker_resource startActivityIndicator:topController.view navItem:nil disable:NO];
+    
+    [NSThread detachNewThreadSelector:@selector(doOpenURL:) toTarget:self withObject:self.inputURL];
+    //[self doOpenURL:url];
+}
+*/
+
+- (void) doRejectableTracker {
+    NSNumber *nsntid = [self.stashedTIDs lastObject];
+    [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:nsntid waitUntilDone:YES];
+    [self.stashedTIDs removeLastObject];
+}
 - (void) viewDidAppear:(BOOL)animated {
 	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
+    /*
+    if (self.inputURL && !self.openUrlLock) {
+        self.openUrlLock = YES;
+        [self openInputURL];
+    } else
+*/
 
-    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
-    NSFileManager *localFileManager=[NSFileManager defaultManager];
-    NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
-    
-    NSString *file;
-    
-    while ((file = [dirEnum nextObject])) {
-        if ([[file pathExtension] isEqualToString: @"rtrk_reading"]) {
-            NSString *fname = [file lastPathComponent];
-            NSString *rtrkName = [fname stringByDeletingPathExtension];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Problem reading .rtrk file?"
-                                                            message:[ NSString stringWithFormat:@"There was a problem while loading the %@ rtrk file",rtrkName ]
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Delete it"
-                                                  otherButtonTitles:@"Try again",nil];
-            [alert show];
-            [alert release];
+    if (! self.readingFile) {
+        if (0 < [self.stashedTIDs count]) {
+            [self doRejectableTracker];
+        } else {
+            NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+            NSFileManager *localFileManager=[NSFileManager defaultManager];
+            NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
+            
+            NSString *file;
+            
+            while ((file = [dirEnum nextObject])) {
+                if ([[file pathExtension] isEqualToString: @"rtrk_reading"]) {
+                    NSString *fname = [file lastPathComponent];
+                    NSString *rtrkName = [fname stringByDeletingPathExtension];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Problem reading .rtrk file?"
+                                                                    message:[ NSString stringWithFormat:@"There was a problem while loading the %@ rtrk file",rtrkName ]
+                                                                   delegate:self
+                                                          cancelButtonTitle:@"Delete it"
+                                                          otherButtonTitles:@"Try again",nil];
+                    [alert show];
+                    [alert release];
+                }
+            }
         }
+    } else {
+    //if (self.readingFile) {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
     }
-
     stashAnimated = animated;
     [self viewDidAppearRestart];
 }
@@ -1129,8 +1304,9 @@ BOOL stashAnimated;
 - (void) startRvcActivityIndicator {
     //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
-    CGRect navframe = [[self.navigationController navigationBar] frame];
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y)];
+    //CGRect navframe = [[self.navigationController navigationBar] frame];
+    //[rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y)];
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:0.0f];
 }
 - (void) finishRvcActivityIndicator {
     //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
@@ -1276,7 +1452,12 @@ BOOL stashAnimated;
 	return privacyObj;
 }
 
-
+- (NSMutableArray*) stashedTIDs {
+    if (stashedTIDs == nil) {
+        stashedTIDs = [[NSMutableArray alloc] init];
+    }
+    return  stashedTIDs;
+}
 
 #pragma mark -
 #pragma mark button action methods

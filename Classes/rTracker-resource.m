@@ -228,6 +228,7 @@ static UIProgressView *progressBar=nil;
     
     //pbFrame.origin.y = 70.0;
     pbFrame.origin.y = yloc;
+    DBGLog(@"progressbar yloc= %f",yloc);
     
     //pbFrame.size.height = 550;
     progressBar.frame = pbFrame;

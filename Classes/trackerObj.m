@@ -905,7 +905,7 @@ if (addVO) {
     [self toExecSql];
     
 	// now save
-    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
         
@@ -916,6 +916,7 @@ if (addVO) {
 		
 		[self saveVoOptdict:vo];
 	}
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 	
 	self.sql = nil;
     
