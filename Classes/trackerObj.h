@@ -51,6 +51,10 @@
     NSInteger prevTID;
     
     BOOL goRecalculate;
+    
+    int changedDateFrom;
+    
+    NSMutableDictionary *csvheaderDict;
 }
 
 //@property (nonatomic) int tid;
@@ -71,6 +75,8 @@
 @property (nonatomic,retain) id togd;
 @property (nonatomic) NSInteger prevTID;
 @property (nonatomic) BOOL goRecalculate;
+@property (nonatomic) int changedDateFrom;
+@property (nonatomic,retain) NSMutableDictionary *csvHeaderDict;
 
 - (id) init:(int) tid;
 - (id) initWithDict:(NSDictionary*)dict;

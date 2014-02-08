@@ -168,8 +168,6 @@ static BOOL InstallSamples;
             DBGLog(@"%@ load input: %@ as %@",loadObj,fname,tname);
 
             tname = [fname substringToIndex:inmatch.location];
-            [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,loadObj] waitUntilDone:NO];
-
             int tid = [self.tlist getTIDfromName:tname];
             if (tid) {
                 to = [[trackerObj alloc]init:tid];
@@ -185,6 +183,8 @@ static BOOL InstallSamples;
             }
 
             if (nil != to) {
+                [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,loadObj] waitUntilDone:NO];
+
                 NSString *target = [docsDir stringByAppendingPathComponent:file];
                 NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
                 

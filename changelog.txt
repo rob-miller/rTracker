@@ -1250,6 +1250,19 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+   - fixed crash bug saving colour for vot_choice in rtcsv 
+
+08 feb 2014
+   - 'set date' no longer modifies db immediately, instead enables save button and updates db at beginning of saveData
+   - updateTracker - notification handler when a vo changes - only updates vot_functions and tapped vo (was any vo with nil vo.display)
+   - added csvHeaderDict to speed up csv loading
+   - check for memory leaks on csv load
+   change 'save for itunes' to 'save for PC (iTunes)'
+
+   - ready for 1.1.5 release
+
+--- commit ---
+
 
 -> notifyReminder class to manage db to/from nsarray for rtrk
 

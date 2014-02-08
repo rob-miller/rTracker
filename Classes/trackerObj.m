@@ -28,7 +28,7 @@
 
 @synthesize trackerDate, valObjTable, reminders, optDict;  //trackerName
 @synthesize nextColor, votArray;
-@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, csvReadFlags, csvProblem, togd, goRecalculate; // prevTID  // maxLabel
+@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, csvReadFlags, csvProblem, togd, goRecalculate, changedDateFrom, csvHeaderDict; // prevTID  // maxLabel
 
 #define f(x) ((CGFloat) (x))
 
@@ -197,6 +197,7 @@
 		*/
 		//DBGLog(@"init trackerObj New");
         goRecalculate=NO;
+        changedDateFrom=0;
 	}
 	
 	return self;
@@ -504,6 +505,9 @@ if (addVO) {
     [dateFormatter release];
     self.dateOnlyFormatter =nil;
     [dateOnlyFormatter release];
+    
+    self.csvHeaderDict = nil;
+    [csvHeaderDict release];
     
 	//unregister for value updated notices
     /* move to utc
@@ -845,10 +849,12 @@ if (addVO) {
     
     DBGLog(@"search for %@",vocs);
     
-    NSUInteger voc = [[rTracker_resource colorNames] indexOfObject:vocs];
-    if (NSNotFound == voc) return rslt;
+    NSUInteger voc = -1;  // default to VOT_CHOICE
+    if (VOT_CHOICE != vot) {
+        voc = [[rTracker_resource colorNames] indexOfObject:vocs];
+        if (NSNotFound == voc) return rslt;
+    }
 
-    if (VOT_CHOICE == vot) voc = -1;
     DBGLog(@"voc= %d",voc);
     
     self.sql = [NSString stringWithFormat:@"update voConfig set color=%d where id=%d",voc,valObjID];
@@ -1007,7 +1013,14 @@ if (addVO) {
 
 	if (self.trackerDate == nil) {
 		trackerDate = [[NSDate alloc] init];
-	}
+	} else if (0 != self.changedDateFrom) {
+        int ndi = [self.trackerDate timeIntervalSince1970];
+        self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,self.changedDateFrom];
+        [self toExecSql];
+        self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,self.changedDateFrom];
+        [self toExecSql];
+        self.changedDateFrom=0;
+    }
 	
 	DBGLog(@" tObj saveData %@ date %@",self.trackerName, self.trackerDate);
 
@@ -1300,13 +1313,35 @@ if (addVO) {
     [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
     
     if ([rTracker_resource getRtcsvOutput]){
+        BOOL haveChoice=NO;
         outString = @"";
         for (valueObj *vo in self.valObjTable) {
-            NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",[self.votArray objectAtIndex:vo.vtype],[[rTracker_resource colorNames] objectAtIndex:vo.vcolor],vo.vid];
+            //DBGLog(@"vname= %@",vo.valueName);
+            haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
+            NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",[self.votArray objectAtIndex:vo.vtype],(vo.vcolor > -1 ? [[rTracker_resource colorNames] objectAtIndex:vo.vcolor] : @""),vo.vid];
             outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+        if (haveChoice) {
+            int i;
+            for (i=0;i<=CHOICES;i++) {
+                outString = @"\"\"";
+                for (valueObj *vo in self.valObjTable) {
+                    //DBGLog(@"vname= %@",vo.valueName);
+                    NSString *voStr=@"";
+                    if (vo.vtype == VOT_CHOICE) {
+                        voStr = [vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]];
+                        if (nil == voStr) {
+                            voStr = @"";
+                        }
+                    }
+                    outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
+                }
+                outString = [outString stringByAppendingString:@"\n"];
+                [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+            }
+        }
     }
     
     
@@ -1351,7 +1386,7 @@ if (addVO) {
         self.csvReadFlags |= CSVNOTIMESTAMP;
         return;
     }
-    
+
     NSDate *ts=nil;
     int its=0;
     
@@ -1373,19 +1408,48 @@ if (addVO) {
         its = [ts timeIntervalSince1970];
     }
     
+    if (nil == self.csvHeaderDict) {
+        self.csvHeaderDict = [NSMutableDictionary dictionaryWithCapacity:([aRecord count] -1)];
+    }
+    
+    BOOL gotData=NO;
     int mp = BIGPRIV;
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
         DBGLog(@"processing csv record: key= %@ value= %@", key, [aRecord objectForKey:key]);
         if (! [key isEqualToString:TIMESTAMP_KEY]) { // not timestamp
             
-            NSRange splitPos = [key rangeOfString:@":" options:NSBackwardsSearch];
-            NSString *voName = [key substringToIndex:splitPos.location];
-            NSInteger voRank = [[key substringFromIndex:(splitPos.location+splitPos.length)] integerValue];
+            // get voName and rank from aRecord item's dictionary key
             
-            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:voName]];
+            NSString *voName;
+            NSInteger voRank;
             int valobjID,valobjPriv,valobjType;
-            [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
+            NSArray *csvha;
+            if (nil == (csvha = [self.csvHeaderDict objectForKey:key])) {
+                NSRange splitPos = [key rangeOfString:@":" options:NSBackwardsSearch];
+                voName = [key substringToIndex:splitPos.location];
+                voRank = [[key substringFromIndex:(splitPos.location+splitPos.length)] integerValue];
+                
+                self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:voName]];
+                
+                [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
+                [self.csvHeaderDict setObject:[NSArray arrayWithObjects:
+                                               voName,
+                                               [NSNumber numberWithInteger:voRank],
+                                               [NSNumber numberWithInt:valobjID],
+                                               [NSNumber numberWithInt:valobjPriv],
+                                               [NSNumber numberWithInt:valobjType],
+                                               nil]
+                                       forKey:key];
+                
+            } else {
+                voName = [csvha objectAtIndex:0];
+                voRank = [[csvha objectAtIndex:1] integerValue];
+                valobjID =[[csvha objectAtIndex:2] intValue];
+                valobjPriv =[[csvha objectAtIndex:2] intValue];
+                valobjType =[[csvha objectAtIndex:2] intValue];
+            }
+            
             DBGLog(@"name=%@ rank=%d val=%@ id=%d priv=%d type=%d",voName,voRank,[aRecord objectForKey:key], valobjID,valobjPriv,valobjType);
             
             BOOL configuredValObj=NO;
@@ -1432,6 +1496,7 @@ if (addVO) {
                     } else {
                         if (valobjPriv < mp)
                             mp = valobjPriv;   // only fields with data
+                        gotData=YES;
                         self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",valobjID,its,val2Store];
                     }
                     [self toExecSql];
@@ -1456,8 +1521,13 @@ if (addVO) {
     */
     
     if (its) {
-        self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];
-        [self toExecSql];
+        if (gotData) {
+            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];
+            [self toExecSql];
+
+            //} else {  // csv file might have fewer columns than tracker does
+        //    self.sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;"];
+        }
     }
     
     [rTracker_resource bumpProgressBar];
@@ -1827,14 +1897,16 @@ if (addVO) {
 }
 	
 - (void) changeDate:(NSDate*)newDate {
+    if (0 == self.changedDateFrom) {
+        self.changedDateFrom = [self.trackerDate timeIntervalSince1970];
+    }
 	int ndi = (int) [self noCollideDate:[newDate timeIntervalSince1970]];
-	int odi = (int) [self.trackerDate timeIntervalSince1970];
-	
-	self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,odi];
-	[self toExecSql];
-	self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,odi];
-	[self toExecSql];
-	self.sql=nil;
+	//int odi = (int) [self.trackerDate timeIntervalSince1970];
+	//self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,odi];
+	//[self toExecSql];
+	//self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,odi];
+	//[self toExecSql];
+	//self.sql=nil;
 	self.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)ndi]; // might have changed to avoid collision
 }
 

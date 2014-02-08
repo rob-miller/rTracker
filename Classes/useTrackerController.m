@@ -16,7 +16,7 @@
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
-- (void) updateTableCells;
+- (void) updateTableCells:(valueObj*)inVO;
 @end
 
 @implementation useTrackerController
@@ -88,15 +88,15 @@
 #pragma mark -
 #pragma mark tracker data updated event handling -- rtTrackerUpdatedNotification
 
-- (void) updateTableCells {
+- (void) updateTableCells:(valueObj*)inVO {
 	NSMutableArray *iparr = [[NSMutableArray alloc] init];
     int n=0;
     
 	for (valueObj *vo in self.tracker.valObjTable) {
-        if (vo.vtype == VOT_FUNC) {
+        if (VOT_FUNC == vo.vtype) {
             vo.display = nil;  // always redisplay
             [iparr addObject:[[NSIndexPath indexPathWithIndex:0] indexPathByAddingIndex:n]];
-        } else if (vo.display == nil) {
+        } else if ((inVO.vid == vo.vid) && (nil == vo.display)) {
             [iparr addObject:[[NSIndexPath indexPathWithIndex:0] indexPathByAddingIndex:n]];
         }
         n++;
@@ -111,9 +111,15 @@
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
-
     DBGLog(@"UTC update notification from tracker %@", ((trackerObj*)[n object]).trackerName);
-    [self updateTableCells];
+	valueObj *vo=nil;
+    id obj = [n object];
+	if ([obj isMemberOfClass:[valueObj class]]) {
+		vo = (valueObj*) [n object];
+        DBGLog(@"updated vo %@",vo.valueName);
+    }
+
+    [self updateTableCells:vo];
     self.needSave=YES;
 	[self showSaveBtn];
 }
@@ -235,8 +241,10 @@
 			{
 				if ([self.tracker hasData]) {
 					[self.tracker changeDate:self.dpr.date];
-				}  
-				self.tracker.trackerDate = self.dpr.date;
+                    self.needSave = YES;
+				} else {
+                    self.tracker.trackerDate = self.dpr.date;
+                }
 				[self updateToolBar];
 				break;
 			}
@@ -935,7 +943,7 @@ else do btnCancel/btnSave
 NSString *emEmailCsv = @"email CSV";
 NSString *emEmailTracker = @"email Tracker";
 NSString *emEmailTrackerData = @"email Tracker+Data";
-NSString *emItunesExport = @"save for iTunes";
+NSString *emItunesExport = @"save for PC (iTunes)";
 
 
 - (IBAction)btnMenu {
