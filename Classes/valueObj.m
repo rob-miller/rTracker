@@ -19,6 +19,7 @@
 #import "voSlider.h"
 #import "voImage.h"
 #import "voFunction.h"
+#import "voInfo.h"
 
 #import "dbg-defs.h"
 
@@ -258,6 +259,12 @@ in_vpriv:(NSInteger)in_vpriv
             //value = [[NSMutableString alloc] initWithCapacity:96];
 			//[self.value setString:@""];
 			break;
+		case VOT_INFO:
+			tvos = [[voInfo alloc] initWithVO:self];
+            self.vcolor = -1;
+			//value = [[NSMutableString alloc] initWithCapacity:1];
+			//[self.value setString:@"0"];
+			break;
 		default:
 			dbgNSAssert1(0,@"valueObj init vtype %d not supported",vt);
             tvos = [[voNumber alloc] initWithVO:self]; // to clear analyzer worry 
@@ -417,7 +424,7 @@ in_vpriv:(NSInteger)in_vpriv
         self.vpriv = 0;
     }
 
-    if (VOT_CHOICE != self.vtype) {
+    if (VOT_CHOICE != self.vtype && VOT_INFO != self.vtype) {
         if (self.vcolor < 0) {
             DBGErr(@"%@ invalid vcolor (negative): %d",VOINF,self.vcolor);
             self.vcolor = 0;
@@ -454,6 +461,12 @@ in_vpriv:(NSInteger)in_vpriv
                     [self.optDict setObject:[NSNumber numberWithInt:0] forKey:key];
                 }
             }
+        }
+    }
+    if (VOT_INFO == self.vtype) {
+        if (-1 != self.vcolor) {
+            DBGErr(@"%@ invalid info vcolor (not -1): %d",VOINF,self.vcolor);
+            self.vcolor = -1;
         }
     }
     

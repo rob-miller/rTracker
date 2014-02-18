@@ -15,7 +15,7 @@
 
 
 
-#define SQLDEBUG    0
+#define SQLDEBUG    1
 #define NONAME      0
 
 #define DEBUGFUNCTION     0

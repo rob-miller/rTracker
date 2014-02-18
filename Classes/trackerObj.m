@@ -1307,7 +1307,9 @@ if (addVO) {
 		dbgNSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
         //DBGLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
-        outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:vo.valueName]];
+        if (VOT_INFO != vo.vtype) {
+            outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:vo.valueName]];
+        }
 	}
     outString = [outString stringByAppendingString:@"\n"];
     [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1317,9 +1319,11 @@ if (addVO) {
         outString = @"";
         for (valueObj *vo in self.valObjTable) {
             //DBGLog(@"vname= %@",vo.valueName);
-            haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
-            NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",[self.votArray objectAtIndex:vo.vtype],(vo.vcolor > -1 ? [[rTracker_resource colorNames] objectAtIndex:vo.vcolor] : @""),vo.vid];
-            outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
+            if (VOT_INFO != vo.vtype) {
+                haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
+                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",[self.votArray objectAtIndex:vo.vtype],(vo.vcolor > -1 ? [[rTracker_resource colorNames] objectAtIndex:vo.vcolor] : @""),vo.vid];
+                outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
+            }
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1329,14 +1333,16 @@ if (addVO) {
                 outString = @"\"\"";
                 for (valueObj *vo in self.valObjTable) {
                     //DBGLog(@"vname= %@",vo.valueName);
-                    NSString *voStr=@"";
-                    if (vo.vtype == VOT_CHOICE) {
-                        voStr = [vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]];
-                        if (nil == voStr) {
-                            voStr = @"";
+                    if (VOT_INFO != vo.vtype) {
+                        NSString *voStr=@"";
+                        if (vo.vtype == VOT_CHOICE) {
+                            voStr = [vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]];
+                            if (nil == voStr) {
+                                voStr = @"";
+                            }
                         }
+                        outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
                     }
-                    outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
                 }
                 outString = [outString stringByAppendingString:@"\n"];
                 [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1358,12 +1364,14 @@ if (addVO) {
         // write data - each vo gets routine to write itself -- function results too
         outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
         for (valueObj *vo in self.valObjTable) {
-            outString = [outString stringByAppendingString:@","];
-            //if (VOT_CHOICE == vo.vtype) {
-                outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
-            //} else {
-                //outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
-            //}
+            if (VOT_INFO != vo.vtype) {
+                outString = [outString stringByAppendingString:@","];
+                //if (VOT_CHOICE == vo.vtype) {
+                    outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
+                //} else {
+                    //outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+                //}
+            }
         }
         outString = [outString stringByAppendingString:@"\n"];
         [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -1446,14 +1454,14 @@ if (addVO) {
                 voName = [csvha objectAtIndex:0];
                 voRank = [[csvha objectAtIndex:1] integerValue];
                 valobjID =[[csvha objectAtIndex:2] intValue];
-                valobjPriv =[[csvha objectAtIndex:2] intValue];
-                valobjType =[[csvha objectAtIndex:2] intValue];
+                valobjPriv =[[csvha objectAtIndex:3] intValue];
+                valobjType =[[csvha objectAtIndex:4] intValue];
             }
             
             DBGLog(@"name=%@ rank=%d val=%@ id=%d priv=%d type=%d",voName,voRank,[aRecord objectForKey:key], valobjID,valobjPriv,valobjType);
             
             BOOL configuredValObj=NO;
-            if (!its) { // no timestamp for tracker config data
+            if (0 == its) { // no timestamp for tracker config data
                 // voType : color : vid
                 NSArray *valComponents = [(NSString*)[aRecord objectForKey:key] componentsSeparatedByString:@":"];
                 int c = [valComponents count];
@@ -1490,7 +1498,7 @@ if (addVO) {
                         [self saveVoOptdict:vo];
                     }
                 }
-                if (its) { // if have date - then not config data
+                if (its != 0) { // if have date - then not config data
                     if ([@"" isEqualToString:val2Store]) {
                         self.sql = [NSString stringWithFormat:@"delete from voData where id=%d and date=%d",valobjID,its];  // added jan 2014
                     } else {
@@ -1520,7 +1528,7 @@ if (addVO) {
     // default mp < currMinPriv
     */
     
-    if (its) {
+    if (its != 0) {
         if (gotData) {
             self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];
             [self toExecSql];

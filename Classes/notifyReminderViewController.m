@@ -278,7 +278,14 @@
     } else {   // if (self.nr.weekDays)  = default if nothing set
         self.weekMonthEvery.selectedSegmentIndex=SEGWEEK;
         for (i=0;i<7;i++) {
-            ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (self.nr.weekDays & (0x01 << self->weekdays[i]));
+            ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
+#if DEBUGLOG
+            if (((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected) {
+                DBGLog(@"weekday btn %d is selected",i);
+            } else {
+                DBGLog(@"i=%d s->w[i] = %d  nrwd= %d  shift = %0x &= %d",i,self->weekdays[i], self.nr.weekDays, (0x01 << self->weekdays[i]), (self.nr.weekDays & (0x01 << self->weekdays[i])) );
+            }
+#endif
         }
         [self clearMonthDays];
         [self clearEvery];

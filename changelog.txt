@@ -1263,6 +1263,24 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+    - submit for release as 1.1.5
+
+11 feb 2014
+   - revert filled circles out of linesdots graph drawing, somehow messes up lines; use 'BigCircle' to highlight current VO instead
+
+
+12 feb 2014
+   - guiFromNr -> non-zero not treated as bool true:
+    ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
+
+18 feb 2014
+   - add info valObj type with URL
+   - fix default value for voBoolean (1 if not set)
+   - fix error with csv header dictionary loading privacy and voType
+
+--- commit ---
+
+
 
 -> notifyReminder class to manage db to/from nsarray for rtrk
 

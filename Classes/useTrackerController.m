@@ -1393,11 +1393,24 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	// [self.navigationController pushViewController:anotherViewController animated:YES];
 	// [anotherViewController release];
 
+    valueObj *vo = (valueObj*) [self.tracker.valObjTable objectAtIndex:[indexPath row]];
+
 #if DEBUGLOG
 	NSUInteger row = [indexPath row];
-	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
+	//valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
 	DBGLog(@"selected row %d : %@", row, vo.valueName);
 #endif
+
+    if (VOT_INFO == vo.vtype) {
+        NSString *url = [vo.optDict objectForKey:@"infourl"];
+        NSRange urlCheck = [url rangeOfString:@"://"];
+        if (urlCheck.location == NSNotFound) {
+            url = [@"http://" stringByAppendingString:url];
+        }
+        DBGLog(@"vot_info: selected -> fire url: %@",url);
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    }
+    
 
     
 }

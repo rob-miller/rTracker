@@ -133,20 +133,21 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self updateForPickerRowSelect:self.tempValObj.vtype inComponent:0];
 		[self.votPicker selectRow:self.tempValObj.vGraphType inComponent:2 animated:NO];
 		[self updateForPickerRowSelect:self.tempValObj.vGraphType inComponent:2];
-		 
-		NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
-		self.graphTypes = [self.tempValObj.vos voGraphSet];
+        if (VOT_INFO != self.tempValObj.vtype) {
+            NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
+            self.graphTypes = [self.tempValObj.vos voGraphSet];
 
-		NSInteger row=0;
-		//while ( s = (NSString *) [e nextObject]) {
-		for (NSString *s in self.graphTypes) {
-			if ([g isEqual:s])
-				break;
-			row++;
-		}
+            NSInteger row=0;
+            //while ( s = (NSString *) [e nextObject]) {
+            for (NSString *s in self.graphTypes) {
+                if ([g isEqual:s])
+                    break;
+                row++;
+            }
 
-		[self.votPicker reloadComponent:2];
-		[self.votPicker selectRow:row inComponent:2 animated:NO];
+            [self.votPicker reloadComponent:2];
+            [self.votPicker selectRow:row inComponent:2 animated:NO];
+        }
 	}
 
 	self.title = @"Item";
@@ -260,7 +261,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];
 	self.tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
 	row = [self.votPicker selectedRowInComponent:1];
-    if (VOT_CHOICE == self.tempValObj.vtype) {
+    if ((VOT_CHOICE == self.tempValObj.vtype) || (VOT_INFO == self.tempValObj.vtype)){
         self.tempValObj.vcolor = -1;   // choice color set in optDict per choice
     } else {
         self.tempValObj.vcolor = row; // works because vColor defs are same order as trackerObj.colorSet creator 
@@ -271,8 +272,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     }
     
 	row = [self.votPicker selectedRowInComponent:2];
-	self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
-	
+    if (VOT_INFO == self.tempValObj.vtype) {
+        self.tempValObj.vGraphType = VOG_NONE;
+    } else {
+        self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
+	}
+    
 	if (self.tempValObj.vid == 0) {
 		self.tempValObj.vid = [self.parentTrackerObj getUnique];
 	}
@@ -503,6 +508,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	NSInteger oldcc = colorCount;
 	
 	if (self.tempValObj.vtype == VOT_CHOICE) {
+		colorCount = 0;
+    } else if (self.tempValObj.vtype == VOT_INFO) {
 		colorCount = 0;
 	} else if (self.tempValObj.vGraphType == VOG_NONE) {
 		colorCount = 0;

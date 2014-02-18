@@ -541,6 +541,8 @@ DBGLog(@"btnAddValue was pressed!");
             else if (VOT_CHOICE == vo.vtype)  // vColor = -1
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
                                              [vo.vos.voGraphSet objectAtIndex:vo.vGraphType]];
+            else if (VOT_INFO == vo.vtype)  // vColor = -1, no graph
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype]];
             else 
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
                                              [vo.vos.voGraphSet objectAtIndex:vo.vGraphType],

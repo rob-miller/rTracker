@@ -19,8 +19,9 @@
 #define VOT_CHOICE	4
 #define VOT_BOOLEAN	5
 #define VOT_FUNC	6
+#define VOT_INFO    7
 
-#define VOT_MAX		6
+#define VOT_MAX		7
 
 // image not yet
 // #define VOT_IMAGE	7
@@ -77,6 +78,9 @@
 #define FDDPDFLT		2
 #define BOOLVALDFLT     1.0
 #define BOOLVALDFLTSTR  @"1"
+#define INFOVALDFLT     1.0
+#define INFOVALDFLTSTR  @"0"
+#define INFOURLDFLTSTR  @""
 
 
 

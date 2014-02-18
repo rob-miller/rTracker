@@ -162,6 +162,7 @@
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D4CB672F18B3FF7100096490 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
 		D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
@@ -337,6 +338,8 @@
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
 		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
+		D4CB672D18B3FF7100096490 /* voInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voInfo.h; sourceTree = "<group>"; };
+		D4CB672E18B3FF7100096490 /* voInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voInfo.m; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
 		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
 		D4D9B0DA17D9310B00296C4F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -600,6 +603,8 @@
 		D4956B1F12E06EAA00B0BB9B /* valueObj classes */ = {
 			isa = PBXGroup;
 			children = (
+				D4CB672D18B3FF7100096490 /* voInfo.h */,
+				D4CB672E18B3FF7100096490 /* voInfo.m */,
 				D48F9E7D119AA02A00B37C93 /* valueObj.h */,
 				D48F9E7E119AA02A00B37C93 /* valueObj.m */,
 				D4B6AEB4127EE24D00C036ED /* voState.h */,
@@ -960,6 +965,7 @@
 				D4B6AE72127EC35E00C036ED /* voTextBox.m in Sources */,
 				D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */,
 				D4B6AE77127EC36E00C036ED /* voSlider.m in Sources */,
+				D4CB672F18B3FF7100096490 /* voInfo.m in Sources */,
 				D4B6AE7C127EC38300C036ED /* voChoice.m in Sources */,
 				D4B6AE83127EC39800C036ED /* voBoolean.m in Sources */,
 				D4B6AE8A127EC3AA00C036ED /* voImage.m in Sources */,

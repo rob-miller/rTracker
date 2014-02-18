@@ -163,11 +163,13 @@
         if (going) {
             //DBGLog(@"addline %f %f",x,y);
             AddLineTo(x,y);
-            if (self.selectedVO) {
-                AddFilledCircle(x,y);
-            } else {
+            //if (self.selectedVO) {
+            //    AddFilledCircle(x,y);             // for some reason, filled circle messes up line
+            //} else {
                 AddCircle(x,y);
-            }
+                if (self.selectedVO)
+                    AddBigCircle(x,y);
+            //}
             if (x > maxX)
                 break; //going=NO;   // done
         } else {  // not started yet
@@ -178,19 +180,32 @@
                 if (lastX == LXNOTSTARTED) { // 1st time through, 1st point needs showing
                     //DBGLog(@"moveto %f %f",x,y);
                     MoveTo(x,y);
-                    AddCircle(x,y);
+                    //if (self.selectedVO) {
+                    //    AddFilledCircle(lastX,lastY);
+                    //} else {
+                        AddCircle(lastX,lastY);
+                        if (self.selectedVO)
+                            AddBigCircle(lastX,lastY);
+                            //AddFilledCircle(lastX,lastY);
+                    //}
                 } else { // past 1st data point, need to show lastX plus current
-                    if (self.selectedVO) {
-                        MoveTo(lastX, lastY);
-                        AddFilledCircle(lastX,lastY);
-                        AddLineTo(x,y);
-                        AddFilledCircle(x,y);
-                    } else {
+                    //if (self.selectedVO) {
+                    //    MoveTo(lastX, lastY);
+                    //    AddFilledCircle(lastX,lastY);
+                    //    AddLineTo(x,y);
+                    //    AddFilledCircle(x,y);
+                    //} else {
                         MoveTo(lastX, lastY);
                         AddCircle(lastX,lastY);
+                        if (self.selectedVO)
+                            AddBigCircle(lastX,lastY);
+                            //AddFilledCircle(lastX,lastY);
                         AddLineTo(x,y);
                         AddCircle(x,y);
-                    }
+                        if (self.selectedVO)
+                            AddBigCircle(x,y);
+                            //AddFilledCircle(x,y);
+                    //}
                 }
                 going=YES;
             } 
@@ -238,7 +253,11 @@
         } else {              // not started yet, start now
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
                 MoveTo(lastX,lastY);
-                AddCircle(lastX,lastY);
+                if (self.selectedVO) {
+                    AddFilledCircle(lastX,lastY);
+                } else {
+                    AddCircle(lastX,lastY);
+                }
                 if (vogd.vo.vtype == VOT_CHOICE)
                     Stroke;
             }

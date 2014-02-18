@@ -479,6 +479,12 @@
 	} else if ( tf == [self.wDict objectForKey:@"bvalTF"] ) {
 		okey = @"boolval";
 		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"ivalTF"] ) {
+		okey = @"infoval";
+		nkey = nil;
+	} else if ( tf == [self.wDict objectForKey:@"iurlTF"] ) {
+		okey = @"infourl";
+		nkey = nil;
 	} else if ( tf == [self.wDict objectForKey:CTFKEY] ) {
 		okey = LCKEY;
 		nkey = nil;
@@ -740,7 +746,7 @@
     [alert release];
 }
 
-#
+
 //- (void) drawGeneralVoOpts 
 //{
 //}
@@ -951,6 +957,9 @@
 				[self.vo.vos voDrawOptions:self];
 			//}
 			break;
+        case VOT_INFO:
+            [self.vo.vos voDrawOptions:self];
+            break;
 		default:
 			break;
 	}

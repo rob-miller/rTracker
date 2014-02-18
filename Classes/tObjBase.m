@@ -539,14 +539,14 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
                 arr[i] = sqlite3_column_int(stmt, i);
             }
             srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 11)]];
-			SQLDbg(@"  rslt: %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],arr[11],srslt);
+			SQLDbg(@"  rslt: %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],srslt);
 		}
 		[self tobDoneCheck:rslt];
 	} else {
 		[self tobPrepError];
 	}
 	sqlite3_finalize(stmt);
-	SQLDbg(@"  returns %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],arr[11],srslt);
+	SQLDbg(@"  returns %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],srslt);
     return srslt;
 }
 
