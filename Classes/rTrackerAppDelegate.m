@@ -16,7 +16,7 @@
 @implementation rTrackerAppDelegate
 
 @synthesize window;
-@synthesize navigationController;
+@synthesize navigationController, pendingTid;
 
 
 #pragma mark -
@@ -78,6 +78,17 @@
     //DBGLog(@"rt app delegate: app did finish launching");
 
     [rTracker_resource initHasAmPm];
+    
+    // for when actually not running, not just in background:
+    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (nil != notification) {
+        DBGLog(@"responding to local notification with msg : %@",notification.alertBody);
+        //[rTracker_resource alert:@"launched with locNotification" msg:notification.alertBody];
+
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+    }
+    
+    
     return YES;
 }
 
@@ -127,7 +138,37 @@
     
 }
 */
- 
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    if (0 == buttonIndex) {   // do nothing
+    } else {                  // go to the pending tracker
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:self.pendingTid waitUntilDone:NO];
+    }
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+
+    UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    UIViewController *topController = [self.navigationController.viewControllers lastObject];
+
+    if (topController == rootController) {
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+    } else {
+        // going to tracker actually pushes the other viewcontroller -- so don't really need to alert and ask?
+        self.pendingTid = [notification.userInfo objectForKey:@"tid"];
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"rTracker reminder"
+                              message:notification.alertBody
+                              delegate:self
+                              cancelButtonTitle:@"later"
+                              otherButtonTitles:@"go there now",nil];
+        [alert show];
+        [alert release];
+
+    }
+}
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {

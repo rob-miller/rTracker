@@ -500,6 +500,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
         if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
             rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
+            plistFile = YES;
             //TODO:need to delete stash file now!!!
             //tname = [fname substringToIndex:inmatch.location];
             //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
@@ -1171,8 +1172,12 @@ BOOL stashAnimated;
     [super viewDidAppear:stashAnimated];
 }
 
-- (void) doOpenTracker:(NSNumber*)nsnTid {
+- (void) doOpenTrackerRejectable:(NSNumber*)nsnTid {
     [self openTracker:[nsnTid intValue] rejectable:YES];
+}
+
+- (void) doOpenTracker:(NSNumber*)nsnTid {
+    [self openTracker:[nsnTid intValue] rejectable:NO];
 }
 
 /*
@@ -1216,7 +1221,7 @@ BOOL stashAnimated;
 
 - (void) doRejectableTracker {
     NSNumber *nsntid = [self.stashedTIDs lastObject];
-    [self performSelectorOnMainThread:@selector(doOpenTracker:) withObject:nsntid waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(doOpenTrackerRejectable:) withObject:nsntid waitUntilDone:YES];
     [self.stashedTIDs removeLastObject];
 }
 - (void) viewDidAppear:(BOOL)animated {

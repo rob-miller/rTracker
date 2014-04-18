@@ -24,7 +24,7 @@
 @synthesize tracker;
 
 @synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, saveFrame, fwdRotations, rejectable, viewDisappearing, tlist;
+@synthesize table, dpvc, dpr, needSave, didSave, saveFrame, fwdRotations, rejectable, viewDisappearing, tlist;
 @synthesize saveBtn, menuBtn, alertResponse, saveTargD;
 
 //BOOL keyboardIsShown=NO;
@@ -219,7 +219,8 @@
     }
     //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
     [self.table reloadData];
-
+    self.didSave=NO;
+    
     [super viewDidAppear:animated];
 }
 
@@ -887,6 +888,19 @@ else do btnCancel/btnSave
     DBGLog(@"HEY!");
 }
 
+-(void) setReminders {
+    [self.tracker loadReminders];
+    [self.tracker setReminders];
+}
+
+- (void)leaveTracker {
+    if (self.didSave) {
+        [self setReminders];
+        self.didSave=NO;
+    }
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 - (IBAction)btnCancel {   // back button
     
 	DBGLog(@"btnCancel was pressed!");
@@ -896,7 +910,7 @@ else do btnCancel/btnSave
         return;
     }
 
-	[self.navigationController popViewControllerAnimated:YES];
+    [self leaveTracker];
 }
 
 - (void) saveActions {
@@ -926,7 +940,7 @@ else do btnCancel/btnSave
         self.needSave=NO;
 		[self showSaveBtn];
 	} else {
-		[self.navigationController popViewControllerAnimated:YES];
+        [self leaveTracker];
 	}
 }
 

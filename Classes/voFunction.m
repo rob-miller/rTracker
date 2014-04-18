@@ -1699,7 +1699,33 @@
 
 }
 
-// TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
+
+-(void) setFnVals:(int)tDate {
+    if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do?
+        MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, tDate];
+    } else {
+        MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+                         self.vo.vid, tDate, [rTracker_resource toSqlStr:self.vo.value]];
+    }
+    [MyTracker toExecSql];
+}
+
+-(void) doTrimFnVals {
+    NSInteger frep0 = [[self.vo.optDict objectForKey:@"frep0"] integerValue];
+    if (ISCALFREP(frep0)
+        &&
+        (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])
+        &&
+        MyTracker.goRecalculate
+        ) {
+        [self trimFnVals:frep0];
+    }
+}
+
+/*
+// change to move loop on date to tracker level so jsut do once, not for every fn vo
+ 
+ // TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
 // based on vo opt @"graphlast"
 - (void) setFnVals {
     int currDate = (int) [MyTracker.trackerDate timeIntervalSince1970];
@@ -1746,6 +1772,7 @@
 - (void) recalculate {
     [self setFnVals];
 }
+*/
 
 /*
 - (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate {

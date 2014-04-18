@@ -11,6 +11,9 @@
 // make sqlite db files available from itunes? (perhaps prefs option later)
 #define DBACCESS NO
 
+#define DBLRANDOM ((double)arc4random() / 0x100000000)
+
+
 // Sample code from iOS 7 Transistion Guide
 // Loading Resources Conditionally
 NSUInteger DeviceSystemMajorVersion();

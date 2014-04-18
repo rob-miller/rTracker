@@ -15,14 +15,14 @@
 
 
 
-#define SQLDEBUG    1
+#define SQLDEBUG    0
 #define NONAME      0
 
 #define DEBUGFUNCTION     0
 
 //********       vvvvvv //
 
-#define RELEASE     1
+#define RELEASE     0
 #define DEBUGLOG    0
 
 //********       ^^^^^^ //

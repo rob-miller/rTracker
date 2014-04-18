@@ -18,11 +18,18 @@
 #define PWKNOWPASS	 1
 
 // view states
+// PVNOSHOW     :  not showing
+// PVNEEDPASS   :  no password set
+// PVQUERY      :  present tic-tack-toe query screen
+// PVCHECKPASS  :  put up password requester prior to config open
+// PVCONFIG     :  enable config controls
+
 #define PVNOSHOW	((unsigned int) 0)
 #define PVNEEDPASS	((unsigned int) (1<<0))
 #define PVQUERY		((unsigned int) (1<<1))
 #define PVCHECKPASS ((unsigned int) (1<<2))
 #define PVCONFIG	((unsigned int) (1<<3))
+
 
 @interface privacyV : UIView <UIActionSheetDelegate> {
 	UIView *parentView;

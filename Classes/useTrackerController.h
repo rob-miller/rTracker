@@ -27,6 +27,7 @@
     dpRslt *dpr;
 	CGRect saveFrame;
     BOOL needSave;
+    BOOL didSave;
     BOOL fwdRotations;
     BOOL rejectable;
     BOOL viewDisappearing;
@@ -43,6 +44,7 @@
 @property (nonatomic, retain) dpRslt *dpr;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) BOOL needSave;
+@property (nonatomic) BOOL didSave;
 @property (nonatomic) BOOL fwdRotations;
 @property (nonatomic) BOOL rejectable;
 @property (nonatomic) BOOL viewDisappearing;

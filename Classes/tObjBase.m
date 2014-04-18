@@ -520,7 +520,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	return srslt;
 }
 
-- (NSString *) toQry2I11aS1:(int *)arr {
+- (NSString *) toQry2I12aS1:(int *)arr {
 	
 	SQLDbg(@"toQry2AryI11S1: %@ => _%@_",self.dbName,self.sql);
 	dbgNSAssert(tDb,@"toQry2AryI11S1 called with no tDb");
@@ -538,15 +538,15 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
             for (i=0;i<11;i++) {
                 arr[i] = sqlite3_column_int(stmt, i);
             }
-            srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 11)]];
-			SQLDbg(@"  rslt: %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],srslt);
+            srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 12)]];
+			SQLDbg(@"  rslt: %d %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],arr[11],srslt);
 		}
 		[self tobDoneCheck:rslt];
 	} else {
 		[self tobPrepError];
 	}
 	sqlite3_finalize(stmt);
-	SQLDbg(@"  returns %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],srslt);
+	SQLDbg(@"  returns %d %d %d %d %d %d %d %d %d %d %d %@",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[9],arr[10],arr[11],srslt);
     return srslt;
 }
 
@@ -612,6 +612,17 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	sqlite3_finalize(stmt);
 }
 
+// so we can ignore error when adding column
+- (void) toExecSqlIgnErr {
+	SQLDbg(@"toExecSqlIgnErr: %@ => _%@_", self.dbName, self.sql);
+	dbgNSAssert(tDb,@"toExecSqlIgnErr called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+        sqlite3_step(stmt);
+	}
+	sqlite3_finalize(stmt);
+}
 
 - (void) toQry2Log {
 #if DEBUGLOG    

@@ -104,7 +104,9 @@
 //- (void) transformVO:(NSMutableArray *)xdat ydat:(NSMutableArray *)ydat dscale:(double)dscale height:(CGFloat)height border:(float)border firstDate:(int)firstDate;
 - (void) dealloc;
 - (id) newVOGD;
-- (void) recalculate;
+//- (void) recalculate;
+-(void) setFnVals:(int)tDate;
+-(void) doTrimFnVals;
 - (void) resetData;
 - (NSString*) mapValue2Csv;
 - (NSString*) mapCsv2Value:(NSString*)inCsv;

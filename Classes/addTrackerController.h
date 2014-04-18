@@ -19,12 +19,13 @@
 	trackerList *tlist;
 	trackerObj *tempTrackerObj;
     UIBarButtonItem *copyBtn;
-
+    BOOL saving;
     //UIActivityIndicatorView *spinner;
 }
 
 @property (nonatomic, retain) trackerList *tlist;
 @property (nonatomic, retain) trackerObj *tempTrackerObj;
+@property (nonatomic) BOOL saving;
 
 // UI element properties 
 @property (nonatomic, retain) IBOutlet UITableView *table;

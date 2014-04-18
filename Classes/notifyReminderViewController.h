@@ -37,6 +37,7 @@
 {
     trackerObj *tracker;
     notifyReminder *nr;
+    //BOOL tmpReminder;         // nr.rid=0 // displayed reminder is only in view controller, no entry in tracker.reminders
     
     NSArray *weekdayBtns;
     NSArray *everyTrackerNames;
@@ -51,6 +52,8 @@
 
 @property (nonatomic,retain) trackerObj *tracker;
 @property (nonatomic,retain) notifyReminder *nr;
+//@property (nonatomic) BOOL tmpReminder;
+
 @property (nonatomic,retain) NSArray *weekdayBtns;
 @property (nonatomic,retain) NSArray *everyTrackerNames;
 @property (nonatomic,retain) UIImage *chkImg;
@@ -149,6 +152,5 @@
 
 - (IBAction)btnDone:(id)sender;
 - (IBAction)btnHelp:(id)sender;
-
 
 @end

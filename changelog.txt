@@ -1280,7 +1280,69 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+    - submit for release as 1.1.6
 
+24 feb 2014
+   - addTracker: add saving flag to lock out starting save again; reduce min for spinner from 20 to 8
+
+25 feb 2014 
+   - new notifyReminder init, work with trackerObj to load reminders array
+
+26 feb 2014
+   - worked on shifting reminder navigation (next/prev/delete) to work with NSMutable array of NRs on trackerObj
+
+27 feb 2014
+   - still on reminder navigation
+   -- problem getting 2 copies of nr in reminders array, so 2x tap forward but 1x tap back
+   - clear carrier / time / battery row from launch image
+
+01 Mar 2014
+   - enable prev btn checks (0==nr.rid and haveCurr()) in case showing tmp reminder after last in reminders[]
+   -- still some problem duplicating entries in reminders[]
+
+02 Mar 2014
+   - fixed problem moving forward through reminders
+   -- issue with deleting 0th, move to next, back < is enabled
+
+03 mar 2014
+   - reminder navigation seems to be working
+   - initial implementation write/read reminders[] but not working yet 
+
+04 mar 2014
+   - read as new plist ok for reminders
+   -- work on trackerObj:confirmTOdict -- update tid, vid as needed
+
+06 mar 2014
+   - trackerObj:voUpdateVid handles vid and tid change in reminders
+   -- updates work on first test
+   -- still problem dropping a reminder on normal navigation/save
+
+09 mar 2014
+   - re-work recalculate fns so loop over dates is at tracker level rather than valObj level
+   - discover privacy config view not showing for some variants of ios7 ... change so ppwV inserts at (subview count -2) instead of (subview count -1) - probably due to keyboard being up, seems to work for all models, 6.1/7.0
+   - discover and fix bug loading plist handle as stash/accept, due to not completing implemntation of plistFile bool in rvc:loadTrackerPlistFiles
+
+13 mar 2014
+   - initial work on on setting localNotifications when tracker saved
+
+01 apr 2014
+   - release as 1.1.7 to get 09 mar fixes in place
+   - working on setNotification - start time; 
+
+02 apr 2014
+   - re-work gui to handle fromLast explicitly not if start=-1
+   - starting setNotification multi-time array
+
+13 apr 2014
+   - working on setReminder
+   - added description method to notifyReminder for display with %@
+   - added saveDate column for notifyReminder, probably must drop those tables
+
+18 apr 2014
+   - first draft reminders all working
+
+--- commit ---
+   
 
 -> notifyReminder class to manage db to/from nsarray for rtrk
 

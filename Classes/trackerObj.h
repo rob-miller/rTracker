@@ -12,6 +12,7 @@
 #import "tObjBase.h"
 #import "valueObj.h"
 #import "rTracker-constants.h"
+#import "notifyReminder.h"
 
 // to config checkbutton default states
 #define SAVERTNDFLT   YES
@@ -31,6 +32,7 @@
     
 	NSMutableArray *valObjTable;
     NSMutableArray *reminders;
+    NSInteger reminderNdx;
     
 	CGSize maxLabel;
 	NSInteger nextColor;
@@ -63,6 +65,7 @@
 @property (nonatomic,retain) NSMutableDictionary *optDict;
 @property (nonatomic,retain) NSMutableArray *valObjTable;
 @property (nonatomic,retain) NSMutableArray *reminders;
+@property (nonatomic) NSInteger reminderNdx;
 @property (nonatomic) CGSize maxLabel;
 @property (nonatomic) NSInteger nextColor;
 @property (nonatomic,retain) NSArray *votArray;
@@ -103,6 +106,19 @@
 - (void) deleteTrackerDB;
 - (void) deleteCurrEntry;
 - (void) deleteTrackerRecordsOnly;
+
+- (notifyReminder*) loadReminders;
+- (BOOL) haveNextReminder;
+- (notifyReminder*) nextReminder;
+- (BOOL) havePrevReminder;
+- (notifyReminder*) prevReminder;
+- (BOOL) haveCurrReminder;
+- (notifyReminder*) currReminder;
+- (void) deleteReminder;
+- (void) addReminder:(notifyReminder*)newNR;
+- (void) saveReminder:(notifyReminder*)saveNR;
+- (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian;
+- (void) setReminders;
 
 - (NSInteger) dateNearest:(int)targ;
 - (NSInteger) prevDate;

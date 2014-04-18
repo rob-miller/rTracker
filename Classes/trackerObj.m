@@ -22,11 +22,12 @@
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
 
+#import "notifyReminder.h"
 
 @implementation trackerObj
 
 
-@synthesize trackerDate, valObjTable, reminders, optDict;  //trackerName
+@synthesize trackerDate, valObjTable, reminders, reminderNdx, optDict;  //trackerName
 @synthesize nextColor, votArray;
 @synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, csvReadFlags, csvProblem, togd, goRecalculate, changedDateFrom, csvHeaderDict; // prevTID  // maxLabel
 
@@ -177,6 +178,7 @@
 		[self getTDb];
 		[self initTDb];
 	}
+    [self initReminderTable];  // outside because added later
 }
 
 
@@ -284,12 +286,23 @@
 // handle voConfig voInfo; voData to be handled by loadDataDict
 - (void) confirmTOdict:(NSDictionary*)dict {
     
+    //---- optDict ----//
     NSDictionary *newOptDict = [dict objectForKey:@"optDict"];
     NSString *key;
     for (key in newOptDict) {               // overwrite options with new input
         [self.optDict setObject:[newOptDict objectForKey:key] forKey:key];  // incoming optDict may be incomplete, assume obsolete optDict entries not a problem
     }
     
+    //---- reminders ----//
+	NSArray *rda = [dict objectForKey:@"reminders"];
+    for (NSDictionary *rd in rda) {
+        notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
+        nr.tid = self.toid;
+        [self.reminders addObject:nr];
+        [nr release];
+    }
+
+    //---- valObjTable and db ----//
     NSArray *newValObjs = [dict objectForKey:@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
     [rTracker_resource stashProgressBarMax:[newValObjs count]];
     
@@ -367,6 +380,7 @@
     [existingVOs release];
     [self sortVoTableByArray:newVOs];
     [newVOs release];
+    
 }
 
 /*
@@ -515,6 +529,10 @@ if (addVO) {
                                                     name:rtValueUpdatedNotification
                                                   object:nil];
      */
+    
+    self.reminders = nil;
+    [reminders release];
+    
 	[super dealloc];
 }
 
@@ -569,6 +587,7 @@ if (addVO) {
 
     [self setTrackerVersion];
     [self setToOptDictDflts];
+    // not needed here ? [self loadReminders];
     
     DBGLog(@"to optdict: %@",self.optDict);
     
@@ -665,7 +684,7 @@ if (addVO) {
 	dbgNSAssert(self.toid,@"tObj load from dict toid=0");
 	
     self.optDict = [dict objectForKey:@"optDict"];
-    
+
     [self setTrackerVersion];
     [self setToOptDictDflts];  // probably redundant
     
@@ -693,7 +712,14 @@ if (addVO) {
         [vo.vos setOptDictDflts];
 		[vo.vos loadConfig];  // loads from vo optDict
 	}
-	
+
+	NSArray *rda = [dict objectForKey:@"reminders"];
+    for (NSDictionary *rd in rda) {
+        notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
+        [self.reminders addObject:nr];
+        [nr release];
+    }
+    
 	//[self nextColor];  // inc safely past last used color
 	if (nextColor >= [[rTracker_resource colorSet] count])
 		nextColor=0;
@@ -922,6 +948,10 @@ if (addVO) {
 		
 		[self saveVoOptdict:vo];
 	}
+    
+    [self reminders2db];
+    [self setReminders];
+     
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 	
 	self.sql = nil;
@@ -1066,6 +1096,8 @@ if (addVO) {
         self.sql = @"delete from voData where val=''";
         [self toExecSql];
     }
+
+    [self setReminders];
     
 	self.sql = nil;
 }
@@ -1194,9 +1226,16 @@ if (addVO) {
     NSArray *voda = [NSArray arrayWithArray:vodma];
     [vodma release];
     
+    NSMutableArray *rdma = [[NSMutableArray alloc] init];
+    for (notifyReminder *nr in self.reminders) {
+        [rdma addObject:[nr dictFromNR]];
+    }
+    NSArray *rda = [NSArray arrayWithArray:rdma];
+    
     return [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithInt:self.toid],@"tid",
             self.optDict, @"optDict",
+            rda, @"reminders",
             voda,@"valObjTable",
             nil];
     
@@ -1724,6 +1763,478 @@ if (addVO) {
 }
 
 #pragma mark -
+#pragma mark reminders 
+
+- (NSMutableArray*) reminders {
+    if (! reminders) {
+        reminders = [[NSMutableArray alloc] init];
+    }
+    return reminders;
+}
+
+//load reminder data into trackerObj array from db
+- (notifyReminder*) loadReminders {
+    [self.reminders removeAllObjects];
+    NSMutableArray *rids = [[NSMutableArray alloc] init];
+    self.sql = @"select rid from reminders order by rid";
+    [self toQry2AryI:rids];
+    if (0 < [rids count]) {
+        for (NSNumber *rid in rids) {
+            [self.reminders addObject:[[notifyReminder alloc] init:rid to:self]];
+        }
+        [rids release];
+        self.reminderNdx=0;
+        return [self.reminders objectAtIndex:0];
+    } else {
+        [rids release];
+        self.reminderNdx=-1;
+        return nil;
+    }
+}
+
+- (void) reminders2db {
+    self.sql = @"delete from reminders where rid not in (";
+    BOOL started=FALSE;
+    for (notifyReminder *nr in self.reminders) {
+        NSString *fmt = (started ? @",%d" : @"%d");
+        self.sql = [self.sql stringByAppendingFormat:fmt,nr.rid];
+        started=TRUE;
+    }
+    self.sql = [self.sql stringByAppendingString:@")"];
+    [self toExecSql];
+    for (notifyReminder *nr in self.reminders) {
+        [nr save:self];
+    }
+}
+
+- (BOOL) haveNextReminder {
+    return ( self.reminderNdx < ([self.reminders count]-1) );
+}
+
+- (notifyReminder*) nextReminder {
+    if ([self haveNextReminder]) {
+        return [self.reminders objectAtIndex:++self.reminderNdx];
+    }
+    return nil;
+}
+
+-(BOOL) havePrevReminder {
+    return (0 < self.reminderNdx);
+}
+
+- (notifyReminder*) prevReminder {
+    if ([self havePrevReminder]) {
+        return [self.reminders objectAtIndex:--self.reminderNdx];
+    }
+    return nil;
+}
+
+- (BOOL) haveCurrReminder {
+    return ( -1 != self.reminderNdx );
+}
+
+- (notifyReminder*) currReminder {
+    if ([self haveCurrReminder]) {
+        return [self.reminders objectAtIndex:self.reminderNdx];
+    }
+    return nil;
+}
+
+- (void) deleteReminder {
+    if ([self haveCurrReminder]) {
+        //[(notifyReminder*) [self.reminders objectAtIndex:self.reminderNdx] delete:self];
+        [self.reminders removeObjectAtIndex:self.reminderNdx];
+        NSUInteger last = [self.reminders count]-1;
+        if (self.reminderNdx > last) {
+            self.reminderNdx = last;
+        }
+    }
+}
+
+- (void) addReminder:(notifyReminder*)newNR {
+    [self.reminders addObject:newNR];
+    if (-1 == self.reminderNdx) {
+        self.reminderNdx=0;
+    }
+}
+
+- (void) saveReminder:(notifyReminder*)saveNR {
+    if (0 == saveNR.rid) {
+        saveNR.rid = [self getUnique];
+        self.reminderNdx++;
+    }
+    NSDate *now = [[NSDate alloc] init];
+    saveNR.saveDate = [now timeIntervalSince1970];
+    [now release];
+    //[saveNR save:self];
+    [self.reminders setObject:saveNR atIndexedSubscript:self.reminderNdx];
+    
+    
+    /*
+    // for debug
+    
+    NSDate *today = [[NSDate alloc] init];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+    [self setReminder:saveNR today:today gregorian:gregorian];
+    
+    [today release];
+    [gregorian release];
+    */
+    
+}
+
+- (void) initReminderTable {
+    self.sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
+    [self toExecSql];
+    self.sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
+    [self toExecSqlIgnErr];
+    self.sql=nil;
+}
+
+// from ios docs date and time programming guide - Determining Temporal Differences
+-(NSInteger)unitsWithinEraFromDate:(NSDate *) startDate toDate:(NSDate *) endDate calUnit:(NSCalendarUnit)calUnit calendar:(NSCalendar*)calendar
+{
+    // calUnit NSDayCalendarUnit
+    NSInteger startDay=[calendar ordinalityOfUnit:calUnit
+                                       inUnit: NSEraCalendarUnit forDate:startDate];
+    NSInteger endDay=[calendar ordinalityOfUnit:calUnit
+                                     inUnit: NSEraCalendarUnit forDate:endDate];
+    return endDay-startDay;
+}
+
+- (BOOL) weekMonthDaysIsToday:(notifyReminder*)nr todayComponents:(NSDateComponents*)todayComponents {
+    if ((0 != nr.weekDays) && (0 == (nr.weekDays & (0x01 << ([todayComponents weekday]-1))))) {              // weekday mode but not today
+        return FALSE;
+    } else if ((0 != nr.monthDays) && (0 == (nr.monthDays & (0x01 << ([todayComponents day]-1))))) {         // monthday mode but not today
+        return FALSE;
+    }
+    return TRUE;
+}
+
+- (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
+
+    NSDateComponents *todayComponents =
+    [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
+    //NSDateComponents *everyStartComponents = NULL;
+    int nowInt = (60 * [todayComponents hour]) + [todayComponents minute];
+    NSDate *lastEntryDate = [NSDate dateWithTimeIntervalSince1970:nr.saveDate]; // default to when reminder created
+    
+    NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
+    
+    int startInt= nr.start;
+    int finInt= nr.until;
+    
+    BOOL eventIsToday=TRUE;
+    
+    DBGLog(@"now= %@",today);
+    DBGLog(@"%@",nr);
+    
+    DBGLog(@"today: yr %d mo %d dy %d hr %d mn %d sc %d wkdy %d",
+           [todayComponents year], [todayComponents month], [todayComponents day], [todayComponents hour], [todayComponents minute], [todayComponents second], [todayComponents weekday]);
+    DBGLog(@"startInt = %@ finInt= %@",[nr timeStr:startInt],[nr timeStr:finInt]);
+    DBGLog(@"nowInt= %@",[nr timeStr:nowInt]);
+    
+    // default state here: start and finish as set on sliders, happening today
+    
+    if (nr.everyVal) {         // if every, get start components from date of last save and adjust startInt
+        //int lastEventStart=0;
+        if (nr.fromLast) {
+            int lastInt;
+            if (nr.vid) {
+                self.sql = [NSString stringWithFormat:@"select date from voData where id=%d order by date desc limit 1", nr.vid];
+            } else {
+                self.sql = @"select date from voData order by date desc limit 1";
+            }
+            if ((lastInt = [self toQry2Int])) {
+                lastEntryDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) [self toQry2Int]];  // stay with when reminder created if no data stored for this tracker yet
+            }
+        }
+        //everyStartComponents = [gregorian components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:lastEntryDate];
+        //lastEventStart = (60 * [everyStartComponents hour]) + [everyStartComponents minute];     // lasteventstart now set for appropriate offset minutes into day
+        
+        // but might not be today!
+        
+        if (0!= (nr.everyMode & EV_DAYS)) {
+            int days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
+            int currFrac = days % nr.everyVal;
+            if (0 != currFrac){
+                eventIsToday = FALSE;
+                [offsetComponents setDay:(nr.everyVal - currFrac)];
+            }
+            DBGLog(@" every- days= %d days_mod_times= %d eventIsToday= %d",days,(days % nr.everyVal),eventIsToday);
+            
+        } else if (0!= (nr.everyMode & EV_WEEKS)) {
+            int weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
+            int currFrac = weeks % nr.everyVal;
+            if (0 != currFrac){
+                eventIsToday = FALSE;
+                [offsetComponents setWeek:(nr.everyVal - currFrac)];
+            }
+            DBGLog(@" every- weeks= %d weeks_mod_times= %d eventIsToday= %d",weeks,(weeks % nr.times),eventIsToday);
+            
+        } else if (0!= (nr.everyMode & EV_MONTHS)) {
+            int months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMonthCalendarUnit calendar:gregorian];
+            int currFrac = months % nr.everyVal;
+            if (0 != currFrac){
+                eventIsToday = FALSE;
+                [offsetComponents setMonth:(nr.everyVal - currFrac)];
+            }
+            DBGLog(@" every- months= %d months_mod_times= %d eventIsToday= %d",months,(months % nr.times),eventIsToday);
+        } else { //EV_MINUTES or EV_HOURS => eventIsToday  // unless wraparound!
+            int minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMinuteCalendarUnit calendar:gregorian];
+            int blockMinutes = (EV_HOURS == nr.everyMode ? 60 * nr.everyVal : nr.everyVal);
+            int stepMinutes = minutes % blockMinutes;
+            int targStart = nowInt;
+
+            //DBGLog(@"sm= %d",stepMinutes);
+            if (0 == stepMinutes) {
+                stepMinutes = blockMinutes;  // event is right now so jump to next
+            }
+
+            targStart += stepMinutes;      // lastEntry hr:mn +step
+            DBGLog(@" every- mins/hrs -- add %d minutes  mins= %d  blockMins=%d times= %d targStart= %@",stepMinutes, minutes, blockMinutes, nr.everyVal, [nr timeStr:targStart]);
+            
+            if ((-1 != finInt) && (targStart > finInt)) {   // if past cutoff shift to tomorrow start
+                targStart = startInt;
+                eventIsToday = FALSE;
+                [offsetComponents setDay:1];
+                DBGLog(@"  - went past finInt, reset to startInt tomorrow");
+            }
+            if ((24*60) < targStart) {                      // if wraparound shift to tomorrow
+                eventIsToday = FALSE;
+                //targStart -= (24*60);
+                targStart = startInt;
+                [offsetComponents setDay:1];
+                DBGLog(@"  - went past 24hr, reset to startInt tomorrow");
+            }
+
+            if (targStart < startInt) {                     // if too early shift to start time
+                DBGLog(@"  - before startInt, reset to startInt  startInt= %d targStart= %d ",startInt,targStart);
+                targStart = startInt;
+                
+            }
+            
+            startInt = targStart;
+        }
+        
+        DBGLog(@" every- lastEntry %@",lastEntryDate);
+        //DBGLog(@" every- lastEntry hr %d mn %d -> new startInt= %@",[everyStartComponents hour],[everyStartComponents minute], [nr timeStr:startInt]);
+        DBGLog(@" every- new startInt= %@", [nr timeStr:startInt]);
+        
+        // state here: startInt, finInt, eventIsToday accurate for 'every X time_units [from last [vid]]'
+        // if not today, don't know next day
+        // lastEntryDate set
+        DBGLog(@" every- eventIsToday= %d",eventIsToday);
+        
+    } else { // not nr.everyVal -- week day or month days mode
+        
+        // todayComponents at this point unchanged from [today]
+        
+        eventIsToday = [self weekMonthDaysIsToday:nr todayComponents:todayComponents];
+        DBGLog(@" times- eventIsToday= %d",eventIsToday);
+        
+        // state here: startInt, finInt, eventIsToday accurate for '(weekdays | monthdays) (at | from-until)'
+        // if not today, don't know next day
+        
+    }
+    
+    if ((1<nr.times) || (-1 != finInt)) {  // set startInt to next time point between from/until entries [ 2 times from/until || every 3 mins from [last] until ]
+        int intervalStep = (int) (d(finInt - startInt) / d( nr.times - (nr.timesRandom ? 0 : 1) )) + 0.5;  // if interval then 1x less 'times' for start AND nr.times>1 as tested above
+        
+        if (eventIsToday && (1 < nr.times) && (nowInt > startInt) && (nowInt < finInt)) {       // event is today and 'now' is in window, compute next event time
+            while (startInt < nowInt) {
+                startInt += intervalStep;       // get to next interval after now
+            }
+            DBGLog(@"intervalStep= %d  event today, now in window, nowInt= %@ finInt= %@ new startInt= %@",intervalStep,[nr timeStr:nowInt],[nr timeStr:finInt],[nr timeStr:startInt]);
+            // startInt is at begin of next interval after [now]
+        } else if (eventIsToday && (-1 != finInt) && (nowInt>finInt)) {  // start is ok at startInt but might be today or later day, so mark not today if we are past finInt
+            eventIsToday = FALSE;
+            DBGLog(@"intervalStep= %d  event outside window, nowInt= %@ finInt= %@ startInt= %@",intervalStep,[nr timeStr:nowInt],[nr timeStr:finInt],[nr timeStr:startInt]);
+        }
+        
+        if (nr.timesRandom) {
+            startInt += (int) ((DBLRANDOM * d(intervalStep)) - d(intervalStep)/2.0);  // startInt += rand * (+/- (0.5 * step))
+            if (startInt < nr.start) {
+                startInt = nr.start;
+            }
+            DBGLog(@"randomise new startInt= %@",[nr timeStr:startInt]);
+        }
+    }  else if (nr.everyVal && ((nr.everyMode == EV_HOURS) || (nr.everyMode == EV_MINUTES))) {  // every 3 hours with no end
+        int step = nr.everyVal * ( nr.everyMode == EV_HOURS ? 60 : 1 );
+        while (startInt < nowInt) {
+            startInt += step;
+        }
+        DBGLog(@"every, step= %d  event today, nowInt= %@ new startInt= %@",step,[nr timeStr:nowInt],[nr timeStr:startInt]);
+    } else { // else nr.times == 1 => startInt remains at default
+        if (startInt > nowInt) {
+            eventIsToday = FALSE;
+            DBGLog(@"1 time after now so not today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
+        } else {
+            DBGLog(@"1 time <= now so is today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
+        }
+    }
+    
+    // startInt has day_minute of 1st notification, whether today or later day
+    //  for case of everyVal or time range (multiple times)
+    
+    // if eventIsToday we are ready
+    // else determine days offset to next event
+    
+    // todayComponents still not modified from today
+    // lastEntryDate is correct if everyVal
+    
+
+    if (! eventIsToday) {
+        int i;
+        int days = 0;
+        
+        if (nr.monthDays) {
+            int itoday = ([todayComponents day]-1);
+            int ifirst=-1;
+            int inext=-1;
+            
+            if (itoday) {  // today not 0, i.e. 1st of month
+                for (i=0;i<itoday && (-1 == ifirst);i++) {
+                    if (nr.monthDays & (0x01 << i)) {
+                        ifirst = i;
+                    }
+                }
+            } else {
+                ifirst=0;
+            }
+            for (i=itoday;i<32 && (-1 == inext);i++) {
+                if (nr.monthDays & (0x01 << i)) {
+                    inext = i;
+                }
+            }
+            if (-1 != inext) {
+                days = inext-itoday;
+                DBGLog(@"not today- monthDays: today is %d, trigger on next= %d so +%d days",itoday,inext,days);
+            } else if (-1 != ifirst) {
+                NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+                [dateComponents setMonth:1];
+                NSDate *nextMonth = [gregorian dateByAddingComponents:dateComponents toDate:today options:0];
+                dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
+                                                        NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:nextMonth];
+                [dateComponents setDay:ifirst+1];
+                nextMonth = [gregorian dateFromComponents:dateComponents];
+                days = [self unitsWithinEraFromDate:today toDate:nextMonth calUnit:NSDayCalendarUnit calendar:gregorian];
+                DBGLog(@"not today- monthDays: today is %d, wrap around to first = %d so +%d days",itoday,ifirst,days);
+                [dateComponents release];
+            } else {
+                DBGErr(@"not today- monthDays fail: %0x today is %d",nr.monthDays,itoday);
+            }
+            
+            [offsetComponents setDay:days];
+            
+        } else if (nr.everyVal) {
+            /*
+                // all handeld above -- offsetComponents already set
+             
+            if ((EV_MINUTES == nr.everyMode) || (EV_HOURS == nr.everyMode)) {
+                DBGLog(@"not today- every: mins/hrs -> trigger tomorrow ");
+            } else if (EV_DAYS == nr.everyMode) {
+                DBGLog(@"not today- every: days so + days");
+            } else if (EV_WEEKS == nr.everyMode) {
+                DBGLog(@"not today- every: weeks so + weeks");
+            } else { // EV_MONTHS
+                DBGLog(@"not today- every: months so + months");
+            }
+            */
+            
+        } else if (nr.weekDays) { // weekdays
+            // Get the weekday component of the current date
+            NSDateComponents *weekdayComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:today];
+            // work out the next weekday set in nr after today
+            
+            int currWeekDay = [weekdayComponents weekday];
+            int targWeekDay=0;
+            for (i=currWeekDay-1;i<7 && (0 == targWeekDay);i++) {
+                if (0 != (nr.weekDays & (0x01 << i))) {
+                    targWeekDay = i+1;
+                }
+            }
+            if (0 == targWeekDay) {
+                for (i=0;i<currWeekDay-1 && (0 == targWeekDay);i++) {
+                    if (0 != (nr.weekDays & (0x01 << i))) {
+                        targWeekDay = i+1;
+                    }
+                }
+            }
+            days = targWeekDay - currWeekDay;
+            if (0 > days) {
+                days += 7;
+            }
+            DBGLog(@"not today- weekdays: targ= %d curr= %d so +%d days",targWeekDay,currWeekDay,days);
+
+            [offsetComponents setDay:days];
+            
+        }
+    }
+    
+    [offsetComponents setMinute:(startInt - nowInt)];
+    [offsetComponents setSecond:0];
+    
+    NSDate *targDate = [gregorian dateByAddingComponents:offsetComponents toDate:today options:0];
+
+    //DBGLog(@"finish setReminder startInt= %@",[nr timeStr:startInt]);
+    DBGLog(@"finish setReminder targDate= %@",targDate);
+
+    [offsetComponents release];
+    
+    
+    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+    if (localNotif == nil)
+        return;
+    localNotif.fireDate = targDate;
+    localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    
+    localNotif.alertBody = nr.msg;
+    localNotif.alertAction = NSLocalizedString(@"go to rTracker", nil);
+    
+    localNotif.soundName = UILocalNotificationDefaultSoundName;
+    localNotif.applicationIconBadgeNumber = 0;
+    
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.toid] forKey:@"tid"];
+    localNotif.userInfo = infoDict;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+
+    DBGLog(@"done");
+
+ }
+
+
+- (void) clearReminders {
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *eventArray = [app scheduledLocalNotifications];
+    for (int i=0; i<[eventArray count]; i++)
+    {
+        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        NSDictionary *userInfoCurrent = oneEvent.userInfo;
+        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.toid) {
+            [app cancelLocalNotification:oneEvent];
+        }
+    }
+}
+
+- (void) setReminders {
+    // delete all reminders for this tracker
+    [self clearReminders];
+    // create uiLocalNotif here with access to nr data and tracker data
+    NSDate *today = [[NSDate alloc] init];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];   // could use [NSCalendar currentCalendar]; ?
+    for (notifyReminder* nr in self.reminders) {
+        if (nr.reminderEnabled) {
+            [self setReminder:nr today:today gregorian:gregorian];
+        }
+    }
+    [today release];
+    [gregorian release];
+}
+
+#pragma mark -
 #pragma mark query tracker methods
 
 - (NSInteger) dateNearest:(int)targ {
@@ -1846,6 +2357,8 @@ if (addVO) {
     self.sql= [NSString stringWithFormat: @"update voInfo set id=%d where id=%d", newVID, vo.vid];
     [self toExecSql];
     self.sql= [NSString stringWithFormat: @"update voConfig set id=%d where id=%d", newVID, vo.vid];
+    [self toExecSql];
+    self.sql= [NSString stringWithFormat: @"update reminders set vid=%d where vid=%d", newVID, vo.vid];
     [self toExecSql];
 
     self.sql = nil;
@@ -1980,15 +2493,55 @@ if (addVO) {
 
 }
 
+- (void) setFnVals {
+    int currDate = (int) [self.trackerDate timeIntervalSince1970];
+    int nextDate = [self firstDate];
+    
+    if (0 == nextDate) {  // no data yet for this tracker so do not generate a 0 value in database
+        return;
+    }
+    
+    float ndx=1.0;
+    float all = [self getDateCount];
+    
+    do {
+        [self loadData:nextDate];
+        for (valueObj *vo in self.valObjTable) {
+            if (VOT_FUNC == vo.vtype) {
+                [vo.vos setFnVals:nextDate];
+            }
+        }
+
+        [rTracker_resource setProgressVal:(ndx/all)];
+        ndx += 1.0;
+        
+    } while ((nextDate = [self postDate]));    // iterate through dates
+    
+    for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC == vo.vtype) {
+            [vo.vos doTrimFnVals];
+        }
+    }
+    
+    // restore current date
+	[self loadData:currDate];
+}
+
 - (void) recalculateFns {
 	DBGLog(@"tracker id %d name %@ dbname %@ recalculateFns", self.toid, self.trackerName, self.dbName);
+
+    [rTracker_resource setProgressVal:0.0f];
+    [self setFnVals];
     
+    /*
+     // old, loop in valobj way
 	for (valueObj *vo in self.valObjTable) {
         if (self.goRecalculate && (VOT_FUNC == vo.vtype)) {
             [rTracker_resource setProgressVal:0.0f];
             [vo.vos recalculate];
         }
 	}
+     */
     
     if (self.goRecalculate) {
         [self.optDict removeObjectForKey:@"dirtyFns"];

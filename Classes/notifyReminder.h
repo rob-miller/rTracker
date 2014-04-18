@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "trackerObj.h"
+//#import "trackerObj.h"
 
 /*
  weekdays : 7 bits
@@ -17,6 +17,7 @@
  */
 
 //#define EV_MINUTES (0x01 << 0)  // default 0 is valid as minutes
+#define EV_MINUTES 0
 #define EV_HOURS   (0x01 << 0)
 #define EV_DAYS    (0x01 << 1)
 #define EV_WEEKS   (0x01 << 2)
@@ -63,12 +64,16 @@
     BOOL timesRandom;
     BOOL reminderEnabled;
     BOOL untilEnabled;
+    BOOL fromLast;
     
     NSInteger tid;
     NSInteger vid;   // 0 => tracker OR not used if start valid
     
+    int saveDate;
+    
     UILocalNotification *localNotif;
-    trackerObj *to;
+    
+    //trackerObj *to;
 }
 
 @property (nonatomic) int rid;
@@ -90,20 +95,35 @@
 @property (nonatomic) BOOL timesRandom;
 @property (nonatomic) BOOL reminderEnabled;
 @property (nonatomic) BOOL untilEnabled;
+@property (nonatomic) BOOL fromLast;
+@property (nonatomic) int saveDate;
 
 @property (nonatomic,retain) UILocalNotification *localNotif;
-@property (nonatomic,retain) trackerObj *to;
+//@property (nonatomic,retain) trackerObj *to;
 
--(id) init:(trackerObj*) tObjIn;
+//-(id) init:(trackerObj*) tObjIn;
+-(id) init:(NSNumber*) inRid to:(id)to;
+-(id) initWithDict:(NSDictionary*)dict;
 
 -(void) clearNR;
--(void) save;
--(void) delete;
+-(void) save:(id)to;
+//-(void) delete:(id)to;
 
+- (void) loadRid:(NSString*)sqlWhere to:(id)to;
+- (NSDictionary*) dictFromNR;
+
+-(int) hrVal:(int)val;
+-(int) mnVal:(int)val;
+
+-(NSString*)timeStr:(int)val;
+-(NSString*) description;
+
+/*
 -(void) nextRid;
 -(void) prevRid;
 
 - (BOOL) haveNextReminder;
 - (BOOL) havePrevReminder;
+*/
 
 @end

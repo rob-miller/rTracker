@@ -353,15 +353,16 @@ static NSTimeInterval lastShow=0;
 		if (PWKNOWPASS == self.pwState || PVCHECKPASS == self.showing) {
 			if (PVCHECKPASS == self.showing) {
 				self.pwState = PWKNOWPASS;   // just successfully entered password so don't ask again
+			//	[self hideConfigBtns:FALSE];
+			//	[UIView beginAnimations:nil context:NULL];
+			//	[UIView setAnimationDuration:kAnimationDuration];
+			//	//[self.ppwv hidePPWVAnimated:FALSE];
+			} //else {
 				[self hideConfigBtns:FALSE];
 				[UIView beginAnimations:nil context:NULL];
 				[UIView setAnimationDuration:kAnimationDuration];
-				//[self.ppwv hidePPWVAnimated:FALSE];
-			} else {
-				[UIView beginAnimations:nil context:NULL];
-				[UIView setAnimationDuration:kAnimationDuration];
-				[self hideConfigBtns:FALSE];
-			}
+			//}
+
 			[self.ppwv changePass:PVCONFIG cancel:PVCONFIG];
 			[self.configBtn setTitle:CFGBTNLOCK forState:UIControlStateNormal];
             [self setTTV];

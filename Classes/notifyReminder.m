@@ -15,11 +15,12 @@
 
 @implementation notifyReminder
 
-@synthesize rid, monthDays, weekDays, everyMode, everyVal, start, until, times, timesRandom, msg, reminderEnabled, untilEnabled, localNotif, tid, vid, to;
+@synthesize rid, monthDays, weekDays, everyMode, everyVal, start, until, times, timesRandom, msg, reminderEnabled, untilEnabled, fromLast, saveDate, localNotif, tid, vid;
 
 #define UNTILFLAG   (0x01<<0)
 #define TIMESRFLAG  (0x01<<1)
 #define ENABLEFLAG  (0x01<<2)
+#define FROMLASTFLAG  (0x01<<3)
 
 - (id)init {
 	
@@ -28,7 +29,7 @@
 	
 	return self;
 }
-
+/*
 - (id)init:(trackerObj*) tObjIn {
 	if ((self = [self init])) {
 		//DBGLog(@"init trackerObj id: %d",tid);
@@ -38,45 +39,84 @@
 	}
 	return self;
 }
+*/
 
-- (void) initReminderTable {
-    self.to.sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, unique(rid) on conflict replace)";
-    [self.to toExecSql];
-    self.to.sql=nil;
+- (id)init:(NSNumber*)inRid to:(trackerObj*)to {
+	if ((self = [self init])) {
+		//DBGLog(@"init trackerObj id: %d",tid);
+        //[self initReminderTable];
+        [self loadRid:[NSString stringWithFormat:@"rid=%d",[inRid intValue]] to:to];
+	}
+	return self;
+    
 }
 
-- (void) save {
-    if (! self.rid) self.rid = [self.to getUnique];
+- (id) initWithDict:(NSDictionary*)dict {
+
+    if((self = [super init])) {
+        self.rid = [[dict objectForKey:@"rid"] intValue];
+        self.monthDays = (uint32_t) [[dict objectForKey:@"monthDays"] unsignedIntValue];
+        self.weekDays = (uint8_t) [[dict objectForKey:@"weekDays"] unsignedIntValue];
+        self.everyMode = (uint8_t) [[dict objectForKey:@"everyMode"] unsignedIntValue];
+        self.everyVal = [[dict objectForKey:@"everyVal"] intValue];
+        self.start = [[dict objectForKey:@"start"] intValue];
+        self.until = [[dict objectForKey:@"until"] intValue];
+        self.times = [[dict objectForKey:@"times"] intValue];
+        self.msg = (NSString*) [dict objectForKey:@"msg"];
+        
+        [self putFlags:[[dict objectForKey:@"flags"] unsignedIntValue]];
+        
+        self.tid = [[dict objectForKey:@"tid"] intValue];
+        self.vid = [[dict objectForKey:@"vid"] intValue];
+        
+        self.saveDate = [[dict objectForKey:@"saveDate"] intValue];
+    }
+    return self;
+}
+
+- (void) save:(trackerObj*)to {
+    unsigned int flags= [self getFlags];
+
+    to.sql = [NSString stringWithFormat:
+                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg) values (%d, %d, %d, %d,%d, %d, %d, %d, %d, %d, %d, %d, '%@')",
+                   self.rid,self.monthDays,self.weekDays,self.everyMode,self.everyVal,self.start, self.until, self.times, flags, self.tid,self.vid, self.saveDate, self.msg];
+    //DBGLog(@"save sql= %@",to.sql);
+    [to toExecSql];
+    to.sql = nil;
+}
+/*
+ // not used - db updates only on tracker saveConfig
+- (void) delete:(trackerObj*)to {
+    if (!self.rid) return;
+    to.sql = [NSString stringWithFormat:@"delete from reminders where rid=%d",self.rid];
+    [to toExecSql];
+    to.sql = nil;
+}
+*/
+- (unsigned int) getFlags {
     unsigned int flags=0;
     if (self.timesRandom) flags |= TIMESRFLAG;
     if (self.reminderEnabled) flags |= ENABLEFLAG;
     if (self.untilEnabled) flags |= UNTILFLAG;
-    
-    self.to.sql = [NSString stringWithFormat:
-                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, msg) values (%d, %d, %d, %d,%d, %d, %d, %d, %d, %d, %d, '%@')",
-                   self.rid,self.monthDays,self.weekDays,self.everyMode,self.everyVal,self.start, self.until, self.times, flags, self.tid,self.vid, self.msg];
-    [self.to toExecSql];
-    self.to.sql = nil;
+    if (self.fromLast) flags |= FROMLASTFLAG;
+    return flags;
 }
 
-- (void) delete {
-    if (!self.rid) return;
-    self.to.sql = [NSString stringWithFormat:@"delete from reminders where rid=%d",self.rid];
-    [self.to toExecSql];
-    self.to.sql = nil;
+- (void) putFlags:(unsigned int)flags {
+    self.timesRandom = (flags & TIMESRFLAG ? YES : NO);
+    self.reminderEnabled = ( flags & ENABLEFLAG ? YES : NO );
+    self.untilEnabled = (flags & UNTILFLAG ? YES : NO );
+    self.fromLast = (flags & FROMLASTFLAG ? YES : NO );
 }
 
-- (void) neighbourRid:(char)test {
+- (void) loadRid:(NSString*)sqlWhere to:(trackerObj*)to {
+
+    to.sql = [NSString stringWithFormat:@"select rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg from reminders where %@",sqlWhere];
+    int arr[12];
     unsigned int flags=0;
-    //self.to.sql = @"select count(*) from reminders;";
-    //int c = [self.to toQry2Int];
-    //DBGLog(@"c= %d",c);
-
-    self.to.sql = [NSString stringWithFormat:@"select rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, msg from reminders where rid %c %d order by rid limit 1", test, self.rid];
-    int arr[13];
-    NSString *tmp = [self.to toQry2I11aS1:arr];
-    
-    if (arr[0] && (arr[0] != self.rid)) {
+    NSString *tmp = [to toQry2I12aS1:arr];
+    //DBGLog(@"read msg: %@",tmp);
+    if (0 != arr[0]) {   // && (arr[0] != self.rid)) {
         self.rid = arr[0];
         self.monthDays = arr[1];
         self.weekDays = arr[2];
@@ -88,16 +128,48 @@
         flags = arr[8];
         self.tid = arr[9];
         self.vid = arr[10];
+        self.saveDate = arr[11];
         
-        self.timesRandom = (flags & TIMESRFLAG ? YES : NO);
-        self.reminderEnabled = ( flags & ENABLEFLAG ? YES : NO );
-        self.untilEnabled = (flags & UNTILFLAG ? YES : NO );
+        [self putFlags:flags];
         
         self.msg = tmp;
     } else {
         [self clearNR];
+        self.rid = 0;
+        self.msg = to.trackerName;
+        self.tid = to.toid;
     }
-    self.to.sql=nil;
+    to.sql=nil;
+
+}
+
+- (NSDictionary*) dictFromNR {
+    int flags = [self getFlags];
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInt:self.rid],@"rid",
+            [NSNumber numberWithUnsignedInt:self.monthDays],@"monthDays",
+            [NSNumber numberWithUnsignedInt:self.weekDays],@"weekDays",
+            [NSNumber numberWithUnsignedInt:self.everyMode],@"everyMode",
+            [NSNumber numberWithInt:self.everyVal],@"everyVal",
+            [NSNumber numberWithInt:self.start],@"start",
+            [NSNumber numberWithInt:self.until],@"until",
+            [NSNumber numberWithInt:self.times],@"times",
+            self.msg,@"msg",
+            [NSNumber numberWithUnsignedInt:flags],@"flags",
+            [NSNumber numberWithInt:self.tid],@"tid",
+            [NSNumber numberWithInt:self.vid],@"vid",
+            [NSNumber numberWithInt:self.saveDate],@"saveDate",
+            nil];
+}
+/*
+- (void) neighbourRid:(char)test {
+
+    [self loadRid:[NSString stringWithFormat:@"rid %c %d order by rid limit 1", test, self.rid]];
+    
+    //self.to.sql = @"select count(*) from reminders;";
+    //int c = [self.to toQry2Int];
+    //DBGLog(@"c= %d",c);
+
 }
 
 - (void) nextRid {
@@ -123,9 +195,10 @@
     if (self.rid) return [self neighbourTest:'<'];
     return [self neighbourTest:'>'];
 }
+*/
 
 - (void) clearNR {
-    self.rid=0;
+    //self.rid=0; // need to keep if set
     self.monthDays=0;
     self.weekDays=0;
     self.everyMode=0;
@@ -134,17 +207,125 @@
     self.until = (23 * 60);
     self.untilEnabled = NO;
     self.times = 0;
-    if (self.to) {
-        self.msg = self.to.trackerName;
-        self.tid = self.to.toid;
-    } else {
+    //if (nil != to) {
+    //    self.msg = to.trackerName;
+    //    self.tid = to.toid;
+    //} else {
         self.msg = nil;
         self.tid = 0;
-    }
+    //}
     
     self.timesRandom = NO;
     self.reminderEnabled = YES;
     self.untilEnabled = NO;
+    self.fromLast = NO;
     self.vid = 0;
+    self.saveDate=0;
 }
+
+-(int) hrVal:(int)val {
+    return val/60;
+}
+
+-(int) mnVal:(int)val {
+    return val % 60;
+}
+
+
+
+-(NSString*)timeStr:(int)val {
+    return [NSString stringWithFormat:@"%02d:%02d",[self hrVal:val],[self mnVal:val]];
+}
+
+- (NSString*) description {
+    NSString *desc = [NSString stringWithFormat:@"nr:%d ",self.rid];
+
+    if (self.start > -1) {
+        desc = [desc stringByAppendingString:[NSString stringWithFormat:@"start %@ ",[self timeStr:self.start]]];
+    }
+    
+    if (self.untilEnabled) {
+        desc = [desc stringByAppendingString:[NSString stringWithFormat:@"until %@ ",[self timeStr:self.until]]];
+    }
+    
+    if (self.monthDays) {
+        int i;
+        NSMutableArray *nma = [[NSMutableArray alloc] initWithCapacity:32];
+        for (i=0;i<32;i++) {
+            if (self.monthDays & (0x01 << i)) {
+                [nma addObject:[NSString stringWithFormat:@"%d",i+1]];
+            }
+        }
+        desc = [desc stringByAppendingString:[NSString stringWithFormat:@"monthDays:%@ ",[nma componentsJoinedByString:@","]]];
+        [nma release];
+
+    } else if (self.everyVal) {
+
+        switch (self.everyMode) {
+            case EV_HOURS:
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Hours ",self.everyVal]];
+                break;
+            case EV_DAYS:
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Days ",self.everyVal]];
+                break;
+            case EV_WEEKS:
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Weeks ",self.everyVal]];
+                break;
+            case EV_MONTHS:
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Months ",self.everyVal]];
+                break;
+            default:   // EV_MINUTES
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Minutes ",self.everyVal]];
+                break;
+        }
+        
+        if (self.fromLast) {
+            if (self.vid) {
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last vid:%d ",self.vid]];
+            } else {
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last tracker:%d ",self.tid]];
+            }
+        }
+
+
+    } else {   // if (self.nr.weekDays)  = default if nothing set
+        desc = [desc stringByAppendingString:@"weekdays: "];
+        
+        NSUInteger weekdays[7];
+        NSUInteger firstWeekDay;
+        firstWeekDay = [[NSCalendar currentCalendar] firstWeekday];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSString *wdNames[7];
+        
+        int i;
+        for (i=0;i<7;i++) {
+            NSUInteger wd = firstWeekDay +i;
+            if (wd > 7) {
+                wd -= 7;
+            }
+            weekdays[i] = wd-1;  // firstWeekDay is 1-indexed, switch to 0-indexed
+            wdNames[i] = [[dateFormatter shortWeekdaySymbols] objectAtIndex:weekdays[i]];
+        }
+        [dateFormatter release];
+        
+        for (i=0;i<7;i++) {
+            if ((BOOL) (0 != (self.weekDays & (0x01 << weekdays[i])))) {
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"%@ ",wdNames[i]]];
+            }
+        }
+    }
+
+    desc = [desc stringByAppendingString:[NSString stringWithFormat:@"msg:'%@' ",self.msg]];
+    desc = [desc stringByAppendingString:[NSString stringWithFormat:@"saveDate:'%@' ",[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) self.saveDate]]];
+    if (self.reminderEnabled) {
+        desc = [desc stringByAppendingString:@"enabled"];
+    } else {
+        desc = [desc stringByAppendingString:@"disabled"];
+    }
+
+    return desc;
+}
+
+
+
 @end

@@ -328,9 +328,20 @@
     return [[vogd alloc] initAsNum:self.vo];
 }
 
+/*
 - (void) recalculate {
 	// subclass overrides if need to do anything
 }
+*/
+
+-(void) setFnVals:(int)tDate {
+// subclass overrides if need to do anything
+}
+
+-(void) doTrimFnVals {
+	// subclass overrides if need to do anything
+}
+
 
 - (void) resetData {
 	// subclass overrides if need to do anything

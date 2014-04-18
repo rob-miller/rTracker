@@ -10,12 +10,12 @@
     
     UIWindow *window;
     UINavigationController *navigationController;
-
+    NSNumber *pendingTid;
 
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
-
+@property (nonatomic, retain) NSNumber *pendingTid;
 @end
 

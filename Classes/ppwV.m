@@ -71,7 +71,7 @@
 		//DBGLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
 		//[pv addSubview:self];
 
-		[pv insertSubview:self atIndex:[pv.subviews count]-1];
+		[pv insertSubview:self atIndex:[pv.subviews count]-2];   // 9.iii.14 change from -1 probably due to keyboard view
         // Initialization code
     }
     return self;

@@ -58,7 +58,7 @@ UITableView *deleteTableView;
     
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
 }
-
+/*
 #if !RELEASE
 
 - (void) btnWipeOrphans {
@@ -66,19 +66,21 @@ UITableView *deleteTableView;
 }
 
 #endif
+*/
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
 	self.title = @"Edit trackers";
     
-#if RELEASE
+//#if RELEASE
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"Export all"
 								  style:UIBarButtonItemStyleBordered
 								  target:self
 								  action:@selector(btnExport)];
-#else
+/*
+ #else
     // wipe orphans
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"wipe orphans"
@@ -87,7 +89,7 @@ UITableView *deleteTableView;
 								  action:@selector(btnWipeOrphans)];
 
 #endif
-    
+*/
 	//NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
 	//self.toolbarItems = tbArray;
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];

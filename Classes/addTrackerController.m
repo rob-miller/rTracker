@@ -21,6 +21,7 @@
 @synthesize table;
 @synthesize nameField;
 @synthesize copyBtn;
+@synthesize saving;
 
 //@synthesize spinner;
 
@@ -108,7 +109,7 @@ NSMutableArray *deleteVOs=nil;
     [self.view sendSubviewToBack:bg];
     [bg release];
 
-	
+	self.saving=FALSE;
 	[super viewDidLoad];
 }
 
@@ -323,12 +324,19 @@ DBGLog(@"btnAddValue was pressed!");
     [self.navigationController popViewControllerAnimated:YES];
     //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 
+    self.saving = FALSE;
     [pool drain];
     
 }
 - (IBAction)btnSave {
 	DBGLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, (unsigned int) tlist);
-
+    
+    if (self.saving) {
+        return;
+    }
+    
+    self.saving = TRUE;
+    
 	if (deleteVOs != nil) {
 		for (valueObj *vo in deleteVOs) {
 			[self delVOdb:vo.vid];
@@ -345,7 +353,7 @@ DBGLog(@"btnAddValue was pressed!");
 		if (! self.tempTrackerObj.toid) {
 			self.tempTrackerObj.toid = [self.tlist getUnique];
 		}
-        if (20 < [self.tempTrackerObj.valObjTable count]) {
+        if (8 < [self.tempTrackerObj.valObjTable count]) {
             [rTracker_resource startActivityIndicator:self.view navItem:self.navigationItem disable:YES str:@"Saving..."];
         }
         //self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
@@ -356,6 +364,7 @@ DBGLog(@"btnAddValue was pressed!");
         
         
 	} else {
+        self.saving = FALSE;
         [rTracker_resource alert:@"save Tracker" msg:@"Please set a name for this tracker to save"];
 	}
 }
