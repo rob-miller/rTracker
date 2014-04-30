@@ -147,13 +147,43 @@
     }
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
 
-    UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+- (void)dismissAlertView:(UIAlertView *)alertView{
+    [alertView dismissWithClickedButtonIndex:0 animated:YES];
+}
+
+- (UIAlertView*) quickAlert:(NSString*)title msg:(NSString*)msg {
+    DBGLog(@"qalert title: %@ msg: %@",title,msg);
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:title message:msg
+                          delegate:nil
+                          cancelButtonTitle:nil
+                          otherButtonTitles:nil];
+    [alert show];
+    //[alert release];
+    return alert;
+}
+
+-(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
+    UIAlertView *alert = [self quickAlert:title msg:msg];
+    [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
+    [alert release];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    
+    DBGLog(@"notification from tid %@",[notification.userInfo objectForKey:@"tid"]);
+    [rTracker_resource playSound:notification.soundName];
+    [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:2];
+    [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+    
+    /*
     UIViewController *topController = [self.navigationController.viewControllers lastObject];
 
     if (topController == rootController) {
+        [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:1];
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
     } else {
         // going to tracker actually pushes the other viewcontroller -- so don't really need to alert and ask?
@@ -168,6 +198,7 @@
         [alert release];
 
     }
+     */
 }
 
 

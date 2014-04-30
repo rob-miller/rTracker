@@ -888,15 +888,12 @@ else do btnCancel/btnSave
     DBGLog(@"HEY!");
 }
 
--(void) setReminders {
-    [self.tracker loadReminders];
-    [self.tracker setReminders];
-}
-
 - (void)leaveTracker {
     if (self.didSave) {
-        [self setReminders];
+        [self.tracker setReminders];  // saved data may change reminder action so wipe and set again
         self.didSave=NO;
+    } else {
+        [self.tracker confirmReminders];  // else just confirm any enabled reminders have one scheduled
     }
 	[self.navigationController popViewControllerAnimated:YES];
 }

@@ -71,6 +71,8 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) willShowKeyboard:(NSNotification*)n view:(UIView*)view boty:(CGFloat)boty;
 + (void) willHideKeyboard;
 
++ (void) playSound:(NSString*) soundFileName;
+
 @end
 
 extern BOOL keyboardIsShown;

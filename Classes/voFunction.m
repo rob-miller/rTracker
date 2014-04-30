@@ -469,7 +469,7 @@
     for (i=0; i< maxc; i++) {
         outstr = [outstr stringByAppendingFormat:@" %@",[self.fnArray objectAtIndex:i]];
     }
-    DBGLog(@"calcFnValueWithCurrent fnArray= %@ ", outstr);
+    DBGLog(@"%@ calcFnValueWithCurrent fnArray= %@ ", self.vo.valueName, outstr);
 #endif    
     
 	int epd1;
@@ -703,11 +703,30 @@
             switch (currTok) {
                 case FNTIMEWEEKS:
                     result /= 7;            // 7 days /week
+#if DEBUGFUNCTION
+                    DBGLog(@" timefn: weeks : %f ",result);
+#endif
                 case FNTIMEDAYS :
                     result /= 24;            // 24 hrs / day 
+#if DEBUGFUNCTION
+                    DBGLog(@" timefn: days %f ",result);
+#endif
                 case FNTIMEHRS :
+                    result /= 60;           // 60 mins / hr
+#if DEBUGFUNCTION
+                    DBGLog(@" timefn: hrs %f ",result);
+#endif
+                case FNTIMEMINS :
+                    result /= 60;           // 60 secs / min
+#if DEBUGFUNCTION
+                    DBGLog(@" timefn: mins %f ",result);
+#endif
+                case FNTIMESECS :
+#if DEBUGFUNCTION
+                    DBGLog(@" timefn: secs %f ",result);
+#endif
                 default:
-                    result /= d( 60 * 60 );  // 60 secs min * 60 secs hr
+                    //result /= d( 60 * 60 );  // 60 secs min * 60 secs hr
                     break;
             }
 #if DEBUGFUNCTION

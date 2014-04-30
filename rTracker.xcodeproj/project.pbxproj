@@ -14,6 +14,7 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
+		D405303C1902D4FB009ABFC3 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = D405303B1902D4FB009ABFC3 /* sounds */; };
 		D40607DF17D7CB5A00C05A38 /* closedview-button-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D517D7CB5A00C05A38 /* closedview-button-7.png */; };
 		D40607E017D7CB5A00C05A38 /* closedview-button-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */; };
 		D40607E117D7CB5A00C05A38 /* closedview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */; };
@@ -116,7 +117,10 @@
 		D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4620056182C046E00F6F2C2 /* notifyReminder.m */; };
 		D46D15D617CE8FB500BB3EBE /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D517CE8FB500BB3EBE /* icon120.png */; };
 		D46D15D817CE8FFF00BB3EBE /* icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D717CE8FFF00BB3EBE /* icon80.png */; };
+		D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D473F25919050136000B0FC8 /* AudioToolbox.framework */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
+		D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
+		D47D169119028FBE006563B9 /* notifyReminderVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = D47D169019028FBE006563B9 /* notifyReminderVC2.m */; };
 		D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
 		D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8014A9E2E300CE0547 /* fullview-button.png */; };
 		D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8214A9E2F100CE0547 /* shadeview-button.png */; };
@@ -162,6 +166,9 @@
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D4CA9810190BDD0E00520957 /* bugle_call.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4CA980D190BDD0E00520957 /* bugle_call.caf */; };
+		D4CA9811190BDD0E00520957 /* fail_wah_wah_wah.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4CA980E190BDD0E00520957 /* fail_wah_wah_wah.caf */; };
+		D4CA9812190BDD0E00520957 /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4CA980F190BDD0E00520957 /* ping.caf */; };
 		D4CB672F18B3FF7100096490 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
@@ -204,6 +211,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D405303B1902D4FB009ABFC3 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = Resources/sounds; sourceTree = "<group>"; };
 		D40607D517D7CB5A00C05A38 /* closedview-button-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-7.png"; path = "Resources/png/closedview-button-7.png"; sourceTree = "<group>"; };
 		D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-7@2x.png"; path = "Resources/png/closedview-button-7@2x.png"; sourceTree = "<group>"; };
 		D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue-7.png"; path = "Resources/png/closedview-button-blue-7.png"; sourceTree = "<group>"; };
@@ -268,7 +276,11 @@
 		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminder.m; sourceTree = "<group>"; };
 		D46D15D517CE8FB500BB3EBE /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon120.png; path = Resources/png/icon120.png; sourceTree = "<group>"; };
 		D46D15D717CE8FFF00BB3EBE /* icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon80.png; path = Resources/png/icon80.png; sourceTree = "<group>"; };
+		D473F25919050136000B0FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
+		D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderVC2.xib; sourceTree = "<group>"; };
+		D47D168F19028FBE006563B9 /* notifyReminderVC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminderVC2.h; sourceTree = "<group>"; };
+		D47D169019028FBE006563B9 /* notifyReminderVC2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderVC2.m; sourceTree = "<group>"; };
 		D47FBB7E14A9E2D700CE0547 /* closedview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button.png"; path = "Resources/png/closedview-button.png"; sourceTree = "<group>"; };
 		D47FBB8014A9E2E300CE0547 /* fullview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button.png"; path = "Resources/png/fullview-button.png"; sourceTree = "<group>"; };
 		D47FBB8214A9E2F100CE0547 /* shadeview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button.png"; path = "Resources/png/shadeview-button.png"; sourceTree = "<group>"; };
@@ -338,6 +350,9 @@
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
 		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
+		D4CA980D190BDD0E00520957 /* bugle_call.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bugle_call.caf; path = Resources/sounds/bugle_call.caf; sourceTree = "<group>"; };
+		D4CA980E190BDD0E00520957 /* fail_wah_wah_wah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = fail_wah_wah_wah.caf; path = Resources/sounds/fail_wah_wah_wah.caf; sourceTree = "<group>"; };
+		D4CA980F190BDD0E00520957 /* ping.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = ping.caf; path = Resources/sounds/ping.caf; sourceTree = "<group>"; };
 		D4CB672D18B3FF7100096490 /* voInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voInfo.h; sourceTree = "<group>"; };
 		D4CB672E18B3FF7100096490 /* voInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voInfo.m; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
@@ -376,6 +391,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */,
 				D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */,
 				D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
@@ -474,7 +490,12 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4CA980D190BDD0E00520957 /* bugle_call.caf */,
+				D4CA980E190BDD0E00520957 /* fail_wah_wah_wah.caf */,
+				D4CA980F190BDD0E00520957 /* ping.caf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
+				D405303B1902D4FB009ABFC3 /* sounds */,
+				D4B3009215A9B51A0042319D /* sampleTrackers */,
 				D40607D517D7CB5A00C05A38 /* closedview-button-7.png */,
 				D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */,
 				D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */,
@@ -487,7 +508,6 @@
 				D40607DE17D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png */,
 				D46D15D717CE8FFF00BB3EBE /* icon80.png */,
 				D46D15D517CE8FB500BB3EBE /* icon120.png */,
-				D4B3009215A9B51A0042319D /* sampleTrackers */,
 				D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */,
 				D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */,
 				D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */,
@@ -533,6 +553,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D473F25919050136000B0FC8 /* AudioToolbox.framework */,
 				D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -686,6 +707,9 @@
 				D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */,
 				D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */,
 				D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */,
+				D47D168F19028FBE006563B9 /* notifyReminderVC2.h */,
+				D47D169019028FBE006563B9 /* notifyReminderVC2.m */,
+				D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */,
 				D4956B2112E0717400B0BB9B /* graphing */,
 				D4956B2312E076E100B0BB9B /* date picker */,
 				D4956B3A12E0886E00B0BB9B /* privacy */,
@@ -781,7 +805,8 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastTestingUpgradeCheck = 0510;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Robert T. Miller";
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
@@ -821,9 +846,14 @@
 				D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */,
 				D4A0F8B117D92E9100CB86E6 /* launchRetina_7.png in Resources */,
 				D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */,
+				D405303C1902D4FB009ABFC3 /* sounds in Resources */,
 				D40607E217D7CB5A00C05A38 /* closedview-button-blue-7@2x.png in Resources */,
 				D40607E317D7CB5A00C05A38 /* fullview-button-blue-7.png in Resources */,
+				D4CA9811190BDD0E00520957 /* fail_wah_wah_wah.caf in Resources */,
+				D4CA9810190BDD0E00520957 /* bugle_call.caf in Resources */,
+				D4CA9812190BDD0E00520957 /* ping.caf in Resources */,
 				D4A0F8B317D92E9100CB86E6 /* launchRetina4_7.png in Resources */,
+				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
 				D44695C517D6894A00BB5A38 /* configTlistController7.xib in Resources */,
 				D49854B112312A400009E458 /* useTrackerController.xib in Resources */,
@@ -958,6 +988,7 @@
 				D49854B012312A400009E458 /* useTrackerController.m in Sources */,
 				D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */,
 				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
+				D47D169119028FBE006563B9 /* notifyReminderVC2.m in Sources */,
 				D487D7741260A77800298C1D /* configTVObjVC.m in Sources */,
 				D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */,
 				D4B6AE68127EC33500C036ED /* voNumber.m in Sources */,
@@ -1134,6 +1165,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -1141,7 +1173,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				"New Setting" = "";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
 			};
@@ -1162,6 +1194,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -1319,6 +1352,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;

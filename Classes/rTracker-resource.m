@@ -10,6 +10,9 @@
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
 
+#import <AudioToolbox/AudioToolbox.h>
+
+
 @implementation rTracker_resource
 
 BOOL keyboardIsShown=NO;
@@ -510,6 +513,39 @@ static int lastStashedTid=0;
 	
     keyboardIsShown = NO;
     currKeyboardView = nil;
+}
+
+#pragma mark -
+#pragma mark audio
+
+static SystemSoundID sound1;
+
+void systemAudioCallback (SystemSoundID ssID,void *clientData) {
+    AudioServicesRemoveSystemSoundCompletion(sound1);
+    AudioServicesDisposeSystemSoundID(sound1);
+}
+
++(void) playSound:(NSString *) soundFileName {
+    
+    if (nil == soundFileName) {
+        return;
+    }
+    
+    NSURL *soundURL = [[NSBundle mainBundle]
+                       URLForResource:soundFileName
+                       withExtension:nil
+                       subdirectory:@"sounds"];
+    
+    DBGLog(@"soundfile = %@ soundurl= %@",soundFileName,soundURL);
+    
+    AudioServicesCreateSystemSoundID((CFURLRef)soundURL, &sound1);
+    AudioServicesAddSystemSoundCompletion(sound1,
+                                          NULL,
+                                          NULL,
+                                          systemAudioCallback,
+                                          NULL);
+    
+    AudioServicesPlayAlertSound(sound1);
 }
 
 

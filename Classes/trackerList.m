@@ -181,6 +181,17 @@
 	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
 }
 
+- (int) getPrivFromLoadedTID:(int)tid {
+    
+    int ndx = [self.topLayoutIDs indexOfObject:[NSNumber numberWithInt:tid]];
+    if (NSNotFound == ndx) {
+        return MAXPRIV;
+    }
+    return [[self.topLayoutPriv objectAtIndex:ndx] intValue];
+    
+    //return [[self.topLayoutPriv objectAtIndex:[self.topLayoutIDs indexOfObject:[NSNumber numberWithInt:tid]]] intValue];
+}
+
 - (BOOL) checkTIDexists:(NSNumber*)tid {
     self.sql = [NSString stringWithFormat:@"select id from toplevel where id=%d",[tid intValue]];
     int rslt = [self toQry2Int];
@@ -484,13 +495,12 @@
         if ([fm removeItemAtPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
             DBGLog(@"Unable to delete file %@: %@", newFn, [error localizedDescription]); 
         }
-        [to release];
-        to=nil;
     } else {
         NSString *newName = [@"recovered: " stringByAppendingString:to.trackerName];
         to.trackerName = newName;
         [self addToTopLayoutTable:to];
     }
+    [to release];
 }
 
 - (BOOL) recoverOrphans {

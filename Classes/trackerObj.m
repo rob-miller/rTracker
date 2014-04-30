@@ -69,6 +69,7 @@
  *    field='tbni'      : bool - show names index component in picker for textbox display
  *    field='tbhi'      : bool - show history index component in picker for textbox display
  *    field='graph'     : bool - do graph vo 
+ *    field='setstrackerdate'   : bool - set tracker date to now on set'ing value
  *    field='smin'		: user specified slider minimum
  *    field='smax'		: user specified slider maximum
  *    field='sdflt'		: user specified slider default
@@ -186,7 +187,8 @@
 	
 	if ((self = [super init])) {
 		self.trackerDate = nil;
-
+        self.dbName = nil;
+        
 		//self.valObjTable = [[NSMutableArray alloc] init];
 		valObjTable = [[NSMutableArray alloc] init];
 		nextColor=0;
@@ -587,7 +589,7 @@ if (addVO) {
 
     [self setTrackerVersion];
     [self setToOptDictDflts];
-    // not needed here ? [self loadReminders];
+    [self loadReminders];  // required here as can't distinguish did not load vs. deleted all
     
     DBGLog(@"to optdict: %@",self.optDict);
     
@@ -738,10 +740,13 @@ if (addVO) {
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%d;",vo.vid];
 	[self toQry2AryS:s1];
-	
-	NSString *key;
+    for (NSString *dk in vo.optDict) {
+        if (! [s1 containsObject:dk]) {
+            [s1 addObject:dk];
+        }
+    }
 
-	for (key in s1) {
+	for (NSString *key in s1) {
 		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
 
 		if (([vo.vos cleanOptDictDflts:key])) {
@@ -1153,9 +1158,11 @@ if (addVO) {
                 [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
                 //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
             }
-            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]] ];
+            [tData setObject:[[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] autorelease]
+                              forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]]];
+            
             //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
-            [vData release];    // analyzer complains but released below
+            [vData release];  
             //DBGLog(@"genRtrk: tData= %@",tData);
             [rTracker_resource setProgressVal:(ndx/all)];
             ndx += 1.0;
@@ -1180,12 +1187,13 @@ if (addVO) {
         DBGErr(@"problem writing file %@",fp);
         result=NO;
     }
-    
+
+    /* // analyze says this not appropriate
     for (NSString *k in tData) {
         NSDictionary *vData = [tData objectForKey:k];
         [vData release];
     }
-
+     */
     [tData release];
     // rtrkDict sub-dictionaries not alloc'd so autoreleased
 
@@ -1231,6 +1239,7 @@ if (addVO) {
         [rdma addObject:[nr dictFromNR]];
     }
     NSArray *rda = [NSArray arrayWithArray:rdma];
+    [rdma release];
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithInt:self.toid],@"tid",
@@ -1780,7 +1789,9 @@ if (addVO) {
     [self toQry2AryI:rids];
     if (0 < [rids count]) {
         for (NSNumber *rid in rids) {
-            [self.reminders addObject:[[notifyReminder alloc] init:rid to:self]];
+            notifyReminder *tnr = [[notifyReminder alloc] init:rid to:self];
+            [self.reminders addObject:tnr];
+            [tnr release];
         }
         [rids release];
         self.reminderNdx=0;
@@ -1863,9 +1874,11 @@ if (addVO) {
         saveNR.rid = [self getUnique];
         self.reminderNdx++;
     }
-    NSDate *now = [[NSDate alloc] init];
-    saveNR.saveDate = [now timeIntervalSince1970];
-    [now release];
+    if (0 == saveNR.saveDate) {
+        saveNR.saveDate = (int) [[NSDate date] timeIntervalSince1970];
+    } else {
+        DBGLog(@"saveDate says %@",[NSDate dateWithTimeIntervalSince1970:saveNR.saveDate]);
+    }
     //[saveNR save:self];
     [self.reminders setObject:saveNR atIndexedSubscript:self.reminderNdx];
     
@@ -1888,6 +1901,8 @@ if (addVO) {
     self.sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
     [self toExecSql];
     self.sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
+    [self toExecSqlIgnErr];
+    self.sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
     [self toExecSqlIgnErr];
     self.sql=nil;
 }
@@ -1955,6 +1970,8 @@ if (addVO) {
         
         // but might not be today!
         
+        eventIsToday = [self weekMonthDaysIsToday:nr todayComponents:todayComponents];  // not today if does not meet weekday mask
+        
         if (0!= (nr.everyMode & EV_DAYS)) {
             int days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
             int currFrac = days % nr.everyVal;
@@ -1981,7 +1998,7 @@ if (addVO) {
                 [offsetComponents setMonth:(nr.everyVal - currFrac)];
             }
             DBGLog(@" every- months= %d months_mod_times= %d eventIsToday= %d",months,(months % nr.times),eventIsToday);
-        } else { //EV_MINUTES or EV_HOURS => eventIsToday  // unless wraparound!
+        } else { //EV_MINUTES or EV_HOURS => eventIsToday  // unless wraparound!  // or not selected weekdays!
             int minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMinuteCalendarUnit calendar:gregorian];
             int blockMinutes = (EV_HOURS == nr.everyMode ? 60 * nr.everyVal : nr.everyVal);
             int stepMinutes = minutes % blockMinutes;
@@ -2001,7 +2018,7 @@ if (addVO) {
                 [offsetComponents setDay:1];
                 DBGLog(@"  - went past finInt, reset to startInt tomorrow");
             }
-            if ((24*60) < targStart) {                      // if wraparound shift to tomorrow
+            if (((24*60) < targStart) || (![self weekMonthDaysIsToday:nr todayComponents:todayComponents])) {  // if wraparound shift to tomorrow OR if not weekday shift to tomorrow
                 eventIsToday = FALSE;
                 //targStart -= (24*60);
                 targStart = startInt;
@@ -2067,11 +2084,11 @@ if (addVO) {
         }
         DBGLog(@"every, step= %d  event today, nowInt= %@ new startInt= %@",step,[nr timeStr:nowInt],[nr timeStr:startInt]);
     } else { // else nr.times == 1 => startInt remains at default
-        if (startInt > nowInt) {
+        if (startInt <= nowInt) {
             eventIsToday = FALSE;
-            DBGLog(@"1 time after now so not today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
+            DBGLog(@"1 time before now so not today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
         } else {
-            DBGLog(@"1 time <= now so is today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
+            DBGLog(@"1 time > now so is today startInt %@  nowInt %@",[nr timeStr:startInt],[nr timeStr:nowInt]);
         }
     }
     
@@ -2115,20 +2132,21 @@ if (addVO) {
                 NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
                 [dateComponents setMonth:1];
                 NSDate *nextMonth = [gregorian dateByAddingComponents:dateComponents toDate:today options:0];
+
+                [dateComponents release];
                 dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
                                                         NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:nextMonth];
                 [dateComponents setDay:ifirst+1];
                 nextMonth = [gregorian dateFromComponents:dateComponents];
                 days = [self unitsWithinEraFromDate:today toDate:nextMonth calUnit:NSDayCalendarUnit calendar:gregorian];
                 DBGLog(@"not today- monthDays: today is %d, wrap around to first = %d so +%d days",itoday,ifirst,days);
-                [dateComponents release];
             } else {
                 DBGErr(@"not today- monthDays fail: %0x today is %d",nr.monthDays,itoday);
             }
             
             [offsetComponents setDay:days];
             
-        } else if (nr.everyVal) {
+        // } else if (nr.everyVal) {  // nr.every can have weekdays too
             /*
                 // all handeld above -- offsetComponents already set
              
@@ -2150,22 +2168,23 @@ if (addVO) {
             
             int currWeekDay = [weekdayComponents weekday];
             int targWeekDay=0;
-            for (i=currWeekDay-1;i<7 && (0 == targWeekDay);i++) {
+            for (i=currWeekDay;i<7 && (0 == targWeekDay);i++) {  // i= (currWeekDay-1) +1 as know it is not today so start from tomorrow
                 if (0 != (nr.weekDays & (0x01 << i))) {
                     targWeekDay = i+1;
                 }
             }
             if (0 == targWeekDay) {
-                for (i=0;i<currWeekDay-1 && (0 == targWeekDay);i++) {
+                for (i=0;i<currWeekDay && (0 == targWeekDay);i++) {  // i<= currWeekDay-1  or just i< cwd
                     if (0 != (nr.weekDays & (0x01 << i))) {
                         targWeekDay = i+1;
                     }
                 }
             }
             days = targWeekDay - currWeekDay;
-            if (0 > days) {
+            if (0 >= days) {
                 days += 7;
             }
+            
             DBGLog(@"not today- weekdays: targ= %d curr= %d so +%d days",targWeekDay,currWeekDay,days);
 
             [offsetComponents setDay:days];
@@ -2183,30 +2202,14 @@ if (addVO) {
 
     [offsetComponents release];
     
-    
-    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-    if (localNotif == nil)
-        return;
-    localNotif.fireDate = targDate;
-    localNotif.timeZone = [NSTimeZone defaultTimeZone];
-    
-    localNotif.alertBody = nr.msg;
-    localNotif.alertAction = NSLocalizedString(@"go to rTracker", nil);
-    
-    localNotif.soundName = UILocalNotificationDefaultSoundName;
-    localNotif.applicationIconBadgeNumber = 0;
-    
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.toid] forKey:@"tid"];
-    localNotif.userInfo = infoDict;
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+    [nr schedule:targDate];
 
     DBGLog(@"done");
 
  }
 
 
-- (void) clearReminders {
+- (void) clearScheduledReminders {
     UIApplication *app = [UIApplication sharedApplication];
     NSArray *eventArray = [app scheduledLocalNotifications];
     for (int i=0; i<[eventArray count]; i++)
@@ -2221,17 +2224,49 @@ if (addVO) {
 
 - (void) setReminders {
     // delete all reminders for this tracker
-    [self clearReminders];
+    [self clearScheduledReminders];
     // create uiLocalNotif here with access to nr data and tracker data
     NSDate *today = [[NSDate alloc] init];
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];   // could use [NSCalendar currentCalendar]; ?
+    //NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];   // could use [NSCalendar currentCalendar]; ?
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    
+    [self loadReminders];
     for (notifyReminder* nr in self.reminders) {
         if (nr.reminderEnabled) {
-            [self setReminder:nr today:today gregorian:gregorian];
+            //[self setReminder:nr today:today gregorian:gregorian];
+            [self setReminder:nr today:today gregorian:cal];
         }
     }
     [today release];
-    [gregorian release];
+    //[gregorian release];
+}
+
+- (void) confirmReminders {
+    NSMutableSet *ridSet = [[NSMutableSet alloc] init];
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *eventArray = [app scheduledLocalNotifications];
+    for (int i=0; i<[eventArray count]; i++)
+    {
+        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        NSDictionary *userInfoCurrent = oneEvent.userInfo;
+        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.toid) {
+            [ridSet addObject:[userInfoCurrent objectForKey:@"rid"]];
+        }
+    }
+    
+    NSDate *today = [[NSDate alloc] init];
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    
+    [self loadReminders];
+    for (notifyReminder* nr in self.reminders) {
+        if (nr.reminderEnabled && ![ridSet containsObject:[NSNumber numberWithInt:nr.rid]]) {
+            //[self setReminder:nr today:today gregorian:gregorian];
+            [self setReminder:nr today:today gregorian:cal];
+        }
+    }
+    [today release];
+    //[gregorian release];
+    [ridSet release];
 }
 
 #pragma mark -

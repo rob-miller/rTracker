@@ -37,6 +37,8 @@
 - (void)reloadFromTLT;
 
 - (int) getTIDfromIndex:(NSUInteger)ndx;
+- (int) getPrivFromLoadedTID:(int)tid;
+
 - (BOOL)checkTIDexists:(NSNumber*)tid;
 - (int) getTIDfromName:(NSString*)str;
 - (NSArray*) getTIDFromNameDb:(NSString*)str;

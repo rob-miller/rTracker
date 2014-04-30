@@ -151,6 +151,7 @@
 @property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
 
 - (IBAction)btnDone:(id)sender;
+- (IBAction)btnGear:(id)sender;
 - (IBAction)btnHelp:(id)sender;
 
 @end

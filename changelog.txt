@@ -1343,8 +1343,27 @@ TODO: regen all .rtrks on website
 
 --- commit ---
    
+19,20,21 apr 2014
+   - more tweaks on reminders 
+   -- specify sound file with test -- but unable to write to appbundle/sounds from outside e.g. iexplorer or osxfuse
+   -- specify start date
 
--> notifyReminder class to manage db to/from nsarray for rtrk
+26 apr 2014
+   - implement elapsed mins, secs per user request
+   - added more reminder sounds, formatted sound names better
+   - added report reminders / scheduled reminders to dbInfo
+   - fixed clearOptDictDflts to check nsdictionary for keys not stored in database
+   - change to isSelected(), isHidden(), setSelected:, setHidden: throughout notifyReminder controller -- but initial problem probably due to running under optimiser not clear on if() branch until +2 steps in
+
+27 apr 2014
+   - clean up analyze warnings -- all but addTrackerController->configureToolbarItems() problem with self.copyBtn
+   -- also affect notifyReminder, writeTrkr but seem ok
+   - review response on notification while rTracker is active
+   - make so openTracker() just returns if already showing that tracker
+
+29 apr 2014
+   - fixed elapsed mins, secs so don't mess up old fn defns -- added comment to avoid in future too
+   - added weekdays to 'every' reminders
 
 ++ 
 

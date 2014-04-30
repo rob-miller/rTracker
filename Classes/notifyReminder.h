@@ -60,6 +60,7 @@
     
 
     NSString *msg;
+    NSString *soundFileName;
     
     BOOL timesRandom;
     BOOL reminderEnabled;
@@ -91,6 +92,7 @@
 @property (nonatomic) NSInteger vid;
 
 @property (nonatomic,retain) NSString *msg;
+@property (nonatomic,retain) NSString *soundFileName;
 
 @property (nonatomic) BOOL timesRandom;
 @property (nonatomic) BOOL reminderEnabled;
@@ -99,11 +101,13 @@
 @property (nonatomic) int saveDate;
 
 @property (nonatomic,retain) UILocalNotification *localNotif;
+
 //@property (nonatomic,retain) trackerObj *to;
 
 //-(id) init:(trackerObj*) tObjIn;
 -(id) init:(NSNumber*) inRid to:(id)to;
 -(id) initWithDict:(NSDictionary*)dict;
+-(void) dealloc;
 
 -(void) clearNR;
 -(void) save:(id)to;
@@ -117,6 +121,13 @@
 
 -(NSString*)timeStr:(int)val;
 -(NSString*) description;
+
+-(void) create;
+-(void) schedule:(NSDate*) targDate;
+-(void) playSound;
+
+//-(void) present;
+
 
 /*
 -(void) nextRid;

@@ -12,10 +12,11 @@
 #import "trackerObj.h"
 
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation notifyReminder
 
-@synthesize rid, monthDays, weekDays, everyMode, everyVal, start, until, times, timesRandom, msg, reminderEnabled, untilEnabled, fromLast, saveDate, localNotif, tid, vid;
+@synthesize rid, monthDays, weekDays, everyMode, everyVal, start, until, times, timesRandom, msg, soundFileName, reminderEnabled, untilEnabled, fromLast, saveDate, localNotif, tid, vid;
 
 #define UNTILFLAG   (0x01<<0)
 #define TIMESRFLAG  (0x01<<1)
@@ -25,6 +26,9 @@
 - (id)init {
 	
 	if ((self = [super init])) {
+        self.localNotif = nil;
+        self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
+        self.soundFileName = nil;
 	}
 	
 	return self;
@@ -47,6 +51,7 @@
         //[self initReminderTable];
         [self loadRid:[NSString stringWithFormat:@"rid=%d",[inRid intValue]] to:to];
 	}
+    DBGLog(@"%@",self);
 	return self;
     
 }
@@ -63,6 +68,7 @@
         self.until = [[dict objectForKey:@"until"] intValue];
         self.times = [[dict objectForKey:@"times"] intValue];
         self.msg = (NSString*) [dict objectForKey:@"msg"];
+        self.soundFileName = (NSString*) [dict objectForKey:@"soundFile"];
         
         [self putFlags:[[dict objectForKey:@"flags"] unsignedIntValue]];
         
@@ -71,16 +77,31 @@
         
         self.saveDate = [[dict objectForKey:@"saveDate"] intValue];
     }
+    DBGLog(@"%@",self);
     return self;
+}
+
+- (void)dealloc {
+	DBGLog(@"nr dealloc");
+    
+	self.msg = nil;
+    [msg release];
+    self.soundFileName = nil;
+    [soundFileName release];
+	self.localNotif = nil;
+    [localNotif release];
+    
+    [super dealloc];
 }
 
 - (void) save:(trackerObj*)to {
     unsigned int flags= [self getFlags];
 
+    DBGLog(@"%@",self);
     to.sql = [NSString stringWithFormat:
-                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg) values (%d, %d, %d, %d,%d, %d, %d, %d, %d, %d, %d, %d, '%@')",
-                   self.rid,self.monthDays,self.weekDays,self.everyMode,self.everyVal,self.start, self.until, self.times, flags, self.tid,self.vid, self.saveDate, self.msg];
-    //DBGLog(@"save sql= %@",to.sql);
+                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg, soundFileName) values (%d, %d, %d, %d,%d, %d, %d, %d, %d, %d, %d, %d, '%@', '%@')",
+                   self.rid,self.monthDays,self.weekDays,self.everyMode,self.everyVal,self.start, self.until, self.times, flags, self.tid,self.vid, self.saveDate, self.msg, self.soundFileName];
+    DBGLog(@"save sql= %@",to.sql);
     [to toExecSql];
     to.sql = nil;
 }
@@ -133,14 +154,24 @@
         [self putFlags:flags];
         
         self.msg = tmp;
-    } else {
+
+        to.sql = [NSString stringWithFormat:@"select soundFileName from reminders where %@",sqlWhere];
+        self.soundFileName = [to toQry2Str];
+        if ([@"(null)" isEqualToString:self.soundFileName]) {
+            self.soundFileName=nil;
+        }
+        
+} else {
         [self clearNR];
         self.rid = 0;
+        self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
         self.msg = to.trackerName;
         self.tid = to.toid;
     }
+    
     to.sql=nil;
 
+    DBGLog(@"%@",self);
 }
 
 - (NSDictionary*) dictFromNR {
@@ -155,6 +186,7 @@
             [NSNumber numberWithInt:self.until],@"until",
             [NSNumber numberWithInt:self.times],@"times",
             self.msg,@"msg",
+            self.soundFileName,@"soundFile",
             [NSNumber numberWithUnsignedInt:flags],@"flags",
             [NSNumber numberWithInt:self.tid],@"tid",
             [NSNumber numberWithInt:self.vid],@"vid",
@@ -214,13 +246,13 @@
         self.msg = nil;
         self.tid = 0;
     //}
-    
+    //self.soundFileName=nil;
     self.timesRandom = NO;
     self.reminderEnabled = YES;
     self.untilEnabled = NO;
     self.fromLast = NO;
     self.vid = 0;
-    self.saveDate=0;
+    //self.saveDate=0;  // need to keep if set
 }
 
 -(int) hrVal:(int)val {
@@ -317,6 +349,13 @@
 
     desc = [desc stringByAppendingString:[NSString stringWithFormat:@"msg:'%@' ",self.msg]];
     desc = [desc stringByAppendingString:[NSString stringWithFormat:@"saveDate:'%@' ",[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) self.saveDate]]];
+
+    if (nil == self.soundFileName) {
+        desc = [desc stringByAppendingString:@"default sound "];
+    } else {
+        desc = [desc stringByAppendingString:[NSString stringWithFormat:@"soundfile %@ ",self.soundFileName]];
+    }
+    
     if (self.reminderEnabled) {
         desc = [desc stringByAppendingString:@"enabled"];
     } else {
@@ -326,6 +365,59 @@
     return desc;
 }
 
+-(void) create {
+    if (nil == self.localNotif) {
+        if (nil == (self.localNotif = [[[UILocalNotification alloc] init] autorelease])) {
+        //if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
+            return;
+        }
+    }
+    
+    
+    self.localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    
+    self.localNotif.alertBody = self.msg;
+    self.localNotif.alertAction = NSLocalizedString(@"rTracker reminder", nil);
+    
+    if (nil == self.soundFileName) {
+        self.localNotif.soundName = UILocalNotificationDefaultSoundName;
+    } else {
+        self.localNotif.soundName = self.soundFileName;
+    }
+    self.localNotif.applicationIconBadgeNumber = 0;
+    
+    //NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.tid] forKey:@"tid"];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:self.tid],@"tid",[NSNumber numberWithInt:self.rid],@"rid",nil];
+    self.localNotif.userInfo = infoDict;
+    DBGLog(@"created.");
+}
 
+-(void) schedule:(NSDate*) targDate {
+    if (nil == self.localNotif)
+        [self create];
+    if (nil == self.localNotif)
+        return;
+    
+    self.localNotif.fireDate = targDate;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotif];
+    DBGLog(@"scheduled");
+}
+
+-(void) playSound {
+    [rTracker_resource playSound:self.soundFileName];
+}
+
+/*
+-(void) present {
+    if (nil == self.localNotif)
+        [self create];
+    if (nil == self.localNotif)
+        return;
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotif];
+    DBGLog(@"presented.");
+}
+*/
 
 @end

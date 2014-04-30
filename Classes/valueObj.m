@@ -295,6 +295,10 @@ in_vpriv:(NSInteger)in_vpriv
 	return display;
 }
 
+-(void) setTrackerDateToNow {
+    ((trackerObj*) self.parentTracker).trackerDate = [NSDate date];
+}
+
 #pragma mark -
 #pragma mark checkButton support
 
@@ -366,6 +370,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) describe:(BOOL)od
 {
+#if DEBUGLOG
     if (od) {
         DBGLog(@"value id %d name %@ type %d value .%@. optDict:",self.vid,self.valueName, self.vtype, self.value);
         for (NSString *key in self.optDict) {
@@ -374,6 +379,7 @@ in_vpriv:(NSInteger)in_vpriv
     } else {
         	DBGLog(@"value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
     }
+#endif
 }
 
 

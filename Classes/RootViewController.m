@@ -1565,10 +1565,27 @@ BOOL stashAnimated;
     return cell;
 }
 
+- (BOOL) exceedsPrivacy:(int)tid {
+    return ([privacyV getPrivacyValue] < [self.tlist getPrivFromLoadedTID:tid]);
+}
 - (void)openTracker:(int)tid rejectable:(BOOL)rejectable {
     //if (rejectable) {
     //    [self jumpMaxPriv];
     //}
+    
+    if ([self exceedsPrivacy:tid]) {
+        return;
+    }
+    
+    UIViewController *topController = [self.navigationController.viewControllers lastObject];
+    SEL rtSelector = NSSelectorFromString(@"rejectTracker");
+    
+    if ( [topController respondsToSelector:rtSelector] ) {  // top controller is already useTrackerController, is it this tracker?
+        if (tid == ((useTrackerController*)topController).tracker.toid) {
+            return;
+        }
+    }
+    
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 

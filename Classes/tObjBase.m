@@ -505,7 +505,9 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		//int rslt;
 		if((/*rslt =*/ sqlite3_step(stmt)) == SQLITE_ROW) {
-			srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 0)]];
+            if (sqlite3_column_text(stmt, 0)) {
+                srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 0)]];
+            }
 		} else {
 			[self tobExecError];
 		}
@@ -530,12 +532,12 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		int rslt,i;
-        for (i=0;i<11;i++) {
+        for (i=0;i<12;i++) {
             arr[i]=0;
         }
         
 		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
-            for (i=0;i<11;i++) {
+            for (i=0;i<12;i++) {
                 arr[i] = sqlite3_column_int(stmt, i);
             }
             srslt = [rTracker_resource fromSqlStr:[NSString stringWithUTF8String: (char *) sqlite3_column_text(stmt, 12)]];

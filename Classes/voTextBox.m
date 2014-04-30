@@ -496,8 +496,9 @@
 
 
 - (NSArray*) namesArray {
-    ABAddressBookRef addressBook = ABAddressBookCreate();
+    
 	if (nil == namesArray) {
+        ABAddressBookRef addressBook = ABAddressBookCreate();
         __block BOOL accessGranted = NO;
         
         if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
@@ -520,6 +521,7 @@
         
         if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
             //[rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            CFRelease(addressBook);
             return nil;
         }
         

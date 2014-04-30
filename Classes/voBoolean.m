@@ -42,6 +42,9 @@
         //}
 		[self.vo.value setString:bv];
 		[self.imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
+        if ([@"1" isEqualToString:[self.vo.optDict objectForKey:@"setstrackerdate"]]) {
+            [self.vo setTrackerDateToNow];
+        }
 	} else {
 		[self.vo.value setString:@""];
 		[self.imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
@@ -101,6 +104,10 @@
     if ((nil == bv) || ([@"" isEqualToString:bv])) {
         [self.vo.optDict setObject:BOOLVALDFLTSTR forKey:@"boolval"];
     }
+    NSString *std = [self.vo.optDict objectForKey:@"setstrackerdate"];
+    if ((nil == std) || ([@"" isEqualToString:std])) {
+        [self.vo.optDict setObject:(SETSTRACKERDATEDFLT ? @"1" : @"0") forKey:@"setstrackerdate"];
+    }
     return [super setOptDictDflts];
 }
 
@@ -111,11 +118,13 @@
         return YES;
     
     if (([key isEqualToString:@"boolval"] && ([val floatValue] == f(BOOLVALDFLT)))
+        || ([key isEqualToString:@"setstrackerdate"] && ([val isEqualToString:(SETSTRACKERDATEDFLT ? @"1" : @"0")]))
         ) {
         [self.vo.optDict removeObjectForKey:key];
+        DBGLog(@"cleanDflt for bool: %@",key);
         return YES;
     }
-    
+        
     return [super cleanOptDictDflts:key];
 }
 
@@ -139,6 +148,26 @@
                        text:[self.vo.optDict objectForKey:@"boolval"]
                       addsv:YES ];
 	
+    
+    
+    // sets tracker date option
+    
+	frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
+	
+	labframe = [ctvovc configLabel:@"Sets tracker date:" frame:frame key:@"stdLab" addsv:YES];
+	
+	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+	
+	[ctvovc configCheckButton:frame
+                          key:@"stdBtn"
+                        state:[[self.vo.optDict objectForKey:@"setstrackerdate"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
+    
+    
+
+    //-----
     
 	ctvovc.lasty = frame.origin.y + labframe.size.height + MARGIN + SPACE ;
     

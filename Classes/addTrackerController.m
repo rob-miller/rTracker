@@ -250,18 +250,23 @@ static int editMode;
 	*/
 	
 	// Set our toolbar items
+    
 	self.toolbarItems = [NSArray arrayWithObjects:
                          //flexibleSpaceButtonItem,
 						 setupBtnItem,
                          flexibleSpaceButtonItem,
                          editToggleButtonItem,
                          flexibleSpaceButtonItem,
+                         //[self.copyBtn autorelease], // analyze wants this but crashes later!
                          self.copyBtn,
                          nil];
     
 	[setupBtnItem release];
 	[flexibleSpaceButtonItem release];
-	[editToggleButtonItem release];
+    [editToggleButtonItem release];
+    //self.copyBtn = nil;  // this stops crash, but lose control in toggleEdit() below
+    //[copyBtn release];
+
 }
 
 - (void) toggleEdit:(id) sender {

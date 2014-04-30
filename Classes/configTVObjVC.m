@@ -335,6 +335,8 @@
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"cevBtn"] ) {
 		okey = @"exportvalb"; dfltState=EXPORTVALBDFLT;
+	} else if ( btn == [self.wDict objectForKey:@"stdBtn"] ) {
+		okey = @"setstrackerdate"; dfltState=SETSTRACKERDATEDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"sisBtn"] ) {
 		okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
 	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
@@ -714,30 +716,57 @@
 }
 
 - (void) dbInfoBtn {
+    NSString *titleStr;
+    
     self.to.sql = @"select count(*) from trkrData";
     int dateEntries = [self.to toQry2Int];
     self.to.sql = @"select count(*) from voData";
     int dataPoints = [self.to toQry2Int];
     self.to.sql = @"select count(*) from voConfig";
     int itemCount = [self.to toQry2Int];
+    
+    titleStr = [NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points",
+                self.to.toid, itemCount, dateEntries,dataPoints];
+    
     self.to.sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
     int orphanDatapoints = [self.to toQry2Int];
     
+    if (0 < orphanDatapoints) {
+        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
+    }
+
+#if !RELEASE
+    self.to.sql = @"select count(*) from reminders";
+    int reminderCount = [self.to toQry2Int];
+
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *eventArray = [app scheduledLocalNotifications];
+    int scheduledReminderCount = 0;
+
+    for (int i=0; i<[eventArray count]; i++)
+    {
+        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        NSDictionary *userInfoCurrent = oneEvent.userInfo;
+        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.to.toid) {
+            scheduledReminderCount++;
+        }
+    }
+    
+    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
+#endif
     
     UIAlertView *alert;
     if (0 < orphanDatapoints) {
         alert = [[UIAlertView alloc]
                  initWithTitle:self.to.trackerName
-                 message:[NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points\n%d missing item data points",
-                          self.to.toid, itemCount, dateEntries,dataPoints,orphanDatapoints]
+                 message:titleStr
                  delegate:self
                  cancelButtonTitle:@"Ok"
                 otherButtonTitles: @"recover missing items",nil];
     } else {
         alert = [[UIAlertView alloc]
                  initWithTitle:self.to.trackerName
-                 message:[NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points",
-                          self.to.toid, itemCount, dateEntries,dataPoints]
+                 message:titleStr
                  delegate:nil
                  cancelButtonTitle:@"Ok"
                  otherButtonTitles:nil];
@@ -859,25 +888,27 @@
 					addsv:YES ];
     
 
+    if ((nil == self.vo) && (nil != self.to.dbName)) {
 #if !RELEASE
-    
- // reminder config button:
-    
-	frame.origin.x = MARGIN;
-	//frame.origin.x += frame.size.width + MARGIN + SPACE;
-	frame.origin.y += MARGIN + frame.size.height;
-    
-    [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
-
+        
+        // reminder config button:
+        
+        frame.origin.x = MARGIN;
+        //frame.origin.x += frame.size.width + MARGIN + SPACE;
+        frame.origin.y += MARGIN + frame.size.height;
+        
+        [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
+        
 #endif
-    
-    // dbInfo values button:
-    
-	frame.origin.x = MARGIN;
-	//frame.origin.x += frame.size.width + MARGIN + SPACE;
-	frame.origin.y += MARGIN + frame.size.height;
-    
-    [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
+        
+        // dbInfo values button:
+        
+        frame.origin.x = MARGIN;
+        //frame.origin.x += frame.size.width + MARGIN + SPACE;
+        frame.origin.y += MARGIN + frame.size.height;
+        
+        [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
+    }
 }
 
 #pragma mark main config region methods

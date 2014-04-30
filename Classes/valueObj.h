@@ -68,6 +68,7 @@
 #define GRAPHDFLT	    YES
 #define NSWLDFLT        NO
 #define GRAPHLASTDFLT   YES
+#define SETSTRACKERDATEDFLT NO
 
 // vo config textfield default values
 #define SLIDRMINDFLT	0.0
@@ -172,6 +173,7 @@
 
 - (void) describe:(BOOL)od;
 - (UIView *) display:(CGRect)bounds;
+-(void) setTrackerDateToNow;
 
 - (void) enableVO;
 - (void) disableVO;

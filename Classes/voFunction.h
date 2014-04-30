@@ -23,7 +23,7 @@
 #define FN1ARGPRESUM	(FN1ARGPOSTSUM-1)
 #define FN1ARGAVG		(FN1ARGPRESUM-1)
 #define FN1ARGLAST		FN1ARGAVG
-// old 1arg end
+// old 1arg end -- do not edit, add below
 
 // old 2arg begin
 #define FN2ARGFIRST		(FN1ARGLAST-1)
@@ -32,7 +32,7 @@
 #define FN2ARGTIMES		(FN2ARGMINUS-1)
 #define FN2ARGDIVIDE	(FN2ARGTIMES-1)
 #define FN2ARGLAST		FN2ARGDIVIDE
-// old 2arg end
+// old 2arg end -- do not edit, add below
 
 #define FNPARENOPEN		(FN2ARGLAST-1)
 #define FNPARENCLOSE	(FNPARENOPEN-1)
@@ -44,7 +44,7 @@
 #define FNTIMEDAYS      (FNTIMEWEEKS-1)
 #define FNTIMEHRS       (FNTIMEDAYS-1)
 #define FNTIMELAST      FNTIMEHRS
-// old time fns end
+// old time fns end -- do not edit, add below
 
 #define FNCONSTANT      (FNTIMELAST-1)
 
@@ -68,6 +68,8 @@
 #define isFn2ArgOp(i)	(((i<=FN2ARGFIRST) && (i>=FN2ARGLAST)) || ((i<=FNNEW2ARGFIRST) && (i>=FNNEW2ARGLAST)))
 
 #define FNNEWTIMEFIRST  FNNEW2ARGFIRST-10
+#define FNTIMEMINS      (FNNEWTIMEFIRST-1)
+#define FNTIMESECS      (FNTIMEMINS-1)
 #define FNNEWTIMELAST   FNNEWTIMEFIRST-100
 
 #define isFnTimeOp(i)   (((i<=FNTIMEFIRST) && (i>=FNTIMELAST)) || ((i<=FNNEWTIMEFIRST) && (i>=FNNEWTIMELAST)))
@@ -92,9 +94,9 @@
 #define PARENSTRS @"(", @")"
 #define PARENCNT 2
 
-#define TIMEFNS FNTIMEWEEKS,FNTIMEDAYS,FNTIMEHRS
-#define TIMESTRS @"weeks",@"days",@"hours"
-#define TIMECNT 3
+#define TIMEFNS FNTIMEWEEKS,FNTIMEDAYS,FNTIMEHRS,FNTIMEMINS,FNTIMESECS
+#define TIMESTRS @"weeks",@"days",@"hours",@"minutes",@"seconds"
+#define TIMECNT 5
 
 #define OTHERFNS FNCONSTANT
 #define OTHERSTRS FNCONSTANT_TITLE

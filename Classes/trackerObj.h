@@ -119,6 +119,7 @@
 - (void) saveReminder:(notifyReminder*)saveNR;
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian;
 - (void) setReminders;
+- (void) confirmReminders;
 
 - (NSInteger) dateNearest:(int)targ;
 - (NSInteger) prevDate;
