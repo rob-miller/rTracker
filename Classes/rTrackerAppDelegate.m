@@ -172,20 +172,23 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
-    RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    //RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
     
     DBGLog(@"notification from tid %@",[notification.userInfo objectForKey:@"tid"]);
     [rTracker_resource playSound:notification.soundName];
     [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:2];
-    [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+    //[rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
     
     /*
     UIViewController *topController = [self.navigationController.viewControllers lastObject];
 
     if (topController == rootController) {
-        [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:1];
+        //[self doQuickAlert:notification.alertAction msg:notification.alertBody delay:1];
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
-    } else {
+    }
+     */
+    /*
+    else {
         // going to tracker actually pushes the other viewcontroller -- so don't really need to alert and ask?
         self.pendingTid = [notification.userInfo objectForKey:@"tid"];
         UIAlertView *alert = [[UIAlertView alloc]

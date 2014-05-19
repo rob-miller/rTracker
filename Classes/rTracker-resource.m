@@ -350,6 +350,17 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 	DBGLog(@"updateSavePrivate:%d",savePrivate);
 }
 
+static BOOL hideRTimes=HIDERTIMESDFLT;
+
++ (BOOL)getHideRTimes {
+	return hideRTimes;
+}
+
++ (void)setHideRTimes:(BOOL)hideRT {
+	hideRTimes = hideRT;
+	DBGLog(@"updateHideRTimes:%d",hideRTimes);
+}
+
 
 //---------------------------
 static int lastStashedTid=0;

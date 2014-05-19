@@ -250,7 +250,7 @@
     self.timesRandom = NO;
     self.reminderEnabled = YES;
     self.untilEnabled = NO;
-    self.fromLast = NO;
+    self.fromLast = NO; 
     self.vid = 0;
     //self.saveDate=0;  // need to keep if set
 }
@@ -266,6 +266,9 @@
 
 
 -(NSString*)timeStr:(int)val {
+    if (-1 == val) {
+        return @"-";
+    }
     return [NSString stringWithFormat:@"%02d:%02d",[self hrVal:val],[self mnVal:val]];
 }
 
@@ -392,7 +395,23 @@
     DBGLog(@"created.");
 }
 
+-(void) cancel {
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *eventArray = [app scheduledLocalNotifications];
+    for (int i=0; i<[eventArray count]; i++)
+    {
+        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        NSDictionary *userInfoCurrent = oneEvent.userInfo;
+        if (([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.tid)
+            && ([[userInfoCurrent objectForKey:@"rid"] integerValue] == self.rid))
+        {
+            [app cancelLocalNotification:oneEvent];
+        }
+    }
+}
+
 -(void) schedule:(NSDate*) targDate {
+    [self cancel];  // safety net -- should only happen if REMINDERDBG is set due to setReminder on 'done'
     if (nil == self.localNotif)
         [self create];
     if (nil == self.localNotif)

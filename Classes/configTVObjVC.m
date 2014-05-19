@@ -753,6 +753,21 @@
     }
     
     titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
+    
+    if (NO == [rTracker_resource getHideRTimes]) {
+        for (int i=0; i<[eventArray count]; i++)
+        {
+            UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+            
+            NSDictionary *userInfoCurrent = oneEvent.userInfo;
+            if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.to.toid) {
+                titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
+                                                              [NSDateFormatter localizedStringFromDate:[oneEvent fireDate] dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
+            }
+        }
+    }
+
+    
 #endif
     
     UIAlertView *alert;

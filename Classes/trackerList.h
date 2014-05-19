@@ -18,6 +18,7 @@
 	NSMutableArray *topLayoutNames;
 	NSMutableArray *topLayoutIDs;
 	NSMutableArray *topLayoutPriv;
+    NSMutableArray *topLayoutReminderCount;
 	//trackerObj *tObj;
 	
 }
@@ -25,6 +26,7 @@
 @property (nonatomic,retain) NSMutableArray *topLayoutNames;
 @property (nonatomic,retain) NSMutableArray *topLayoutIDs;
 @property (nonatomic,retain) NSMutableArray *topLayoutPriv;
+@property (nonatomic,retain) NSMutableArray *topLayoutReminderCount;
 //@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;

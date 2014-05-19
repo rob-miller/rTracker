@@ -48,6 +48,7 @@
     uint8_t everyMode;
     NSUInteger weekdays[7];
     NSString *lastDefaultMsg;
+    BOOL delayDaysState;
 }
 
 @property (nonatomic,retain) trackerObj *tracker;
@@ -63,6 +64,7 @@
 @property (nonatomic) NSUInteger firstWeekDay;
 @property (nonatomic) NSUInteger everyTrackerNdx;
 @property (nonatomic) uint8_t everyMode;
+@property (nonatomic) BOOL delayDaysState;
 
 @property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
 @property (nonatomic,retain) IBOutlet UIBarButtonItem *prevBarButton;
@@ -76,6 +78,10 @@
 @property (retain, nonatomic) IBOutlet UIButton *enableButton;
 - (IBAction)enableBtn:(id)sender;
 
+@property (nonatomic,retain) IBOutlet UIButton *delayDaysButton;
+- (IBAction)delayDaysBtn:(id)sender;
+
+@property (nonatomic,retain) IBOutlet UILabel *thenOnLabel;
 
 @property (nonatomic,retain) IBOutlet UIButton *wdButton1;
 @property (nonatomic,retain) IBOutlet UIButton *wdButton2;
@@ -108,9 +114,9 @@
 
 @property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
 
-@property (nonatomic,retain) IBOutlet UISegmentedControl *weekMonthEvery;
+//@property (nonatomic,retain) IBOutlet UISegmentedControl *weekMonthEvery;
+//- (IBAction)weekMonthEveryChange:(id)sender;
 
-- (IBAction)weekMonthEveryChange:(id)sender;
 
 @property (nonatomic,retain) IBOutlet UITextField *startHr;
 @property (nonatomic,retain) IBOutlet UITextField *startMin;

@@ -24,7 +24,7 @@
 
 @implementation notifyReminderViewController
 
-@synthesize tracker, nr, chkImg, weekdayBtns, everyTrackerNames, unchkImg, firstWeekDay, everyTrackerNdx, everyMode, lastDefaultMsg, startHr, startMin, startTimeAmPm, startSlider, finishHr, finishMin, finishTimeAmPm, repeatTimes, finishSlider, intervalButton, toolBar, activeField, msgTF, enableButton, enableFinishButton;
+@synthesize tracker, nr, chkImg, weekdayBtns, everyTrackerNames, unchkImg, firstWeekDay, everyTrackerNdx, everyMode, lastDefaultMsg, startHr, startMin, startTimeAmPm, startSlider, finishHr, finishMin, finishTimeAmPm, repeatTimes, finishSlider, intervalButton, toolBar, activeField, msgTF, enableButton, enableFinishButton,delayDaysState;
 
 -(void)dealloc {
     self.tracker = nil;
@@ -55,6 +55,7 @@
         //self.title=@"hello";
         // Custom initialization
        // [self viewDidLoad];
+        
     }
     return self;
 }
@@ -113,6 +114,9 @@
     } else {
         self.nr = [self.tracker loadReminders];
     }
+
+    [self setDelayDaysButtonTitle:0];
+    [self doDelayDaysButtonState];
     
     [self guiFromNr];
     
@@ -145,8 +149,9 @@
 
 - (IBAction)prevBtn:(id)sender {
     DBGLog(@"prevBtn");
-    [self leaveNR];
-    self.nr = ( 0 == self.nr.rid ? [self.tracker currReminder] : [self.tracker prevReminder] );
+    BOOL rslt = [self leaveNR];
+    self.nr = ( (0 == self.nr.rid) || rslt ? [self.tracker currReminder] : [self.tracker prevReminder] );
+    //self.nr = ( 0 == self.nr.rid && [self.tracker havePrevReminder] ? [self.tracker prevReminder] : [self.tracker currReminder]);
     [self guiFromNr];
 }
 
@@ -229,6 +234,20 @@
 
 
 #pragma mark -
+- (void) setDelayDaysButtonTitle:(BOOL)state {
+    self.delayDaysState=state;
+    if (0 == state) {
+        [self.delayDaysButton setTitle:@"Delay:" forState:UIControlStateNormal];
+    } else {
+        [self.delayDaysButton setTitle:@"Days of month:" forState:UIControlStateNormal];
+    }
+    DBGLog(@"state= %d titleIsDelay= %d title= %@",state,[self ddbTitleIsDelay],[[self.delayDaysButton titleLabel] text]);
+}
+
+-(BOOL) ddbTitleIsDelay {
+    return ! self.delayDaysState;
+    // return ([@"Delay:" isEqualToString:[[self.delayDaysButton titleLabel] text]]);  // race condition immediately after set
+}
 
 - (void) guiFromNr {
     // if rid == 0 return   
@@ -238,6 +257,8 @@
         self.nr = [[[notifyReminder alloc] init] autorelease];
         self.nr.msg = self.tracker.trackerName;
         self.nr.tid = self.tracker.toid;
+        self.nr.fromLast=YES; // default to this as probably more common
+        self.nr.reminderEnabled=YES; // if nothing in database, enable by default -- nrFromGui will clear and read from gui setting
         //self.tmpReminder=TRUE;
     } else {
         //self.tmpReminder=FALSE;
@@ -257,7 +278,6 @@
 
     if (self.nr.untilEnabled) {
         [self.enableFinishButton setSelected:YES];
-        [self updateCheckBtn:self.enableFinishButton];
         self.finishSlider.value = self.nr.until;
         self.repeatTimes.text = [NSString stringWithFormat:@"%d",self.nr.times];
         [self.intervalButton setTitle:(self.nr.timesRandom ? @"random" : @"interval") forState:UIControlStateNormal];
@@ -265,11 +285,13 @@
     } else {
         [self.enableFinishButton setSelected:NO];
     }
+    [self updateCheckBtn:self.enableFinishButton];
 
     [self doEFbtnState];
     
     if (self.nr.monthDays) {
-        self.weekMonthEvery.selectedSegmentIndex=SEGMONTH;
+        //self.weekMonthEvery.selectedSegmentIndex=SEGMONTH;
+        [self setDelayDaysButtonTitle:1];
         NSMutableArray *nma = [[NSMutableArray alloc] initWithCapacity:32];
         for (i=0;i<32;i++) {
             if (self.nr.monthDays & (0x01 << i)) {
@@ -280,14 +302,15 @@
         [nma release];
         [self clearWeekDays];
         [self clearEvery];
-    } else if (self.nr.everyVal) {
-        self.weekMonthEvery.selectedSegmentIndex=SEGEVERY;
+    } else { // if (self.nr.everyVal) {
+        //self.weekMonthEvery.selectedSegmentIndex=SEGEVERY;
+        [self setDelayDaysButtonTitle:0];
+        [self doDelayDaysButtonState];
         self.everyTF.text = [NSString stringWithFormat:@"%d",self.nr.everyVal];
         self.everyMode = self.nr.everyMode;
         [self everyBtnStateUpdate];
         if (self.nr.fromLast) {
             self.fromLastButton.selected = YES;
-            [self updateCheckBtn:self.fromLastButton];
             if (self.nr.vid) {
                 int c = [self.tracker.valObjTable count];
                 for (i=0; i< c; i++) {
@@ -298,7 +321,11 @@
             } else {
                 self.everyTrackerNdx = 0;
             }
+        } else {
+            self.fromLastButton.selected = NO;
         }
+        [self updateCheckBtn:self.fromLastButton];
+
         [self setEveryTrackerBtnName];
         [self clearWeekDays];
         [self clearMonthDays];
@@ -306,11 +333,13 @@
         for (i=0;i<7;i++) {  // added weekdays to every
             ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
         }
+    }
+/*
     } else {   // if (self.nr.weekDays)  = default if nothing set
-        self.weekMonthEvery.selectedSegmentIndex=SEGWEEK;
+        //self.weekMonthEvery.selectedSegmentIndex=SEGWEEK;
         for (i=0;i<7;i++) {
             ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
-/*
+/ *
 #if DEBUGLOG
             if (((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected) {
                 DBGLog(@"weekday btn %d is selected",i);
@@ -318,14 +347,15 @@
                 DBGLog(@"i=%d s->w[i] = %d  nrwd= %d  shift = %0x &= %d",i,self->weekdays[i], self.nr.weekDays, (0x01 << self->weekdays[i]), (self.nr.weekDays & (0x01 << self->weekdays[i])) );
             }
 #endif
-*/
+* /
 
         }
         [self clearMonthDays];
         [self clearEvery];
     }
-    
-    [self weekMonthEveryChange:self.weekMonthEvery];
+*/
+    [self doDelayDaysButtonState];
+    // [self weekMonthEveryChange:self.weekMonthEvery];
     [self updateEnabledButton];
 }
 
@@ -366,9 +396,11 @@
         if (1 < self.nr.times) {
             self.nr.timesRandom = [[self.intervalButton titleForState:UIControlStateNormal] isEqualToString:@"random"];
         }
+        self.nr.untilEnabled = true;
     } else {
         self.nr.until = -1;
         self.nr.times = 1;
+        self.nr.untilEnabled = false;
     }
     
     /*
@@ -380,7 +412,27 @@
         self.nr.times = [self.repeatTimes.text intValue];
     }
     */
-    
+
+    if ([self ddbTitleIsDelay]) {
+        self.nr.everyVal = [[self.everyTF text] intValue];
+        self.nr.everyMode = self.everyMode;
+        self.nr.fromLast = self.fromLastButton.selected;
+        if (![self.everyTrackerButton isHidden]) {
+            self.nr.vid = ( self.everyTrackerNdx ? ((valueObj*)[self.tracker.valObjTable objectAtIndex:(self.everyTrackerNdx-1)]).vid : 0 );
+        }
+        int i;
+        for (i=0; i<7; i++) {
+            if ([(UIButton*)[self.weekdayBtns objectAtIndex:i] isSelected]) {
+                self.nr.weekDays |= (0x01 << (self->weekdays[i]));
+            }
+        }
+    } else {
+        NSArray *monthDayComponents = [[self.monthDays text] componentsSeparatedByString:@","];
+        for (NSString *mdComp in monthDayComponents) {
+            self.nr.monthDays |= (0x01 << ([mdComp intValue] -1));
+        }
+    }
+/*
     int wme = self.weekMonthEvery.selectedSegmentIndex;
     switch (wme) {
         case SEGWEEK: {
@@ -417,15 +469,31 @@
         default:
             break;
     }
+*/
     
 }
 
 - (BOOL) nullNRguiState {
-    int wme = self.weekMonthEvery.selectedSegmentIndex;
     int i;
     
     if (self.startSlider.enabled && self.finishSlider.enabled && (self.startSlider.value > self.finishSlider.value)) return YES;  // if start > fin yes it is null state
-    
+
+    if ([self ddbTitleIsDelay]) {
+        for (i=0; i<7; i++) {
+            if ([(UIButton*)[self.weekdayBtns objectAtIndex:i] isSelected]) {   // if any one is set, no it is not null
+                return NO;
+            }
+        }
+    } else {
+        NSArray *monthDayComponents = [[self.monthDays text] componentsSeparatedByString:@","];    // if any positive value here no it is not null
+        for (NSString *mdComp in monthDayComponents) {
+            if (0 < [mdComp intValue]) return NO;
+        }
+        
+    }
+
+    /*
+    int wme = self.weekMonthEvery.selectedSegmentIndex;
     switch (wme) {
         case SEGEVERY:
             if (0 >= [[self.everyTF text] intValue]) return YES;    // if no positive value here yes it is null
@@ -450,6 +518,7 @@
         default:
             break;
     }
+    */
     
     return YES;
 }
@@ -471,7 +540,8 @@
 - (void) updateEnabledButton {
     BOOL guiStateIsNull = [self nullNRguiState];
     self.enableButton.hidden = guiStateIsNull;
-    self.enableButton.selected = !guiStateIsNull;  // enable by default if reminder is valid
+
+    self.enableButton.selected = (!guiStateIsNull && self.nr.reminderEnabled);  // enable by default if reminder is valid
     [self updateCheckBtn:self.enableButton];
     
     self.nextAddBarButton.enabled = (!guiStateIsNull || [self.tracker haveNextReminder]);
@@ -526,47 +596,63 @@
     switch (self.everyMode) {
         case EV_HOURS:
             [self.everyButton setTitle:@"Hours" forState:UIControlStateNormal];
+            /*
             [self hideFinishControls:NO];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
             [self startLabelFrom:YES];
+             */
             break;
         case EV_DAYS:
             [self.everyButton setTitle:@"Days" forState:UIControlStateNormal];
+            /*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
             [self startLabelFrom:NO];
+             */
             break;
         case EV_WEEKS:
             [self.everyButton setTitle:@"Weeks" forState:UIControlStateNormal];
+            /*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
             [self startLabelFrom:NO];
+             */
             break;
         case EV_MONTHS:
             [self.everyButton setTitle:@"Months" forState:UIControlStateNormal];
+            /*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
             [self startLabelFrom:NO];
+             */
             break;
         default:   // EV_MINUTES
             self.everyMode = 0;  // safety net
             [self.everyButton setTitle:@"Minutes" forState:UIControlStateNormal];
+            /*
             [self hideFinishControls:NO];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
             [self startLabelFrom:YES];
+             */
             break;
     }
     
+    [self hideFinishControls:NO];
+    if ([self.fromLastButton isSelected]) {
+        [self enableStartControls:YES];
+    }
+    [self startLabelFrom:NO];
+
     //[self updateEnabledButton];
 }
 
@@ -592,6 +678,7 @@
 
 - (IBAction)btnHelp:(id)sender {
     DBGLog(@"btnHelp");
+    [rTracker_resource alert:@"Reminders" msg:@"Colored labels are buttons, press to see the options.\nSet a delay from the last time this tracker (or a value) was saved and the weekdays the reminder should trigger, or choose calendar days.\nSet a single time for the reminder to fire, or a time range with equal intervals or randomly.\nWhen settings are OK, an 'enable' checkbox appears in the lower right.\nTo delete a reminder, leave the form when the enable checkbox is not shown.\nMultiple reminders may be set using the buttons in the titlebar."];
 }
 
 - (IBAction)monthDaysChange:(id)sender {
@@ -638,6 +725,8 @@
     for (i=0;i<7;i++) {
         ((UIButton*)[self.weekdayBtns objectAtIndex:i]).hidden=state;
     }
+    
+    self.thenOnLabel.hidden = state;
 }
 
 -(void) hideMonthdays:(BOOL)state {
@@ -653,10 +742,42 @@
     self.everyTrackerButton.hidden=state;
 }
 
-- (IBAction)weekMonthEveryChange:(id)sender {
-    DBGLog(@"weekMonthEveryChange -- %d --",[sender selectedSegmentIndex]);
-    [activeField resignFirstResponder];
+- (void) doDelayDaysButtonState {
+    if ([self ddbTitleIsDelay]) {
+        [self hideWeekdays:NO];
+        [self hideMonthdays:YES];
+        [self hideEvery:NO];
+        [self enableStartControls:YES];
+        [self hideFinishControls:NO];
+        [self everyBtnStateUpdate];
+        [self fromLastBtnStateUpdate];
+    } else {
+        [self hideWeekdays:YES];
+        [self hideMonthdays:NO];
+        [self hideEvery:YES];
+        [self enableStartControls:YES];
+        [self hideFinishControls:NO];
+    }
+    [self updateMessage];
+    [self updateEnabledButton];
+}
 
+- (IBAction)delayDaysBtn:(UIButton*)sender {
+//- (IBAction)weekMonthEveryChange:(id)sender {
+//    DBGLog(@"weekMonthEveryChange -- %d --",[sender selectedSegmentIndex]);
+    DBGLog(@"curr title: %@",[[sender titleLabel] text]);
+    if ([self ddbTitleIsDelay]) {
+        [self setDelayDaysButtonTitle:1];
+    } else {
+        [self setDelayDaysButtonTitle:0];
+    }
+    
+    DBGLog(@"change to -- %@ --",[[sender titleLabel] text]);
+    
+    [activeField resignFirstResponder];
+    [self doDelayDaysButtonState];
+    
+    /*
     switch([sender selectedSegmentIndex]) {
         case SEGWEEK:
             [self hideWeekdays:NO];
@@ -684,6 +805,7 @@
     }
     [self updateMessage];
     [self updateEnabledButton];
+     */
 }
 
 -(IBAction) wdBtn:(UIButton*)sender {
@@ -700,15 +822,17 @@
         self.finishMin.enabled = YES;
         if (hasAmPm) self.finishTimeAmPm.enabled = YES;
         self.finishLabel.enabled = YES;
+        /*
         if (SEGEVERY == self.weekMonthEvery.selectedSegmentIndex) {
             self.intervalButton.hidden = YES;
             self.repeatTimes.hidden = YES;
             self.repeatTimesLabel.hidden = YES;
         } else {
+         */
             self.intervalButton.hidden = NO;
             self.repeatTimes.hidden = NO;
             self.repeatTimesLabel.hidden = NO;
-        }
+        //}
         [self startLabelFrom:YES];
     } else {
         self.intervalButton.hidden = YES;
@@ -719,11 +843,13 @@
         self.finishLabel.enabled = NO;
         self.repeatTimes.hidden = YES;
         self.repeatTimesLabel.hidden = YES;
+        /*
         if ((SEGEVERY == self.weekMonthEvery.selectedSegmentIndex) && ((EV_HOURS == self.everyMode) || (EV_MINUTES == self.everyMode))) {
             [self startLabelFrom:YES];
         } else {
+         */
             [self startLabelFrom:NO];
-        }
+        //}
     }
     [self updateEnabledButton];
 }

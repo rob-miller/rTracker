@@ -13,7 +13,7 @@
 
 @implementation trackerList
 
-@synthesize topLayoutNames, topLayoutIDs, topLayoutPriv;
+@synthesize topLayoutNames, topLayoutIDs, topLayoutPriv, topLayoutReminderCount;
 //@synthesize tObj;
 
 /******************************
@@ -35,10 +35,12 @@
 	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
-	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer);";
+	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer, remindercount integer);";
 	[self toExecSql];
-	self.sql = @"select count(*) from toplevel;";
-
+    self.sql = @"alter table toplevel add column remindercount int";  // new column added for reminders
+    [self toExecSqlIgnErr];
+    
+	//self.sql = @"select count(*) from toplevel;";
 	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
 
 	self.sql = @"create table if not exists info (val integer, name text);";
@@ -68,7 +70,8 @@
 		topLayoutNames = [[NSMutableArray alloc] init];
 		topLayoutIDs = [[NSMutableArray alloc] init];
         topLayoutPriv = [[NSMutableArray alloc] init];
-
+        topLayoutReminderCount = [[NSMutableArray alloc] init];
+        
 		[self initTDb];
 	} 
 	return self;
@@ -82,6 +85,8 @@
 	[topLayoutIDs release];
 	self.topLayoutPriv = nil;
 	[topLayoutPriv release];
+    self.topLayoutReminderCount = nil;
+    [topLayoutReminderCount release];
     
 	[super dealloc];
 }
@@ -94,12 +99,13 @@
 	[self.topLayoutNames removeAllObjects];
 	[self.topLayoutIDs removeAllObjects];
     [self.topLayoutPriv removeAllObjects];
-
+    [self.topLayoutReminderCount removeAllObjects];
+    
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
 	
-	self.sql = [NSString stringWithFormat:@"select id, name, priv from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
-	[self toQry2AryISI:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv];
+	self.sql = [NSString stringWithFormat:@"select id, name, priv, remindercount from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
+	[self toQry2AryISII:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv i3:self.topLayoutReminderCount];
 	self.sql = nil;
 	DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
     //DBGTLIST(self);
@@ -111,7 +117,8 @@
     [self.topLayoutIDs addObject:[NSNumber numberWithInt:tObj.toid]];
     [self.topLayoutNames addObject:tObj.trackerName];
     [self.topLayoutPriv addObject:[NSNumber numberWithInt:[[tObj.optDict valueForKey:@"privacy"] intValue]]];
-
+    [self.topLayoutReminderCount addObject:[NSNumber numberWithInt:[tObj enabledReminderCount]]];
+    
     [self confirmTopLayoutEntry:tObj];
 }
 
@@ -139,8 +146,8 @@
     dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
     int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
     privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
-	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv) values (%i, %i, \"%@\", %i);",
-				rank, tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal];
+	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%i, %i, \"%@\", %i, %i);",
+				rank, tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal,[tObj enabledReminderCount]];
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -168,9 +175,10 @@
 	for (NSString *tracker in self.topLayoutNames) {
 		NSInteger tid = [[self.topLayoutIDs objectAtIndex:nrank] intValue];
 		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
-		
+		NSInteger rc = [[self.topLayoutReminderCount objectAtIndex:nrank] intValue];
+        
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv) values (%i, %d, \"%@\", %d);",nrank+1,tid,[rTracker_resource toSqlStr:tracker], priv];  // rank in db always non-0
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %d, \"%@\", %d, %d);",nrank+1,tid,[rTracker_resource toSqlStr:tracker], priv,rc];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
@@ -299,19 +307,23 @@
 	id tName = [[self.topLayoutNames objectAtIndex:fromRow] retain];
 	id tID = [[self.topLayoutIDs objectAtIndex:fromRow] retain];
     id tPriv = [[self.topLayoutPriv objectAtIndex:fromRow] retain];
-	
+	id tRC= [[self.topLayoutReminderCount objectAtIndex:fromRow] retain];
+    
 	[self.topLayoutNames removeObjectAtIndex:fromRow];
 	[self.topLayoutIDs removeObjectAtIndex:fromRow];
 	[self.topLayoutPriv removeObjectAtIndex:fromRow];
+	[self.topLayoutReminderCount removeObjectAtIndex:fromRow];
 	
 	[self.topLayoutNames insertObject:tName atIndex:toRow];
 	[self.topLayoutIDs insertObject:tID atIndex:toRow];
 	[self.topLayoutPriv insertObject:tPriv atIndex:toRow];
+	[self.topLayoutReminderCount insertObject:tRC atIndex:toRow];
 	
 	[tName release];
 	[tID release];
     [tPriv release];
-
+    [tRC release];
+    
 	//DBGTLIST(self);
 }
 
@@ -347,11 +359,13 @@
 	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
     DBGLog(@"delete tracker all name:%@ id:%d rowtext= %@", to.trackerName, to.toid, [self.topLayoutNames objectAtIndex:row] );
+    [to clearScheduledReminders];
 	[to deleteTrackerDB];
 	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];
 	[self.topLayoutIDs removeObjectAtIndex:row];
     [self.topLayoutPriv removeObjectAtIndex:row];
+    [self.topLayoutReminderCount removeObjectAtIndex:row];
 }
 
 - (void) deleteTrackerRecordsRow:(NSUInteger)row

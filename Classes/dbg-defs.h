@@ -19,11 +19,16 @@
 #define NONAME      0
 
 #define DEBUGFUNCTION     0
+#define REMINDERDBG 1
 
 //********       vvvvvv //
 
 #define RELEASE     0
-#define DEBUGLOG    0
+
+#define DEBUGLOG    1
+
+// report scheduled notification fire dates in dbInfo() 
+
 
 //********       ^^^^^^ //
 
@@ -72,9 +77,9 @@
 #endif
 
 #if RELEASE
-#define dbgNSAssert(x,y) if (0==x) { DBGErr(y); }
-#define dbgNSAssert1(x,y,z) if (0==x) { DBGErr(y,z); }
-#define dbgNSAssert2(x,y,z,t) if (0==x) { DBGErr(y,z,t); }
+#define dbgNSAssert(x,y) if (0==(x)) { DBGErr(y); }
+#define dbgNSAssert1(x,y,z) if (0==(x)) { DBGErr(y,z); }
+#define dbgNSAssert2(x,y,z,t) if (0==(x)) { DBGErr(y,z,t); }
 #else
 #define dbgNSAssert NSAssert
 #define dbgNSAssert1 NSAssert1

@@ -1365,6 +1365,49 @@ TODO: regen all .rtrks on website
    - fixed elapsed mins, secs so don't mess up old fn defns -- added comment to avoid in future too
    - added weekdays to 'every' reminders
 
+30 apr 2014
+   - add trackerObj confirmReminders() to ensure all enabled reminders are scheduled -- call on leaving tracker without save
+   -- required adding rid to notification dictionary
+
+--- commit ---
+
+   - add reminderCount to trackerList, rootViewController counts scheduled for each tracker and highlights any with missing scheduled reminders (means reminder fired but tracker not looked at)
+
+01 may 2014
+   - fix error in timefn defns
+   - ev_hours not trigger correctly, may have fixed
+
+04 may 2014
+   - re-work, fix errors in setReminders
+
+05 may 2014
+   - re-work GUI, code to remove weekdays, can implement as 'every' 
+
+06 may 2014
+   - further work to remove weekdays mode, need to cut everyButton state, have same choices for all
+
+07 may 2014
+   - think gui done removing weekdays
+
+08 may 2014
+   - worked through setReminder for 'no weekdays' changed -- no testing
+
+11 may 2014
+   - testing, fixing setReminders
+   - clearScheduledReminders() when deleting tracker
+   - cancel matching tid,rid scheduled reminder when scheduling new
+
+18 may 2014
+   - more work on setReminder around change to delay
+   - added help alerts
+
+19 may
+   - fixed bug stored enable state not being shown on re-entry
+   - fixed prevReminder not shifting after delete
+   - fixed monthday reminder triggering on reset (add +1 month)
+
+--- commit ---
+
 ++ 
 
 

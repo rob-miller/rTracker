@@ -302,6 +302,30 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	sqlite3_finalize(stmt);
 }
 
+- (void) toQry2AryISII : (NSMutableArray *) i1 s1:(NSMutableArray *)s1 i2:(NSMutableArray *)i2 i3:(NSMutableArray *)i3 {
+	
+	
+	SQLDbg(@"toQry2AryISII: %@ => _%@_",self.dbName,self.sql);
+	dbgNSAssert(tDb,@"toQry2AryISI called with no tDb");
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2(tDb, [self.sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		int rslt;
+		while ((rslt = sqlite3_step(stmt)) == SQLITE_ROW) {
+			[i1 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,0)]];
+			[s1 addObject: [rTracker_resource fromSqlStr:[NSString stringWithUTF8String:(char *) sqlite3_column_text(stmt, 1)]]];
+			[i2 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,2)]];
+			[i3 addObject: [NSNumber numberWithInt: sqlite3_column_int(stmt,3)]];
+			
+			SQLDbg(@"  rslt: %@ %@ %@ %@",[i1 lastObject], [s1 lastObject],[i2 lastObject],[i3 lastObject]);
+		}
+		[self tobDoneCheck:rslt];
+	} else {
+		[self tobPrepError];
+	}
+	sqlite3_finalize(stmt);
+}
+
 - (void) toQry2ArySS : (NSMutableArray *) s1 s2: (NSMutableArray *) s2 {
 	
 	

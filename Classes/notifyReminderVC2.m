@@ -8,7 +8,7 @@
 
 #import "notifyReminderVC2.h"
 #import "dbg-defs.h"
-//#import "rTracker-resource.h"
+#import "rTracker-resource.h"
 #import "notifyReminder.h"
 
 //@interface notifyReminderVC2 ()
@@ -75,6 +75,7 @@
 
 - (IBAction)btnHelp:(id)sender {
     DBGLog(@"btnHelp");
+    [rTracker_resource alert:@"Reminder details" msg:@"Set the start date and time for the reminder delay here if not based on the last tracker save.\nSet the sound to be played when the reminder is triggered.  The default sound cannot be played while rTracker is the active application."];
 }
 
 - (IBAction)btnTest:(id)sender {

@@ -25,7 +25,7 @@
 @implementation RootViewController
 
 @synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv, readingFile, stashedTIDs;
+@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv, readingFile, stashedTIDs, scheduledReminderCounts;
 //openUrlLock, inputURL,
 
 #pragma mark -
@@ -47,6 +47,8 @@
     //[inputURL release];
     self.stashedTIDs = nil;
     [stashedTIDs release];
+    self.scheduledReminderCounts = nil;
+    [scheduledReminderCounts release];
     
     [super dealloc];
 }
@@ -1053,6 +1055,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [rTracker_resource setSeparateDateTimePicker:[sud boolForKey:@"separate_date_time_pref"]];
     [rTracker_resource setRtcsvOutput:[sud boolForKey:@"rtcsv_out_pref"]];
     [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
+    [rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
     
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
@@ -1098,6 +1101,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [self handlePrefs];
     
     [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
+    
+    [self countScheduledReminders];
     
 }
 
@@ -1448,6 +1453,8 @@ BOOL stashAnimated;
 }
 */
 
+#pragma mark -
+
 - (privacyV*) privacyObj {
 	if (privacyObj == nil) {
 		privacyObj = [[privacyV alloc] initWithParentView:self.view];
@@ -1462,6 +1469,29 @@ BOOL stashAnimated;
         stashedTIDs = [[NSMutableArray alloc] init];
     }
     return  stashedTIDs;
+}
+
+- (void) countScheduledReminders {
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *eventArray = [app scheduledLocalNotifications];
+    [self.scheduledReminderCounts removeAllObjects];
+    for (int i=0; i<[eventArray count]; i++)
+    {
+        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        NSDictionary *userInfoCurrent = oneEvent.userInfo;
+        NSNumber *tid =[userInfoCurrent objectForKey:@"tid"];
+        int c = [[self.scheduledReminderCounts objectForKey:tid] intValue];
+        c++;
+        [self.scheduledReminderCounts setObject:[NSNumber numberWithInt:c] forKey:tid];
+    }
+    
+}
+
+- (NSMutableDictionary*) scheduledReminderCounts {
+    if (nil == scheduledReminderCounts) {
+        scheduledReminderCounts = [[NSMutableDictionary alloc]init];
+    }
+    return scheduledReminderCounts;
 }
 
 #pragma mark -
@@ -1559,9 +1589,21 @@ BOOL stashAnimated;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
+    NSNumber *tid = [self.tlist.topLayoutIDs objectAtIndex:row];
+    int erc = [[self.tlist.topLayoutReminderCount objectAtIndex:row] intValue];
+    int src = [[self.scheduledReminderCounts objectForKey:tid] intValue];
+    NSString *formatString = @"%@";
+    //UIColor *bg = [UIColor clearColor];
+    if (erc != src) {
+        formatString = @"> %@";
+        //bg = [UIColor redColor];
+    }
+    DBGLog(@"erc= %d  src= %d",erc,src);
+    
+	cell.textLabel.text = [NSString stringWithFormat:formatString,[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
+    //cell.textLabel.backgroundColor = bg;
     //cell.textLabel.backgroundColor = [UIColor clearColor];
-
+    
     return cell;
 }
 

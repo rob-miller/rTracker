@@ -120,6 +120,8 @@
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian;
 - (void) setReminders;
 - (void) confirmReminders;
+- (int) enabledReminderCount;
+- (void) clearScheduledReminders;
 
 - (NSInteger) dateNearest:(int)targ;
 - (NSInteger) prevDate;

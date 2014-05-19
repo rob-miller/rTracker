@@ -31,6 +31,7 @@
     //NSURL *inputURL;
     BOOL readingFile;
     NSMutableArray *stashedTIDs;
+    NSMutableDictionary *scheduledReminderCounts;
 }
 
 @property (nonatomic,retain) trackerList *tlist;
@@ -42,6 +43,7 @@
 //@property (nonatomic,retain) NSURL *inputURL;
 @property (nonatomic) BOOL readingFile;
 @property (nonatomic,retain) NSMutableArray *stashedTIDs;
+@property (nonatomic,retain) NSMutableDictionary *scheduledReminderCounts;
 
 // UI element properties 
 @property (nonatomic, retain) UIBarButtonItem *privateBtn;
