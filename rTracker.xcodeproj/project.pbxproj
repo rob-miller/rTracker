@@ -485,6 +485,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Info.plist */,
+				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
 				D405303B1902D4FB009ABFC3 /* sounds */,
 				D4B3009215A9B51A0042319D /* sampleTrackers */,
 				D40607D517D7CB5A00C05A38 /* closedview-button-7.png */,
@@ -536,7 +537,6 @@
 				D40607EB17D7DD8400C05A38 /* bkgnd2-320-568.png */,
 				D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */,
 				D4C52109123F9DF700554627 /* blueButton.png */,
-				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";

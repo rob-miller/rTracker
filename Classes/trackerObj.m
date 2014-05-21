@@ -1956,8 +1956,6 @@ if (addVO) {
     
     // (1) if 'every' mode, adjust start time of day (else nr.start is already correct), for day set offsetComponents if is days/months/weeks
     
-    //xxx switch to delay / every / monthDays
-    
     if (nr.everyVal) {         // if every, get start components from date of last save and adjust startInt
         //int lastEventStart=0;
         if (nr.fromLast) {
@@ -1976,10 +1974,14 @@ if (addVO) {
         
         // but might not be today!
         
+        // cannot do delay and then [x times in window] -- because can't differentiate (in window) vs (already done) from last save
         if (0!= (nr.everyMode & EV_DAYS)) {
+
             int days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
             int currFrac = days % nr.everyVal;
-            if ((0 != currFrac) || (days<nr.everyVal)) {  // if ((not exactly on target days offset) or (have not passed 1x target days offset))
+            if ((0 != currFrac)                                 // if not exactly today
+                || (days<nr.everyVal)  // or (have not passed 1x target days offset)
+                ) {
                 eventIsToday = FALSE;
                 [offsetComponents setDay:(nr.everyVal - currFrac)];
             }
@@ -1989,7 +1991,9 @@ if (addVO) {
         } else if (0!= (nr.everyMode & EV_WEEKS)) {
             int weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
             int currFrac = weeks % nr.everyVal;
-            if ((0 != currFrac) || (weeks<nr.everyVal)) {
+            if ((0 != currFrac)
+                || (weeks<nr.everyVal)
+                ) {
                 eventIsToday = FALSE;
                 [offsetComponents setWeek:(nr.everyVal - currFrac)];
             }
@@ -1998,7 +2002,9 @@ if (addVO) {
         } else if (0!= (nr.everyMode & EV_MONTHS)) {
             int months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMonthCalendarUnit calendar:gregorian];
             int currFrac = months % nr.everyVal;
-            if ((0 != currFrac) || (months < nr.everyVal)) {
+            if ((0 != currFrac)
+                || (months < nr.everyVal)
+                ) {
                 eventIsToday = FALSE;
                 [offsetComponents setMonth:(nr.everyVal - currFrac)];
             }
@@ -2017,7 +2023,7 @@ if (addVO) {
                 targStart = nowInt;
             }
             DBGLog(@" every- mins/hrs -- add %d minutes  mins= %d  blockMins=%d times= %d targStart= %@",currFrac, minutes, blockMinutes, nr.everyVal, [nr timeStr:targStart]);
-            DBGLog (@" finInt= %@ targStart= %@ startInt= %@",[nr timeStr:finInt],[nr timeStr:targStart],[nr timeStr:startInt]);
+            DBGLog (@" finInt= %@ targStart= %@ startInt= %@ eventIsToday= %d",[nr timeStr:finInt],[nr timeStr:targStart],[nr timeStr:startInt],eventIsToday);
             
             //offsetComponents day = 0 at this point unless added code above
             dbgNSAssert(0==[offsetComponents day],@"offsetComponents day not 0");
@@ -2043,9 +2049,9 @@ if (addVO) {
                 DBGLog(@"  - went past finInt, reset to startInt tomorrow");
             }
 
-            if(eventIsToday && ![self weekMonthDaysIsToday:nr todayComponents:todayComponents]) {  // if still think it is today and weekdays does not match, just set as not today
+            if(!eventIsToday ) {  // if weekdays does not match (set above)
+                DBGLog(@"not today, reset targstart to %d %@",startInt,[nr timeStr:startInt]);
                 targStart = startInt;
-                eventIsToday = FALSE;
             }
 
             if (targStart < startInt) {                     // if too early shift to start time
@@ -2064,8 +2070,9 @@ if (addVO) {
         //state: if everyMode, startInt now at earliest time(minutes)ToFire
     }
 
-    if(eventIsToday && ![self weekMonthDaysIsToday:nr todayComponents:todayComponents]) {
-        eventIsToday = FALSE;
+    if(!eventIsToday) { // weekday check set above
+        DBGLog(@"weekday not today, reset startInt to %d %@",nr.start,[nr timeStr:nr.start]);
+        startInt = nr.start;
     }
     
     // state here: startInt = earliest time(minutes)ToFire; finInt, eventIsToday accurate
@@ -2115,6 +2122,9 @@ if (addVO) {
                         [offsetComponents setDay:1];
                         DBGLog(@"time window no interval left so wrap");
                     }
+                } else if (nowInt < tstart) {
+                        startInt = tstart;      // shift startInt to end of current interval
+                        DBGLog(@"time window, not started yet, shift startInt to %@", [nr timeStr:startInt]);
                 }
             }
         } // else event not today so startInt at nr.start
@@ -2126,14 +2136,14 @@ if (addVO) {
             if ((eventIsToday && (nowInt < (startInt+delta))) || !eventIsToday) {     // randomise startInt unless that pushes it into past
                 startInt += delta;
                 if (startInt < nr.start) {
-                    startInt = nr.start;
+                    startInt = nr.start + abs(delta/2);
                 } else if (startInt > finInt) {
                     startInt = nr.start;
                     eventIsToday=FALSE;
                     [offsetComponents setDay:1];
                 }
             }
-            DBGLog(@"randomise new startInt= %@",[nr timeStr:startInt]);
+            DBGLog(@"randomise new startInt= %d => %@ (delta= %d)",startInt,[nr timeStr:startInt],delta);
         }
 
     }  else { // else nr.times == 1 => startInt remains at default

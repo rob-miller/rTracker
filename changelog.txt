@@ -1401,12 +1401,25 @@ TODO: regen all .rtrks on website
    - more work on setReminder around change to delay
    - added help alerts
 
-19 may
+19 may 2014
    - fixed bug stored enable state not being shown on re-entry
    - fixed prevReminder not shifting after delete
    - fixed monthday reminder triggering on reset (add +1 month)
 
 --- commit ---
+
+20 may 2014
+   - setReminders:
+   -- revert to no time window for delay days/weeks/months as cannot distinguish 'started and in window' from 'already done so wait another (delay)'
+   -- if random < start, set to start + delta/2
+   -- add check for past window start go to tstart
+   - remove RELEASE restrictions around reminders (think no restrictions now)
+   - revert preference to 'hide reminder times' -- just show in db info if user looks
+
+21 may 2014
+   - add 'set reminders' button under 'database info' button so user can modify and check, or see random changing
+   - various more bug fixes around setting reminders
+   -- think ready for release
 
 ++ 
 

@@ -19,13 +19,13 @@
 #define NONAME      0
 
 #define DEBUGFUNCTION     0
-#define REMINDERDBG 1
+#define REMINDERDBG 0
 
 //********       vvvvvv //
 
-#define RELEASE     0
+#define RELEASE     1
 
-#define DEBUGLOG    1
+#define DEBUGLOG    0
 
 // report scheduled notification fire dates in dbInfo() 
 

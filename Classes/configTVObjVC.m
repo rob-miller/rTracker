@@ -355,6 +355,7 @@
 		okey = @"graphlast"; dfltState=GRAPHLASTDFLT;
 	}else {
 		dbgNSAssert(0,@"ckButtonAction cannot identify btn");
+        okey=@"x"; // make analyze happy
 	}
 	
 	if (dfltState == YES) {
@@ -492,6 +493,7 @@
 		nkey = nil;
 	} else {
 		dbgNSAssert(0,@"mtfDone cannot identify tf");
+        okey=@"x"; // make analyze happy
 	}
 
 	if (self.vo == nil) {      // tracker config
@@ -715,6 +717,11 @@
     }
 }
 
+- (void) setRemindersBtn {
+    [self.to reminders2db];
+    [self.to setReminders];
+}
+
 - (void) dbInfoBtn {
     NSString *titleStr;
     
@@ -735,7 +742,7 @@
         titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
     }
 
-#if !RELEASE
+//#if !RELEASE
     self.to.sql = @"select count(*) from reminders";
     int reminderCount = [self.to toQry2Int];
 
@@ -754,7 +761,7 @@
     
     titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
     
-    if (NO == [rTracker_resource getHideRTimes]) {
+    //if (NO == [rTracker_resource getHideRTimes]) {
         for (int i=0; i<[eventArray count]; i++)
         {
             UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
@@ -765,10 +772,10 @@
                                                               [NSDateFormatter localizedStringFromDate:[oneEvent fireDate] dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
             }
         }
-    }
+    //}
 
     
-#endif
+//#endif
     
     UIAlertView *alert;
     if (0 < orphanDatapoints) {
@@ -904,7 +911,7 @@
     
 
     if ((nil == self.vo) && (nil != self.to.dbName)) {
-#if !RELEASE
+//#if !RELEASE
         
         // reminder config button:
         
@@ -914,7 +921,7 @@
         
         [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
         
-#endif
+//#endif
         
         // dbInfo values button:
         
@@ -923,6 +930,13 @@
         frame.origin.y += MARGIN + frame.size.height;
         
         [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
+        
+        // 'reset reminders' button
+        frame.origin.x = MARGIN;
+        //frame.origin.x += frame.size.width + MARGIN + SPACE;
+        frame.origin.y += MARGIN + frame.size.height;
+        
+        [self configActionBtn:frame key:nil label:@"set reminders" target:self action:@selector(setRemindersBtn)];
     }
 }
 

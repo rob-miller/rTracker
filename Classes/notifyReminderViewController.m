@@ -390,7 +390,7 @@
     
     self.nr.start = (self.startSlider.enabled ? self.startSlider.value : -1);
 
-    if ([self.enableFinishButton isSelected]) {
+    if ([self.enableFinishButton isSelected] && ![self.enableFinishButton isHidden]) {
         self.nr.until = self.finishSlider.value;
         self.nr.times = [self.repeatTimes.text intValue];
         if (1 < self.nr.times) {
@@ -596,63 +596,67 @@
     switch (self.everyMode) {
         case EV_HOURS:
             [self.everyButton setTitle:@"Hours" forState:UIControlStateNormal];
-            /*
+            ///*
             [self hideFinishControls:NO];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
-            [self startLabelFrom:YES];
-             */
+            //[self startLabelFrom:YES];
+            //*/
             break;
         case EV_DAYS:
             [self.everyButton setTitle:@"Days" forState:UIControlStateNormal];
-            /*
+            ///*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
-            [self startLabelFrom:NO];
-             */
+            //[self startLabelFrom:NO];
+             //*/
             break;
         case EV_WEEKS:
             [self.everyButton setTitle:@"Weeks" forState:UIControlStateNormal];
-            /*
+            ///*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
-            [self startLabelFrom:NO];
-             */
+            //[self startLabelFrom:NO];
+             //*/
             break;
         case EV_MONTHS:
             [self.everyButton setTitle:@"Months" forState:UIControlStateNormal];
-            /*
+            ///*
             [self hideFinishControls:YES];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
-            [self startLabelFrom:NO];
-             */
+            //[self startLabelFrom:NO];
+             //*/
             break;
         default:   // EV_MINUTES
             self.everyMode = 0;  // safety net
             [self.everyButton setTitle:@"Minutes" forState:UIControlStateNormal];
-            /*
+            ///*
             [self hideFinishControls:NO];
             if ([self.fromLastButton isSelected]) {
                 [self enableStartControls:YES];
             }
-            [self startLabelFrom:YES];
-             */
+            //[self startLabelFrom:YES];
+            //*/
             break;
     }
     
+    [self doEFbtnState];
+    
+    /*
     [self hideFinishControls:NO];
     if ([self.fromLastButton isSelected]) {
         [self enableStartControls:YES];
     }
     [self startLabelFrom:NO];
-
+     */
+    
     //[self updateEnabledButton];
 }
 
@@ -678,7 +682,7 @@
 
 - (IBAction)btnHelp:(id)sender {
     DBGLog(@"btnHelp");
-    [rTracker_resource alert:@"Reminders" msg:@"Colored labels are buttons, press to see the options.\nSet a delay from the last time this tracker (or a value) was saved and the weekdays the reminder should trigger, or choose calendar days.\nSet a single time for the reminder to fire, or a time range with equal intervals or randomly.\nWhen settings are OK, an 'enable' checkbox appears in the lower right.\nTo delete a reminder, leave the form when the enable checkbox is not shown.\nMultiple reminders may be set using the buttons in the titlebar."];
+    [rTracker_resource alert:@"Reminders" msg:@"Blue labels are buttons, tap to see the options.\nSet a delay from the last time this tracker (or value) was saved and the weekdays the reminder should trigger, or choose calendar days.\nSet a single time for the reminder to fire, or a time range with equal or random  intervals.\nWhen settings are OK, an 'enable' checkbox appears in the lower right.\nTo delete a reminder, leave the form when the enable checkbox is not shown.\nMultiple reminders may be set using the < and +> buttons in the titlebar."];
 }
 
 - (IBAction)monthDaysChange:(id)sender {
@@ -701,7 +705,7 @@
 }
 - (void) setEveryTrackerBtnName {
     [self.everyTrackerButton setTitle:[self.everyTrackerNames objectAtIndex:self.everyTrackerNdx] forState:UIControlStateNormal];
-    [self.everyTrackerButton setTitleColor:(self.everyTrackerNdx ? [UIColor blueColor] : [UIColor brownColor]) forState:UIControlStateNormal];
+    [self.everyTrackerButton setTitleColor:(self.everyTrackerNdx ? [UIColor blueColor] : [UIColor colorWithRed:0.5 green:0.0 blue:1.0 alpha:1.0]) forState:UIControlStateNormal];
     [self updateMessage];
 }
 
@@ -816,7 +820,7 @@
 
 - (void) doEFbtnState {
     
-    if ([self.enableFinishButton isSelected]) {
+    if ([self.enableFinishButton isSelected] && ![self.enableFinishButton isHidden]) {
         self.finishSlider.enabled = YES;
         self.finishHr.enabled = YES;
         self.finishMin.enabled = YES;

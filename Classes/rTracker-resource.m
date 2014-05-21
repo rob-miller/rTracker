@@ -350,9 +350,10 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 	DBGLog(@"updateSavePrivate:%d",savePrivate);
 }
 
+/*
 static BOOL hideRTimes=HIDERTIMESDFLT;
-
-+ (BOOL)getHideRTimes {
+ 
+ + (BOOL)getHideRTimes {
 	return hideRTimes;
 }
 
@@ -360,6 +361,7 @@ static BOOL hideRTimes=HIDERTIMESDFLT;
 	hideRTimes = hideRT;
 	DBGLog(@"updateHideRTimes:%d",hideRTimes);
 }
+*/
 
 
 //---------------------------

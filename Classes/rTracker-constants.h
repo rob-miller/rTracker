@@ -54,7 +54,7 @@
 #define SDTDFLT NO
 #define RTCSVOUTDFLT NO
 #define SAVEPRIVDFLT YES
-#define HIDERTIMESDFLT YES
+//#define HIDERTIMESDFLT YES
 
 #define CSVext @".csv"
 #define RTRKext @".rtrk"

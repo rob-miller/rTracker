@@ -1055,7 +1055,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [rTracker_resource setSeparateDateTimePicker:[sud boolForKey:@"separate_date_time_pref"]];
     [rTracker_resource setRtcsvOutput:[sud boolForKey:@"rtcsv_out_pref"]];
     [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
-    [rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
+    //[rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
     
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 

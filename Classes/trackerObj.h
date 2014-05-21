@@ -108,6 +108,7 @@
 - (void) deleteTrackerRecordsOnly;
 
 - (notifyReminder*) loadReminders;
+- (void) reminders2db;
 - (BOOL) haveNextReminder;
 - (notifyReminder*) nextReminder;
 - (BOOL) havePrevReminder;

@@ -56,8 +56,8 @@ NSUInteger DeviceSystemMajorVersion();
 + (BOOL)getSavePrivate;
 + (void)setSavePrivate:(BOOL)savePriv;
 
-+ (BOOL)getHideRTimes;
-+ (void)setHideRTimes:(BOOL)hideRTimes;
+//+ (BOOL)getHideRTimes;
+//+ (void)setHideRTimes:(BOOL)hideRTimes;
 
 
     
