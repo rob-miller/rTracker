@@ -1966,9 +1966,10 @@ if (addVO) {
                 self.sql = @"select date from voData order by date desc limit 1";
             }
             if ((lastInt = [self toQry2Int])) {
-                lastEntryDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) [self toQry2Int]];  // stay with when reminder created if no data stored for this tracker yet
+                lastEntryDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) lastInt];  // stay with when reminder created if no data stored for this tracker yet
             }
         }
+        DBGLog(@"lastEntryDate= %@",lastEntryDate);
         //everyStartComponents = [gregorian components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:lastEntryDate];
         //lastEventStart = (60 * [everyStartComponents hour]) + [everyStartComponents minute];     // lasteventstart now set for appropriate offset minutes into day
         
@@ -2019,8 +2020,11 @@ if (addVO) {
             DBGLog(@"sm= %d",currFrac);
             if (minutes < nowInt) { // or if 'every 5 mins' instead of 'delay 5 mins'
                 targStart = nowInt + (blockMinutes - currFrac);
+                //DBGLog(@"fractional targStart = %d",targStart);
             } else {
                 targStart = nowInt;
+                //targStart = startInt; // if have passed delay interval then to early start time
+                //DBGLog(@"past delay interval so targStart = start = %d",targStart);
             }
             DBGLog(@" every- mins/hrs -- add %d minutes  mins= %d  blockMins=%d times= %d targStart= %@",currFrac, minutes, blockMinutes, nr.everyVal, [nr timeStr:targStart]);
             DBGLog (@" finInt= %@ targStart= %@ startInt= %@ eventIsToday= %d",[nr timeStr:finInt],[nr timeStr:targStart],[nr timeStr:startInt],eventIsToday);
@@ -2028,12 +2032,22 @@ if (addVO) {
             //offsetComponents day = 0 at this point unless added code above
             dbgNSAssert(0==[offsetComponents day],@"offsetComponents day not 0");
             
+            //xxx split into eventistoday and wraparound out of today / event not today, wraparound takes into weekday match in window / weekday match after wraparound
             if ((24*60) < targStart) {  // if wraparound put that many
-                eventIsToday = FALSE;
-                [offsetComponents setDay:((int) (targStart/(24*60)))]; // shift however many days required - know it is at least 1
-                targStart = (int) targStart % (24*60); // whatever left after removing days // was startInt;
-                DBGLog(@"  - went past 24hr, add %d offset days, targStart now %@",[offsetComponents day],[nr timeStr:targStart]);
+                //if (eventIsToday) {
+                    eventIsToday = FALSE;
+                    [offsetComponents setDay:((int) (targStart/(24*60)))]; // shift however many days required - know it is at least 1
+                    targStart = (int) targStart % (24*60); // whatever left after removing days // was startInt;
+                    DBGLog(@"  - went past 24hr, add %d offset days, targStart now %@",[offsetComponents day],[nr timeStr:targStart]);
+                //} else {
+                    
+                //}
+            } else if(!eventIsToday ) {  // if weekdays does not match (set above)
+                DBGLog(@"not today, reset targstart to %d %@",startInt,[nr timeStr:startInt]);
+                targStart = startInt;
             }
+
+            //xxx
 
             if ((-1 == finInt) && (targStart > startInt)) {  // if past startInt and not window, shift another day forward and set to startInt
                 eventIsToday = FALSE;
@@ -2042,6 +2056,7 @@ if (addVO) {
                 DBGLog(@"  - went past startInt with no finInt, reset to startInt");
             }
             
+            
             if ((-1 != finInt) && (targStart > finInt)) {   // if window and past finish shift another day forward and set to startInt
                 eventIsToday = FALSE;
                 targStart = startInt;
@@ -2049,12 +2064,7 @@ if (addVO) {
                 DBGLog(@"  - went past finInt, reset to startInt tomorrow");
             }
 
-            if(!eventIsToday ) {  // if weekdays does not match (set above)
-                DBGLog(@"not today, reset targstart to %d %@",startInt,[nr timeStr:startInt]);
-                targStart = startInt;
-            }
-
-            if (targStart < startInt) {                     // if too early shift to start time
+           if (targStart < startInt) {                     // if too early shift to start time
                 DBGLog(@"  - before startInt, reset to startInt  startInt= %d targStart= %d ",startInt,targStart);
                 targStart = startInt;
                 
@@ -2070,10 +2080,14 @@ if (addVO) {
         //state: if everyMode, startInt now at earliest time(minutes)ToFire
     }
 
+    /*  not needed ? if not every this already set, else this could mess up setting from every
+     
     if(!eventIsToday) { // weekday check set above
         DBGLog(@"weekday not today, reset startInt to %d %@",nr.start,[nr timeStr:nr.start]);
         startInt = nr.start;
     }
+     
+    */
     
     // state here: startInt = earliest time(minutes)ToFire; finInt, eventIsToday accurate
     // if not today, don't know next day but may have set some offset days or weeks
@@ -2135,10 +2149,11 @@ if (addVO) {
 
             if ((eventIsToday && (nowInt < (startInt+delta))) || !eventIsToday) {     // randomise startInt unless that pushes it into past
                 startInt += delta;
-                if (startInt < nr.start) {
+                //DBGLog(@"r: startInt %d nr.start %d finInt %d delta %d",startInt,nr.start,finInt,delta);
+                if (startInt <= nr.start) {
                     startInt = nr.start + abs(delta/2);
                 } else if (startInt > finInt) {
-                    startInt = nr.start;
+                    startInt = nr.start + abs(delta/2);
                     eventIsToday=FALSE;
                     [offsetComponents setDay:1];
                 }

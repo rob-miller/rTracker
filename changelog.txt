@@ -1421,6 +1421,17 @@ TODO: regen all .rtrks on website
    - various more bug fixes around setting reminders
    -- think ready for release
 
+22 may 2014
+   - distinguish between app active or not when receiving local notification while app launched
+   - still trying on setrimniders
+
+28 may 2014
+   - last testing and debug on setReminders
+   - set version to 1.1.8
+   - ready to submit
+
+--- commit ---
+
 ++ 
 
 

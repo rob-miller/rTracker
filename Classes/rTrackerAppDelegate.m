@@ -172,11 +172,18 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
-    //RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    //
     
     DBGLog(@"notification from tid %@",[notification.userInfo objectForKey:@"tid"]);
-    [rTracker_resource playSound:notification.soundName];
-    [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:2];
+    
+    if ([application applicationState] == UIApplicationStateActive) {
+        DBGLog(@"app is active!");
+        [rTracker_resource playSound:notification.soundName];
+        [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:2];
+    } else {
+        RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+    }
     //[rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
     
     /*
