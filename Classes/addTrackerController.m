@@ -14,45 +14,28 @@
 #import "rTracker-resource.h"
 #import "dbg-defs.h"
 
+#import "voState.h"
+
 @implementation addTrackerController 
 
-@synthesize tlist;
-@synthesize tempTrackerObj;
-@synthesize table;
-@synthesize nameField;
-@synthesize copyBtn;
-@synthesize saving;
+@synthesize tlist=_tlist;
+@synthesize tempTrackerObj=_tempTrackerObj;
+@synthesize table=_table;
+@synthesize nameField=_nameField;
+@synthesize copyBtn=_copyBtn;
+@synthesize saving=_saving;
+@synthesize deleteIndexPath=_deleteIndexPath;
+@synthesize deleteVOs=_deleteVOs;
 
-//@synthesize spinner;
-
-
-NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
-UITableView *deleteTableView;
-NSMutableArray *deleteVOs=nil;
 
 #pragma mark -
 #pragma mark core object methods and support
 
 - (void) dealloc {
 	DBGLog(@"atc: dealloc");
-	self.nameField = nil;
-	[nameField release];
-	self.tempTrackerObj = nil;
-	[tempTrackerObj release];
-	self.tlist = nil;
-	[tlist release];
-	self.table = nil;
-	[table release];
-
-	if (deleteVOs != nil) {
-		[deleteVOs release];
-		deleteVOs = nil;
-	}
     
-    self.copyBtn = nil;
-    [copyBtn release];
+    
 	
-	[super dealloc];
 }
 
 # pragma mark -
@@ -61,7 +44,7 @@ NSMutableArray *deleteVOs=nil;
 
 - (void) viewDidLoad {
 
-	DBGLog(@"atc: vdl tlist dbname= %@",tlist.dbName);
+	DBGLog(@"atc: vdl tlist dbname= %@",_tlist.dbName); // use backing ivar because don't want dbg msg to instantiate
 	
 	// cancel / save buttons on top nav bar
 
@@ -70,7 +53,6 @@ NSMutableArray *deleteVOs=nil;
 							   target:self
 							   action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
-	[cancelBtn release];
 	
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
@@ -78,7 +60,6 @@ NSMutableArray *deleteVOs=nil;
 							   target:self
 							   action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
-	[saveBtn release];
 
 	// list manage / configure segmented control on bottom toolbar
 	[self configureToolbarItems];
@@ -87,7 +68,6 @@ NSMutableArray *deleteVOs=nil;
 		// the temporary tracker obj we work with
         trackerObj *tto = [[trackerObj alloc] init];
 		self.tempTrackerObj = tto;
-        [tto release];
 		//tempTrackerObj.trackerName = @"";
 		//[self.tempTrackerObj init];
 		self.tempTrackerObj.toid = [self.tlist getUnique];
@@ -107,7 +87,6 @@ NSMutableArray *deleteVOs=nil;
     //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-    [bg release];
 
 	self.saving=FALSE;
 	[super viewDidLoad];
@@ -115,7 +94,7 @@ NSMutableArray *deleteVOs=nil;
 
 - (void)viewWillAppear:(BOOL)animated {
 	
-	DBGLog(@"atc: viewWillAppear, valObjTable count= %d", [tempTrackerObj.valObjTable count]);
+	DBGLog(@"atc: viewWillAppear, valObjTable count= %d", [self.tempTrackerObj.valObjTable count]);
 	
 	[self.table reloadData];
 	if (self.navigationController.toolbarHidden)
@@ -131,7 +110,7 @@ NSMutableArray *deleteVOs=nil;
 	// Release any cached data, images, etc that aren't in use.
 	
 	//tempTrackerObj.colorSet = nil;
-	tempTrackerObj.votArray = nil;
+	self.tempTrackerObj.votArray = nil;
 	
 }
 
@@ -157,10 +136,7 @@ NSMutableArray *deleteVOs=nil;
 	[self setToolbarItems:nil
 				 animated:NO];
 	
-	if (deleteVOs != nil) {
-		[deleteVOs release];
-		deleteVOs = nil;
-	}
+    self.deleteVOs=nil;
 	
 	[super viewDidUnload];
 }
@@ -175,13 +151,12 @@ NSMutableArray *deleteVOs=nil;
     valueObj *newVO = [[valueObj alloc] initWithDict:self.tempTrackerObj dict:[lastVO dictFromVO]];
     newVO.vid = [self.tempTrackerObj getUnique];
     [self.tempTrackerObj addValObj:newVO];
-    [newVO release];
     [self.table reloadData];
     
 }
 
 - (UIBarButtonItem *) copyBtn {
-    if (nil == copyBtn) {
+    if (nil == _copyBtn) {
         
         UIButton *cBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         NSString *title = @"Copy";
@@ -189,10 +164,10 @@ NSMutableArray *deleteVOs=nil;
         
         [cBtn setTitle:@"Copy" forState:UIControlStateNormal];
         [cBtn addTarget:self action:@selector(btnCopy) forControlEvents:UIControlEventTouchUpInside];
-        copyBtn = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
+        _copyBtn = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
     }
     
-    return copyBtn;
+    return _copyBtn;
 }
 
 
@@ -211,7 +186,7 @@ button.frame = frame;
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	//io6 [self presentModalViewController:ctvovc animated:YES];
     [self presentViewController:ctvovc animated:YES completion:NULL];
-	[ctvovc release];  // rtm 05 feb 2012 
+	  // rtm 05 feb 2012 
 }
 
 static int editMode;
@@ -234,7 +209,6 @@ static int editMode;
 	// Create the bar button item for the segmented control
 	UIBarButtonItem *editToggleButtonItem = [[UIBarButtonItem alloc]
 											 initWithCustomView:editToggle];
-	[editToggle release];
 
     UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
     [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
@@ -261,9 +235,6 @@ static int editMode;
                          self.copyBtn,
                          nil];
     
-	[setupBtnItem release];
-	[flexibleSpaceButtonItem release];
-    [editToggleButtonItem release];
     //self.copyBtn = nil;  // this stops crash, but lose control in toggleEdit() below
     //[copyBtn release];
 
@@ -295,10 +266,7 @@ DBGLog(@"btnAddValue was pressed!");
 }
 */
 - (IBAction)btnCancel {
-	if (deleteVOs != nil) {
-		[deleteVOs release];
-		deleteVOs = nil;
-	}
+    self.deleteVOs=nil;
 	
 	[self.navigationController popViewControllerAnimated:YES];
     //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
@@ -315,26 +283,26 @@ DBGLog(@"btnAddValue was pressed!");
 
 
 -(void) btnSaveSlowPart {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     //[self.spinner performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
 
-    [self.tempTrackerObj saveConfig];
-    
-    [self.tlist addToTopLayoutTable:self.tempTrackerObj];
-    //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
-    [self.tlist loadTopLayoutTable];
-    
-    [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
-    
-    [self.navigationController popViewControllerAnimated:YES];
-    //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
+        [self.tempTrackerObj saveConfig];
+        
+        [self.tlist addToTopLayoutTable:self.tempTrackerObj];
+        //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
+        [self.tlist loadTopLayoutTable];
+        
+        [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 
-    self.saving = FALSE;
-    [pool drain];
+        self.saving = FALSE;
+    }
     
 }
 - (IBAction)btnSave {
-	DBGLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",tempTrackerObj.trackerName, tempTrackerObj.toid, (unsigned int) tlist);
+	DBGLog(@"btnSave was pressed! tempTrackerObj name= %@ toid= %d tlist= %x",_tempTrackerObj.trackerName, _tempTrackerObj.toid, (unsigned int) _tlist);
     
     if (self.saving) {
         return;
@@ -342,12 +310,11 @@ DBGLog(@"btnAddValue was pressed!");
     
     self.saving = TRUE;
     
-	if (deleteVOs != nil) {
-		for (valueObj *vo in deleteVOs) {
+	if (self.deleteVOs != nil) {
+		for (valueObj *vo in self.deleteVOs) {
 			[self delVOdb:vo.vid];
 		}
-		[deleteVOs release];
-		deleteVOs = nil;
+		self.deleteVOs = nil;
 	}
 	
     [self.nameField resignFirstResponder];
@@ -379,8 +346,8 @@ DBGLog(@"btnAddValue was pressed!");
 
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
-	if (nameField.text) {
-		self.tempTrackerObj.trackerName = nameField.text;
+	if (self.nameField.text) {
+		self.tempTrackerObj.trackerName = self.nameField.text;
 	}
 }
 
@@ -397,17 +364,15 @@ DBGLog(@"btnAddValue was pressed!");
 - (void) delVOlocal:(NSUInteger) row
 {
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
-	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
+	[self.table deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
 						   withRowAnimation:UITableViewRowAnimationFade];
-    [deleteIndexPath release];
-    [deleteTableView release];
 }
 
 - (void) addDelVO:(valueObj*)vo {
-		if (deleteVOs == nil) {
-			deleteVOs = [[NSMutableArray alloc] init];
+		if (self.deleteVOs == nil) {
+			_deleteVOs = [[NSMutableArray alloc] init];
 		}
-		[deleteVOs addObject:vo];
+		[self.deleteVOs addObject:vo];
 }
 
 - (void)actionSheet:(UIActionSheet *)checkValObjDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
@@ -415,7 +380,7 @@ DBGLog(@"btnAddValue was pressed!");
 	//DBGLog(@"checkValObjDelete buttonIndex= %d",buttonIndex);
 	
 	if (buttonIndex == checkValObjDelete.destructiveButtonIndex) {
-		NSUInteger row = [deleteIndexPath row];
+		NSUInteger row = [self.deleteIndexPath row];
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 		DBGLog(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
 		//[self delVOdb:vo.vid];
@@ -423,10 +388,9 @@ DBGLog(@"btnAddValue was pressed!");
 		[self delVOlocal:row];
 	} else {
 		//DBGLog(@"check valobjdelete cancelled");
-        [deleteIndexPath release];
-        [deleteTableView release];
+        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
 	}
-	
+	self.deleteIndexPath=nil;
 }
 
 
@@ -471,10 +435,9 @@ DBGLog(@"btnAddValue was pressed!");
 		static NSString *nameCellID = @"nameCellID";
 		cell = [tableView dequeueReusableCellWithIdentifier: nameCellID];
 		if (cell == nil) {
-			cell = [[[UITableViewCell alloc]
+			cell = [[UITableViewCell alloc]
 					 initWithStyle:UITableViewCellStyleDefault
-					 reuseIdentifier: nameCellID] 
-					autorelease];
+					 reuseIdentifier: nameCellID];
 		} else {
 			// the cell is being recycled, remove old embedded controls
 			UIView *viewToRemove = nil;
@@ -485,8 +448,9 @@ DBGLog(@"btnAddValue was pressed!");
 		//NSInteger row = [indexPath row];
 		//if (row == 0) {
 
-			self.nameField = nil;
-            nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,250,25) ];
+			//self.nameField = nil;
+            //[_nameField release];
+            self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,250,25) ];
 			self.nameField.clearsOnBeginEditing = NO;
 			[self.nameField setDelegate:self];
 			self.nameField.returnKeyType = UIReturnKeyDone;
@@ -494,7 +458,7 @@ DBGLog(@"btnAddValue was pressed!");
 						  action:@selector(nameFieldDone:)
 				forControlEvents:UIControlEventEditingDidEndOnExit];
 			self.nameField.tag = kViewTag;
-			[cell.contentView addSubview:nameField];
+			[cell.contentView addSubview:self.nameField];
 			
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
@@ -531,10 +495,9 @@ DBGLog(@"btnAddValue was pressed!");
         static NSString *valCellID = @"valCellID";
 		cell = [tableView dequeueReusableCellWithIdentifier: valCellID];
 		if (cell == nil) {
-			cell = [[[UITableViewCell alloc]
+			cell = [[UITableViewCell alloc]
 					 initWithStyle:UITableViewCellStyleSubtitle
-					 reuseIdentifier: valCellID] 
-					autorelease];
+					 reuseIdentifier: valCellID];
 		}
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
@@ -593,12 +556,10 @@ DBGLog(@"btnAddValue was pressed!");
 #endif
     
 	valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:fromRow];
-	[vo retain];
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:fromRow];
 	if (toRow > [self.tempTrackerObj.valObjTable count])
 		toRow = [self.tempTrackerObj.valObjTable count];
 	[self.tempTrackerObj.valObjTable insertObject:vo atIndex:toRow];
-	[vo release];
 	
 	// fail [table reloadData];
 }
@@ -623,10 +584,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// NSUInteger section = [indexPath section];  // in theory this only called on vals section
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		DBGLog(@"atc: delete row %d ",row);
-		deleteIndexPath = indexPath;
-		deleteTableView = tableView;
-		[deleteIndexPath retain];
-        [deleteTableView retain];
+		self.deleteIndexPath = indexPath;
         
 		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
 		if ((! self.tempTrackerObj.tDb) // no db created yet for this tempTrackerObj
@@ -647,7 +605,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 												otherButtonTitles:nil];
 			//[checkTrackerDelete showInView:self.view];
 			[checkValObjDelete showFromToolbar:self.navigationController.toolbar ];
-			[checkValObjDelete release];
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %d ",row);
@@ -665,7 +622,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         }
 		avc.parentTrackerObj = self.tempTrackerObj;
 		[self.navigationController pushViewController:avc animated:YES];
-		[avc release];
 		
 		
 	} // else ??
@@ -683,7 +639,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	[avc stashVals];
     
 	[self.navigationController pushViewController:avc animated:YES];
-	[avc release];    
 }
 ///*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

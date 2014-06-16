@@ -11,11 +11,11 @@
 
 @implementation dpRslt
 
-@synthesize date,action;
+@synthesize date=_date,action=_action;
 
 - (id) init {
     if ((self = [super init])) {
-        action=DPA_CANCEL;
+        _action=DPA_CANCEL;
     }
     return self;
 }

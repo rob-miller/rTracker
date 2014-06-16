@@ -15,27 +15,29 @@
 
 #import "dpRslt.h"
 
-@interface datePickerVC : UIViewController {
+@interface datePickerVC : UIViewController
+/*{
 
 	NSString *myTitle;
     dpRslt *dpr;
 	//NSDate *date;
 	//NSInteger action;
 }
+*/
 
-@property (nonatomic,retain) NSString *myTitle;
+@property (nonatomic,strong) NSString *myTitle;
 //@property (nonatomic,retain) NSDate *date;
 //@property (nonatomic) NSInteger action;
-@property(nonatomic,retain) dpRslt *dpr;
+@property(nonatomic,strong) dpRslt *dpr;
 
 // UI element properties 
-@property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
-@property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
-@property (nonatomic,retain) IBOutlet UIDatePicker *datePicker;
-@property (nonatomic,retain) IBOutlet UIButton *entryNewBtn;
-@property (nonatomic,retain) IBOutlet UIButton *dateSetBtn;
-@property (nonatomic,retain) IBOutlet UIButton *dateGotoBtn;
-@property (nonatomic,retain) IBOutlet UISegmentedControl *dtSegmentedControl;
+@property (nonatomic,strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
+@property (nonatomic,strong) IBOutlet UIDatePicker *datePicker;
+@property (nonatomic,strong) IBOutlet UIButton *entryNewBtn;
+@property (nonatomic,strong) IBOutlet UIButton *dateSetBtn;
+@property (nonatomic,strong) IBOutlet UIButton *dateGotoBtn;
+@property (nonatomic,strong) IBOutlet UISegmentedControl *dtSegmentedControl;
 
 - (IBAction) entryNewBtnAction;
 - (IBAction) dateSetBtnAction;

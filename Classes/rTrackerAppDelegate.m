@@ -12,11 +12,13 @@
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
 #import "rTracker-resource.h"
+#import "privacyV.h"
 
 @implementation rTrackerAppDelegate
 
-@synthesize window;
-@synthesize navigationController, pendingTid;
+@synthesize window=_window;
+@synthesize navigationController=_navigationController;
+@synthesize pendingTid=_pendingTid;
 
 
 #pragma mark -
@@ -24,7 +26,7 @@
 
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
+    RootViewController *rootController = (RootViewController *) [self.navigationController.viewControllers objectAtIndex:0];
     if (nil == [[NSUserDefaults standardUserDefaults] objectForKey:@"reload_sample_trackers_pref"]) {
 
         //((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
@@ -59,7 +61,7 @@
     //   as found in http://stackoverflow.com/questions/7520971
     
     //[self.window addSubview:[navigationController view]];
-    [self.window setRootViewController:navigationController];
+    [self.window setRootViewController:self.navigationController];
     [self.window makeKeyAndVisible];
 
     DBGLog(@" rTracker version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
@@ -167,7 +169,6 @@
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
     UIAlertView *alert = [self quickAlert:title msg:msg];
     [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
-    [alert release];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -234,7 +235,7 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
-    
+    application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
 }
 
 /*
@@ -257,12 +258,6 @@
 #pragma mark -
 #pragma mark Memory management
 
-- (void)dealloc {
-	//DBGLog(@"rt app delegate: dealloc");
-	[navigationController release];
-	[window release];
-	[super dealloc];
-}
 
 
 @end

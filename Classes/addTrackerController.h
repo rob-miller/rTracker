@@ -15,22 +15,17 @@
 
 @interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIActionSheetDelegate>
 
-{
-	trackerList *tlist;
-	trackerObj *tempTrackerObj;
-    UIBarButtonItem *copyBtn;
-    BOOL saving;
-    //UIActivityIndicatorView *spinner;
-}
-
-@property (nonatomic, retain) trackerList *tlist;
-@property (nonatomic, retain) trackerObj *tempTrackerObj;
+@property (nonatomic, strong) trackerList *tlist;
+@property (nonatomic, strong) trackerObj *tempTrackerObj;
 @property (nonatomic) BOOL saving;
 
 // UI element properties 
-@property (nonatomic, retain) IBOutlet UITableView *table;
-@property (nonatomic, retain) UITextField *nameField;
-@property (nonatomic, retain) UIBarButtonItem *copyBtn;
+@property (nonatomic, strong) IBOutlet UITableView *table;
+@property (nonatomic, strong) UITextField *nameField;
+@property (nonatomic, strong) UIBarButtonItem *copyBtn;
+
+@property (nonatomic,strong) NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
+@property (nonatomic,strong) NSMutableArray *deleteVOs;    // VOs to be deleted on save
 
 //@property (nonatomic,retain) UIActivityIndicatorView *spinner;
 

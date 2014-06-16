@@ -12,17 +12,8 @@
 
 @implementation voImage
 
-@synthesize imageView,takePhotoButton,selectFromCameraRollButton,pickFromLibraryButton,devc;
+@synthesize imageView=_imageView,takePhotoButton=_takePhotoButton,selectFromCameraRollButton=_selectFromCameraRollButton,pickFromLibraryButton=_pickFromLibraryButton,devc=_devc;
 
-- (void) dealloc {
-
-	[imageView release];
-	[takePhotoButton release];
-	[selectFromCameraRollButton release];
-	[pickFromLibraryButton release];
-	
-	[super dealloc];
-}
 
 - (int) getValCap {  // NSMutableString size for value
     return 64;
@@ -38,7 +29,6 @@
 	vde.vo = self.vo;
 	self.devc = vde; // assign
 	[MyTracker.vc.navigationController pushViewController:vde animated:YES];
-	[vde release];
 	
 }
 
@@ -66,10 +56,9 @@
 	picker.delegate = self;
 	picker.allowsEditing = YES;
 	picker.sourceType = 
-		(sender == takePhotoButton) ? UIImagePickerControllerSourceTypeCamera :	UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+		(sender == self.takePhotoButton) ? UIImagePickerControllerSourceTypeCamera :	UIImagePickerControllerSourceTypeSavedPhotosAlbum;
 	//[self.devc presentModalViewController:picker animated:YES];
     [self.devc presentViewController:picker animated:YES completion:NULL];
-	[picker release];
 }
 
 - (void) getExistingPhoto:(id)sender {
@@ -79,14 +68,13 @@
 		picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 		//[self.devc presentModalViewController:picker animated:YES];
         [self.devc presentViewController:picker animated:YES completion:NULL];
-		[picker release];
 	} else {
         [rTracker_resource alert:@"Error accessing photo library" msg:@"Device does not support a photo library"];
 	}
 }
 
 - (void) dataEditVDidLoad:(UIViewController*)vc {
-	self.imageView = [[[UIImageView alloc] initWithFrame:vc.view.frame] autorelease];
+	self.imageView = [[UIImageView alloc] initWithFrame:vc.view.frame];
 	if (![self.vo.value isEqualToString:@""]) {
 		self.imageView.image = [UIImage imageWithContentsOfFile:self.vo.value];
 	}
@@ -150,7 +138,7 @@
 
 - (void) imagePickerController:(UIImagePickerController *)picker
 		 didFinishPickingMediaWithInfo:(NSDictionary *)mediaInfo {
-	imageView.image = [mediaInfo objectForKey:UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
+	self.imageView.image = [mediaInfo objectForKey:UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
 	//[picker dismissModalViewControllerAnimated:YES];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }

@@ -16,7 +16,7 @@
 
 @implementation notifyReminder
 
-@synthesize rid, monthDays, weekDays, everyMode, everyVal, start, until, times, timesRandom, msg, soundFileName, reminderEnabled, untilEnabled, fromLast, saveDate, localNotif, tid, vid;
+@synthesize rid=_rid, monthDays=_monthDays, weekDays=_weekDays, everyMode=_everyMode, everyVal=_everyVal, start=_start, until=_until, times=_times, timesRandom=_timesRandom, msg=_msg, soundFileName=_soundFileName, reminderEnabled=_reminderEnabled, untilEnabled=_untilEnabled, fromLast=_fromLast, saveDate=_saveDate, localNotif=_localNotif, tid=_tid, vid=_vid;
 
 #define UNTILFLAG   (0x01<<0)
 #define TIMESRFLAG  (0x01<<1)
@@ -84,14 +84,7 @@
 - (void)dealloc {
 	DBGLog(@"nr dealloc");
     
-	self.msg = nil;
-    [msg release];
-    self.soundFileName = nil;
-    [soundFileName release];
-	self.localNotif = nil;
-    [localNotif release];
     
-    [super dealloc];
 }
 
 - (void) save:(trackerObj*)to {
@@ -292,7 +285,6 @@
             }
         }
         desc = [desc stringByAppendingString:[NSString stringWithFormat:@"monthDays:%@ ",[nma componentsJoinedByString:@","]]];
-        [nma release];
 
     } else if (self.everyVal) {
 
@@ -341,7 +333,6 @@
             weekdays[i] = wd-1;  // firstWeekDay is 1-indexed, switch to 0-indexed
             wdNames[i] = [[dateFormatter shortWeekdaySymbols] objectAtIndex:weekdays[i]];
         }
-        [dateFormatter release];
         
         for (i=0;i<7;i++) {
             if ((BOOL) (0 != (self.weekDays & (0x01 << weekdays[i])))) {
@@ -370,7 +361,7 @@
 
 -(void) create {
     if (nil == self.localNotif) {
-        if (nil == (self.localNotif = [[[UILocalNotification alloc] init] autorelease])) {
+        if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
         //if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
             return;
         }
@@ -387,7 +378,7 @@
     } else {
         self.localNotif.soundName = self.soundFileName;
     }
-    self.localNotif.applicationIconBadgeNumber = 0;
+    self.localNotif.applicationIconBadgeNumber = 1;
     
     //NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.tid] forKey:@"tid"];
     NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:self.tid],@"tid",[NSNumber numberWithInt:self.rid],@"rid",nil];

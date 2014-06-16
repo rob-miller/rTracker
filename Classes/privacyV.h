@@ -11,6 +11,8 @@
 #import "tictacV.h"
 #import "ppwV.h"
 
+@class RootViewController;
+
 // password states
 #define PWNEEDPRIVOK -2
 #define PWNEEDPASS  -1
@@ -31,36 +33,37 @@
 #define PVCONFIG	((unsigned int) (1<<3))
 
 
-@interface privacyV : UIView <UIActionSheetDelegate> {
+@interface privacyV : UIView <UIActionSheetDelegate>
+/*{
 	UIView *parentView;
-    id *parent;
+    RootViewController *parent;
 	tictacV *ttv;
 	ppwV *ppwv;
 	tObjBase *tob;
 	unsigned int showing;
 	int pwState;
-}
+}*/
 
-@property (nonatomic,retain) UIView *parentView;
-@property (nonatomic) id *parent;
-@property (nonatomic,retain) tictacV *ttv;
-@property (nonatomic,retain) ppwV *ppwv;
-@property (nonatomic,assign) tObjBase *tob;
+@property (nonatomic,strong) UIView *parentView;
+@property (nonatomic,strong) RootViewController *parent;
+@property (nonatomic,strong) tictacV *ttv;
+@property (nonatomic,strong) ppwV *ppwv;
+@property (nonatomic,unsafe_unretained) tObjBase *tob;
 @property (nonatomic) unsigned int showing;
 @property (nonatomic) int pwState;
 
 // UI element properties 
 
 //  PVQUERY 
-@property (nonatomic,retain) UIButton *clearBtn;
-@property (nonatomic,retain) UIButton *configBtn;
+@property (nonatomic,strong) UIButton *clearBtn;
+@property (nonatomic,strong) UIButton *configBtn;
 
 //  PVCONFIG
-@property (nonatomic,retain) UIButton *saveBtn;
-@property (nonatomic,retain) UISlider *showSlider;
-@property (nonatomic,retain) UILabel *ssValLab;
-@property (nonatomic,retain) UIButton *nextBtn;
-@property (nonatomic,retain) UIButton *prevBtn;
+@property (nonatomic,strong) UIButton *saveBtn;
+@property (nonatomic,strong) UISlider *showSlider;
+@property (nonatomic,strong) UILabel *ssValLab;
+@property (nonatomic,strong) UIButton *nextBtn;
+@property (nonatomic,strong) UIButton *prevBtn;
  
 
 

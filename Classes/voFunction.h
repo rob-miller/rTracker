@@ -136,7 +136,8 @@
 
 // end functions 
 
-@interface voFunction : voState <UIPickerViewDelegate, UIPickerViewDataSource> {
+@interface voFunction : voState <UIPickerViewDelegate, UIPickerViewDataSource>
+/*{
 	configTVObjVC *ctvovcp;
 
 	NSInteger fnSegNdx;				// overview, range, or fn definition page in configTVObjVC
@@ -150,22 +151,22 @@
     UILabel *rlab;
     
     NSArray *votWoSelf;             // myTracker's valobjtable without reference to self for picking endpoints
-}
+}*/
 
 //@property (nonatomic,retain) NSMutableArray *fnStrs;
-@property (nonatomic, retain) NSDictionary *fnStrDict;
-@property (nonatomic, retain) NSArray *fn1args;
-@property (nonatomic, retain) NSArray *fn2args;
-@property (nonatomic, retain) NSArray *fnTimeOps;
+@property (nonatomic, strong) NSDictionary *fnStrDict;
+@property (nonatomic, strong) NSArray *fn1args;
+@property (nonatomic, strong) NSArray *fn2args;
+@property (nonatomic, strong) NSArray *fnTimeOps;
 
-@property (nonatomic,assign) configTVObjVC *ctvovcp;
+@property (nonatomic,unsafe_unretained) configTVObjVC *ctvovcp;
 @property (nonatomic) NSInteger fnSegNdx;
-@property (nonatomic,retain) NSArray *epTitles;
-@property (nonatomic,retain) NSMutableArray *fnTitles;
-@property (nonatomic,retain) NSMutableArray *fnArray;
+@property (nonatomic,strong) NSArray *epTitles;
+@property (nonatomic,strong) NSMutableArray *fnTitles;
+@property (nonatomic,strong) NSMutableArray *fnArray;
 @property (nonatomic) NSInteger currFnNdx;
-@property (nonatomic,retain) UILabel *rlab;
-@property (nonatomic,retain) NSArray *votWoSelf;
+@property (nonatomic,strong) UILabel *rlab;
+@property (nonatomic,strong) NSArray *votWoSelf;
 
 - (void) funcDone;
 - (void) funcVDL:(configTVObjVC*)ctvovc donebutton:(UIBarButtonItem*)db ;

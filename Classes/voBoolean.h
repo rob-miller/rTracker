@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "voState.h"
 
-@interface voBoolean : voState {
+@interface voBoolean : voState
+/*{
     UIButton *imageButton;
-}
+}*/
 
-@property (nonatomic,retain) UIButton *imageButton;
+@property (nonatomic,strong) UIButton *imageButton;
 
 @end

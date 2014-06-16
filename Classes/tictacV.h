@@ -10,16 +10,18 @@
 
 #import "tObjBase.h"
 
-@interface tictacV : UIView {
+@interface tictacV : UIView
+/*
+ {
 	tObjBase *tob;
 	unsigned int key;
 	int currX;
 	int currY;
 	CGRect currRect;
 //	BOOL flag;
-}
+}*/
 
-@property (nonatomic,retain) tObjBase *tob;
+@property (nonatomic,strong) tObjBase *tob;
 @property (nonatomic) unsigned int key;
 @property (nonatomic) CGRect currRect;
 @property (nonatomic) int currX;
@@ -35,7 +37,7 @@
 
 // UI element properties 
 @property(nonatomic) CGContextRef context;
-@property(nonatomic,retain) UIFont *myFont;
+@property(nonatomic,strong) UIFont *myFont;
 
 - (id) initWithPFrame:(CGRect)parent;
 - (void) showKey:(unsigned int)k;

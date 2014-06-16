@@ -18,14 +18,18 @@
 
 @interface configTlistController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 //@interface configTlistController : UITableViewController
-{
+/*
+ {
 	trackerList *tlist;
 }
+*/
 
-@property (nonatomic, retain) trackerList *tlist;
+@property (nonatomic, strong) trackerList *tlist;
 
 // UI element properties 
-@property (nonatomic, retain) IBOutlet UITableView *table;
+@property (nonatomic, strong) IBOutlet UITableView *table;
+
+@property (nonatomic,strong) NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 
 //- (IBAction) btnExport;
 - (IBAction) modeChoice:(id)sender;

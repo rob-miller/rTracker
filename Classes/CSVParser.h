@@ -15,6 +15,7 @@
 //#import <Cocoa/Cocoa.h>
 
 @interface CSVParser : NSObject
+
 {
 	NSString *csvString;
 	NSString *separator;

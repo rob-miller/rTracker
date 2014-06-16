@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "voState.h"
 
-@interface voDataEdit : UIViewController {
+@interface voDataEdit : UIViewController
+/*{
 
 	valueObj *vo;
 	
-}
+}*/
 
-@property (nonatomic,assign) valueObj *vo;
+@property (nonatomic,unsafe_unretained) valueObj *vo;
 
 
 @end

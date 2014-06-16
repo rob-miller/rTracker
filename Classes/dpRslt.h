@@ -14,12 +14,14 @@
 #define DPA_GOTO		3
 
 
-@interface dpRslt : NSObject {
+@interface dpRslt : NSObject
+/*
+ {
 	NSDate *date;
 	NSInteger action;
-}
+}*/
 
-@property (nonatomic,retain) NSDate *date;
+@property (nonatomic,strong) NSDate *date;
 @property (nonatomic) NSInteger action;
 
 @end

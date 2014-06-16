@@ -12,15 +12,16 @@
 
 #import "dbg-defs.h"
 
-@interface gtVONameV : UIView {
+@interface gtVONameV : UIView
+/*{
     valueObj *currVO;
     UIFont *myFont;
     UIColor *voColor;
-}
+}*/
 
-@property(nonatomic,retain) valueObj *currVO;
-@property(nonatomic,retain) UIFont *myFont;
-@property(nonatomic,retain) UIColor *voColor;
+@property(nonatomic,strong) valueObj *currVO;
+@property(nonatomic,strong) UIFont *myFont;
+@property(nonatomic,strong) UIColor *voColor;
 
 
 @end

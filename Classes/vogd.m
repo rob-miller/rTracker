@@ -17,7 +17,7 @@
 
 @implementation vogd
 
-@synthesize vo,xdat,ydat,minVal,maxVal,vScale,yZero;
+@synthesize vo=_vo,xdat=_xdat,ydat=_ydat,minVal=_minVal,maxVal=_maxVal,vScale=_vScale,yZero=_yZero;
 
 - (id) init {
     DBGErr(@"vogd: invalid init!");
@@ -102,7 +102,7 @@
         if (self.minVal == self.maxVal) {
             self.minVal = 0.0f;
         }
-        if (minVal == maxVal) {
+        if (self.minVal == self.maxVal) {
             self.maxVal = 1.0f;
         }
 
@@ -159,14 +159,10 @@
             
         }
         
-        [i1 release];
-        [d1 release];
         
         self.xdat = [NSArray arrayWithArray:mxdat];
         self.ydat = [NSArray arrayWithArray:mydat];
         
-        [mxdat release];
-        [mydat release];
     }
     
     return self;
@@ -213,14 +209,11 @@
         }
         
         
-        [i1 release];
         //[s1 release];
         
         self.xdat = [NSArray arrayWithArray:mxdat];
         self.ydat = [NSArray arrayWithArray:mydat];
         
-        [mxdat release];
-        [mydat release];
     }
     
     return self;
@@ -301,7 +294,6 @@
                 self.maxVal = v;
             [i2 addObject:[NSNumber numberWithDouble:v]];
         }
-        [s1 release];
         
         if (self.maxVal < d(YTICKS))
             self.maxVal = d(YTICKS);
@@ -330,14 +322,10 @@
         }
         
         
-        [i1 release];
-        [i2 release];
         
         self.xdat = [NSArray arrayWithArray:mxdat];
         self.ydat = [NSArray arrayWithArray:mydat];
         
-        [mxdat release];
-        [mydat release];
     }
     
     return self;
@@ -351,14 +339,4 @@
         return  [UIColor whiteColor];
 }
 
-- (void) dealloc {
-    self.vo = nil;
-    [vo release];
-    self.xdat = nil;
-    self.ydat = nil;
-    [xdat release];
-    [ydat release];
-    
-    [super dealloc];
-}
 @end

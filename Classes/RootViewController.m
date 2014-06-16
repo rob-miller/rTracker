@@ -24,8 +24,9 @@
 
 @implementation RootViewController
 
-@synthesize tlist, refreshLock;
-@synthesize privateBtn, helpBtn, privacyObj, addBtn, editBtn, flexibleSpaceButtonItem, initialPrefsLoad,stashedPriv, readingFile, stashedTIDs, scheduledReminderCounts;
+@synthesize tlist=_tlist, refreshLock=_refreshLock;
+@synthesize privateBtn=_privateBtn, helpBtn=_helpBtn, privacyObj=_privacyObj, addBtn=_addBtn, editBtn=_editBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, initialPrefsLoad=_initialPrefsLoad,stashedPriv=_stashedPriv, readingFile=_readingFile, stashedTIDs=_stashedTIDs, scheduledReminderCounts=_scheduledReminderCounts;
+
 //openUrlLock, inputURL,
 
 #pragma mark -
@@ -34,23 +35,10 @@
 - (void)dealloc {
 	
 	DBGLog(@"rvc dealloc");
-	self.tlist = nil;
-	[tlist release];
 	//[privateBtn release]; // saved to change image
-    self.addBtn = nil;
-    [addBtn release];
-    self.editBtn = nil;
-    [editBtn release];
-    self.stashedPriv=nil;
-    [stashedPriv release];
     //self.inputURL = nil;
     //[inputURL release];
-    self.stashedTIDs = nil;
-    [stashedTIDs release];
-    self.scheduledReminderCounts = nil;
-    [scheduledReminderCounts release];
     
-    [super dealloc];
 }
 
 /*
@@ -90,7 +78,6 @@ static BOOL InstallSamples;
     to.csvProblem=nil;
     to.csvReadFlags=0;
     [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
-    [parser release];
     DBGLog(@"csv parser done %@",to.trackerName);
     
     //[to reloadVOtable];
@@ -201,7 +188,6 @@ static BOOL InstallSamples;
                     [rTracker_resource deleteFileAtPath:target];
                 }
                 
-                [to release];
                 [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
             }
             
@@ -368,7 +354,6 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         DBGLog(@"loaded new %@",tname);        
     }
     
-    [inputTO release];
     
     return newTIDi;
 }
@@ -424,7 +409,6 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 #if DEBUGLOG
         [to describe];
 #endif
-        [to release];
     }
 
     DBGLog(@"ltd/ldd finish");
@@ -573,34 +557,34 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         }
     }
  */
-    [filesToProcess release];  // added 13 feb 2013
+      // added 13 feb 2013
     // not the default manager [localFileManager release];
     return(rtrkTid);
 }
 
 
 - (void) doLoadCsvFiles {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
-    [self loadTrackerCsvFiles];
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
-    
-    // file load done, enable userInteraction
-    
-    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
-    
-    // give up lock
-    self.refreshLock = 0;
-    
-    DBGLog(@"csv data loaded, UI enabled, lock off");
-    
-    if (0< [self.stashedTIDs count]) {
-        [self doRejectableTracker];
-    }
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        [self loadTrackerCsvFiles];
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+        
+        // file load done, enable userInteraction
+        
+        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        
+        // give up lock
+        self.refreshLock = 0;
+        
+        DBGLog(@"csv data loaded, UI enabled, lock off");
+        
+        if (0< [self.stashedTIDs count]) {
+            [self doRejectableTracker];
+        }
     
 
-    [pool drain];
+    }
     
     // thread finished
 }
@@ -617,25 +601,25 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 }
 
 - (void) doLoadInputfiles {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
-    if (InstallSamples) {
-        [self loadSamples:YES];
-        InstallSamples = NO;
+        if (InstallSamples) {
+            [self loadSamples:YES];
+            InstallSamples = NO;
+        }
+        
+        if ([self loadTrackerPlistFiles]) {
+            // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
+            [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
+            [self.tlist reorderFromTLT];
+        };
+        
+        [self refreshViewPart2];
+        
+        [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
+        
+        DBGLog(@"load plist thread finished, lock still on, UI still disabled");
     }
-    
-    if ([self loadTrackerPlistFiles]) {
-        // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
-        [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
-        [self.tlist reorderFromTLT];
-    };
-    
-    [self refreshViewPart2];
-    
-    [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
-    
-    DBGLog(@"load plist thread finished, lock still on, UI still disabled");
-    [pool drain];
     // end of this thread, refreshLock still on, userInteraction disabled, activityIndicator still spinning and doLoadCsvFiles is in charge
 }
 
@@ -745,7 +729,6 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         
             [newTracker saveConfig];
             [self.tlist addToTopLayoutTable:newTracker];
-            [newTracker release];
             
             [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];                    
             plistReadCount++;
@@ -771,7 +754,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 #pragma mark view support
 
 - (void)scrollState {
-    if (privacyObj && self.privacyObj.showing != PVNOSHOW) { // don't instantiate if not there
+    if (_privacyObj && self.privacyObj.showing != PVNOSHOW) { // test backing ivar first -- don't instantiate if not there
         self.tableView.scrollEnabled = NO;
         //DBGLog(@"no");
     } else {
@@ -950,18 +933,14 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     self.tableView.backgroundView = bg;
-    [bg release];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	
 	//[payBtn release];
-	[privateBtn release];
-    [helpBtn release];
 	//[multiGraphBtn release];
 
     trackerList *tmptlist = [[trackerList alloc] init];
 	self.tlist = tmptlist;
     //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
-    [tmptlist release];
     //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
     
     //[self.tlist release];  // rtm 05 feb 2012 +1 for alloc, +1 when put in self.tlist
@@ -1090,7 +1069,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 - (void) refreshView {
     
-    if (0 != OSAtomicTestAndSet(0, &(refreshLock))) {
+    if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
         // wasn't 0 before, so we didn't get lock, so leave because refresh already in process
         return;
     }
@@ -1258,7 +1237,6 @@ BOOL stashAnimated;
                                                           cancelButtonTitle:@"Delete it"
                                                           otherButtonTitles:@"Try again",nil];
                     [alert show];
-                    [alert release];
                 }
             }
         }
@@ -1358,86 +1336,85 @@ BOOL stashAnimated;
 
 - (UIBarButtonItem *) privateBtn {
     //
-	if (privateBtn == nil) {
+	if (_privateBtn == nil) {
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
         [pbtn setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"closedview-button.png" : @"closedview-button-7.png")]
               forState:UIControlStateNormal];
         pbtn.frame = CGRectMake(0, 0, ( pbtn.currentImage.size.width * 1.5 ), pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
-        privateBtn = [[UIBarButtonItem alloc]
+        _privateBtn = [[UIBarButtonItem alloc]
                       initWithCustomView:pbtn];
-        [self privBtnSetImg:(UIButton*)privateBtn.customView noshow:YES];
-                [pbtn release];
+        [self privBtnSetImg:(UIButton*)_privateBtn.customView noshow:YES];
 	} else {
         BOOL noshow=YES;
-        if (privacyObj)  // don't instantiate unless needed
+        if (_privacyObj)  // don't instantiate unless needed
             noshow = (PVNOSHOW == self.privacyObj.showing); 
         if ((! noshow) 
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
-            [(UIButton *)privateBtn.customView 
+            [(UIButton *)_privateBtn.customView
              setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"fullview-button-blue.png" : @"fullview-button-blue-7.png")]
              forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
-            [self privBtnSetImg:(UIButton *)privateBtn.customView noshow:noshow];
+            [self privBtnSetImg:(UIButton *)_privateBtn.customView noshow:noshow];
         }
     }
 
 
-	return privateBtn;
+	return _privateBtn;
 }
 
 - (UIBarButtonItem *) helpBtn {
-	if (helpBtn == nil) {
-		helpBtn = [[UIBarButtonItem alloc]
+	if (_helpBtn == nil) {
+		_helpBtn = [[UIBarButtonItem alloc]
                       initWithTitle:@"Help"
                       style:UIBarButtonItemStyleBordered
                       target:self
                       action:@selector(btnHelp)];
 	} 
-	return helpBtn;
+	return _helpBtn;
 }
 
 
 - (UIBarButtonItem *) addBtn {
-	if (addBtn == nil) {
-        addBtn = [[UIBarButtonItem alloc]
+	if (_addBtn == nil) {
+        _addBtn = [[UIBarButtonItem alloc]
                 initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                   //initWithTitle:@"New tracker"
                   //style:UIBarButtonItemStyleBordered 
                  target:self
                  action:@selector(btnAddTracker)];
 
-        [addBtn setStyle:UIBarButtonItemStyleDone];
+        [_addBtn setStyle:UIBarButtonItemStyleDone];
         
 	} 
-	return addBtn;
+	return _addBtn;
 }
 
 - (UIBarButtonItem *) editBtn {
-	if (editBtn == nil) {
-        editBtn = [[UIBarButtonItem alloc]
+	if (_editBtn == nil) {
+        _editBtn = [[UIBarButtonItem alloc]
                    initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                    //initWithTitle:@"Edit trackers"
                    //style:UIBarButtonItemStyleBordered 
                    target:self
                    action:@selector(btnEdit)];
     
-        [editBtn setStyle:UIBarButtonItemStylePlain];
+        [_editBtn setStyle:UIBarButtonItemStylePlain];
 	}
-	return editBtn;
+	return _editBtn;
 }
 
 
 - (UIBarButtonItem *) flexibleSpaceButtonItem {
-	if (flexibleSpaceButtonItem == nil) {
-		flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+	if (_flexibleSpaceButtonItem == nil) {
+		_flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
                 initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
                 target:nil action:nil];
 	} 
-	return flexibleSpaceButtonItem;
+	return _flexibleSpaceButtonItem;
 }
 
 /*
@@ -1456,19 +1433,19 @@ BOOL stashAnimated;
 #pragma mark -
 
 - (privacyV*) privacyObj {
-	if (privacyObj == nil) {
-		privacyObj = [[privacyV alloc] initWithParentView:self.view];
-        privacyObj.parent = (id*) self;
+	if (_privacyObj == nil) {
+		_privacyObj = [[privacyV alloc] initWithParentView:self.view];
+        _privacyObj.parent = self;
 	}
-	privacyObj.tob = (id) self.tlist;  // not set at init
-	return privacyObj;
+	_privacyObj.tob = (id) self.tlist;  // not set at init
+	return _privacyObj;
 }
 
 - (NSMutableArray*) stashedTIDs {
-    if (stashedTIDs == nil) {
-        stashedTIDs = [[NSMutableArray alloc] init];
+    if (_stashedTIDs == nil) {
+        _stashedTIDs = [[NSMutableArray alloc] init];
     }
-    return  stashedTIDs;
+    return  _stashedTIDs;
 }
 
 - (void) countScheduledReminders {
@@ -1488,10 +1465,10 @@ BOOL stashAnimated;
 }
 
 - (NSMutableDictionary*) scheduledReminderCounts {
-    if (nil == scheduledReminderCounts) {
-        scheduledReminderCounts = [[NSMutableDictionary alloc]init];
+    if (nil == _scheduledReminderCounts) {
+        _scheduledReminderCounts = [[NSMutableDictionary alloc]init];
     }
-    return scheduledReminderCounts;
+    return _scheduledReminderCounts;
 }
 
 #pragma mark -
@@ -1506,7 +1483,6 @@ BOOL stashAnimated;
 	[self.navigationController pushViewController:atc animated:YES];
     //[rTracker_resource myNavPushTransition:self.navigationController vc:atc animOpt:UIViewAnimationOptionTransitionCurlUp];
     
-	[atc release];
 }
 
 - (IBAction)btnEdit {
@@ -1525,7 +1501,6 @@ BOOL stashAnimated;
     
     //[rTracker_resource myNavPushTransition:self.navigationController vc:ctlc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
     
-	[ctlc release];
 }
 	
 - (void)btnMultiGraph {
@@ -1568,6 +1543,17 @@ BOOL stashAnimated;
 	return [self.tlist.topLayoutNames count];
 }
 
+- (NSInteger) pendingNotificationCount {
+    NSInteger erc=0,src=0;
+    for (NSNumber *nsn in self.tlist.topLayoutReminderCount) {
+        erc += [nsn integerValue];
+    }
+    for (NSNumber *tid in self.scheduledReminderCounts) {
+        src += [[self.scheduledReminderCounts objectForKey:tid] integerValue];
+    }
+    
+    return (erc > src ? erc-src : 0);
+}
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1577,7 +1563,7 @@ BOOL stashAnimated;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 
         //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]]; // note needs to be @2x.png for retina
         //[cell setBackgroundView:bg];
@@ -1592,6 +1578,7 @@ BOOL stashAnimated;
     NSNumber *tid = [self.tlist.topLayoutIDs objectAtIndex:row];
     int erc = [[self.tlist.topLayoutReminderCount objectAtIndex:row] intValue];
     int src = [[self.scheduledReminderCounts objectForKey:tid] intValue];
+   
     NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
@@ -1643,9 +1630,7 @@ BOOL stashAnimated;
     //}
     //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
     
-	[utc release];
 	
-	[to release];
 }
 
 // Override to support row selection in the table view.

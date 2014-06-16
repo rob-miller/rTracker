@@ -26,7 +26,8 @@
 #import "gtYAxV.h"
 
 
-@interface graphTrackerVC : UIViewController <UIScrollViewDelegate> {
+@interface graphTrackerVC : UIViewController <UIScrollViewDelegate>
+/*{
 	trackerObj *tracker;
     valueObj *currVO;
     UIFont *myFont;
@@ -45,20 +46,21 @@
     int32_t shakeLock;
 
 }
+*/
 
-@property(nonatomic,retain) trackerObj *tracker;
-@property(nonatomic,retain) valueObj *currVO;
+@property(nonatomic,strong) trackerObj *tracker;
+@property(nonatomic,strong) valueObj *currVO;
 
-@property(nonatomic,retain) UIFont *myFont;
+@property(nonatomic,strong) UIFont *myFont;
 
-@property(nonatomic,retain) UIScrollView *scrollView;
-@property(nonatomic,retain) graphTrackerV *gtv;
-@property(nonatomic,retain) gtTitleV *titleView;
-@property(nonatomic,retain) gtVONameV *voNameView;
-@property(nonatomic,retain) gtXAxV *xAV;
-@property(nonatomic,retain) gtYAxV *yAV;
-@property(nonatomic,retain) dpRslt *dpr;
-@property(nonatomic,retain) useTrackerController *parentUTC;
+@property(nonatomic,strong) UIScrollView *scrollView;
+@property(nonatomic,strong) graphTrackerV *gtv;
+@property(nonatomic,strong) gtTitleV *titleView;
+@property(nonatomic,strong) gtVONameV *voNameView;
+@property(nonatomic,strong) gtXAxV *xAV;
+@property(nonatomic,strong) gtYAxV *yAV;
+@property(nonatomic,strong) dpRslt *dpr;
+@property(nonatomic,strong) useTrackerController *parentUTC;
 
 @property (atomic)     int32_t shakeLock;
 

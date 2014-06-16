@@ -11,16 +11,8 @@
 
 @implementation voBoolean
 
-@synthesize imageButton;
+@synthesize imageButton=_imageButton;
 
-- (void) dealloc {
-	//DBGLog(@"dealloc voBoolean");
-	self.imageButton = nil;  // convenience constructor
-    [imageButton release];
-                         
-	[super dealloc];
-	
-}
 
 // 25.i.14 allow assigned values so use default (10) size
 //- (int) getValCap {  // NSMutableString size for value
@@ -55,16 +47,16 @@
 }
 
 - (UIButton*) imageButton {
-	if (nil == imageButton) {
-        imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        imageButton.frame = self.vosFrame; //CGRectZero;
-        imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
-        [imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];		
-        imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
-        [imageButton retain];  // rtm 06 feb 2012
+	if (nil == _imageButton) {
+        _imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _imageButton.frame = self.vosFrame; //CGRectZero;
+        _imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        _imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
+        [_imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];
+        _imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+          // rtm 06 feb 2012
 	}
-    return imageButton;
+    return _imageButton;
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {

@@ -25,7 +25,7 @@
 
 @implementation graphTrackerV
 
-@synthesize tracker,gtvCurrVO,selectedVO,doDrawGraph,xMark,parentGTVC;
+@synthesize tracker=_tracker,gtvCurrVO=_gtvCurrVO,selectedVO=_selectedVO,doDrawGraph=_doDrawGraph,xMark=_xMark,parentGTVC=_parentGTVC;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -64,14 +64,6 @@
 }
 */
 
-- (void)dealloc {
-	self.tracker = nil;
-    [tracker release];
-    self.parentGTVC = nil;
-    [parentGTVC release];
-    
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark drawing routines

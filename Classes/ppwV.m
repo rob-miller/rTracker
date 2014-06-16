@@ -16,9 +16,9 @@
 
 @implementation ppwV
 
-@synthesize tob,parent,parentAction,topy,ok,cancel,next,parentView;
-@synthesize topLabel,topTF,cancelBtn;
-@synthesize activeField;
+@synthesize tob=_tob,parent=_parent,parentAction=_parentAction,topy=_topy,ok=_ok,cancel=_cancel,next=_next,parentView=_parentView;
+@synthesize topLabel=_topLabel,topTF=_topTF,cancelBtn=_cancelBtn;
+@synthesize activeField=_activeField;
 //,saveFrame;
 
  
@@ -49,7 +49,6 @@
             UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
             [self addSubview:bg];
             [self sendSubviewToBack:bg];
-            [bg release];
         }
         self.layer.cornerRadius=8;
 		self.parentView = pv;
@@ -85,21 +84,6 @@
 }
 */
 
-- (void)dealloc {
-/*
- // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillShowNotification 
-                                                  object:nil]; 
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:UIKeyboardWillHideNotification 
-                                                  object:nil];  
-*/
-    self.topTF = nil;
-    [topTF release];
-    [super dealloc];
-}
 
 
 #pragma mark -
@@ -273,7 +257,11 @@
 	if (![self.topLabel.text isEqualToString:ChangePassTxt]) {
 		[self hide];
 	}
-	[parent performSelector:parentAction];
+
+	//[self.parent performSelector:self.parentAction];
+    IMP imp = [self.parent methodForSelector:self.parentAction];
+    void (*func)(id, SEL) = (void *)imp;
+    func(self.parent, self.parentAction);
 }
 
 - (void) cancelp {
@@ -290,8 +278,11 @@
 		[self hide];
 	}
 	[self.topTF resignFirstResponder];  // ???
-	[parent performSelector:parentAction];
-	
+
+	//[self.parent performSelector:self.parentAction];
+    IMP imp = [self.parent methodForSelector:self.parentAction];
+    void (*func)(id, SEL) = (void *)imp;
+    func(self.parent, self.parentAction);
 }
 
 # pragma mark -
@@ -308,53 +299,53 @@
 }
 
 - (UILabel*) topLabel {
-	if (nil == topLabel) {
+	if (nil == _topLabel) {
         if (kIS_LESS_THAN_IOS7) {
-            topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
+            _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
         } else {
-            topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.15f]];
+            _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.15f]];
         }
 		//[topLabel setHidden:TRUE];
-		topLabel.backgroundColor = [UIColor clearColor];
-		[self addSubview:topLabel];
+		_topLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:_topLabel];
 	}
-	return topLabel;
+	return _topLabel;
 }
 
 
 - (UITextField*) topTF {
-	if (nil == topTF) {
-		topTF = [[UITextField alloc] initWithFrame:[self genFrame:0.3f]];
+	if (nil == _topTF) {
+		_topTF = [[UITextField alloc] initWithFrame:[self genFrame:0.3f]];
 		//[topTF setHidden:TRUE];
-		topTF.backgroundColor = [UIColor whiteColor];
-		topTF.returnKeyType = UIReturnKeyDone;
-		topTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		topTF.clearButtonMode = UITextFieldViewModeWhileEditing;
-		topTF.delegate = self;
-        topTF.layer.cornerRadius = 4;
+		_topTF.backgroundColor = [UIColor whiteColor];
+		_topTF.returnKeyType = UIReturnKeyDone;
+		_topTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		_topTF.clearButtonMode = UITextFieldViewModeWhileEditing;
+		_topTF.delegate = self;
+        _topTF.layer.cornerRadius = 4;
 		
-		[self addSubview:topTF];
+		[self addSubview:_topTF];
 	}
-	return topTF;
+	return _topTF;
 }
 
 
 - (UIButton*) cancelBtn {
-	if (nil == cancelBtn) {
+	if (nil == _cancelBtn) {
 		NSString* ttl=@" Cancel ";
-		cancelBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		[cancelBtn setTitle:ttl forState:UIControlStateNormal];
+		_cancelBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		[_cancelBtn setTitle:ttl forState:UIControlStateNormal];
 		CGRect f = CGRectZero;
 		f.origin.x = 0.4f * self.frame.size.width;
 		f.origin.y = 0.65f * self.frame.size.height;
 		f.size = [ttl sizeWithFont:[UIFont systemFontOfSize:18]];
-		cancelBtn.frame = f;
+		_cancelBtn.frame = f;
 		//DBGLog(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
-		[cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
+		[_cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 		
-		[self addSubview:cancelBtn];
+		[self addSubview:_cancelBtn];
 	}
-	return cancelBtn;
+	return _cancelBtn;
 }
 
 

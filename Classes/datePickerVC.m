@@ -12,7 +12,7 @@
 
 @implementation datePickerVC
 
-@synthesize myTitle, /*date,action,*/ dpr, dateSetBtn,entryNewBtn,dateGotoBtn,navBar,toolBar,datePicker;
+@synthesize myTitle=_myTitle, /*date,action,*/ dpr=_dpr, dateSetBtn=_dateSetBtn,entryNewBtn=_entryNewBtn,dateGotoBtn=_dateGotoBtn,navBar=_navBar,toolBar=_toolBar,datePicker=_datePicker;
 
 - (IBAction) btnCancel:(UIButton*)btn
 {
@@ -32,7 +32,6 @@
 								target:self
 								action:@selector(btnCancel:)];
 	self.toolBar.items = [NSArray arrayWithObjects: cancelBtn, nil];
-	[cancelBtn release];
 	
     if (![rTracker_resource getSeparateDateTimePicker]) {
         self.dtSegmentedControl.hidden = YES;
@@ -71,30 +70,6 @@
 }
 
 
-- (void)dealloc {
-	self.entryNewBtn = nil;
-	[entryNewBtn release];
-	self.dateSetBtn = nil;
-	[dateSetBtn release];
-	self.dateGotoBtn = nil;
-	[dateGotoBtn release];
-	self.datePicker = nil;
-	[datePicker release];
-	self.navBar = nil;
-	[navBar release];
-	self.toolBar = nil;
-	[toolBar release];
-	
-	self.myTitle = nil;
-	[myTitle release];
-	
-	//self.date = nil;
-	//[date release];
-    self.dpr = nil;
-    [dpr release];
-	
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark button actions

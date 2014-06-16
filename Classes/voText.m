@@ -11,7 +11,7 @@
 
 @implementation voText
 
-@synthesize dtf;
+@synthesize dtf=_dtf;
 
 - (int) getValCap {  // NSMutableString size for value
     return 32;
@@ -47,44 +47,38 @@
 	return YES;
 }
 
-- (void) dealloc {
-    //DBGLog(@"voText dealloc");
-    self.dtf = nil;
-    [dtf release];
-    [super dealloc];
-}
 
 
 - (UITextField*) dtf {
-    if (nil == dtf) {
-        dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
+    if (nil == _dtf) {
+        _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
-        dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-        dtf.textColor = [UIColor blackColor];
-        dtf.font = [UIFont systemFontOfSize:17.0];
-        dtf.backgroundColor = [UIColor whiteColor];
-        dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+        _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
+        _dtf.textColor = [UIColor blackColor];
+        _dtf.font = [UIFont systemFontOfSize:17.0];
+        _dtf.backgroundColor = [UIColor whiteColor];
+        _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
-        dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard 
-        dtf.placeholder = @"<enter text>";
+        _dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard
+        _dtf.placeholder = @"<enter text>";
         
-        dtf.returnKeyType = UIReturnKeyDone;
+        _dtf.returnKeyType = UIReturnKeyDone;
         
-        dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+        _dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
         
         //dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
-        dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
+        _dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
         
         // Add an accessibility label that describes what the text field is for.
-        [dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
-        dtf.text = @"";
+        [_dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
+        _dtf.text = @"";
     }
     
-    return dtf;
+    return _dtf;
 }
 
 - (void) resetData {
-    if (nil != dtf) { // not self, do not instantiate
+    if (nil != _dtf) { // not self, do not instantiate
         self.dtf.text = @"";   
     }
     self.vo.useVO = YES;
@@ -104,7 +98,7 @@
 
 
 - (NSString*) update:(NSString*)instr {   // confirm textfield not forgotten
-    if ((nil == dtf) // NOT self.dtf as we want to test if is instantiated
+    if ((nil == _dtf) // NOT self.dtf as we want to test if is instantiated
         ||
         !([instr isEqualToString:@""])
         ){ 

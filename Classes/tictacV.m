@@ -15,7 +15,7 @@
 
 @implementation tictacV
 
-@synthesize context,tob,key,vborder,hborder,vlen,hlen,vstep, hstep, myFont, currRect, currX, currY;
+@synthesize context=_context,tob=_tob,key=_key,vborder=_vborder,hborder=_hborder,vlen=_vlen,hlen=_hlen,vstep=_vstep, hstep=_hstep, myFont=_myFont, currRect=_currRect, currX=_currX, currY=_currY;
 
 #pragma mark key singleton access 
 
@@ -53,9 +53,6 @@ static unsigned int theKey;
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 #pragma mark -
@@ -68,29 +65,31 @@ static unsigned int theKey;
 	int i;
 	self.vborder = TTBF * self.frame.size.height;
 	self.hborder = TTBF * self.frame.size.width;
-	self.vlen = self.bounds.size.height - (CGFloat) (2*vborder);
-	self.hlen = self.bounds.size.width - (CGFloat) (2*hborder);
+	self.vlen = self.bounds.size.height - (CGFloat) (2*self.vborder);
+	self.hlen = self.bounds.size.width - (CGFloat) (2*self.hborder);
 	self.vstep = self.bounds.size.height * TTSF;
 	self.hstep = self.bounds.size.width * TTSF;
 	
+    CGContextRef context = self.context;
+    
 	[[UIColor greenColor] set];
-	MoveTo(hborder,vborder);
-	AddLineTo(hborder+hlen,vborder);
-	AddLineTo(hborder+hlen,vborder+vlen);
-	AddLineTo(hborder,vborder+vlen);
-	AddLineTo(hborder,vborder);
+	MoveTo(self.hborder,self.vborder);
+	AddLineTo(self.hborder+self.hlen,self.vborder);
+	AddLineTo(self.hborder+self.hlen,self.vborder+self.vlen);
+	AddLineTo(self.hborder,self.vborder+self.vlen);
+	AddLineTo(self.hborder,self.vborder);
 	Stroke;
 	
 	[[UIColor blackColor] set];
 	
 	for (i=1;i<=2;i++) {   // horiz lines
-		MoveTo(hborder,vborder+(i*vstep));
-		AddLineTo(hborder+hlen,vborder+(i*vstep));
+		MoveTo(self.hborder,self.vborder+(i*self.vstep));
+		AddLineTo(self.hborder+self.hlen,self.vborder+(i*self.vstep));
 	}
 	
 	for (i=1;i<=2;i++) {   // vert lines
-		MoveTo(hborder+(i*hstep),vborder);
-		AddLineTo(hborder+(i*hstep),vborder+vlen);
+		MoveTo(self.hborder+(i*self.hstep),self.vborder);
+		AddLineTo(self.hborder+(i*self.hstep),self.vborder+self.vlen);
 	}
 	Stroke;
 }		
@@ -125,7 +124,7 @@ static unsigned int theKey;
 - (void) sDraw:(NSString*)str {
 	
 	//[str drawAtPoint:self.currRect.origin withFont:myFont];
-	[str drawInRect:self.currRect withFont:myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+	[str drawInRect:self.currRect withFont:self.myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	
 }
 

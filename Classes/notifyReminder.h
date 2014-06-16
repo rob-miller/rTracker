@@ -45,7 +45,8 @@
  
  */
 
-@interface notifyReminder : NSObject {
+@interface notifyReminder : NSObject
+/*{
 
     int rid;
     
@@ -75,7 +76,8 @@
     UILocalNotification *localNotif;
     
     //trackerObj *to;
-}
+}*/
+
 
 @property (nonatomic) int rid;
 
@@ -91,8 +93,8 @@
 @property (nonatomic) NSInteger tid;
 @property (nonatomic) NSInteger vid;
 
-@property (nonatomic,retain) NSString *msg;
-@property (nonatomic,retain) NSString *soundFileName;
+@property (nonatomic,strong) NSString *msg;
+@property (nonatomic,strong) NSString *soundFileName;
 
 @property (nonatomic) BOOL timesRandom;
 @property (nonatomic) BOOL reminderEnabled;
@@ -100,7 +102,7 @@
 @property (nonatomic) BOOL fromLast;
 @property (nonatomic) int saveDate;
 
-@property (nonatomic,retain) UILocalNotification *localNotif;
+@property (nonatomic,strong) UILocalNotification *localNotif;
 
 //@property (nonatomic,retain) trackerObj *to;
 

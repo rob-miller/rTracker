@@ -13,7 +13,8 @@
 #import "tObjBase.h"
 #import "trackerObj.h"
 
-@interface trackerList : tObjBase {
+@interface trackerList : tObjBase
+/*{
 	
 	NSMutableArray *topLayoutNames;
 	NSMutableArray *topLayoutIDs;
@@ -21,16 +22,16 @@
     NSMutableArray *topLayoutReminderCount;
 	//trackerObj *tObj;
 	
-}
+}*/
 
-@property (nonatomic,retain) NSMutableArray *topLayoutNames;
-@property (nonatomic,retain) NSMutableArray *topLayoutIDs;
-@property (nonatomic,retain) NSMutableArray *topLayoutPriv;
-@property (nonatomic,retain) NSMutableArray *topLayoutReminderCount;
+
+@property (nonatomic,strong) NSMutableArray *topLayoutNames;
+@property (nonatomic,strong) NSMutableArray *topLayoutIDs;
+@property (nonatomic,strong) NSMutableArray *topLayoutPriv;
+@property (nonatomic,strong) NSMutableArray *topLayoutReminderCount;
 //@property (nonatomic,retain) trackerObj *tObj;
 
 - (id) init;
-- (void) dealloc;
 
 - (void)loadTopLayoutTable;
 - (void)confirmTopLayoutEntry:(trackerObj *)tObj;

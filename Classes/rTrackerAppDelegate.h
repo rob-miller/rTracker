@@ -6,16 +6,11 @@
 //  Copyright Robert T. Miller 2010. All rights reserved.
 //
 
-@interface rTrackerAppDelegate : NSObject <UIApplicationDelegate> {
-    
-    UIWindow *window;
-    UINavigationController *navigationController;
-    NSNumber *pendingTid;
+@interface rTrackerAppDelegate : NSObject <UIApplicationDelegate>
 
-}
+@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
+@property (nonatomic, strong) NSNumber *pendingTid;
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
-@property (nonatomic, retain) NSNumber *pendingTid;
 @end
 

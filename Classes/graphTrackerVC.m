@@ -27,7 +27,7 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker, currVO, myFont, scrollView,gtv,titleView,voNameView,xAV,yAV,dpr,parentUTC,shakeLock;
+@synthesize tracker=_tracker, currVO=_currVO, myFont=_myFont, scrollView=_scrollView,gtv=_gtv,titleView=_titleView,voNameView=_voNameView,xAV=_xAV,yAV=_yAV,dpr=_dpr,parentUTC=_parentUTC,shakeLock=_shakeLock;
 
 /*
  - (void) loadView {
@@ -73,8 +73,8 @@
     
     // add views for title, axes and labels
     
-    myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
-    CGFloat labelHeight = myFont.lineHeight +2.0f;
+    self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
+    CGFloat labelHeight = self.myFont.lineHeight +2.0f;
     
     // view for title
     CGRect rect;
@@ -85,7 +85,6 @@
     
     gtTitleV *ttv = [[gtTitleV alloc] initWithFrame:rect];
     self.titleView = ttv;
-    [ttv release];
     self.titleView.tracker = self.tracker;
     self.titleView.myFont = self.myFont;
     //self.titleView.backgroundColor = [UIColor greenColor];  // debug
@@ -107,7 +106,6 @@
     
     gtYAxV *tyav = [[gtYAxV alloc] initWithFrame:rect];
     self.yAV = tyav;
-    [tyav release];
     //self.yAV.vogd = (vogd*) self.currVO.vogd;  // do below, not valid yet
     self.yAV.myFont = self.myFont;
     //self.yAV.backgroundColor = [UIColor yellowColor];  //debug;
@@ -131,7 +129,6 @@
     
     gtXAxV *txav = [[gtXAxV alloc] initWithFrame:rect];
     self.xAV = txav;
-    [txav release];
     self.xAV.myFont = self.myFont;
     // self.xAV.togd = self.tracker.togd;   // not valid yet
     //self.xAV.backgroundColor = [UIColor redColor];  //debug;
@@ -145,13 +142,12 @@
     // add scrollview for main graph
     UIScrollView *tsv = [[UIScrollView alloc] initWithFrame:gtvRect];
     self.scrollView = tsv;
-    [tsv release];
     [self.scrollView setBackgroundColor:[UIColor blackColor]];
     //[self.scrollView setBackgroundColor:[UIColor greenColor]];
     [self.scrollView setDelegate:self];
     [self.scrollView setBouncesZoom:YES];
     
-    [[self view] addSubview:scrollView];
+    [[self view] addSubview:self.scrollView];
     
     //[self.scrollView release];  // rtm 05 feb 2012 +1 alloc +1 self.retain
     //[[self view] setBackgroundColor:[UIColor yellowColor]];  //debug
@@ -184,7 +180,6 @@
     // add main graph view
     graphTrackerV *tgtv = [[graphTrackerV alloc]initWithFrame:gtvRect];
     self.gtv = tgtv;
-    [tgtv release];
 	self.gtv.tracker = self.tracker;
     self.gtv.gtvCurrVO = self.currVO;
     self.gtv.parentGTVC = (id) self;
@@ -248,23 +243,23 @@
 }
 
 - (void) doRecalculateFns {  // and re-create graphs 
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    self.tracker.goRecalculate = YES;
-    [self.tracker recalculateFns];
-    
-    if (self.tracker.goRecalculate) {
-        [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
-        self.tracker.goRecalculate = NO;
+    @autoreleasepool {
+        self.tracker.goRecalculate = YES;
+        [self.tracker recalculateFns];
+        
+        if (self.tracker.goRecalculate) {
+            [self.tracker setTOGD:self.gtv.frame]; // recreate all graph data
+            self.tracker.goRecalculate = NO;
+        }
+        
+        //[rTracker_resource finishActivityIndicator:self.scrollView navItem:nil disable:NO];
+        [rTracker_resource finishProgressBar:self.scrollView navItem:nil disable:NO];
+        
+        [self.gtv setNeedsDisplay];
+        [self.yAV setNeedsDisplay];
+        
+        self.shakeLock = 0; // release lock
     }
-    
-    //[rTracker_resource finishActivityIndicator:self.scrollView navItem:nil disable:NO];
-    [rTracker_resource finishProgressBar:self.scrollView navItem:nil disable:NO];
-    
-    [self.gtv setNeedsDisplay];
-    [self.yAV setNeedsDisplay];
-    
-    self.shakeLock = 0; // release lock
-    [pool drain];
     
 }
 
@@ -276,7 +271,7 @@
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
         // It has shake d
-        if (0 != OSAtomicTestAndSet(0, &(shakeLock))) {
+        if (0 != OSAtomicTestAndSet(0, &(_shakeLock))) {
             // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
             return;
         }
@@ -368,24 +363,7 @@
 
 - (void)dealloc {
     DBGLog(@"deallocating graphTrackerVC");
-	self.tracker = nil;
-	[tracker release];
-	self.currVO = nil;
-    [currVO release];
-    self.scrollView = nil;
-    [scrollView release];
-    self.gtv = nil;
-    [gtv release];
-    self.titleView = nil;
-    [titleView release];
-    self.voNameView = nil;
-    [voNameView release];
-    self.xAV = nil;
-    [xAV release];
-    self.yAV = nil;
-    [yAV release];
     
-    [super dealloc];
 }
 
 #pragma mark -
@@ -673,7 +651,7 @@
                 return;
     } else {
         // currVO is set, find it in list and then circle around trying to find next that has graph enabled
-        NSUInteger currNdx = [self.tracker.valObjTable indexOfObject:currVO];
+        NSUInteger currNdx = [self.tracker.valObjTable indexOfObject:self.currVO];
         NSUInteger ndx=currNdx+1;
         NSUInteger maxc = [self.tracker.valObjTable count];
         while (TRUE) {

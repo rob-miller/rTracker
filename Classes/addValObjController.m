@@ -20,13 +20,13 @@
 
 @implementation addValObjController
 
-@synthesize tempValObj; // =_tempValObj;
-@synthesize parentTrackerObj; // = _parentTrackerObj;
-@synthesize graphTypes; // = _graphTypes;
+@synthesize tempValObj=_tempValObj;
+@synthesize parentTrackerObj= _parentTrackerObj;
+@synthesize graphTypes= _graphTypes;
 
 // setting to _foo breaks size calc for picker, think because is iboutlet?
-@synthesize labelField;  // = _labelField; 
-@synthesize votPicker;  // = _votPicker;
+@synthesize labelField=_labelField;
+@synthesize votPicker= _votPicker;
 
 @synthesize tmpVtype = _tmpVtype;
 @synthesize tmpVcolor = _tmpVcolor;
@@ -48,19 +48,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (void)dealloc {
 	DBGLog(@"avoc dealloc");
 	
-	self.votPicker = nil;
-	[votPicker release];
-	self.labelField = nil;
-	[labelField release];
 	
-	self.tempValObj = nil;
-	[tempValObj release];
-	self.graphTypes = nil;
-	[graphTypes release];
-	self.parentTrackerObj = nil;
-	[parentTrackerObj release];
 	
-    [super dealloc];
 }
 
 
@@ -82,14 +71,12 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 								  target:self
 								  action:@selector(btnCancel)];
 	self.navigationItem.leftBarButtonItem = cancelBtn;
-	[cancelBtn release];
 	
 	UIBarButtonItem *saveBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 								target:self
 								action:@selector(btnSave)];
 	self.navigationItem.rightBarButtonItem = saveBtn;
-	[saveBtn release];
 
 
 	//[self.navigationController setToolbarHidden:YES animated:YES];
@@ -108,10 +95,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     */
     
 	self.toolbarItems = [NSArray arrayWithObjects: setupBtn, nil];
-	[setupBtn release];
 	
 	
-	sizeVOTLabel = [addValObjController maxLabelFromArray:parentTrackerObj.votArray];
+	sizeVOTLabel = [addValObjController maxLabelFromArray:self.parentTrackerObj.votArray];
 	NSArray *allGraphs = [valueObj allGraphs];
 	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
 	
@@ -120,9 +106,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     self.votPicker.showsSelectionIndicator = YES;
     
 	if (self.tempValObj == nil) {
-		tempValObj = [[valueObj alloc] init];
-		tempValObj.parentTracker = (id) self.parentTrackerObj;
-		self.graphTypes = nil;
+        self.tempValObj = [[valueObj alloc] initWithParentOnly:self.parentTrackerObj];
+		//self.graphTypes = nil;
 		self.graphTypes = [voState voGraphSetNum];  //[valueObj graphsForVOT:VOT_NUMBER];
 		//[self updateScrollView:(NSInteger)VOT_NUMBER];
 		[self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
@@ -168,7 +153,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-    [bg release];
 
 	[super viewDidLoad];
 }
@@ -181,7 +165,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	// Release any cached data, images, etc that aren't in use.
 
 	//parentTrackerObj.colorSet = nil;
-	parentTrackerObj.votArray = nil;
+	self.parentTrackerObj.votArray = nil;
 	
 }
 
@@ -211,7 +195,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     DBGLog(@"avoc: viewWillAppear");
 	
 	if (self.tempValObj) {
-		self.graphTypes = nil;
+		//self.graphTypes = nil;
 		self.graphTypes = [self.tempValObj.vos voGraphSet];
 		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
 	}
@@ -314,7 +298,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	DBGLog(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
 #endif
 	
-	[self.parentTrackerObj addValObj:tempValObj];
+	[self.parentTrackerObj addValObj:self.tempValObj];
 	
 	[self leave];
 	//[self.navigationController popViewControllerAnimated:YES];
@@ -332,7 +316,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	//[self presentModalViewController:ctvovc animated:YES];
     [self presentViewController:ctvovc animated:YES completion:NULL];
-	[ctvovc release];
 }
 
 
@@ -477,7 +460,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			dbgNSAssert(0,@"bad component for avo picker");
 			break;
 	}
-	[label autorelease];
 	return label;
 	
 }

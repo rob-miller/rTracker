@@ -11,7 +11,7 @@
 
 @implementation gtVONameV
 
-@synthesize currVO,myFont,voColor;
+@synthesize currVO=_currVO,myFont=_myFont,voColor=_voColor;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -39,7 +39,7 @@
 		tpos.y = self.bounds.size.height;
     
 	[self flipCTM:context];
-	[@"N" drawAtPoint:tpos withFont:myFont];
+	[@"N" drawAtPoint:tpos withFont:self.myFont];
 	[self flipCTM:context];
 }
 
@@ -50,12 +50,12 @@
 		tpos.y = self.bounds.size.height;
     
 	[self flipCTM:context];
-	[@"R" drawAtPoint:tpos withFont:myFont];
+	[@"R" drawAtPoint:tpos withFont:self.myFont];
 	[self flipCTM:context];
 }
 
 - (void) drawCVOName:(CGContextRef)context {
-    CGSize tsize = [self.currVO.valueName sizeWithFont:myFont];
+    CGSize tsize = [self.currVO.valueName sizeWithFont:self.myFont];
     CGPoint tpos = { 0.0f,(self.bounds.size.height - tsize.height)/2.0f }; // left side of view for vo name
     //CGPoint tpos = { ((self.bounds.size.width/2.0f) - tsize.width)/2.0f,((BORDER - tsize.height)/2.0f) };  // center left half
     //if (tpos.x < 0) 
@@ -64,7 +64,7 @@
         tpos.y = self.bounds.size.height;
     
     [self flipCTM:context];
-    [self.currVO.valueName drawAtPoint:tpos withFont:myFont];
+    [self.currVO.valueName drawAtPoint:tpos withFont:self.myFont];
     [self flipCTM:context];
 }
 
@@ -113,16 +113,5 @@
 
 
 
-- (void)dealloc
-{
-    self.currVO = nil;
-    [currVO release];
-    self.myFont = nil;
-    [myFont release];
-    self.voColor = nil;
-    [voColor release];
-    
-    [super dealloc];
-}
 
 @end

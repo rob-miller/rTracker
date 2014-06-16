@@ -11,13 +11,14 @@
 #import "trackerObj.h"
 #import "dbg-defs.h"
 
-@interface gtTitleV : UIView {
+@interface gtTitleV : UIView
+/*{
     trackerObj *tracker;
     UIFont *myFont;    
-}
+}*/
 
-@property (nonatomic,retain) trackerObj *tracker;
+@property (nonatomic,strong) trackerObj *tracker;
 // UI element properties 
-@property(nonatomic,retain) UIFont *myFont;
+@property(nonatomic,strong) UIFont *myFont;
 
 @end

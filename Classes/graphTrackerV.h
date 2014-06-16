@@ -12,21 +12,22 @@
 
 #define NOXMARK -1.0f
 
-@interface graphTrackerV : UIScrollView {
+@interface graphTrackerV : UIScrollView
+/*{
 	trackerObj *tracker;
     valueObj *gtvCurrVO;
     BOOL selectedVO;
     BOOL doDrawGraph;
     CGFloat xMark;
     id parentGTVC;
-}
+}*/
 
-@property(nonatomic,retain) trackerObj *tracker;
-@property(nonatomic,retain) valueObj *gtvCurrVO;
+@property(nonatomic,strong) trackerObj *tracker;
+@property(nonatomic,strong) valueObj *gtvCurrVO;
 @property(nonatomic) BOOL selectedVO;
 @property(nonatomic) BOOL doDrawGraph;
 @property(nonatomic) CGFloat xMark;
-@property(nonatomic,retain) id parentGTVC;
+@property(nonatomic,strong) id parentGTVC;
 
 //- (void)setTransform:(CGAffineTransform)newValue;
 

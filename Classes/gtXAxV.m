@@ -15,7 +15,7 @@
 
 
 @implementation gtXAxV
-@synthesize mytogd, myFont, scaleOriginX, scaleWidthX,graphSV;
+@synthesize mytogd=_mytogd, myFont=_myFont, scaleOriginX=_scaleOriginX, scaleWidthX=_scaleWidthX,graphSV=_graphSV;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -97,8 +97,8 @@
 
         //DBGLog(@"ds= _%@_  ts= _%@_",ds,ts);  // US region gets comma at end of ds
         
-		CGSize dsize = [ds sizeWithFont:myFont];
-		CGSize tsize = [ts sizeWithFont:myFont];
+		CGSize dsize = [ds sizeWithFont:self.myFont];
+		CGSize tsize = [ts sizeWithFont:self.myFont];
         
 		x-= DOFFST;
 		if ((i == 1
@@ -128,14 +128,5 @@
 	Stroke;
 }
 
-- (void)dealloc
-{
-    self.myFont = nil;
-    [myFont release];
-    self.mytogd = nil;
-    [mytogd release];
-    
-    [super dealloc];
-}
 
 @end

@@ -20,8 +20,8 @@
 
 @implementation privacyV
 
-@synthesize parentView, parent, ttv, ppwv, showing, pwState, tob;
-@synthesize clearBtn, configBtn,saveBtn, showSlider, ssValLab, nextBtn, prevBtn;
+@synthesize parentView=_parentView, parent=_parent, ttv=_ttv, ppwv=_ppwv, showing=_showing, pwState=_pwState, tob=_tob;
+@synthesize clearBtn=_clearBtn, configBtn=_configBtn,saveBtn=_saveBtn, showSlider=_showSlider, ssValLab=_ssValLab, nextBtn=_nextBtn, prevBtn=_prevBtn;
 
 #define BTNRADIUS 2
 #define LBLRADIUS 4
@@ -91,10 +91,9 @@ static int privacyValue=PRIVDFLT;
             UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
             [self addSubview:bg];
             [self sendSubviewToBack:bg];
-            [bg release];
         }
         self.layer.cornerRadius = 8;
-		showing = PVNOSHOW;
+		self.showing = PVNOSHOW;
         //self.hidden = YES;
         self.alpha = 0.0;
 
@@ -122,9 +121,6 @@ static int privacyValue=PRIVDFLT;
 }
 */
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark key value db interaction
@@ -193,11 +189,11 @@ static int privacyValue=PRIVDFLT;
 #pragma mark custom ivar setters and getters
 
 - (int) pwState {
-	if ((PWNEEDPASS == pwState) || (PWNEEDPRIVOK == pwState)) {
+	if ((PWNEEDPASS == _pwState) || (PWNEEDPRIVOK == _pwState)) {
 		if ([self.ppwv dbExistsPass])
-			pwState = PWQUERYPASS;
+			_pwState = PWQUERYPASS;
 	} 
-	return pwState;
+	return _pwState;
 }
 
 - (void) ppwvResponse {
@@ -207,17 +203,17 @@ static int privacyValue=PRIVDFLT;
 }
 
 - (ppwV*) ppwv {
-	if (nil == ppwv) {
-		ppwv = [[ppwV alloc] initWithParentView:self.parentView];
+	if (nil == _ppwv) {
+		_ppwv = [[ppwV alloc] initWithParentView:self.parentView];
 		//ppwv = [[ppwV alloc] initWithParentView:self];
-		ppwv.tob = self.tob;
-		ppwv.parent = self;
-		ppwv.parentAction = @selector(ppwvResponse);
+		_ppwv.tob = self.tob;
+		_ppwv.parent = self;
+		_ppwv.parentAction = @selector(ppwvResponse);
         
-		ppwv.topy = self.parentView.frame.size.height - self.frame.size.height;  
-        DBGLog(@"pv.y = %f  s.h = %f  ty= %f",self.parentView.frame.size.height,self.frame.size.height,ppwv.topy);
+		_ppwv.topy = self.parentView.frame.size.height - self.frame.size.height;
+        DBGLog(@"pv.y = %f  s.h = %f  ty= %f",self.parentView.frame.size.height,self.frame.size.height,_ppwv.topy);
 	}
-	return ppwv;
+	return _ppwv;
 }
 
 static NSTimeInterval lastShow=0;
@@ -273,8 +269,8 @@ static NSTimeInterval lastShow=0;
 // state control for what's showing
 
 - (void) setShowing:(unsigned int)newState {
-	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",showing,newState,[privacyV getPrivacyValue]);
-    if ((PVNOSHOW == showing) && (PVNOSHOW == newState))
+	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",_showing,newState,[privacyV getPrivacyValue]);
+    if ((PVNOSHOW == _showing) && (PVNOSHOW == newState))
         return;  // this happens when closing down.
     
     //[(RootViewController*) self.parent refreshToolBar:YES];
@@ -289,19 +285,18 @@ static NSTimeInterval lastShow=0;
                                                   cancelButtonTitle:@"I'll remember" 
                                                   otherButtonTitles:@"Skip for now",nil];
         [alert show]; 
-        [alert release];
         
         
                 
     } else if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features        
-		showing = PVNEEDPASS;
+		_showing = PVNEEDPASS;
         [self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
 		//[self.ppwv createPass:PVCONFIG cancel:PVNOSHOW]; // need more work // recurse on input newState, config on successful new pass
 
 	} else if (PVQUERY == newState) {
         //self.hidden = NO;
         self.alpha = 1.0;
-		if (PVNEEDPASS == self.showing) { // if just created, pass is currently up, set up pvquery behind keyboard
+		if (PVNEEDPASS == _showing) { // if just created, pass is currently up, set up pvquery behind keyboard
 			self.pwState = PWKNOWPASS;    // just successfully created password so don't ask again
 			[self showPVQ:TRUE];
 			//[self.ppwv hidePPWVAnimated:TRUE];  // don't hide and re-show
@@ -310,7 +305,7 @@ static NSTimeInterval lastShow=0;
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:kAnimationDuration];
 			
-            if (PVCONFIG == self.showing) {
+            if (PVCONFIG == _showing) {
                 [self.ppwv hidePPWVAnimated:FALSE];
                 [self hideConfigBtns:TRUE];
                 [self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
@@ -320,13 +315,13 @@ static NSTimeInterval lastShow=0;
 			
             [UIView commitAnimations];	
 		}
-		showing = PVQUERY;
+		_showing = PVQUERY;
 
 	} else if (PVNOSHOW == newState) {
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationDuration:kAnimationDuration];
 		
-		if (PVNEEDPASS == self.showing) { // if set pass is up, cancelled out of create
+		if (PVNEEDPASS == _showing) { // if set pass is up, cancelled out of create
             DBGLog(@"cancelled out of create pass");
 			[self.ppwv hidePPWVAnimated:FALSE];
             [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
@@ -334,7 +329,7 @@ static NSTimeInterval lastShow=0;
 
 			[self setPrivacyValue:(MINPRIV + [self dbTestKey:self.ttv.key])]; // 14.ix.2011 privacy not 0
 			
-			if (PVCONFIG == self.showing) {
+			if (PVCONFIG == _showing) {
 				[self.ppwv hidePPWVAnimated:FALSE];
 				[self hideConfigBtns:TRUE];
 			}
@@ -346,12 +341,12 @@ static NSTimeInterval lastShow=0;
         self.alpha = 0.0;
 		[UIView commitAnimations];
         
-		showing = PVNOSHOW;
+		_showing = PVNOSHOW;
 		
         
 	} else if (PVCONFIG == newState) {
-		if (PWKNOWPASS == self.pwState || PVCHECKPASS == self.showing) {
-			if (PVCHECKPASS == self.showing) {
+		if (PWKNOWPASS == self.pwState || PVCHECKPASS == _showing) {
+			if (PVCHECKPASS == _showing) {
 				self.pwState = PWKNOWPASS;   // just successfully entered password so don't ask again
 			//	[self hideConfigBtns:FALSE];
 			//	[UIView beginAnimations:nil context:NULL];
@@ -367,16 +362,16 @@ static NSTimeInterval lastShow=0;
 			[self.configBtn setTitle:CFGBTNLOCK forState:UIControlStateNormal];
             [self setTTV];
 			[UIView commitAnimations];
-			showing = PVCONFIG;
-            [(RootViewController*) self.parent refreshToolBar:YES];
+			_showing = PVCONFIG;
+            [self.parent refreshToolBar:YES];
 
 		} else {
-			showing = PVCHECKPASS;
+			_showing = PVCHECKPASS;
 			[self.ppwv checkPass:PVCONFIG cancel:PVQUERY];
 		}
 	
 	}
-    [(RootViewController*) self.parent refreshToolBar:YES];
+    [self.parent refreshToolBar:YES];
     //DBGLog(@"leaving setshowing, noshow= %d",(PVNOSHOW == showing));
 }
 
@@ -445,11 +440,11 @@ static NSTimeInterval lastShow=0;
 #pragma mark UI element getters
 
 - (tictacV *) ttv {
-	if (ttv == nil) {
-		ttv = [[tictacV alloc] initWithPFrame:self.frame];
-		ttv.tob = self.tob;
+	if (_ttv == nil) {
+		_ttv = [[tictacV alloc] initWithPFrame:self.frame];
+		_ttv.tob = self.tob;
 	}
-	return ttv;
+	return _ttv;
 }
 
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg {
@@ -468,21 +463,21 @@ static NSTimeInterval lastShow=0;
 }
 
 - (UIButton *) clearBtn {
-	if (clearBtn == nil) {
-		clearBtn = [self getBtn:@" Clear " 
+	if (_clearBtn == nil) {
+		_clearBtn = [self getBtn:@" Clear "
 						   borg: (CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), 
 							   self.frame.size.height * TICTACVRTFRAC}];
-		[clearBtn addTarget:self action:@selector(doClear:) forControlEvents:UIControlEventTouchUpInside ];		
-        clearBtn.layer.cornerRadius = BTNRADIUS;
+		[_clearBtn addTarget:self action:@selector(doClear:) forControlEvents:UIControlEventTouchUpInside ];
+        _clearBtn.layer.cornerRadius = BTNRADIUS;
         //clearBtn.backgroundColor = [UIColor whiteColor];
 	}
-	return clearBtn;
+	return _clearBtn;
 }
 
 - (UIButton *) configBtn {
-	if (configBtn == nil) {
+	if (_configBtn == nil) {
         
-		configBtn = [self getBtn:CFGBTNCONFIG
+		_configBtn = [self getBtn:CFGBTNCONFIG
 							borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), 
 								self.frame.size.height * TICTACVRTFRAC}];
          
@@ -493,82 +488,82 @@ static NSTimeInterval lastShow=0;
                                      self.frame.size.height * TICTACVRTFRAC,
                                      44, 44);
          */
-		[configBtn addTarget:self action:@selector(showConfig:) forControlEvents:UIControlEventTouchUpInside ];
-        configBtn.layer.cornerRadius = BTNRADIUS;
+		[_configBtn addTarget:self action:@selector(showConfig:) forControlEvents:UIControlEventTouchUpInside ];
+        _configBtn.layer.cornerRadius = BTNRADIUS;
         //configBtn.backgroundColor = [UIColor whiteColor];
 	}
-	return configBtn;
+	return _configBtn;
 }
 
 - (UIButton *) saveBtn {
-	if (saveBtn == nil) {
-		saveBtn = [self getBtn:@" Save "
+	if (_saveBtn == nil) {
+		_saveBtn = [self getBtn:@" Save "
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), 
 							  self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC))}];
-		[saveBtn addTarget:self action:@selector(saveConfig:) forControlEvents:UIControlEventTouchUpInside ];
-        saveBtn.layer.cornerRadius = BTNRADIUS;
-		[saveBtn setHidden:TRUE];
+		[_saveBtn addTarget:self action:@selector(saveConfig:) forControlEvents:UIControlEventTouchUpInside ];
+        _saveBtn.layer.cornerRadius = BTNRADIUS;
+		[_saveBtn setHidden:TRUE];
 	}
-	return saveBtn;
+	return _saveBtn;
 }
 
 - (UIButton *) prevBtn {
-	if (prevBtn == nil) {
-		prevBtn = [self getBtn:PRVBTNLBL 
+	if (_prevBtn == nil) {
+		_prevBtn = [self getBtn:PRVBTNLBL
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
-		[prevBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
-        prevBtn.layer.cornerRadius = BTNRADIUS;
-		[prevBtn setHidden:TRUE];
+		[_prevBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
+        _prevBtn.layer.cornerRadius = BTNRADIUS;
+		[_prevBtn setHidden:TRUE];
 	}
-	return prevBtn;
+	return _prevBtn;
 }
 - (UIButton *) nextBtn {
-	if (nextBtn == nil) {
-		nextBtn = [self getBtn:NXTBTNLBL
+	if (_nextBtn == nil) {
+		_nextBtn = [self getBtn:NXTBTNLBL
 						  borg:(CGPoint) {self.frame.origin.x+(self.frame.size.width * (1.0f - (TICTACHRZFRAC/2.0f))), // x= same as saveBtn
 							  (TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height}];  // y= same as showslider
-		[nextBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
-        nextBtn.layer.cornerRadius = BTNRADIUS;
-		[nextBtn setHidden:TRUE];
+		[_nextBtn addTarget:self action:@selector(adjustTTV:) forControlEvents:UIControlEventTouchUpInside ];
+        _nextBtn.layer.cornerRadius = BTNRADIUS;
+		[_nextBtn setHidden:TRUE];
 	}
-	return nextBtn;
+	return _nextBtn;
 }
 
 - (UILabel*) ssValLab {
-	if (ssValLab == nil) {
+	if (_ssValLab == nil) {
 		CGRect lframe = (CGRect) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 			self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC)), // y = same as saveBtn
 			[@"100" sizeWithFont:[UIFont systemFontOfSize:18]]};
 		lframe.origin.x -= lframe.size.width/2.0f;
-		ssValLab = [[UILabel alloc] initWithFrame:lframe];
-		ssValLab.textAlignment = UITextAlignmentRight;
-		ssValLab.text = @"2";  // MINPRIV +1
-        ssValLab.layer.cornerRadius = LBLRADIUS;
-		[ssValLab setHidden:TRUE];
+		_ssValLab = [[UILabel alloc] initWithFrame:lframe];
+		_ssValLab.textAlignment = UITextAlignmentRight;
+		_ssValLab.text = @"2";  // MINPRIV +1
+        _ssValLab.layer.cornerRadius = LBLRADIUS;
+		[_ssValLab setHidden:TRUE];
 		
 	}
-	return ssValLab;
+	return _ssValLab;
 
 }
 
 - (UISlider*) showSlider {
-	if (showSlider == nil) {
+	if (_showSlider == nil) {
 		CGRect sframe = {TICTACHRZFRAC * self.frame.size.width, // x orig = same as ttv
 			(TICTACVRTFRAC+TICTACHGTFRAC+TICTACVRTFRAC) * self.frame.size.height, // y orig = same below ttv as ttv is down from top
 			TICTACWIDFRAC * self.frame.size.width,  // width = same as ttv
 			TICTACVRTFRAC * self.frame.size.height * 0.8f};  // height = 80% of dstance to ttv
 										
-		showSlider = [[UISlider alloc] initWithFrame:sframe];
-		showSlider.backgroundColor = [UIColor clearColor];
-		showSlider.minimumValue = MINPRIV+1;
-		showSlider.maximumValue = MAXPRIV;
+		_showSlider = [[UISlider alloc] initWithFrame:sframe];
+		_showSlider.backgroundColor = [UIColor clearColor];
+		_showSlider.minimumValue = MINPRIV+1;
+		_showSlider.maximumValue = MAXPRIV;
 		//showSlider.continuous = FALSE;
-		[showSlider addTarget:self action:@selector(ssAction:) forControlEvents:UIControlEventValueChanged];
-		[showSlider setHidden:TRUE];
+		[_showSlider addTarget:self action:@selector(ssAction:) forControlEvents:UIControlEventValueChanged];
+		[_showSlider setHidden:TRUE];
 		
 	}
-	return showSlider;
+	return _showSlider;
 }
 
 

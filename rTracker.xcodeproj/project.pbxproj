@@ -119,6 +119,8 @@
 		D46D15D817CE8FFF00BB3EBE /* icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D717CE8FFF00BB3EBE /* icon80.png */; };
 		D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D473F25919050136000B0FC8 /* AudioToolbox.framework */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
+		D47B564519411739002B0CCA /* trackerCalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B564419411739002B0CCA /* trackerCalViewController.m */; };
+		D47B5648194118D5002B0CCA /* trackerCalCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */; };
 		D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
 		D47D169119028FBE006563B9 /* notifyReminderVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = D47D169019028FBE006563B9 /* notifyReminderVC2.m */; };
 		D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
@@ -167,6 +169,10 @@
 		D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C1873F128A971000A612C4 /* voDataEdit.xib */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4CB672F18B3FF7100096490 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
+		D4CCF43319422F3300BD2ECD /* TSQCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */; };
+		D4CCF43419422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */; };
+		D4CCF43519422F3300BD2ECD /* TSQCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */; };
+		D4CCF43619422F3300BD2ECD /* TSQCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
 		D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
@@ -262,8 +268,8 @@
 		D44386CF13A2216800268248 /* bkgnd1-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd1-320-460.png"; path = "Resources/png/bkgnd1-320-460.png"; sourceTree = "<group>"; };
 		D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd-cell1-320-56.png"; path = "Resources/png/bkgnd-cell1-320-56.png"; sourceTree = "<group>"; };
 		D44386D313A2626500268248 /* bkgnd2-320-460.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd2-320-460.png"; path = "Resources/png/bkgnd2-320-460.png"; sourceTree = SOURCE_ROOT; };
-		D44695C217D6894A00BB5A38 /* addValObjController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = addValObjController7.xib; path = Resources/xib/addValObjController7.xib; sourceTree = "<group>"; };
-		D44695C317D6894A00BB5A38 /* configTlistController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = configTlistController7.xib; path = Resources/xib/configTlistController7.xib; sourceTree = "<group>"; };
+		D44695C217D6894A00BB5A38 /* addValObjController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = addValObjController7.xib; path = ../Resources/xib/addValObjController7.xib; sourceTree = "<group>"; };
+		D44695C317D6894A00BB5A38 /* configTlistController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = configTlistController7.xib; path = ../Resources/xib/configTlistController7.xib; sourceTree = "<group>"; };
 		D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue.png"; path = "Resources/png/closedview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button-blue.png"; path = "Resources/png/fullview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button-blue.png"; path = "Resources/png/shadeview-button-blue.png"; sourceTree = "<group>"; };
@@ -275,13 +281,22 @@
 		D46D15D717CE8FFF00BB3EBE /* icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon80.png; path = Resources/png/icon80.png; sourceTree = "<group>"; };
 		D473F25919050136000B0FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
+		D47B564319411739002B0CCA /* trackerCalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalViewController.h; sourceTree = "<group>"; };
+		D47B564419411739002B0CCA /* trackerCalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerCalViewController.m; sourceTree = "<group>"; };
+		D47B5646194118D5002B0CCA /* trackerCalCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalCalendarRowCell.h; sourceTree = "<group>"; };
+		D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerCalCalendarRowCell.m; sourceTree = "<group>"; };
 		D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderVC2.xib; sourceTree = "<group>"; };
 		D47D168F19028FBE006563B9 /* notifyReminderVC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminderVC2.h; sourceTree = "<group>"; };
 		D47D169019028FBE006563B9 /* notifyReminderVC2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderVC2.m; sourceTree = "<group>"; };
+		D47ECFF019411BE600DCCF12 /* TimesSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimesSquare.h; sourceTree = "<group>"; };
+		D47ECFF119411BE600DCCF12 /* TSQCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarCell.h; sourceTree = "<group>"; };
+		D47ECFF219411BE600DCCF12 /* TSQCalendarMonthHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarMonthHeaderCell.h; sourceTree = "<group>"; };
+		D47ECFF319411BE600DCCF12 /* TSQCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarRowCell.h; sourceTree = "<group>"; };
+		D47ECFF419411BE600DCCF12 /* TSQCalendarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarView.h; sourceTree = "<group>"; };
 		D47FBB7E14A9E2D700CE0547 /* closedview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button.png"; path = "Resources/png/closedview-button.png"; sourceTree = "<group>"; };
 		D47FBB8014A9E2E300CE0547 /* fullview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button.png"; path = "Resources/png/fullview-button.png"; sourceTree = "<group>"; };
 		D47FBB8214A9E2F100CE0547 /* shadeview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button.png"; path = "Resources/png/shadeview-button.png"; sourceTree = "<group>"; };
-		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
+		D47FD4ED128C016600EFE8A7 /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = ../Resources/xib/voTBacc.xib; sourceTree = "<group>"; };
 		D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -291,15 +306,15 @@
 		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerObj.m; sourceTree = "<group>"; };
 		D487D7711260A77800298C1D /* configTVObjVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTVObjVC.h; sourceTree = "<group>"; };
 		D487D7721260A77800298C1D /* configTVObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTVObjVC.m; sourceTree = "<group>"; };
-		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = Resources/xib/configTVObjVC.xib; sourceTree = "<group>"; };
+		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = ../Resources/xib/configTVObjVC.xib; sourceTree = "<group>"; };
 		D48F9E7D119AA02A00B37C93 /* valueObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = valueObj.h; sourceTree = "<group>"; };
 		D48F9E7E119AA02A00B37C93 /* valueObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = valueObj.m; sourceTree = "<group>"; };
 		D48F9FAF119B4CA600B37C93 /* addValObjController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addValObjController.h; sourceTree = "<group>"; };
 		D48F9FB0119B4CA600B37C93 /* addValObjController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addValObjController.m; sourceTree = "<group>"; };
-		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = Resources/xib/addValObjController.xib; sourceTree = "<group>"; };
+		D48F9FB1119B4CA600B37C93 /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = ../Resources/xib/addValObjController.xib; sourceTree = "<group>"; };
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
-		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
+		D49854AF12312A400009E458 /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = ../Resources/xib/useTrackerController.xib; sourceTree = "<group>"; };
 		D4A0F8AB17D92E9100CB86E6 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/png/Default.png; sourceTree = "<group>"; };
 		D4A0F8AC17D92E9100CB86E6 /* launchRetina_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = launchRetina_7.png; path = Resources/png/launchRetina_7.png; sourceTree = "<group>"; };
 		D4A0F8AD17D92E9100CB86E6 /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~iphone.png"; path = "Resources/png/Default~iphone.png"; sourceTree = "<group>"; };
@@ -307,11 +322,11 @@
 		D4A0F8AF17D92E9100CB86E6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Resources/png/Default-568h@2x.png"; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
 		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
-		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
+		D4A3150C11903F5E00F062AC /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = ../Resources/xib/addTrackerController.xib; sourceTree = "<group>"; };
 		D4A316C01191987E00F062AC /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/xib/MainWindow.xib; sourceTree = "<group>"; };
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTlistController.m; sourceTree = "<group>"; };
-		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
+		D4A317B31192B7C800F062AC /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = ../Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
 		D4A700CB13798874005E0E23 /* togd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = togd.h; sourceTree = "<group>"; };
 		D4A700CC13798874005E0E23 /* togd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = togd.m; sourceTree = "<group>"; };
 		D4A700CE1379928D005E0E23 /* vogd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vogd.h; sourceTree = "<group>"; };
@@ -342,13 +357,17 @@
 		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voState.m; sourceTree = "<group>"; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
-		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
+		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = ../Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
 		D4C1873D128A971000A612C4 /* voDataEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voDataEdit.h; sourceTree = "<group>"; };
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
-		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
+		D4C1873F128A971000A612C4 /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = ../Resources/xib/voDataEdit.xib; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
 		D4CB672D18B3FF7100096490 /* voInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voInfo.h; sourceTree = "<group>"; };
 		D4CB672E18B3FF7100096490 /* voInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voInfo.m; sourceTree = "<group>"; };
+		D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarCell.m; sourceTree = "<group>"; };
+		D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarMonthHeaderCell.m; sourceTree = "<group>"; };
+		D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarRowCell.m; sourceTree = "<group>"; };
+		D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarView.m; sourceTree = "<group>"; };
 		D4D7DCEA125B25E00049EB93 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/png/checked.png; sourceTree = "<group>"; };
 		D4D7DCEC125B25F70049EB93 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/png/unchecked.png; sourceTree = "<group>"; };
 		D4D9B0DA17D9310B00296C4F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -477,6 +496,7 @@
 			children = (
 				28A0AAE50D9B0CCF005BE974 /* rTracker_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				D4A316C01191987E00F062AC /* MainWindow.xib */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -484,6 +504,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D47ECFEF19411BE600DCCF12 /* TimesSquare */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
 				D405303B1902D4FB009ABFC3 /* sounds */,
@@ -518,17 +539,6 @@
 				D4A0F8AD17D92E9100CB86E6 /* Default~iphone.png */,
 				D4A0F8AE17D92E9100CB86E6 /* launchRetina4_7.png */,
 				D4A0F8AF17D92E9100CB86E6 /* Default-568h@2x.png */,
-				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
-				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
-				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
-				D49854AF12312A400009E458 /* useTrackerController.xib */,
-				D44695C217D6894A00BB5A38 /* addValObjController7.xib */,
-				D44695C317D6894A00BB5A38 /* configTlistController7.xib */,
-				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
-				D4A3150C11903F5E00F062AC /* addTrackerController.xib */,
-				D4A316C01191987E00F062AC /* MainWindow.xib */,
-				D4A317B31192B7C800F062AC /* configTlistController.xib */,
-				D487D7731260A77800298C1D /* configTVObjVC.xib */,
 				D4FF224712304E050047518A /* rt-types.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
@@ -612,6 +622,23 @@
 			name = "csv support";
 			sourceTree = "<group>";
 		};
+		D47ECFEF19411BE600DCCF12 /* TimesSquare */ = {
+			isa = PBXGroup;
+			children = (
+				D47ECFF019411BE600DCCF12 /* TimesSquare.h */,
+				D47ECFF119411BE600DCCF12 /* TSQCalendarCell.h */,
+				D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */,
+				D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */,
+				D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */,
+				D47ECFF419411BE600DCCF12 /* TSQCalendarView.h */,
+				D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */,
+				D47ECFF219411BE600DCCF12 /* TSQCalendarMonthHeaderCell.h */,
+				D47ECFF319411BE600DCCF12 /* TSQCalendarRowCell.h */,
+			);
+			name = TimesSquare;
+			path = Classes/TimesSquare;
+			sourceTree = "<group>";
+		};
 		D4956B1F12E06EAA00B0BB9B /* valueObj classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -633,8 +660,10 @@
 				D4B6AE7B127EC38300C036ED /* voChoice.m */,
 				D4B6AE70127EC35E00C036ED /* voTextBox.h */,
 				D4B6AE71127EC35E00C036ED /* voTextBox.m */,
+				D47FD4ED128C016600EFE8A7 /* voTBacc.xib */,
 				D4C1873D128A971000A612C4 /* voDataEdit.h */,
 				D4C1873E128A971000A612C4 /* voDataEdit.m */,
+				D4C1873F128A971000A612C4 /* voDataEdit.xib */,
 				D4B6AE6B127EC34D00C036ED /* voText.h */,
 				D4B6AE6C127EC34D00C036ED /* voText.m */,
 				D4B6AE66127EC33500C036ED /* voNumber.h */,
@@ -687,20 +716,31 @@
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
 				D4588ADA1177497200AD2106 /* addTrackerController.h */,
 				D4588ADB1177497200AD2106 /* addTrackerController.m */,
+				D4A3150C11903F5E00F062AC /* addTrackerController.xib */,
 				D48F9FAF119B4CA600B37C93 /* addValObjController.h */,
 				D48F9FB0119B4CA600B37C93 /* addValObjController.m */,
+				D44695C217D6894A00BB5A38 /* addValObjController7.xib */,
+				D48F9FB1119B4CA600B37C93 /* addValObjController.xib */,
 				D487D7711260A77800298C1D /* configTVObjVC.h */,
 				D487D7721260A77800298C1D /* configTVObjVC.m */,
+				D487D7731260A77800298C1D /* configTVObjVC.xib */,
 				D4A317B11192B7C800F062AC /* configTlistController.h */,
 				D4A317B21192B7C800F062AC /* configTlistController.m */,
+				D44695C317D6894A00BB5A38 /* configTlistController7.xib */,
+				D4A317B31192B7C800F062AC /* configTlistController.xib */,
 				D49854AD12312A400009E458 /* useTrackerController.h */,
 				D49854AE12312A400009E458 /* useTrackerController.m */,
+				D49854AF12312A400009E458 /* useTrackerController.xib */,
 				D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */,
 				D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */,
 				D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */,
 				D47D168F19028FBE006563B9 /* notifyReminderVC2.h */,
 				D47D169019028FBE006563B9 /* notifyReminderVC2.m */,
 				D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */,
+				D47B564319411739002B0CCA /* trackerCalViewController.h */,
+				D47B564419411739002B0CCA /* trackerCalViewController.m */,
+				D47B5646194118D5002B0CCA /* trackerCalCalendarRowCell.h */,
+				D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */,
 				D4956B2112E0717400B0BB9B /* graphing */,
 				D4956B2312E076E100B0BB9B /* date picker */,
 				D4956B3A12E0886E00B0BB9B /* privacy */,
@@ -713,6 +753,7 @@
 			children = (
 				D4BBB57D12672C94000F8467 /* datePickerVC.h */,
 				D4BBB57E12672C94000F8467 /* datePickerVC.m */,
+				D4BBB57F12672C94000F8467 /* datePickerVC.xib */,
 				D4DC23FD138404140086E5F3 /* dpRslt.h */,
 				D4DC23FE138404140086E5F3 /* dpRslt.m */,
 			);
@@ -976,6 +1017,7 @@
 				D49854B012312A400009E458 /* useTrackerController.m in Sources */,
 				D4E5FDD8125283B1004BB4EC /* graphTrackerVC.m in Sources */,
 				D4E5FE4612529300004BB4EC /* graphTrackerV.m in Sources */,
+				D4CCF43519422F3300BD2ECD /* TSQCalendarRowCell.m in Sources */,
 				D47D169119028FBE006563B9 /* notifyReminderVC2.m in Sources */,
 				D487D7741260A77800298C1D /* configTVObjVC.m in Sources */,
 				D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */,
@@ -1001,9 +1043,14 @@
 				D4F02398137BFF7F0097AC16 /* gtTitleV.m in Sources */,
 				D4F0239B137BFFA10097AC16 /* gtXAxV.m in Sources */,
 				D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */,
+				D47B564519411739002B0CCA /* trackerCalViewController.m in Sources */,
+				D4CCF43419422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m in Sources */,
+				D4CCF43619422F3300BD2ECD /* TSQCalendarView.m in Sources */,
 				D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */,
 				D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */,
 				D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */,
+				D4CCF43319422F3300BD2ECD /* TSQCalendarCell.m in Sources */,
+				D47B5648194118D5002B0CCA /* trackerCalCalendarRowCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1085,6 +1132,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1099,6 +1147,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_NAME = rTracker;
@@ -1114,6 +1166,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -1126,6 +1179,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
@@ -1357,6 +1414,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -1369,6 +1427,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";

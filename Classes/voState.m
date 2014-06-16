@@ -16,7 +16,7 @@
 
 @implementation voState
 
-@synthesize vo,vosFrame;
+@synthesize vo=_vo,vosFrame=_vosFrame;
 
 - (id) init {
 	return [self initWithVO:nil];
@@ -30,12 +30,6 @@
 	return self;
 }
 
-- (void) dealloc {
-
-	//DBGLog(@"voState default dealloc");
-    // *vo is assigned not retained
-	[super dealloc];
-}
 
 - (int) getValCap {  // NSMutableString size for value
     return 10;
@@ -177,7 +171,7 @@
 	
 	cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	} else {
 		// the cell is being recycled, remove old embedded controls
@@ -239,7 +233,6 @@
     cell.backgroundColor = [UIColor clearColor];
 
 	[cell.contentView addSubview:label];
-	[label release];
 	
 	bounds.origin.y = maxLabel.height + (3.0*MARGIN); //CELL_HEIGHT_TALL/2.0 + MARGIN; // 38.0f; //bounds.size.height; // + BMARGIN;
 	bounds.size.height = /*CELL_HEIGHT_TALL/2.0 ; // */ maxLabel.height + (1.5*MARGIN);
@@ -264,7 +257,7 @@
 	
 	cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
         //DBGLog(@"new cell");
 	} else {

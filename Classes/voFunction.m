@@ -21,38 +21,11 @@
 
 @implementation voFunction
 
-@synthesize fnStrDict, fn1args, fn2args, fnTimeOps, epTitles, fnTitles, fnArray, fnSegNdx, ctvovcp, currFnNdx, rlab, votWoSelf;
+@synthesize fnStrDict=_fnStrDict, fn1args=_fn1args, fn2args=_fn2args, fnTimeOps=_fnTimeOps, epTitles=_epTitles, fnTitles=_fnTitles, fnArray=_fnArray, fnSegNdx=_fnSegNdx, ctvovcp=_ctvovcp, currFnNdx=_currFnNdx, rlab=_rlab, votWoSelf=_votWoSelf;
 
 #pragma mark -
 #pragma mark core object methods and support
 
-- (void) dealloc {
-    self.fnStrDict = nil;
-	[fnStrDict release];
-    self.fn1args = nil;
-	[fn1args release];
-    self.fn2args = nil;
-	[fn2args release];
-    self.fnTimeOps = nil;
-	[fnTimeOps release];
-	
-	self.epTitles = nil;
-	[epTitles release];
-	
-	self.fnArray = nil;
-	[fnArray release];
-    
-	self.fnTitles = nil;
-	[fnTitles release];
-	
-    self.rlab = nil;
-    [rlab release];
-    
-    self.votWoSelf = nil;
-    [votWoSelf release];
-    
-	[super dealloc];
-}
 
 - (void) saveFnArray {
 	// note this converts NSNumbers to NSStrings
@@ -137,78 +110,78 @@
 #pragma mark voFunction ivar getters
 
 - (NSArray*) epTitles {
-	if (epTitles == nil) {
+	if (_epTitles == nil) {
 		// n.b.: tied to FREP symbol defns in voFunctions.h
-		epTitles = [[NSArray alloc] initWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years",
+		_epTitles = [[NSArray alloc] initWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years",
                     @"cal days",@"cal weeks",@"cal months", @"cal years",nil];
 	}
-	return epTitles;
+	return _epTitles;
 }
 
 // current titles to display in picker for building function
 - (NSMutableArray*) fnTitles {
-	if (fnTitles == nil) {
-		fnTitles = [[NSMutableArray alloc] init];
+	if (_fnTitles == nil) {
+		_fnTitles = [[NSMutableArray alloc] init];
 	}
-	return fnTitles;
+	return _fnTitles;
 }
 
 // function as built so far
 - (NSMutableArray*) fnArray {
-	if (fnArray == nil) {
-		fnArray = [[NSMutableArray alloc] init];
+	if (_fnArray == nil) {
+		_fnArray = [[NSMutableArray alloc] init];
 	}
-	return fnArray;
+	return _fnArray;
 }
 
 
 // enumerate function class tokens
 
 - (NSArray*) fn1args {
-    if (nil == fn1args) {
+    if (nil == _fn1args) {
         int fn1argToks[] = { ARG1FNS };
         NSNumber *fn1argsArr[ARG1CNT];
         int i;
         for (i=0;i<ARG1CNT;i++) {
             fn1argsArr[i] = [NSNumber numberWithInt:fn1argToks[i]];
         }
-        fn1args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn1argsArr count:ARG1CNT] copyItems:YES];
+        _fn1args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn1argsArr count:ARG1CNT] copyItems:YES];
     }
-    return fn1args;
+    return _fn1args;
 }
 
 - (NSArray*) fn2args {
-    if (nil == fn2args) {
+    if (nil == _fn2args) {
         int fn2argToks[] = { ARG2FNS };
         NSNumber *fn2argsArr[ARG2CNT];
         int i;
         for (i=0;i<ARG2CNT;i++) {
             fn2argsArr[i] = [NSNumber numberWithInt:fn2argToks[i]];
         }
-        fn2args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn2argsArr count:ARG2CNT] copyItems:YES];
+        _fn2args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn2argsArr count:ARG2CNT] copyItems:YES];
     }
 
-    return fn2args;
+    return _fn2args;
 }
 
 - (NSArray*) fnTimeOps {
-    if (nil == fnTimeOps) {
+    if (nil == _fnTimeOps) {
         int fnTimeOpToks[] = { TIMEFNS };
         NSNumber *fnTimeOpsArr[TIMECNT];
         int i;
         for (i=0;i<TIMECNT;i++) {
             fnTimeOpsArr[i] = [NSNumber numberWithInt:fnTimeOpToks[i]];
         }
-        fnTimeOps = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fnTimeOpsArr count:TIMECNT] copyItems:YES];
+        _fnTimeOps = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fnTimeOpsArr count:TIMECNT] copyItems:YES];
     }
-    return fnTimeOps;
+    return _fnTimeOps;
 }
 
 
 // map from token, vid to str
 
 - (NSDictionary*) fnStrDict {
-    if (nil == fnStrDict) {
+    if (nil == _fnStrDict) {
         int fnTokArr[] = { PARENFNS, OTHERFNS };
         NSString *fnStrArr[] = { ARG1STRS, ARG2STRS, TIMESTRS, PARENSTRS, OTHERSTRS };
         NSNumber *fnTokNSNarr[TOTFNCNT];
@@ -227,9 +200,9 @@
             fnTokNSNarr[j++] = [NSNumber numberWithInt:fnTokArr[i]];
         }
         //fnStrDict = [NSDictionary dictionaryWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
-        fnStrDict = [[NSDictionary alloc] initWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
+        _fnStrDict = [[NSDictionary alloc] initWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
     }
-    return fnStrDict;
+    return _fnStrDict;
 }
 
 /*
@@ -247,7 +220,7 @@
 */
 
 - (NSArray*)votWoSelf {
-    if (nil == votWoSelf) {
+    if (nil == _votWoSelf) {
         //if (0 > self.vo.vid) {  // temporary vo waiting for save so not included in tracker's vo table
         //  -> no, could be editinging an already existing entry
         //    votWoSelf = [NSArray arrayWithArray:MyTracker.valObjTable];
@@ -260,7 +233,7 @@
                 }
             }
             //votWoSelf = [NSArray arrayWithArray:tvot];
-            votWoSelf = [[NSArray alloc] initWithArray:tvot];
+            _votWoSelf = [[NSArray alloc] initWithArray:tvot];
             // not needed? [tvot release];
         //}
 /*
@@ -272,7 +245,7 @@
         DBGLog(@".");
 */
     }
-    return votWoSelf;
+    return _votWoSelf;
 }
 
 #pragma mark -
@@ -386,8 +359,6 @@
 #if DEBUGFUNCTION
         DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
 #endif
-		[gregorian release];
-		[offsetComponents release];
 	}
 
     to.sql = nil;
@@ -813,11 +784,11 @@
 }
 
 - (UILabel*) rlab {
-    if (nil == rlab) {
-        rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
-        rlab.textAlignment = UITextAlignmentRight;
+    if (nil == _rlab) {
+        _rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
+        _rlab.textAlignment = UITextAlignmentRight;
     }
-    return rlab;
+    return _rlab;
 }
 - (UIView*) voDisplay:(CGRect)bounds {
 		
@@ -1044,6 +1015,9 @@
 //
 
 - (NSString*) voFnDefnStr {
+    if (0==[self.fnArray count]) { // one last try if nothing there
+        [self loadConfig];
+    }
 	NSMutableString *fstr = [[NSMutableString alloc] init];
 	BOOL closePending = NO;  //square brackets around target of Fn1Arg
 	BOOL constantPending = NO;  // next item is a number not tok or vid
@@ -1081,7 +1055,7 @@
 		if (! closePending)
 			[fstr appendString:@" "];
 	}
-	return [fstr autorelease];
+	return fstr;
 }
 
 
@@ -1281,7 +1255,7 @@
 //
 
 - (void) funcDone {
-	if (fnArray != nil && [self.fnArray count] != 0) {
+	if (self.fnArray != nil && [self.fnArray count] != 0) {
 		//DBGLog(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
 		[self saveFnArray];
 		DBGLog(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
@@ -1322,9 +1296,6 @@
 		
 		ctvovc.toolBar.items = [NSArray arrayWithObjects: db, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem, nil];
 		
-		[segmentedControl release];
-		[scButtonItem release];
-		[flexibleSpaceButtonItem release];
 	} else {
         ctvovc.toolBar.items = [NSArray arrayWithObjects: db,nil];
     }
@@ -1712,9 +1683,6 @@
         
     }
 
-    [gregorian release];
-    [offsetComponents release];
-    [dates release];
 
 }
 

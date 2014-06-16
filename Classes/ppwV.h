@@ -10,7 +10,8 @@
 
 #import "tObjBase.h"
 
-@interface ppwV : UIView <UITextFieldDelegate> {
+@interface ppwV : UIView <UITextFieldDelegate>
+/*{
 	tObjBase *tob;
 	id parent;
 	SEL parentAction;
@@ -24,24 +25,24 @@
     UITextField *activeField;
     //CGRect saveFrame;
     
-}
+}*/
 
-@property (nonatomic,retain) tObjBase *tob;
-@property (nonatomic,retain) id parent;
+@property (nonatomic,strong) tObjBase *tob;
+@property (nonatomic,strong) id parent;
 @property (nonatomic) SEL parentAction;
 @property (nonatomic) CGFloat topy;
 @property (nonatomic) unsigned int ok;
 @property (nonatomic) unsigned int cancel;
 @property (nonatomic) unsigned int next;
-@property (nonatomic,retain) UIView *parentView;
+@property (nonatomic,strong) UIView *parentView;
 
-@property (nonatomic,retain) UITextField *activeField;
+@property (nonatomic,strong) UITextField *activeField;
 //@property (nonatomic) CGRect saveFrame;
 
 // UI elements
-@property (nonatomic,retain) UILabel* topLabel;
-@property (nonatomic,retain) UITextField* topTF;
-@property (nonatomic,retain) UIButton* cancelBtn;
+@property (nonatomic,strong) UILabel* topLabel;
+@property (nonatomic,strong) UITextField* topTF;
+@property (nonatomic,strong) UIButton* cancelBtn;
 
 - (id) initWithParentView:(UIView*)pv;
 

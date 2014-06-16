@@ -11,7 +11,7 @@
 
 @implementation gtTitleV
 
-@synthesize tracker,myFont;
+@synthesize tracker=_tracker,myFont=_myFont;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -29,7 +29,7 @@
     //CGContextRef context = UIGraphicsGetCurrentContext();
 	[[UIColor whiteColor] set];
     
-	CGSize tsize = [self.tracker.trackerName sizeWithFont:myFont];
+	CGSize tsize = [self.tracker.trackerName sizeWithFont:self.myFont];
     CGPoint tpos = { (self.bounds.size.width - tsize.width)/2.0f,(self.bounds.size.height - tsize.height)/2.0f };  
 	if (tpos.x < 0) 
 		tpos.x=0;
@@ -40,7 +40,7 @@
 	//CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
 	//CGContextConcatCTM(context,tm);
     
-	[self.tracker.trackerName drawAtPoint:tpos withFont:myFont];
+	[self.tracker.trackerName drawAtPoint:tpos withFont:self.myFont];
 	//[self flipCTM];
 	//tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
 	////CGContextConcatCTM(context,tm);
@@ -48,12 +48,6 @@
 }
 
 
-- (void)dealloc
-{
-    self.tracker = nil;
-    [tracker release];
-    [super dealloc];
-}
 
 
 #pragma mark -

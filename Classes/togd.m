@@ -14,7 +14,7 @@
 #import "dbg-defs.h"
 
 @implementation togd
-@synthesize pto, rect, bbox, firstDate, lastDate, dateScale, dateScaleInv;
+@synthesize pto=_pto, rect=_rect, bbox=_bbox, firstDate=_firstDate, lastDate=_lastDate, dateScale=_dateScale, dateScaleInv=_dateScaleInv;
 
 - (id) init {
     return ([self initWithData:nil rect:CGRectZero]);
@@ -49,8 +49,8 @@
         self.lastDate += dateScaleExpand;
         self.firstDate -= dateScaleExpand;
         
-        self.dateScale = d(rect.size.width) / (d(self.lastDate) - d(self.firstDate));
-        self.dateScaleInv = d(self.lastDate - self.firstDate) / d(rect.size.width);
+        self.dateScale = d(self.rect.size.width) / (d(self.lastDate) - d(self.firstDate));
+        self.dateScaleInv = d(self.lastDate - self.firstDate) / d(self.rect.size.width);
         
     }
     return self;
@@ -60,15 +60,9 @@
     for (valueObj *vo in self.pto.valObjTable) {
         id tvogd = [vo.vos newVOGD];
         vo.vogd = tvogd;
-        [tvogd release];
         //[vo.vogd release]; // rtm 05 feb 2012  +1 for new (alloc), +1 for vo retain
     }    
 }
 
-- (void) dealloc {
-    self.pto = nil;
-    [pto release];
-    [super dealloc];
-}
 
 @end

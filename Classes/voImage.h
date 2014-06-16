@@ -10,19 +10,20 @@
 #import "voState.h"
 #import "voDataEdit.h"
 
-@interface voImage : voState <UIImagePickerControllerDelegate, UINavigationControllerDelegate>{
+@interface voImage : voState <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+/*{
 	UIImageView *imageView;
 	UIButton *takePhotoButton;
 	UIButton *selectFromCameraRollButton;
 	UIButton *pickFromLibraryButton;
 	voDataEdit *devc;
-}
+}*/
 
-@property (nonatomic,retain) UIImageView *imageView;
-@property (nonatomic,retain) UIButton *takePhotoButton;
-@property (nonatomic,retain) UIButton *selectFromCameraRollButton;
-@property (nonatomic,retain) UIButton *pickFromLibraryButton;
+@property (nonatomic,strong) UIImageView *imageView;
+@property (nonatomic,strong) UIButton *takePhotoButton;
+@property (nonatomic,strong) UIButton *selectFromCameraRollButton;
+@property (nonatomic,strong) UIButton *pickFromLibraryButton;
 
-@property (nonatomic, assign) voDataEdit *devc;
+@property (nonatomic, unsafe_unretained) voDataEdit *devc;
 
 @end

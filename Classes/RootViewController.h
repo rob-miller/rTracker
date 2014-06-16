@@ -18,9 +18,12 @@
 //
 
 #import "trackerList.h"
-#import "privacyV.h"
+//#import "privacyV.h"
+@class privacyV;
 
-@interface RootViewController : UITableViewController {
+@interface RootViewController : UITableViewController
+/*
+ {
 
 	trackerList *tlist;
 	privacyV *privacyObj;
@@ -33,24 +36,25 @@
     NSMutableArray *stashedTIDs;
     NSMutableDictionary *scheduledReminderCounts;
 }
+*/
 
-@property (nonatomic,retain) trackerList *tlist;
-@property (nonatomic, retain) privacyV *privacyObj;
+@property (nonatomic,strong) trackerList *tlist;
+@property (nonatomic, strong) privacyV *privacyObj;
 @property (atomic) int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
-@property (nonatomic,retain) NSNumber *stashedPriv;
+@property (nonatomic,strong) NSNumber *stashedPriv;
 //@property (nonatomic) BOOL openUrlLock;
 //@property (nonatomic,retain) NSURL *inputURL;
 @property (nonatomic) BOOL readingFile;
-@property (nonatomic,retain) NSMutableArray *stashedTIDs;
-@property (nonatomic,retain) NSMutableDictionary *scheduledReminderCounts;
+@property (nonatomic,strong) NSMutableArray *stashedTIDs;
+@property (nonatomic,strong) NSMutableDictionary *scheduledReminderCounts;
 
 // UI element properties 
-@property (nonatomic, retain) UIBarButtonItem *privateBtn;
-@property (nonatomic, retain) UIBarButtonItem *helpBtn;
-@property (nonatomic, retain) UIBarButtonItem *addBtn;
-@property (nonatomic, retain) UIBarButtonItem *editBtn;
-@property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *privateBtn;
+@property (nonatomic, strong) UIBarButtonItem *helpBtn;
+@property (nonatomic, strong) UIBarButtonItem *addBtn;
+@property (nonatomic, strong) UIBarButtonItem *editBtn;
+@property (nonatomic, strong) UIBarButtonItem *flexibleSpaceButtonItem;
 
 //@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 //@property (nonatomic, retain) UIBarButtonItem *payBtn;
@@ -71,5 +75,7 @@
 
 - (void) startRvcActivityIndicator;
 - (void) finishRvcActivityIndicator;
+
+- (NSInteger) pendingNotificationCount;
 
 @end

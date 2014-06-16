@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "voState.h"
 
-@interface voSlider : voState {
+@interface voSlider : voState
+/*{
     UISlider *sliderCtl;
     CGFloat sdflt;
-}
+}*/
 
-@property (nonatomic,retain) UISlider *sliderCtl;
+@property (nonatomic,strong) UISlider *sliderCtl;
 @property (nonatomic) CGFloat sdflt;
 
 @end

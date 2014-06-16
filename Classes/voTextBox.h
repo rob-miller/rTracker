@@ -12,7 +12,8 @@
 
 #import "useTrackerController.h"
 
-@interface voTextBox : voState <UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate>{
+@interface voTextBox : voState <UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate>
+/*{
 
     UIButton *tbButton;
 	UITextView *textView;
@@ -37,27 +38,27 @@
 	
     useTrackerController *parentUTC;
     
-}
+}*/
 
-@property (nonatomic,retain) UIButton *tbButton;
-@property (nonatomic,retain) UITextView *textView;
-@property (nonatomic,assign) IBOutlet UIView *accessoryView;
-@property (nonatomic,retain) IBOutlet UIButton *addButton;
-@property (nonatomic,retain) IBOutlet UISegmentedControl *segControl;
-@property (nonatomic,assign) UIPickerView *pv;
+@property (nonatomic,strong) UIButton *tbButton;
+@property (nonatomic,strong) UITextView *textView;
+@property (nonatomic,unsafe_unretained) IBOutlet UIView *accessoryView;
+@property (nonatomic,strong) IBOutlet UIButton *addButton;
+@property (nonatomic,strong) IBOutlet UISegmentedControl *segControl;
+@property (nonatomic,strong) UIPickerView *pv;
 
 @property (nonatomic,readonly) NSArray *alphaArray;
-@property (nonatomic,retain) NSArray *namesArray;
-@property (nonatomic,retain) NSArray *historyArray;
-@property (nonatomic,retain) NSArray *historyNdx;
-@property (nonatomic,retain) NSArray *namesNdx;
+@property (nonatomic,strong) NSArray *namesArray;
+@property (nonatomic,strong) NSArray *historyArray;
+@property (nonatomic,strong) NSArray *historyNdx;
+@property (nonatomic,strong) NSArray *namesNdx;
 
-@property (nonatomic,retain) useTrackerController *parentUTC;
+@property (nonatomic,strong) useTrackerController *parentUTC;
 
 //@property (nonatomic,retain) NSMutableDictionary *peopleDictionary;
 //@property (nonatomic,retain) NSMutableDictionary *historyDictionary;
 
-@property (nonatomic, assign) voDataEdit *devc;
+@property (nonatomic, unsafe_unretained) voDataEdit *devc;
 @property (nonatomic) CGRect saveFrame;
 
 @property (nonatomic) BOOL showNdx;

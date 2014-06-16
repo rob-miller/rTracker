@@ -14,20 +14,14 @@
 #import "trackerObj.h"
 
 @interface addValObjController : UIViewController <UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource> 
-{
-	valueObj *tempValObj;
-	trackerObj *parentTrackerObj;
-	NSArray *graphTypes;
-    
-}
 
-@property (nonatomic,retain) valueObj *tempValObj;
-@property (nonatomic,retain) trackerObj *parentTrackerObj;  // this makes a retain cycle....
-@property (nonatomic,retain) NSArray *graphTypes;
+@property (nonatomic,strong) valueObj *tempValObj;
+@property (nonatomic,strong) trackerObj *parentTrackerObj;  // this makes a retain cycle....
+@property (nonatomic,strong) NSArray *graphTypes;
 
 // UI element properties 
-@property (nonatomic,retain) IBOutlet UITextField *labelField;
-@property (nonatomic,retain) IBOutlet UIPickerView *votPicker;
+@property (nonatomic,strong) IBOutlet UITextField *labelField;
+@property (nonatomic,strong) IBOutlet UIPickerView *votPicker;
 
 +(CGSize) maxLabelFromArray:(const NSArray *)arr;
 

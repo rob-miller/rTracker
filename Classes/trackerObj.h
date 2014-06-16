@@ -24,7 +24,9 @@
 #define GRAPHMAXDAYSDFLT 0
 
 
-@interface trackerObj : tObjBase {
+@interface trackerObj : tObjBase
+/*
+ {
 	//NSInteger toid;
 	NSString *trackerName;
 	NSDate *trackerDate;
@@ -56,30 +58,30 @@
     
     int changedDateFrom;
     
-    NSMutableDictionary *csvheaderDict;
+    NSMutableDictionary *csvHeaderDict;
 }
-
+*/
 //@property (nonatomic) int tid;
-@property (nonatomic,retain) NSString *trackerName;
-@property (nonatomic,retain) NSDate *trackerDate;
-@property (nonatomic,retain) NSMutableDictionary *optDict;
-@property (nonatomic,retain) NSMutableArray *valObjTable;
-@property (nonatomic,retain) NSMutableArray *reminders;
+@property (nonatomic,strong) NSString *trackerName;
+@property (nonatomic,strong) NSDate *trackerDate;
+@property (nonatomic,strong) NSMutableDictionary *optDict;
+@property (nonatomic,strong) NSMutableArray *valObjTable;
+@property (nonatomic,strong) NSMutableArray *reminders;
 @property (nonatomic) NSInteger reminderNdx;
 @property (nonatomic) CGSize maxLabel;
 @property (nonatomic) NSInteger nextColor;
-@property (nonatomic,retain) NSArray *votArray;
-@property (nonatomic,assign) UIControl *activeControl;
-@property (nonatomic,assign) UIViewController *vc;
-@property (nonatomic,retain) NSDateFormatter *dateFormatter;
-@property (nonatomic,retain) NSDateFormatter *dateOnlyFormatter;
+@property (nonatomic,strong) NSArray *votArray;
+@property (nonatomic,unsafe_unretained) UIControl *activeControl;
+@property (nonatomic,unsafe_unretained) UIViewController *vc;
+@property (nonatomic,strong) NSDateFormatter *dateFormatter;
+@property (nonatomic,strong) NSDateFormatter *dateOnlyFormatter;
 @property (nonatomic) NSUInteger csvReadFlags;
-@property (nonatomic,retain) NSString *csvProblem;
-@property (nonatomic,retain) id togd;
+@property (nonatomic,strong) NSString *csvProblem;
+@property (nonatomic,strong) id togd;
 @property (nonatomic) NSInteger prevTID;
 @property (nonatomic) BOOL goRecalculate;
 @property (nonatomic) int changedDateFrom;
-@property (nonatomic,retain) NSMutableDictionary *csvHeaderDict;
+@property (nonatomic,strong) NSMutableDictionary *csvHeaderDict;
 
 - (id) init:(int) tid;
 - (id) initWithDict:(NSDictionary*)dict;

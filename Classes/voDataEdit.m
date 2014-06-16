@@ -13,7 +13,7 @@
 
 @implementation voDataEdit
 
-@synthesize vo;
+@synthesize vo=_vo;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -82,7 +82,6 @@
 	self.vo = nil;
 	//[vo release];
 
-    [super dealloc];
 }
 
 

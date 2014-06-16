@@ -12,22 +12,24 @@
 #import "notifyReminderViewController.h"
 
 @interface notifyReminderVC2 : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource>
+/*
 {
     notifyReminderViewController *parentNRVC;
     NSArray *soundFiles;
 }
+*/
 
-@property (nonatomic,retain) notifyReminderViewController *parentNRVC;
-@property (nonatomic,retain) NSArray *soundFiles;
+@property (nonatomic,strong) notifyReminderViewController *parentNRVC;
+@property (nonatomic,strong) NSArray *soundFiles;
 
-@property (retain, nonatomic) IBOutlet UIDatePicker *datePicker;
-@property (retain, nonatomic) IBOutlet UIPickerView *soundPicker;
+@property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (strong, nonatomic) IBOutlet UIPickerView *soundPicker;
 
 
 - (IBAction)btnDone:(id)sender;
 - (IBAction)btnHelp:(id)sender;
 - (IBAction)btnTest:(id)sender;
 
-@property (retain, nonatomic) IBOutlet UIButton *btnTestOutlet;
+@property (strong, nonatomic) IBOutlet UIButton *btnTestOutlet;
 
 @end

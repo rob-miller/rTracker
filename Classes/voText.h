@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "voState.h"
 
-@interface voText : voState <UITextFieldDelegate> {
+@interface voText : voState <UITextFieldDelegate>
+/*{
     UITextField *dtf;
-}
+}*/
 
-@property (nonatomic,retain) UITextField *dtf;
+@property (nonatomic,strong) UITextField *dtf;
 
 
 @end

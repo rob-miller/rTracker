@@ -14,26 +14,21 @@
 
 @implementation configTlistController
 
-@synthesize tlist;
-@synthesize table;
+@synthesize tlist=_tlist;
+@synthesize table=_table;
+@synthesize deleteIndexPath=_deleteIndexPath;
 
 static int selSegNdx=SegmentEdit;
 
-NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
-UITableView *deleteTableView;
 
 #pragma mark -
 #pragma mark core object methods and support
 
 - (void)dealloc {
 	DBGLog(@"configTlistController dealloc");
-	self.tlist = nil;
-	[tlist release];
 	 
-	self.table = nil;
-	[table release];
 	
-    [super dealloc];
+    
 }
 
 
@@ -41,12 +36,12 @@ UITableView *deleteTableView;
 # pragma mark view support
 
 - (void) startExport {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [self.tlist exportAll];
+    @autoreleasepool {
+        [self.tlist exportAll];
+        
+        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
     
-    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
-    
-    [pool drain];
+    }
 }
 
 - (void) btnExport {
@@ -92,8 +87,8 @@ UITableView *deleteTableView;
 */
 	//NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
 	//self.toolbarItems = tbArray;
+    [self.navigationController setToolbarHidden:YES animated:NO];
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
-	[exportBtn release];
 
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     //self.table.backgroundView = bg;
@@ -102,7 +97,6 @@ UITableView *deleteTableView;
     //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-    [bg release];
 
 	[super viewDidLoad];
 }
@@ -181,19 +175,21 @@ UITableView *deleteTableView;
 
 - (void) delTracker
 {
-	NSUInteger row = [deleteIndexPath row];
+	NSUInteger row = [self.deleteIndexPath row];
 	DBGLog(@"checkTrackerDelete: will delete row %d ",row);
 	[self.tlist deleteTrackerAllRow:row];
-	[deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:deleteIndexPath] 
-						   withRowAnimation:UITableViewRowAnimationFade];		
-	[self.tlist reloadFromTLT];	
+	//[self.deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
+	//					   withRowAnimation:UITableViewRowAnimationFade];
+	[self.table deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
+                                withRowAnimation:UITableViewRowAnimationFade];
+	[self.tlist reloadFromTLT];
 }
 
 - (void) delTrackerRecords {
-	NSUInteger row = [deleteIndexPath row];
+	NSUInteger row = [self.deleteIndexPath row];
 	DBGLog(@"checkTrackerDelete: will delete records only for row %d ",row);
 	[self.tlist deleteTrackerRecordsRow:row];
-	[self.tlist reloadFromTLT];	
+	[self.tlist reloadFromTLT];
 }
 
 - (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
@@ -204,12 +200,13 @@ UITableView *deleteTableView;
 		[self delTracker];
 	} else if (buttonIndex == checkTrackerDelete.cancelButtonIndex) {
 		DBGLog(@"cancelled tracker delete");
+        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
 	} else {
         [self delTrackerRecords];
+        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     }
 
-    [deleteIndexPath release];
-    [deleteTableView release];
+    self.deleteIndexPath = nil;
 	
 }
 					 
@@ -243,7 +240,7 @@ UITableView *deleteTableView;
 		
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
 	// Configure the cell.
@@ -271,8 +268,7 @@ UITableView *deleteTableView;
 					 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
 forRowAtIndexPath:(NSIndexPath *)indexPath {
-	deleteIndexPath = [indexPath retain];
-    deleteTableView = [tableView retain];
+	self.deleteIndexPath = indexPath;;
 	
     NSString *acTitle;
     NSString *tname = [self.tlist.topLayoutNames objectAtIndex:[indexPath row]];
@@ -280,7 +276,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	int toid = [self.tlist getTIDfromIndex:[indexPath row]];
 	trackerObj *to = [[trackerObj alloc] init:toid];
 	int entries = [to countEntries];
-    [to release];
     NSString *delRecTitle;
     if (entries==0) {
         acTitle = [NSString stringWithFormat:@"Tracker %@ has no records.",tname];
@@ -300,7 +295,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                          destructiveButtonTitle:@"Delete tracker"
                                          otherButtonTitles:delRecTitle,nil];
 		[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
-		[checkTrackerDelete release];
 }
 
 // Override to support row selection in the table view.
@@ -322,11 +316,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		atc.tlist = self.tlist;
         trackerObj *tto = [[trackerObj alloc] init:toid];
 		atc.tempTrackerObj = tto;
-        [tto release];
 	
 		[self.navigationController pushViewController:atc animated:YES];
         //[atc.tempTrackerObj release]; // rtm 05 feb 2012 +1 alloc/init, +1 atc.temptto retain 
-		[atc release];
 	} else if (selSegNdx == SegmentCopy) {
 		int toid = [self.tlist getTIDfromIndex:row];
 		DBGLog(@"will copy toid %d",toid);
@@ -335,8 +327,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];
 		[self.tlist addToTopLayoutTable:nTO];
         //[self.tlist confirmTopLayoutEntry:nTO];
-		[oTO release];
-		[nTO release];
 		//[self.tlist loadTopLayoutTable];
 		[self.table reloadData];
 

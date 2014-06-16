@@ -23,12 +23,15 @@
 
 #import "dbg-defs.h"
 
+//@class voState;
+@class vogd;
+
 #define f(x) ((CGFloat) (x))
 
 @implementation valueObj
 
-@synthesize vid, vtype, vpriv, valueName, value, vcolor, vGraphType, display, useVO, optDict, parentTracker, checkButtonUseVO;
-@synthesize vos,vogd;  //, retrievedData;
+@synthesize vid=_vid, vtype=_vtype, vpriv=_vpriv, valueName=_valueName, value=_value, vcolor=_vcolor, vGraphType=_vGraphType, display=_display, useVO=_useVO, optDict=_optDict, parentTracker=_parentTracker, checkButtonUseVO=_checkButtonUseVO;
+@synthesize vos=_vos,vogd=_vogd;  //, retrievedData;
 
 //extern const NSInteger kViewTag;
 extern const NSArray *numGraphs,*textGraphs,*pickGraphs,*boolGraphs;
@@ -90,6 +93,10 @@ in_vpriv:(NSInteger)in_vpriv
 	return self;
 }
 
+- (id) initWithParentOnly:(trackerObj*)parentTO {
+    return [self initWithData:parentTO in_vid:0 in_vtype:0 in_vname:@"" in_vcolor:0 in_vgraphtype:0 in_vpriv:0];
+}
+
 - (id) initFromDB:(trackerObj*)parentTO
              in_vid:(NSInteger)in_vid
 {
@@ -119,29 +126,6 @@ in_vpriv:(NSInteger)in_vpriv
     
 }
 
-- (void) dealloc 
-{
-	//DBGLog(@"dealloc valueObj: %@",valueName);
-	//DBGLog(@"valuename retain count= %d",[valueName retainCount] );
-	self.valueName = nil;
-	[valueName release];
-	self.value = nil;
-	[value release]; 
-	self.display = nil;
-	[display release];
-	
-	self.optDict = nil;
-	[optDict release];
-	
-	self.checkButtonUseVO = nil;
-	[checkButtonUseVO release];
-	
-	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );
-	self.vos = nil;
-	[(id)vos release];
-	//DBGLog(@"vos retain count= %d",[(voState*)vos retainCount] );    
-	[super dealloc];
-}
 
 #pragma mark -
 # pragma mark dictionary to/from
@@ -183,21 +167,21 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (NSMutableDictionary *) optDict
 {
-	if (optDict == nil) {
-		optDict = [[NSMutableDictionary alloc] init];
+	if (_optDict == nil) {
+		_optDict = [[NSMutableDictionary alloc] init];
 	}
-	return optDict;
+	return _optDict;
 }
 
 - (NSMutableString*) value {
-    dbgNSAssert(vos,@"accessing vo.value with nil vos");
-    if (value == nil) {
-        value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
+    dbgNSAssert(_vos,@"accessing vo.value with nil vos");
+    if (_value == nil) {
+        _value = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];
         //value = [[NSMutableString alloc] init];
-        [value setString:@""];
+        [_value setString:@""];
     }
-    [value setString:[self.vos update:value]];
-    return value;
+    [_value setString:[self.vos update:_value]];
+    return _value;
 }
 
 - (NSString*) csvValue {
@@ -215,7 +199,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 - (void) setVtype:(NSInteger)vt {  // called for setting property vtype
     //DBGLog(@"setVtype - allocating vos");
-	vtype = vt;  // not self as this is set fn!
+	_vtype = vt;  // not self as this is set fn!
     id tvos=nil;
 	switch (vt) {
 		case VOT_NUMBER:
@@ -268,17 +252,15 @@ in_vpriv:(NSInteger)in_vpriv
 		default:
 			dbgNSAssert1(0,@"valueObj init vtype %d not supported",vt);
             tvos = [[voNumber alloc] initWithVO:self]; // to clear analyzer worry 
-            vtype = VOT_NUMBER;  // consistency if we get here
+            _vtype = VOT_NUMBER;  // consistency if we get here
 			break;
 	}
     self.vos=nil;
     self.vos = tvos;
-	[tvos release];
     NSMutableString *tval;
     tval = [[NSMutableString alloc] initWithCapacity:[self.vos getValCap]];  // causes memory leak
     self.value = nil;
     self.value = tval;
-    [tval release];
     //[self.value release];   // clear retain count from alloc + retain
 }
 
@@ -287,12 +269,12 @@ in_vpriv:(NSInteger)in_vpriv
 #pragma mark display fn dispatch
 
 - (UIView *) display:(CGRect)bounds {
-	if (display == nil) {
+	if (_display == nil) {
         DBGLog(@"vo new display name:  %@ currVal: .%@.",self.valueName,self.value);
 		self.display = [self.vos voDisplay:bounds];
         self.display.tag = kViewTag;
 	}
-	return display;
+	return _display;
 }
 
 -(void) setTrackerDateToNow {
@@ -347,21 +329,21 @@ in_vpriv:(NSInteger)in_vpriv
 	}
 
     [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];		
-	[checkButtonUseVO setImage:checkImage forState:UIControlStateNormal];
+	[self.checkButtonUseVO setImage:checkImage forState:UIControlStateNormal];
 	
 }
 
 - (UIButton *) checkButtonUseVO
 {
-	if (checkButtonUseVO == nil) {
-		checkButtonUseVO = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-		checkButtonUseVO.frame = CGRectZero;
-		checkButtonUseVO.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-		checkButtonUseVO.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-		checkButtonUseVO.tag = kViewTag;
-		[checkButtonUseVO addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown];		
+	if (_checkButtonUseVO == nil) {
+		_checkButtonUseVO = [UIButton buttonWithType:UIButtonTypeCustom];
+		_checkButtonUseVO.frame = CGRectZero;
+		_checkButtonUseVO.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+		_checkButtonUseVO.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+		_checkButtonUseVO.tag = kViewTag;
+		[_checkButtonUseVO addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown];
 	}
-	return checkButtonUseVO;
+	return _checkButtonUseVO;
 }
 
 

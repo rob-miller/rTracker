@@ -20,7 +20,7 @@
 #import "rTracker-resource.h"
 
 @implementation gtYAxV
-@synthesize vogd,myFont,scaleOriginY,scaleHeightY,graphSV,parentGTVC;  //, backgroundColor;
+@synthesize vogd=_vogd,myFont=_myFont,scaleOriginY=_scaleOriginY,scaleHeightY=_scaleHeightY,graphSV=_graphSV,parentGTVC=_parentGTVC;  //, backgroundColor;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -144,7 +144,7 @@
                 break;
                 
         }
-        CGSize vh = [vstr sizeWithFont:myFont];
+        CGSize vh = [vstr sizeWithFont:self.myFont];
         [vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withFont:self.myFont];
 	}
     
@@ -213,9 +213,5 @@
 */
 
 
-- (void)dealloc
-{
-    [super dealloc];
-}
 
 @end

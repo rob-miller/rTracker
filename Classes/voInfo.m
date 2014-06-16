@@ -13,14 +13,6 @@
 
 //@synthesize imageButton;
 
-- (void) dealloc {
-	//DBGLog(@"dealloc voBoolean");
-	//self.imageButton = nil;  // convenience constructor
-    //[imageButton release];
-                         
-	[super dealloc];
-	
-}
 
 // 25.i.14 allow assigned values so use default (10) size
 //- (int) getValCap {  // NSMutableString size for value

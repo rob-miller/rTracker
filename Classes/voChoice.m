@@ -14,7 +14,7 @@
 
 @implementation voChoice
 
-@synthesize ctvovcp,segmentedControl,processingTfDone,processingTfvDone;
+@synthesize ctvovcp=_ctvovcp,segmentedControl=_segmentedControl,processingTfDone=_processingTfDone,processingTfvDone=_processingTfvDone;
 
 - (id) initWithVO:(valueObj *)valo {
 	if ((self = [super initWithVO:valo])) {
@@ -28,12 +28,6 @@
     self.vo.useVO=NO;
 }
 
-- (void) dealloc {
-	// ctvovcp is not retained
-    self.segmentedControl = nil;
-    [segmentedControl release];
-	[super dealloc];
-}
 
 - (int) getValCap {  // NSMutableString size for value
     return 1;
@@ -130,7 +124,7 @@
 }
 
 - (UISegmentedControl*) segmentedControl {
-    if (nil == segmentedControl) {
+    if (nil == _segmentedControl) {
         //NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
         
         int i;
@@ -144,24 +138,23 @@
         //[segmentTextContent addObject:nil];
         
         //CGRect frame = bounds;
-        segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
+        _segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
+        _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
         if ([(NSString*) [self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"]) {  
             int j=0;
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
-                [segmentedControl setWidth:siz.width forSegmentAtIndex:j];
+                [_segmentedControl setWidth:siz.width forSegmentAtIndex:j];
                 DBGLog(@"set width for seg %d to %f", j, siz.width);
                 j++;
             }
             
             // TODO: need to center control in subview for this
         }
-        [segmentTextContent release];
 
-        segmentedControl.frame = self.vosFrame;
-        [segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
+        _segmentedControl.frame = self.vosFrame;
+        [_segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
         //segmentedControl.tag = kViewTag;
         
@@ -173,7 +166,7 @@
 //        }
     }
     
-    return segmentedControl;
+    return _segmentedControl;
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {

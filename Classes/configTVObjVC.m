@@ -21,9 +21,9 @@
 
 @implementation configTVObjVC
 
-@synthesize to, vo, wDict;
-@synthesize toolBar, navBar, lasty, saveFrame, LFHeight, vdlConfigVO;
-@synthesize activeField, processingTfDone;
+@synthesize to=_to, vo=_vo, wDict=_wDict;
+@synthesize toolBar=_toolBar, navBar=_navBar, lasty=_lasty, saveFrame=_saveFrame, LFHeight=_LFHeight, vdlConfigVO=_vdlConfigVO;
+@synthesize activeField=_activeField, processingTfDone=_processingTfDone;
 
 //BOOL keyboardIsShown;
 
@@ -37,23 +37,6 @@
         self.processingTfDone=NO;
     }
     return self;
-}
-- (void)dealloc {
-
-	self.to = nil;
-	[to release];
-	self.vo = nil;
-	[vo release];
-	
-	self.wDict = nil;
-	[wDict release];
-	
-	self.toolBar = nil;
-	[toolBar release];
-	self.navBar = nil;
-	[navBar release];
-
-    [super dealloc];
 }
 
 # pragma mark -
@@ -121,13 +104,11 @@
 	} else {
 		self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
 	}
-	[doneBtn release];
 
     // set graph paper background
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-    [bg release];
 	   
     [super viewDidLoad];
 }
@@ -197,7 +178,7 @@
 	DBGLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
 #endif
     
-	[activeField resignFirstResponder];
+	[_activeField resignFirstResponder];
 }
 
 # pragma mark -
@@ -206,7 +187,7 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 	//DBGLog(@"tf begin editing");
-    activeField = textField;
+    self.activeField = textField;
 }
 
 /*
@@ -231,7 +212,7 @@
 - (void)keyboardWillShow:(NSNotification *)n
 {
     //DBGLog(@"configTVObjVC keyboardwillshow");
-    CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
+    CGFloat boty = self.activeField.frame.origin.y + self.activeField.frame.size.height + MARGIN;
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
     
     /*
@@ -312,7 +293,6 @@
 		[self.view addSubview:rlab];
 	
 	CGRect retFrame = rlab.frame;
-	[rlab release];
 	
 	return retFrame;
 }
@@ -387,7 +367,7 @@
 
 - (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv
 {
-	UIButton *imageButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+	UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	//imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
     imageButton.frame = frame; 
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -403,12 +383,11 @@
         [self.view addSubview:imageButton];
     }
     
-	[imageButton release];
 }
 
 - (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action {
 
-	UIButton *button = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	frame.size.width = [label sizeWithFont:button.titleLabel.font].width + 4*SPACE;
 	if (frame.origin.x == -1.0f) {
 		frame.origin.x = self.view.frame.size.width - (frame.size.width + MARGIN); // right justify
@@ -425,7 +404,6 @@
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 	
 	[self.view addSubview:button];
-	[button release];
 }
 
 - (void) tfDone:(UITextField *)tf {
@@ -510,7 +488,7 @@
 		[tf resignFirstResponder];
 	}
     
-    activeField=nil;
+    self.activeField=nil;
     
     self.processingTfDone = NO;
     
@@ -532,7 +510,6 @@
     if (addsv)
 		[self.view addSubview:rtf];
 
-	[rtf release];
 }
 
 - (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text {
@@ -544,7 +521,6 @@
 	rtv.text = text;
     //[rtv scrollRangeToVisible: (NSRange) { (NSUInteger) ([text length]-1), (NSUInteger)1 }];  // works 1st time but text is cached so doesn't work subsequently
 	[self.view addSubview:rtv];
-	[rtv release];
 }
 
 
@@ -563,7 +539,6 @@
 	[self.wDict setObject:myPickerView forKey:key];
 	[self.view addSubview:myPickerView];
 	
-	[myPickerView release];
 	
 	return frame;
 }
@@ -674,7 +649,6 @@
     //}
         //[self.navigationController pushViewController:nrvc animated:YES];
     
-    [nrvc release];
     
 }
 
@@ -697,7 +671,6 @@
             recoverCount++;
         }
     }
-    [Ids release];
     NSString *msg;
     if (recoverCount) {
         msg = [NSString stringWithFormat:@"%d",recoverCount];
@@ -794,7 +767,6 @@
                  otherButtonTitles:nil];
     }
     [alert show];
-    [alert release];
 }
 
 
@@ -944,10 +916,10 @@
 
 - (NSMutableDictionary *) wDict 
 {
-	if (wDict == nil) {
-		wDict = [[NSMutableDictionary alloc] init];
+	if (_wDict == nil) {
+		_wDict = [[NSMutableDictionary alloc] init];
 	}
-	return wDict;
+	return _wDict;
 }
 
 

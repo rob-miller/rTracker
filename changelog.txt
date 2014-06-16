@@ -1432,7 +1432,35 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+    - submit as 1.1.8
+
+07 june 2014
+   - importing TimesSquare calendar view code
+
+14 june 2014
+   - updating to newer coding standards esp around class properties, ARC
+   - fixed privacy rets to use @class instead of id or creating circular import problems
+   - added swipe gesture recogniser to useTracker for prev/post date -- not happy yet with visual feedback of change!
+   - finished updating class properties for main views
+
+15 june 2014
+   - change deleteIndexPath to property in configTlist and addTracker, lose deleteTableView; change deleteVOs to property in addTracker 
+   - finish updating class properties for graphing, datePicker, privacy -- main view folder done
+   - finished for trackerObj and valueObj classes
+   - hide toolbar in configTlist
+   - convert to ARC done and apparently working, still wanings on performSelector calls
+
+16 june 2014
+   - fixed warnings on performSelector calls, need to test csv load
+   - added badge for notification, can only set to '1' and not count pending until user opens app
+
+--- commit ---
+
+
 ++ 
+
++ fix graph paper background for tracker 'i' config
+
 
 
 + add -[n] entries thing

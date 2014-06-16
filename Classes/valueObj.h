@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 
 //#import "trackerObj.h"
+@class trackerObj;
+@class voState;
+@class vogd;
 
 // supported valueObj types ; note these defns tied to Resource: rt-types.plist
 #define VOT_NUMBER	0
@@ -115,7 +118,8 @@
 @end
 
 
-@interface valueObj : NSObject <UITextFieldDelegate> {
+@interface valueObj : NSObject <UITextFieldDelegate>
+/*{
 	NSInteger vid;   
 	NSInteger vtype;
 	NSInteger vpriv;
@@ -131,27 +135,27 @@
 	id <voProtocol> vos;
 	id vogd;
 	UIButton *checkButtonUseVO;
-}
+}*/
 
 //+ (NSArray *) votArray;
 
 @property (nonatomic) NSInteger vid;
 @property (nonatomic) NSInteger vtype;
 @property (nonatomic) NSInteger vpriv;
-@property (nonatomic,retain) NSString *valueName;
-@property (nonatomic,retain) NSMutableString *value;
+@property (nonatomic,strong) NSString *valueName;
+@property (nonatomic,strong) NSMutableString *value;
 @property (nonatomic) NSInteger vcolor;
 @property (nonatomic) NSInteger vGraphType;
-@property (nonatomic,retain) NSMutableDictionary *optDict;
-@property (nonatomic,retain) id <voProtocol> vos;
-@property (nonatomic,retain) id <voProtocol> vogd;
+@property (nonatomic,strong) NSMutableDictionary *optDict;
+@property (nonatomic,strong) voState <voProtocol> *vos;
+@property (nonatomic,strong) vogd <voProtocol> *vogd;
 
-@property (nonatomic, retain) UIView *display;
+@property (nonatomic, strong) UIView *display;
 @property (nonatomic) BOOL useVO;
 //@property (nonatomic) BOOL retrievedData;
-@property (nonatomic,assign) id parentTracker;
+@property (nonatomic,unsafe_unretained) id parentTracker;
 
-@property (nonatomic,retain) UIButton *checkButtonUseVO;
+@property (nonatomic,strong) UIButton *checkButtonUseVO;
 
 - (id) initWithData:(id)parentTO 
 			 in_vid:(NSInteger)in_vid 
@@ -166,8 +170,8 @@
 - (id) initFromDB:(id)parentTO
            in_vid:(NSInteger)in_vid;
 
+- (id) initWithParentOnly:(trackerObj*)parentTO;
 
-- (void) dealloc;
 //- (id) init :(NSInteger)in_vid in_vtype:(NSInteger) in_vtype in_vname:(NSString *) in_vname;
 //- (id) init:(id*)parentTO in_vid:(NSInteger)in_vid in_vtype:(NSInteger)in_vtype in_vname:(NSString *)in_vname in_vcolor:(NSInteger)in_vcolor in_vgraphtype:(NSInteger)in_vgraphtype;
 

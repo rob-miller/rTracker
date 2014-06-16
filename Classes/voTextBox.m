@@ -20,11 +20,11 @@
 
 @implementation voTextBox
 
-@synthesize tbButton,textView,devc,saveFrame,accessoryView,addButton,segControl;
-@synthesize alphaArray,namesArray,historyArray,namesNdx,historyNdx,parentUTC;
+@synthesize tbButton=_tbButton,textView=_textView,devc=_devc,saveFrame=_saveFrame,accessoryView=_accessoryView,addButton=_addButton,segControl=_segControl;
+@synthesize alphaArray=_alphaArray,namesArray=_namesArray,historyArray=_historyArray,namesNdx=_namesNdx,historyNdx=_historyNdx,parentUTC=_parentUTC;
 
 //@synthesize peopleDictionary,historyDictionary;
-@synthesize pv,showNdx;
+@synthesize pv=_pv,showNdx=_showNdx;
 
 //BOOL keyboardIsShown=NO;
 
@@ -46,28 +46,13 @@
 	//DBGLog(@"dealloc voTextBox");
     
     //DBGLog(@"tbBtn= %0x  rcount= %d",tbButton,[tbButton retainCount]);
-	self.tbButton = nil;  // convenience constructor, do not own (enven tho retained???)
-    [tbButton release];
-	self.textView = nil;
-	[textView release];
-	self.addButton = nil;
+	  // convenience constructor, do not own (enven tho retained???)
 	self.accessoryView = nil;
-	self.segControl = nil;
 	
 	self.devc = nil;
 	
 	//self.alphaArray = nil;
-	self.namesArray = nil;
-    [namesArray release];
-	self.historyArray = nil;
-    [historyArray release];
-    self.namesNdx = nil;
-    [namesNdx release];
-    self.historyNdx = nil;
-    [historyNdx release];
-	self.pv = nil;
 	
-	[super dealloc];
 	
 }
 
@@ -79,7 +64,6 @@
     self.parentUTC = (useTrackerController*) [MyTracker.vc.navigationController visibleViewController];
 	[MyTracker.vc.navigationController pushViewController:vde animated:YES];
     //[MyTracker.vc.navigationController push :vde animated:YES];
-	[vde release];
 	
 }
 
@@ -87,7 +71,7 @@
 	//self.devc = vc;
 	//CGRect visFrame = vc.view.frame;
     
-	self.textView = [[[UITextView alloc] initWithFrame:vc.view.frame] autorelease];
+	self.textView = [[UITextView alloc] initWithFrame:vc.view.frame];
 	self.textView.textColor = [UIColor blackColor];
 	self.textView.font = [UIFont fontWithName:@"Arial" size:18];
 	self.textView.delegate = self;
@@ -241,7 +225,7 @@
         if (0 == [self.namesArray count]) {
             [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here"];
         } else {
-            str = [NSString stringWithFormat:@"%@\n",[(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row])autorelease]];
+            str = [NSString stringWithFormat:@"%@\n",(NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)([self.namesArray objectAtIndex:row])))];
         }
 	} else {
         if (0 == [self.historyArray count]) {
@@ -320,7 +304,6 @@
 	UIBarButtonItem* saveItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
 																			  target:self action:@selector(saveAction:)];
 	self.devc.navigationItem.rightBarButtonItem = saveItem;
-	[saveItem release];
 }
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)aTextView {
@@ -329,10 +312,10 @@
      You can create the accessory view programmatically (in code), in the same nib file as the view controller's main view, or from a separate nib file. This example illustrates the latter; it means the accessory view is loaded lazily -- only if it is required.
      */
     
-    if (textView.inputAccessoryView == nil) {
+    if (self.textView.inputAccessoryView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"voTBacc" owner:self options:nil];
         // Loading the AccessoryView nib file sets the accessoryView outlet.
-        textView.inputAccessoryView = accessoryView;    
+        self.textView.inputAccessoryView = self.accessoryView;
         // After setting the accessory view for the text view, we no longer need a reference to the accessory view.
         self.accessoryView = nil;
 		self.addButton.hidden = YES;
@@ -352,16 +335,16 @@
 #pragma mark voState display
 
 - (UIButton*) tbButton {
-    if (nil == tbButton) {
-        tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        tbButton.frame = self.vosFrame; //CGRectZero;
-        tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        [tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];		
+    if (nil == _tbButton) {
+        _tbButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        _tbButton.frame = self.vosFrame; //CGRectZero;
+        _tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        _tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        [_tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];
         //tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
-        [tbButton retain]; // rtm 06 feb 2012
+         // rtm 06 feb 2012
     }
-    return tbButton;
+    return _tbButton;
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
@@ -471,33 +454,33 @@
 #pragma mark picker support
 
 - (UIPickerView*) pv {
-	if (nil == pv) {
-		pv = [[UIPickerView alloc] initWithFrame:CGRectZero];
-		pv.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		pv.showsSelectionIndicator = YES;	// note this is default to NO
+	if (nil == _pv) {
+		_pv = [[UIPickerView alloc] initWithFrame:CGRectZero];
+		_pv.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		_pv.showsSelectionIndicator = YES;	// note this is default to NO
 		// this view controller is the data source and delegate
-		pv.delegate = self;
-		pv.dataSource = self;
+		_pv.delegate = self;
+		_pv.dataSource = self;
 		if (self.showNdx)
-			[pv selectRow:1 inComponent:0 animated:NO];
+			[_pv selectRow:1 inComponent:0 animated:NO];
 	}
 
-	return pv;
+	return _pv;
 }
 
 
 - (NSArray*) alphaArray {
-	if (nil == alphaArray) {
-		alphaArray = [[NSArray alloc] initWithObjects:@"#",@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",
+	if (nil == _alphaArray) {
+		_alphaArray = [[NSArray alloc] initWithObjects:@"#",@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",
 					  @"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",nil];
 	}
-	return alphaArray;
+	return _alphaArray;
 }
 
 
 - (NSArray*) namesArray {
     
-	if (nil == namesArray) {
+	if (nil == _namesArray) {
         ABAddressBookRef addressBook = ABAddressBookCreate();
         __block BOOL accessGranted = NO;
         
@@ -540,17 +523,17 @@
 						  (void*) ABPersonGetSortOrdering()
 						  );
 
-		namesArray = [[NSArray alloc] initWithArray:(NSArray*)peopleMutable];
+		_namesArray = [[NSArray alloc] initWithArray:(__bridge NSArray*)peopleMutable];
 		
 		CFRelease(addressBook);
 		CFRelease(people);
 		CFRelease(peopleMutable);
 	}
-	return namesArray;
+	return _namesArray;
 }
 
 - (NSArray*) historyArray {
-	if (nil == historyArray) {
+	if (nil == _historyArray) {
 		//NSMutableArray *his1 = [[NSMutableArray alloc] init];
 		NSMutableSet *s0 = [[NSMutableSet alloc] init];
 		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %d and val != '';",self.vo.vid];
@@ -567,19 +550,17 @@
 		}
 		MyTracker.sql = nil;
 		[s0 filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-		historyArray = [[[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
+		_historyArray = [[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
         DBGLog(@"historyArray count= %d  content= .%@.",historyArray.count,historyArray);
 		//historyArray = [[NSArray alloc] initWithArray:his1];
-		[his0 release];
-		[s0 release];	
 		
 		//DBGLog(@"his array looks like:");
 		//for (NSString *s in historyArray) {
 		//	DBGLog(s);
 		//}
 	}
-	return historyArray;
+	return _historyArray;
 }
 
 - (ABPropertyID) getABSortTok {
@@ -589,7 +570,7 @@
         return kABPersonLastNameProperty;
 }
 
-- (NSMutableArray *) initNSMA:(id)dflt {
+- (NSMutableArray *) getNSMA:(id)dflt {
     int i;
     int c = [self.alphaArray count];
     
@@ -625,19 +606,18 @@
 }
 
 - (NSArray*) namesNdx {
-    if (nil == namesNdx) {
+    if (nil == _namesNdx) {
         NSInteger ndx=0;
         ABPropertyID abSortOrderProp = [self getABSortTok];
         NSNumber *notSet = [NSNumber numberWithInt:-1];
-        NSMutableArray *tmpNamesNdx = [self initNSMA:notSet];
+        NSMutableArray *tmpNamesNdx = [self getNSMA:notSet];
 
         for (id abrr in self.namesArray) {
-            NSString *name = (NSString*) ABRecordCopyValue((ABRecordRef)abrr, abSortOrderProp);
+            NSString *name = (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)abrr, abSortOrderProp));
             if (nil == name) {
-                name = (NSString*) ABRecordCopyCompositeName(abrr); 
+                name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)(abrr))); 
             }
             unichar firstc = [name characterAtIndex:0];
-            [name release];
 
             [self enterNSMA:tmpNamesNdx c:firstc dflt:notSet ndx:ndx];
             
@@ -647,18 +627,17 @@
         // now set any unfilled indices to 'start of next section' or last item
         [self fillNSMA:tmpNamesNdx dflt:notSet];
         
-        namesNdx = [[NSArray alloc] initWithArray:tmpNamesNdx];
-        [tmpNamesNdx release];
+        _namesNdx = [[NSArray alloc] initWithArray:tmpNamesNdx];
     }
     
-    return namesNdx;
+    return _namesNdx;
 }
 
 - (NSArray*) historyNdx {
-    if (nil == historyNdx) {
+    if (nil == _historyNdx) {
         NSInteger ndx=0;
         NSNumber *notSet = [NSNumber numberWithInt:-1];
-        NSMutableArray *tmpHistoryNdx = [self initNSMA:notSet];
+        NSMutableArray *tmpHistoryNdx = [self getNSMA:notSet];
 
         for (NSString* str in self.historyArray) {
             unichar firstc = [str characterAtIndex:0];
@@ -669,10 +648,9 @@
         // now set any unfilled indices to 'start of next section' or last item
         [self fillNSMA:tmpHistoryNdx dflt:notSet];
         
-        historyNdx = [[NSArray alloc] initWithArray:tmpHistoryNdx];
-        [tmpHistoryNdx release];
+        _historyNdx = [[NSArray alloc] initWithArray:tmpHistoryNdx];
     }
-    return historyNdx;
+    return _historyNdx;
 }
 
 //- (void) updatePickerArrays:(NSInteger)row {
@@ -680,13 +658,13 @@
 //}
 
 - (NSInteger) numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-	if (showNdx)
+	if (self.showNdx)
 		return 2;
 	return 1;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger) component {
-	if (showNdx && 0 == component) {
+	if (self.showNdx && 0 == component) {
 		return [self.alphaArray count];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
@@ -699,11 +677,11 @@
 }
 
 - (NSString *) pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-	if (showNdx && 0 == component) {
+	if (self.showNdx && 0 == component) {
 		return [self.alphaArray objectAtIndex:row];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			return [(NSString*) ABRecordCopyCompositeName([self.namesArray objectAtIndex:row]) autorelease];
+			return (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)([self.namesArray objectAtIndex:row])));
 		} else {
 			return [self.historyArray objectAtIndex:row];
 		}
@@ -712,7 +690,7 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {	
-	if (showNdx) {
+	if (self.showNdx) {
         //NSArray *srcArr,*targArr;
         NSInteger otherComponent;
         NSInteger targRow;
@@ -729,13 +707,12 @@
             otherComponent = 0;
             if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
                 ABPropertyID abSortOrderProp = [self getABSortTok];
-                NSString *name =  (NSString*) ABRecordCopyValue((ABRecordRef)[self.namesArray objectAtIndex:row], abSortOrderProp);
+                NSString *name =  (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)[self.namesArray objectAtIndex:row], abSortOrderProp));
                 if (nil == name) {
-                    name = (NSString*) ABRecordCopyCompositeName((ABRecordRef)[self.namesArray objectAtIndex:row]); 
+                    name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)[self.namesArray objectAtIndex:row])); 
                 }
                 //unichar firstc = [name characterAtIndex:0];
                 targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([name characterAtIndex:0])]];
-                [name release];
                 if (NSNotFound == targRow)
                     targRow=0;
             } else {
@@ -754,7 +731,7 @@
 
     CGFloat componentWidth = 280.0;
 
-	if ( showNdx ) {
+	if ( self.showNdx ) {
 		if (component == 0)
 			componentWidth = 40.0; // first column size is narrow for letters 
 		else

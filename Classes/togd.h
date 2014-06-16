@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "trackerObj.h"
 
-@interface togd : NSObject {
+@interface togd : NSObject
+/*{
     trackerObj *pto;
     CGRect rect;
     CGRect bbox;
@@ -17,9 +18,9 @@
 	int lastDate;
     double dateScale;
     double dateScaleInv;
-}
+}*/
 
-@property(nonatomic,retain) trackerObj *pto;
+@property(nonatomic,strong) trackerObj *pto;
 @property(nonatomic) CGRect rect;
 @property(nonatomic) CGRect bbox;
 @property(nonatomic) int firstDate;

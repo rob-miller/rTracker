@@ -16,18 +16,8 @@
 
 @implementation notifyReminderVC2
 
-@synthesize parentNRVC, soundFiles;
+@synthesize parentNRVC=_parentNRVC, soundFiles=_soundFiles;
 
--(void)dealloc {
-    self.parentNRVC = nil;
-    [parentNRVC release];
-    self.soundFiles = nil;
-    [soundFiles release];
-    [_datePicker release];
-    [_soundPicker release];
-    [_btnTestOutlet release];
-    [super dealloc];
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,7 +33,6 @@
             }
         }
         self.soundFiles = [NSArray arrayWithArray:sfa];
-        [sfa release];
     }
     return self;
 }

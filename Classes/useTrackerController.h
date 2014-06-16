@@ -19,9 +19,13 @@
 
 #import "trackerList.h"
 
+#import "trackerCalViewController.h"
+
+
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 //UITableViewController 
-{
+/*
+ {
 	trackerObj *tracker;
 	datePickerVC *dpvc;
     dpRslt *dpr;
@@ -34,37 +38,42 @@
     trackerList *tlist;
     int alertResponse;
     int saveTargD;
+    
+    trackerCalViewController *tsCalVC;
 }
+*/
 
 #define CSCANCEL    1
 #define CSSETDATE   2
 
-@property(nonatomic,retain) trackerObj *tracker;
-@property (nonatomic, retain) datePickerVC *dpvc;
-@property (nonatomic, retain) dpRslt *dpr;
+@property(nonatomic,strong) trackerObj *tracker;
+@property (nonatomic, strong) datePickerVC *dpvc;
+@property (nonatomic, strong) dpRslt *dpr;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) BOOL needSave;
 @property (nonatomic) BOOL didSave;
 @property (nonatomic) BOOL fwdRotations;
 @property (nonatomic) BOOL rejectable;
 @property (nonatomic) BOOL viewDisappearing;
-@property (nonatomic, retain) trackerList *tlist;
+@property (nonatomic, strong) trackerList *tlist;
 @property (nonatomic) int alertResponse;
 @property (nonatomic) int saveTargD;
+@property (nonatomic,strong) trackerCalViewController *tsCalVC;
 
 // UI element properties 
 
-@property (nonatomic, retain) IBOutlet UITableView *table;
-@property (nonatomic, retain) UIBarButtonItem *prevDateBtn;
-@property (nonatomic, retain) UIBarButtonItem *postDateBtn;
-@property (nonatomic, retain) UIBarButtonItem *currDateBtn;
-@property (nonatomic, retain) UIBarButtonItem *delBtn;
-@property (nonatomic, retain) UIBarButtonItem *flexibleSpaceButtonItem;
-@property (nonatomic, retain) UIBarButtonItem *fixed1SpaceButtonItem;
+@property (nonatomic, strong) IBOutlet UITableView *table;
+@property (nonatomic, strong) UIBarButtonItem *prevDateBtn;
+@property (nonatomic, strong) UIBarButtonItem *postDateBtn;
+@property (nonatomic, strong) UIBarButtonItem *currDateBtn;
+@property (nonatomic, strong) UIBarButtonItem *calBtn;
+@property (nonatomic, strong) UIBarButtonItem *delBtn;
+@property (nonatomic, strong) UIBarButtonItem *flexibleSpaceButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *fixed1SpaceButtonItem;
 //@property (nonatomic, retain) UIBarButtonItem *testBtn;
 
-@property (nonatomic,retain) UIBarButtonItem *saveBtn;
-@property (nonatomic,retain) UIBarButtonItem *menuBtn;
+@property (nonatomic,strong) UIBarButtonItem *saveBtn;
+@property (nonatomic,strong) UIBarButtonItem *menuBtn;
 
 //@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 

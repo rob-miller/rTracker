@@ -17,14 +17,15 @@
 
 #define MyTracker ((trackerObj*) self.vo.parentTracker)
 
-@interface voState : NSObject <voProtocol> {
+@interface voState : NSObject <voProtocol>
+/*{
 
 	valueObj *vo;
     CGRect vosFrame;
     
-}
+}*/
 
-@property (nonatomic,assign) valueObj *vo;
+@property (nonatomic,unsafe_unretained) valueObj *vo;
 @property (nonatomic) CGRect vosFrame;
 
 - (id) init;

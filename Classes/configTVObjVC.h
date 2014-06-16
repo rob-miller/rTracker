@@ -16,7 +16,9 @@
 #import "valueObj.h"
 #import "privacyV.h"
 
-@interface configTVObjVC : UIViewController <UITextFieldDelegate> {
+@interface configTVObjVC : UIViewController <UITextFieldDelegate>
+/*
+{
 
 	BOOL vdlConfigVO;
 	trackerObj *to;
@@ -31,20 +33,21 @@
     BOOL processingTfDone;
     
 }
+*/
 
 @property (nonatomic) BOOL vdlConfigVO;
-@property (nonatomic,retain) trackerObj *to;
-@property (nonatomic,retain) valueObj *vo;
-@property (nonatomic,retain) NSMutableDictionary *wDict;
+@property (nonatomic,strong) trackerObj *to;
+@property (nonatomic,strong) valueObj *vo;
+@property (nonatomic,strong) NSMutableDictionary *wDict;
 @property (nonatomic) CGFloat lasty;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) CGFloat LFHeight;
 
 // UI element properties 
-@property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
-@property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
+@property (nonatomic,strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
 
-@property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
+@property (nonatomic,unsafe_unretained) UITextField *activeField;   //just a pointer, no retain
 @property (nonatomic) BOOL processingTfDone;
 
 - (void) addVOFields:(NSInteger) vot;

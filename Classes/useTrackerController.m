@@ -13,6 +13,9 @@
 #import "privacyV.h"
 #import "rTracker-resource.h"
 #import "dbg-defs.h"
+#import "voState.h"
+
+//#import "trackerCalViewController.h"
 
 @interface useTrackerController ()
 - (void) updateTrackerTableView;
@@ -21,57 +24,16 @@
 
 @implementation useTrackerController
 
-@synthesize tracker;
+@synthesize tracker=_tracker;
 
-@synthesize prevDateBtn, postDateBtn, currDateBtn, delBtn, flexibleSpaceButtonItem, fixed1SpaceButtonItem;
-@synthesize table, dpvc, dpr, needSave, didSave, saveFrame, fwdRotations, rejectable, viewDisappearing, tlist;
-@synthesize saveBtn, menuBtn, alertResponse, saveTargD;
+@synthesize prevDateBtn=_prevDateBtn, postDateBtn=_postDateBtn, currDateBtn=_currDateBtn, delBtn=_delBtn, calBtn=_calBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, fixed1SpaceButtonItem=_fixed1SpaceButtonItem;
+@synthesize table=_table, dpvc=_dpvc, dpr=_dpr, needSave=_needSave, didSave=_didSave, saveFrame=_saveFrame, fwdRotations=_fwdRotations, rejectable=_rejectable, viewDisappearing=_viewDisappearing, tlist=_tlist;
+@synthesize saveBtn=_saveBtn, menuBtn=_menuBtn, alertResponse=_alertResponse, saveTargD=_saveTargD,tsCalVC=_tsCalVC;
 
 //BOOL keyboardIsShown=NO;
 
 #pragma mark -
 #pragma mark core object methods and support
-
-- (void)dealloc {
-    /*
-    if (self.needSave) {
-        self.alertResponse=CSCANCEL;
-        [self alertChkSave];
-        return;
-    }
-*/
-	self.prevDateBtn = nil;
-	[prevDateBtn release];
-	self.currDateBtn = nil;
-	[currDateBtn release];
-	self.postDateBtn = nil;
-	[postDateBtn release];
-	self.delBtn = nil;
-	[delBtn release];
-	
-	//self.testBtn = nil;
-	//[testBtn release];
-	
-	self.fixed1SpaceButtonItem = nil;
-	[fixed1SpaceButtonItem release];
-	self.flexibleSpaceButtonItem = nil;
-	[flexibleSpaceButtonItem release];
-	
-    self.saveBtn = nil;
-    self.menuBtn = nil;
-    
-	self.dpvc = nil;
-	[dpvc release];
-	self.dpr = nil;
-	[dpr release];
-	
-	self.table = nil;
-	[table release];
-	
-	self.tracker = nil;
-	[tracker release];
-	[super dealloc];
-}
 
 
 # pragma mark -
@@ -104,7 +66,6 @@
     // n.b. we hardcode we hardcode number of sections in a tracker tableview here
     [self.table reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
     
-    [iparr release];
 }
 
 
@@ -139,7 +100,6 @@
 	
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     self.table.backgroundView = bg;
-    [bg release];
     self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     
@@ -156,9 +116,15 @@
                                                                   target:self
                                                                   action:@selector(btnCancel)];
     self.navigationItem.leftBarButtonItem = backButton;
-    [backButton release];
 
-    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeLeft:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.view addGestureRecognizer:swipe];
+
+    swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+
     [super viewDidLoad];
 }
 
@@ -188,6 +154,7 @@
 	self.currDateBtn = nil;
 	self.postDateBtn = nil;
 	self.delBtn = nil;
+	self.calBtn = nil;
 	
 	self.fixed1SpaceButtonItem = nil;
 	self.flexibleSpaceButtonItem = nil;
@@ -272,9 +239,7 @@
 		}
 		self.dpr.date = nil;
 		self.dpvc = nil;
-		[dpvc release];
         self.dpr = nil;
-        [dpr release];
 	}
 
     [[NSNotificationCenter defaultCenter] addObserver:self.tracker 
@@ -501,7 +466,6 @@
          [self presentModalViewController:gt animated:YES];
          //[self addChildViewController:self.modalViewController];
      }
-    [gt release];
     DBGLog(@"graph up");
 }
 
@@ -715,33 +679,33 @@
  */
 
 - (UIBarButtonItem*) saveBtn {
-    if (saveBtn == nil) {
-        saveBtn =[[UIBarButtonItem alloc]
+    if (_saveBtn == nil) {
+        _saveBtn =[[UIBarButtonItem alloc]
                   initWithBarButtonSystemItem:UIBarButtonSystemItemSave
                   target:self
                   action:@selector(btnSave)];
     }
-    return saveBtn;
+    return _saveBtn;
 }
 
 - (UIBarButtonItem*) menuBtn {
-    if (menuBtn == nil) {
+    if (_menuBtn == nil) {
         if (self.rejectable) {
-            menuBtn = [[UIBarButtonItem alloc]
+            _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Accept"
                        style:UIBarButtonItemStyleBordered
                        target:self
                        action:@selector(btnAccept)];
-            menuBtn.tintColor=[UIColor greenColor];
+            _menuBtn.tintColor=[UIColor greenColor];
         } else if ([MFMailComposeViewController canSendMail]) {
-            menuBtn = [[UIBarButtonItem alloc]
+            _menuBtn = [[UIBarButtonItem alloc]
                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                        //initWithTitle:@"menuBtn"
                        //style:UIBarButtonItemStyleBordered
                        target:self
                        action:@selector(btnMenu)];
         } else {
-            menuBtn = [[UIBarButtonItem alloc]
+            _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Export"
                        style:UIBarButtonItemStyleBordered
                        target:self
@@ -749,7 +713,7 @@
         }
     }
 
-    return  menuBtn;
+    return  _menuBtn;
 }
 
 
@@ -780,6 +744,8 @@
 }
 
 - (void) updateToolBar {
+	//[self setToolbarItems:nil animated:YES];
+    
 	NSMutableArray *tbi=[[NSMutableArray alloc] init];
 	
 	int prevD = [self.tracker prevDate];
@@ -793,23 +759,36 @@
 	DBGLog(@"lastD = %d %@",lastD,[NSDate dateWithTimeIntervalSince1970:lastD]);
 */	
 	self.currDateBtn = nil;
+#if RELEASE
 	if (prevD ==0) 
 		[tbi addObject:self.fixed1SpaceButtonItem];
 	else
 		[tbi addObject:self.prevDateBtn];
-	
+#else 
+    [tbi addObject:self.fixed1SpaceButtonItem];
+#endif
+    
 	[tbi addObject:self.currDateBtn];
 	
+#if !RELEASE
+    if ((prevD !=0) || (postD !=0)) {
+        [tbi addObject:self.flexibleSpaceButtonItem];
+        [tbi addObject:self.calBtn];
+        [tbi addObject:self.flexibleSpaceButtonItem];
+    }
+#endif
+
 	if (postD != 0 || (lastD == currD)) {
+#if RELEASE
 		[tbi addObject:self.postDateBtn];
 		[tbi addObject:self.flexibleSpaceButtonItem];
+#endif
 		[tbi addObject:self.delBtn];
 	}
 
 	//[tbi addObject:[self testBtn]];
 	 
 	[self setToolbarItems:tbi animated:YES];
-	[tbi release];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -854,7 +833,6 @@ else do btnCancel/btnSave
              otherButtonTitles: @"Save",@"Discard",nil];
 
     [alert show];
-    [alert release];
 
 }
 
@@ -930,7 +908,7 @@ else do btnCancel/btnSave
 
 	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
-		if (![self.toolbarItems containsObject:postDateBtn])
+		if (![self.toolbarItems containsObject:self.postDateBtn])
 			[self.tracker resetData];
 		[self updateToolBar];
 		[self updateTrackerTableView];
@@ -942,13 +920,13 @@ else do btnCancel/btnSave
 }
 
 - (void) doPlistExport {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     //DBGLog(@"start export");
     
-    [self.tracker saveToItunes];
-    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        [self.tracker saveToItunes];
+        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
 
-    [pool drain];
+    }
 }
 
 NSString *emEmailCsv = @"email CSV";
@@ -970,7 +948,6 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     //[exportMenu showFromRect:self.menuBtn.frame inView:self.view animated:YES];
 	//[exportMenu showFromToolbar:self.navigationController.toolbar];
     [exportMenu showFromBarButtonItem:self.menuBtn animated:YES];
-	[exportMenu release];
     
 }
 
@@ -1030,7 +1007,11 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#if RELEASE
 - (void) btnPrevDate {
+#else
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+#endif
 	int targD = [self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
@@ -1038,24 +1019,28 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	[self setTrackerDate:targD];
 }
 
+#if RELEASE
 - (void) btnPostDate {
+#else
+- (void)handleViewSwipeLeft:(UISwipeGestureRecognizer *)gesture {
+#endif
 	[self setTrackerDate:[self.tracker postDate]];
 }
 
 - (datePickerVC*) dpvc
 { 
-	if (dpvc == nil) {
-        dpvc = [[datePickerVC alloc] init];
+	if (_dpvc == nil) {
+        _dpvc = [[datePickerVC alloc] init];
 	}
-	return dpvc;
+	return _dpvc;
 }
 
 - (dpRslt*) dpr
 { 
-	if (dpr == nil) {
-		dpr = [[dpRslt alloc] init];;
+	if (_dpr == nil) {
+		_dpr = [[dpRslt alloc] init];;
 	}
-	return dpr;
+	return _dpr;
 }
 
 - (void) btnCurrDate {
@@ -1124,7 +1109,6 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	
 }
 
-
 - (void) btnDel {
 	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
 										 initWithTitle:[NSString stringWithFormat:
@@ -1136,88 +1120,131 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 										 destructiveButtonTitle:@"Yes, delete"
 										 otherButtonTitles:nil];
 	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
-	[checkTrackerEntryDelete release];
 }
+
+#pragma mark -
+#pragma mark timesSquare calendar vc
+
+
+-(void) btnCal {
+    DBGLog(@"cal btn");
+	
+	//self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
+	self.dpr.date = self.tracker.trackerDate;
+    self.tsCalVC.dpr = self.dpr;
+    
+	self.tsCalVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+	//
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+        [self presentViewController:self.tsCalVC animated:YES completion:NULL];
+    } else {
+        [self presentModalViewController:self.tsCalVC animated:YES];
+    }
+}
+
+- (trackerCalViewController*) tsCalVC {
+    if (nil == _tsCalVC) {
+        _tsCalVC = [[trackerCalViewController alloc] init];
+    }
+    return _tsCalVC;
+}
+
 
 
 #pragma mark -
 #pragma mark UIBar button getters
 
+#if RELEASE
 - (UIBarButtonItem *) prevDateBtn {
-	if (prevDateBtn == nil) {
-		prevDateBtn = [[UIBarButtonItem alloc]
+	if (_prevDateBtn == nil) {
+		_prevDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:@"<-" // @"Prev"    // @"<"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPrevDate)];
-        prevDateBtn.tintColor = [UIColor darkGrayColor];
+        _prevDateBtn.tintColor = [UIColor darkGrayColor];
 	}
-	return prevDateBtn;
+	return _prevDateBtn;
 }
 
 - (UIBarButtonItem *) postDateBtn {
-	if (postDateBtn == nil) {
-		postDateBtn = [[UIBarButtonItem alloc]
+	if (_postDateBtn == nil) {
+		_postDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:@"->" // @"Next"    //@">"
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnPostDate)];
-        postDateBtn.tintColor = [UIColor darkGrayColor];
+        _postDateBtn.tintColor = [UIColor darkGrayColor];
 	}
 	
-	return postDateBtn;
+	return _postDateBtn;
 }
-
+#endif
+    
 - (UIBarButtonItem *) currDateBtn {
 	//DBGLog(@"currDateBtn called");
-	NSString *datestr = [NSDateFormatter localizedStringFromDate:self.tracker.trackerDate 
+	if (_currDateBtn == nil) {
+        
+        NSString *datestr = [NSDateFormatter localizedStringFromDate:self.tracker.trackerDate
 													   dateStyle:NSDateFormatterShortStyle 
 													   timeStyle:NSDateFormatterShortStyle];
 
-	if (currDateBtn == nil) {
 		//DBGLog(@"creating button");
-		currDateBtn = [[UIBarButtonItem alloc]
+		_currDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:datestr
 					   style:UIBarButtonItemStyleBordered
 					   target:self
 					   action:@selector(btnCurrDate)];
 	}
 	
-	return currDateBtn;
+	return _currDateBtn;
 }
 
 - (UIBarButtonItem *) flexibleSpaceButtonItem {
-	if (flexibleSpaceButtonItem == nil) {
-		flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+	if (_flexibleSpaceButtonItem == nil) {
+		_flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
 								   initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
 								   target:nil action:nil];
 	}
-	return flexibleSpaceButtonItem;
+	return _flexibleSpaceButtonItem;
 }
 
 - (UIBarButtonItem *) fixed1SpaceButtonItem {
-	if (fixed1SpaceButtonItem == nil) {
-		fixed1SpaceButtonItem = [[UIBarButtonItem alloc]
+	if (_fixed1SpaceButtonItem == nil) {
+		_fixed1SpaceButtonItem = [[UIBarButtonItem alloc]
 								 initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
 								 target:nil action:nil];
-		fixed1SpaceButtonItem.width = (CGFloat) 32.0;
+		_fixed1SpaceButtonItem.width = (CGFloat) 32.0;
 	}
 	
-	return fixed1SpaceButtonItem;
+	return _fixed1SpaceButtonItem;
 }
 
 
+- (UIBarButtonItem *) calBtn {
+	if (_calBtn == nil) {
+		_calBtn = [[UIBarButtonItem alloc]
+				  initWithTitle:@"Cal"
+				  style:UIBarButtonItemStyleBordered
+				  target:self
+				  action:@selector(btnCal)];
+        _calBtn.tintColor = [UIColor colorWithRed:0.0 green:1.0 blue:0.5 alpha:1.0];
+	}
+	
+	return _calBtn;
+}
+
 - (UIBarButtonItem *) delBtn {
-	if (delBtn == nil) {
-		delBtn = [[UIBarButtonItem alloc]
+	if (_delBtn == nil) {
+		_delBtn = [[UIBarButtonItem alloc]
 				  initWithTitle:@"Del"
 				  style:UIBarButtonItemStyleBordered
 				  target:self
 				  action:@selector(btnDel)];
-        delBtn.tintColor = [UIColor redColor];
+        _delBtn.tintColor = [UIColor redColor];
 	}
 	
-	return delBtn;
+	return _delBtn;
 }
 
 #pragma mark -
@@ -1286,7 +1313,6 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     if ([self attachTrackerData:mailer key:btnTitle]) {
         [self presentModalViewController:mailer animated:YES];
     }
-    [mailer release];
 
     [rTracker_resource deleteFileAtPath:[self.tracker getPath:ext]];
 }

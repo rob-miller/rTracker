@@ -92,7 +92,6 @@ BOOL hasAmPm=NO;
                           cancelButtonTitle:@"Ok"
                           otherButtonTitles:nil];
     [alert show];
-    [alert release];
 }
 
 //---------------------------
@@ -203,12 +202,9 @@ static UILabel *captionLabel;
     //[activityIndicator stopAnimating];
     [activityIndicator performSelectorOnMainThread:@selector(stopAnimating) withObject:nil waitUntilDone:NO];
 
-    [activityIndicator release];
     activityIndicator = nil;
-    [captionLabel release];
     captionLabel = nil;
     [outerView removeFromSuperview];
-    [outerView release];
     outerView = nil;
 }
 
@@ -297,7 +293,6 @@ static BOOL localDisable;
     //[progressBar stopAnimating];
 
     [progressBar removeFromSuperview];
-    [progressBar release];
     progressBar = nil;
     
     //DBGLog(@"progressbar finished");
@@ -551,7 +546,7 @@ void systemAudioCallback (SystemSoundID ssID,void *clientData) {
     
     DBGLog(@"soundfile = %@ soundurl= %@",soundFileName,soundURL);
     
-    AudioServicesCreateSystemSoundID((CFURLRef)soundURL, &sound1);
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)soundURL, &sound1);
     AudioServicesAddSystemSoundCompletion(sound1,
                                           NULL,
                                           NULL,

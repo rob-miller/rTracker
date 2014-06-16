@@ -27,9 +27,12 @@
 @implementation trackerObj
 
 
-@synthesize trackerDate, valObjTable, reminders, reminderNdx, optDict;  //trackerName
-@synthesize nextColor, votArray;
-@synthesize activeControl,vc, dateFormatter, dateOnlyFormatter, csvReadFlags, csvProblem, togd, goRecalculate, changedDateFrom, csvHeaderDict; // prevTID  // maxLabel
+@synthesize trackerDate=_trackerDate, valObjTable=_valObjTable, reminders=_reminders, reminderNdx=_reminderNdx, optDict=_optDict, trackerName=_trackerName;
+@synthesize nextColor=_nextColor, votArray=_votArray;
+@synthesize activeControl=_activeControl,vc=_vc, dateFormatter=_dateFormatter, dateOnlyFormatter=_dateOnlyFormatter, csvReadFlags=_cvsReadFlags, csvProblem=_cvsProblem, togd=_togd, goRecalculate=_goRecalculate, changedDateFrom=_changedDateFrom, csvHeaderDict=_csvHeaderDict; // prevTID  //
+
+@synthesize maxLabel=_maxLabel;
+
 
 #define f(x) ((CGFloat) (x))
 
@@ -95,17 +98,15 @@
 // getters and setters
 
 - (NSString*) trackerName {
-    if (! trackerName) {
-        trackerName = [[self.optDict objectForKey:@"name"] retain];
+    if (nil == _trackerName) {
+        _trackerName = [self.optDict objectForKey:@"name"];
     }
-    return trackerName;
+    return _trackerName;
 }
 
 - (void) setTrackerName:(NSString *)trackerNameValue {
-    if (trackerName != trackerNameValue) {
-        [trackerNameValue retain];
-        [trackerName release];
-        trackerName = trackerNameValue;
+    if (_trackerName != trackerNameValue) {
+        _trackerName = trackerNameValue;
         if (trackerNameValue) { // if not nil
             [self.optDict setObject:trackerNameValue forKey:@"name"];
         } else {
@@ -115,20 +116,20 @@
 }
 
 - (CGSize) maxLabel {
-    if ((! maxLabel.height) || (! maxLabel.width)) {
+    if ((! _maxLabel.height) || (! _maxLabel.width)) {
         CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
         CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
-        maxLabel = (CGSize) {w,h};
+        _maxLabel = (CGSize) {w,h};
     }
-    return maxLabel;
+    return _maxLabel;
 }
 
 - (void) setMaxLabel:(CGSize)maxLabelValue {
-    if ((maxLabel.height != maxLabelValue.height) || (maxLabel.width != maxLabelValue.width)) {
-        maxLabel = maxLabelValue;
-        if (maxLabel.height != 0.0 && maxLabel.width != 0.0) {
-            [self.optDict setObject:[NSNumber numberWithFloat:maxLabel.width] forKey:@"width"];
-            [self.optDict setObject:[NSNumber numberWithFloat:maxLabel.height] forKey:@"height"];
+    if ((_maxLabel.height != maxLabelValue.height) || (_maxLabel.width != maxLabelValue.width)) {
+        _maxLabel = maxLabelValue;
+        if (_maxLabel.height != 0.0 && _maxLabel.width != 0.0) {
+            [self.optDict setObject:[NSNumber numberWithFloat:_maxLabel.width] forKey:@"width"];
+            [self.optDict setObject:[NSNumber numberWithFloat:_maxLabel.height] forKey:@"height"];
         } else {
             [self.optDict removeObjectForKey:@"width"];
             [self.optDict removeObjectForKey:@"height"];
@@ -174,7 +175,7 @@
 - (void) confirmDb {
 	dbgNSAssert(self.toid,@"tObj confirmDb toid=0");
 	if (! self.dbName) {
-		dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
+		self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",self.toid];
 		//self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		[self getTDb];
 		[self initTDb];
@@ -190,8 +191,8 @@
         self.dbName = nil;
         
 		//self.valObjTable = [[NSMutableArray alloc] init];
-		valObjTable = [[NSMutableArray alloc] init];
-		nextColor=0;
+		self.valObjTable = [[NSMutableArray alloc] init];
+		self.nextColor=0;
 
         /*  move to utc
 		[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -200,8 +201,8 @@
 												   object:nil];
 		*/
 		//DBGLog(@"init trackerObj New");
-        goRecalculate=NO;
-        changedDateFrom=0;
+        self.goRecalculate=NO;
+        self.changedDateFrom=0;
 	}
 	
 	return self;
@@ -265,7 +266,6 @@
         
     }
     
-    [dict release];
 
 }
 
@@ -301,7 +301,6 @@
         notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
         nr.tid = self.toid;
         [self.reminders addObject:nr];
-        [nr release];
     }
 
     //---- valObjTable and db ----//
@@ -373,15 +372,10 @@
         [newVOs addObject:eVO];
         //DBGLog(@"** added eVO vid %d",eVO.vid);
         
-        if (createdVO) {
-            [eVO release];
-        }
         [rTracker_resource bumpProgressBar];
     }
     
-    [existingVOs release];
     [self sortVoTableByArray:newVOs];
-    [newVOs release];
     
 }
 
@@ -502,28 +496,13 @@ if (addVO) {
 	DBGLog(@"dealloc tObj: %@",self.trackerName);
 	
 	self.trackerName = nil;
-	[trackerName release];
-	self.trackerDate = nil;
-	[trackerDate release];
-	self.valObjTable = nil;
-	[valObjTable release];
 	
-	self.votArray = nil;
-	[votArray release];
 	
-	self.optDict = nil;
-	[optDict release];
 
 	self.vc = nil;
 	self.activeControl = nil;
 	
-    self.dateFormatter =nil;
-    [dateFormatter release];
-    self.dateOnlyFormatter =nil;
-    [dateOnlyFormatter release];
     
-    self.csvHeaderDict = nil;
-    [csvHeaderDict release];
     
 	//unregister for value updated notices
     /* move to utc
@@ -532,18 +511,15 @@ if (addVO) {
                                                   object:nil];
      */
     
-    self.reminders = nil;
-    [reminders release];
     
-	[super dealloc];
 }
 
 - (NSMutableDictionary *) optDict
 {
-	if (optDict == nil) {
-		optDict = [[NSMutableDictionary alloc] init];
+	if (_optDict == nil) {
+		_optDict = [[NSMutableDictionary alloc] init];
 	}
-	return optDict;
+	return _optDict;
 }
 
 
@@ -629,14 +605,8 @@ if (addVO) {
                                       in_vpriv:(int)[[e6 nextObject] intValue] 
 						];
 		[self.valObjTable addObject:(id) vo];
-		[vo release];
 	}
 	
-	[i1 release];
-	[i2 release];
-	[i3 release];
-	[i4 release];
-	[i5 release];
     
 	for (valueObj *vo in self.valObjTable) {
 		[s1 removeAllObjects];
@@ -664,14 +634,12 @@ if (addVO) {
 	if (self.nextColor >= [[rTracker_resource colorSet] count])
 		self.nextColor=0;
 	
-	[s1 release];
-	[s2 release];
 
 	
 	self.sql=nil;
 	
 	self.trackerDate = nil;
-	trackerDate = [[NSDate alloc] init];
+	self.trackerDate = [[NSDate alloc] init];
     [self rescanMaxLabel];
     
 
@@ -703,13 +671,12 @@ if (addVO) {
         valueObj *vo = [[valueObj alloc] initWithDict:(id)self dict:vod];
         DBGLog(@"add vo %@",vo.valueName);
         [self.valObjTable addObject:(id) vo];
-		[vo release];
     }
 
 	for (valueObj *vo in self.valObjTable) {
 
 		if (vo.vcolor > self.nextColor)
-			nextColor = vo.vcolor;
+			self.nextColor = vo.vcolor;
 		
         [vo.vos setOptDictDflts];
 		[vo.vos loadConfig];  // loads from vo optDict
@@ -719,17 +686,16 @@ if (addVO) {
     for (NSDictionary *rd in rda) {
         notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
         [self.reminders addObject:nr];
-        [nr release];
     }
     
 	//[self nextColor];  // inc safely past last used color
-	if (nextColor >= [[rTracker_resource colorSet] count])
-		nextColor=0;
+	if (self.nextColor >= [[rTracker_resource colorSet] count])
+		self.nextColor=0;
 	
 	self.sql=nil;
 	
 	self.trackerDate = nil;
-	trackerDate = [[NSDate alloc] init];
+	self.trackerDate = [[NSDate alloc] init];
     DBGLog(@"loadConfigFromDict finished loading %@",self.trackerName);
 }
 
@@ -754,7 +720,6 @@ if (addVO) {
 		}
 	}
 	
-	[s1 release];
 	self.sql=nil;
 }
 
@@ -814,7 +779,6 @@ if (addVO) {
 		}
 	}
 	
-	[s1 release];
 	self.sql=nil;
 }
 
@@ -934,7 +898,6 @@ if (addVO) {
                 [privacyV getPrivacyValue],                 // 10.xii.2013 don't delete privacy hidden items
                 [vids componentsJoinedByString:@","]];      // 18.i.2014 don't wipe all in case user quits before we finish
     
-    [vids release];
     
     [self toExecSql];
     
@@ -1032,8 +995,6 @@ if (addVO) {
 			}
 		}
 		
-		[i1 release];
-		[s1 release];
 		self.sql = nil;
 		
 		return YES;
@@ -1047,7 +1008,7 @@ if (addVO) {
 - (void) saveData {
 
 	if (self.trackerDate == nil) {
-		trackerDate = [[NSDate alloc] init];
+		self.trackerDate = [[NSDate alloc] init];
 	} else if (0 != self.changedDateFrom) {
         int ndi = [self.trackerDate timeIntervalSince1970];
         self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,self.changedDateFrom];
@@ -1158,11 +1119,10 @@ if (addVO) {
                 [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
                 //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
             }
-            [tData setObject:[[[NSDictionary alloc] initWithDictionary:vData copyItems:YES] autorelease]
+            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES]
                               forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]]];
             
             //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
-            [vData release];  
             //DBGLog(@"genRtrk: tData= %@",tData);
             [rTracker_resource setProgressVal:(ndx/all)];
             ndx += 1.0;
@@ -1194,7 +1154,6 @@ if (addVO) {
         [vData release];
     }
      */
-    [tData release];
     // rtrkDict sub-dictionaries not alloc'd so autoreleased
 
     return result;
@@ -1232,14 +1191,12 @@ if (addVO) {
         [vodma addObject:[vo dictFromVO]];
 	}
     NSArray *voda = [NSArray arrayWithArray:vodma];
-    [vodma release];
     
     NSMutableArray *rdma = [[NSMutableArray alloc] init];
     for (notifyReminder *nr in self.reminders) {
         [rdma addObject:[nr dictFromNR]];
     }
     NSArray *rda = [NSArray arrayWithArray:rdma];
-    [rdma release];
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithInt:self.toid],@"tid",
@@ -1302,21 +1259,21 @@ if (addVO) {
 
 
 - (NSDateFormatter*) dateFormatter {
-    if (nil == dateFormatter) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setTimeStyle:NSDateFormatterLongStyle];
-        [dateFormatter setDateStyle:NSDateFormatterLongStyle];  
+    if (nil == _dateFormatter) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setTimeStyle:NSDateFormatterLongStyle];
+        [_dateFormatter setDateStyle:NSDateFormatterLongStyle];
     }
-    return dateFormatter;
+    return _dateFormatter;
 }
 
 - (NSDateFormatter*) dateOnlyFormatter {
-    if (nil == dateOnlyFormatter) {
-        dateOnlyFormatter = [[NSDateFormatter alloc] init];
-        [dateOnlyFormatter setTimeStyle:NSDateFormatterNoStyle];
-        [dateOnlyFormatter setDateStyle:NSDateFormatterLongStyle];
+    if (nil == _dateOnlyFormatter) {
+        _dateOnlyFormatter = [[NSDateFormatter alloc] init];
+        [_dateOnlyFormatter setTimeStyle:NSDateFormatterNoStyle];
+        [_dateOnlyFormatter setDateStyle:NSDateFormatterLongStyle];
     }
-    return dateOnlyFormatter;
+    return _dateOnlyFormatter;
 }
 
 - (NSDate*) strToDate:(NSString*)str {
@@ -1407,25 +1364,25 @@ if (addVO) {
     float all = [self getDateCount];
     
     do {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        [self loadData:nextDate];
-        // write data - each vo gets routine to write itself -- function results too
-        outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
-        for (valueObj *vo in self.valObjTable) {
-            if (VOT_INFO != vo.vtype) {
-                outString = [outString stringByAppendingString:@","];
-                //if (VOT_CHOICE == vo.vtype) {
-                    outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
-                //} else {
-                    //outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
-                //}
+        @autoreleasepool {
+            [self loadData:nextDate];
+            // write data - each vo gets routine to write itself -- function results too
+            outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
+            for (valueObj *vo in self.valObjTable) {
+                if (VOT_INFO != vo.vtype) {
+                    outString = [outString stringByAppendingString:@","];
+                    //if (VOT_CHOICE == vo.vtype) {
+                        outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
+                    //} else {
+                        //outString = [outString stringByAppendingString:[self csvSafe:vo.value]];
+                    //}
+                }
             }
+            outString = [outString stringByAppendingString:@"\n"];
+            [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
+            [rTracker_resource setProgressVal:(ndx/all)];
+            ndx += 1.0;
         }
-        outString = [outString stringByAppendingString:@"\n"];
-        [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
-        [rTracker_resource setProgressVal:(ndx/all)];
-        ndx += 1.0;
-        [pool drain];
     } while ((nextDate = [self postDate]));    // iterate through dates
     
     // restore current date
@@ -1529,7 +1486,6 @@ if (addVO) {
                     
                     valueObj *vo = [[valueObj alloc] initFromDB:self in_vid:valobjID ];
                     [self.valObjTable addObject:(id) vo];
-                    [vo release];
                 }
             }
             //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
@@ -1683,7 +1639,7 @@ if (addVO) {
 
 - (void) resetData {
 	self.trackerDate = nil;
-	trackerDate = [[NSDate alloc] init];
+	self.trackerDate = [[NSDate alloc] init];
 	
 	for (valueObj *vo in self.valObjTable) {
 		[vo resetData];
@@ -1738,7 +1694,7 @@ if (addVO) {
 
 
 - (void) addValObj:(valueObj *) valObj {
-	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",self.trackerName,toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",self.trackerName,self.toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
 	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
@@ -1775,10 +1731,10 @@ if (addVO) {
 #pragma mark reminders 
 
 - (NSMutableArray*) reminders {
-    if (! reminders) {
-        reminders = [[NSMutableArray alloc] init];
+    if (nil == _reminders) {
+        _reminders = [[NSMutableArray alloc] init];
     }
-    return reminders;
+    return _reminders;
 }
 
 //load reminder data into trackerObj array from db
@@ -1791,13 +1747,10 @@ if (addVO) {
         for (NSNumber *rid in rids) {
             notifyReminder *tnr = [[notifyReminder alloc] init:rid to:self];
             [self.reminders addObject:tnr];
-            [tnr release];
         }
-        [rids release];
         self.reminderNdx=0;
         return [self.reminders objectAtIndex:0];
     } else {
-        [rids release];
         self.reminderNdx=-1;
         return nil;
     }
@@ -2217,7 +2170,6 @@ if (addVO) {
                 [dateComponents setMonth:1];
                 NSDate *nextMonth = [gregorian dateByAddingComponents:dateComponents toDate:today options:0];
 
-                [dateComponents release];
                 dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
                                                         NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:nextMonth];
                 [dateComponents setDay:ifirst+1];
@@ -2300,7 +2252,6 @@ if (addVO) {
            [NSDateFormatter localizedStringFromDate:targDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle] );
 
     
-    [offsetComponents release];
     
     [nr schedule:targDate];
 
@@ -2337,7 +2288,6 @@ if (addVO) {
             [self setReminder:nr today:today gregorian:cal];
         }
     }
-    [today release];
     //[gregorian release];
 }
 
@@ -2364,9 +2314,7 @@ if (addVO) {
             [self setReminder:nr today:today gregorian:cal];
         }
     }
-    [today release];
     //[gregorian release];
-    [ridSet release];
 }
 
 - (int) enabledReminderCount {
@@ -2704,9 +2652,9 @@ if (addVO) {
 
 - (NSInteger) nextColor
 {
-	NSInteger rv = nextColor;
-	if (++nextColor >= [[rTracker_resource colorSet] count])
-		nextColor=0;
+	NSInteger rv = _nextColor;
+	if (++_nextColor >= [[rTracker_resource colorSet] count])
+		_nextColor=0;
 	return rv;
 }
 
@@ -2727,20 +2675,19 @@ if (addVO) {
 // TODO: dump plist, votArray could be encoded as colorSet above (?)
 
 - (NSArray *) votArray {
-	if (votArray == nil) {
+	if (_votArray == nil) {
 		NSBundle *bundle = [NSBundle mainBundle];
 		NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
-		votArray = [[NSArray alloc] initWithContentsOfFile:plistPath]; 
+		_votArray = [[NSArray alloc] initWithContentsOfFile:plistPath];
 
 	}
 	
-	return votArray;
+	return _votArray;
 }
 
 - (void) setTOGD:(CGRect)inRect {  // note TOGD not Togd -- so self.togd still automatically retained/released
     id ttogd = [[togd alloc] initWithData:self rect:inRect];
     self.togd = ttogd;
-    [ttogd release];
     [self.togd fillVOGDs];
     //[self.togd release];  // rtm 05 feb 2012 +1 alloc, +1 self.togd retain
 }

@@ -24,27 +24,8 @@
 
 @implementation notifyReminderViewController
 
-@synthesize tracker, nr, chkImg, weekdayBtns, everyTrackerNames, unchkImg, firstWeekDay, everyTrackerNdx, everyMode, lastDefaultMsg, startHr, startMin, startTimeAmPm, startSlider, finishHr, finishMin, finishTimeAmPm, repeatTimes, finishSlider, intervalButton, toolBar, activeField, msgTF, enableButton, enableFinishButton,delayDaysState;
+@synthesize tracker=_tracker, nr=_nr, chkImg=_chkImg, weekdayBtns=_weekdayBtns, everyTrackerNames=_everyTrackerNames, unchkImg=_unchkImg, firstWeekDay=_firstWeekDay, everyTrackerNdx=_everyTrackerNdx, everyMode=_everyMode, lastDefaultMsg=_lastDefaultMsg, startHr=_startHr, startMin=_startMin, startTimeAmPm=_startTimeAmPm, startSlider=_startSlider, finishHr=_finishHr, finishMin=_finishMin, finishTimeAmPm=_finishTimeAmPm, repeatTimes=_repeatTimes, finishSlider=_finishSlider, intervalButton=_intervalButton, toolBar=_toolBar, activeField=_activeField, msgTF=_msgTF, enableButton=_enableButton, enableFinishButton=_enableFinishButton,delayDaysState=_delayDaysState;
 
--(void)dealloc {
-    self.tracker = nil;
-    [tracker release];
-    self.nr = nil;
-    [nr release];
-    self.weekdayBtns = nil;
-    [weekdayBtns release];
-    self.everyTrackerNames = nil;
-    [everyTrackerNames release];
-    self.chkImg = nil;
-    [chkImg release];
-    self.unchkImg = nil;
-    [unchkImg release];
-    self.msgTF = nil;
-    [msgTF release];
-    self.enableButton = nil;
-    [enableButton release];
-    [super dealloc];
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -102,7 +83,6 @@
         [(UIButton*)[self.weekdayBtns objectAtIndex:i] setTitle:[[dateFormatter shortWeekdaySymbols] objectAtIndex:(self->weekdays[i])] forState:UIControlStateNormal];
         //DBGLog(@"i=%d wd=%d sdayName= %@",i,wd,[[dateFormatter shortWeekdaySymbols] objectAtIndex:(self->weekdays[i])]);
     }
-    [dateFormatter release];
     
     self.everyMode = EV_HOURS;
     [self setEveryTrackerBtnName];
@@ -170,23 +150,22 @@
 
 
 - (NSArray*) weekdayBtns {
-    if (nil == weekdayBtns) {
-        weekdayBtns = [[NSArray alloc] initWithObjects:self.wdButton1, self.wdButton2, self.wdButton3, self.wdButton4, self.wdButton5, self.wdButton6, self.wdButton7, nil];
+    if (nil == _weekdayBtns) {
+        _weekdayBtns = [[NSArray alloc] initWithObjects:self.wdButton1, self.wdButton2, self.wdButton3, self.wdButton4, self.wdButton5, self.wdButton6, self.wdButton7, nil];
     }
-    return weekdayBtns;
+    return _weekdayBtns;
 }
 
 - (NSArray*) everyTrackerNames {
-    if (nil == everyTrackerNames) {
+    if (nil == _everyTrackerNames) {
         NSMutableArray *mtnames = [[NSMutableArray alloc] initWithCapacity:( [self.tracker.valObjTable count] + 1)];
         [mtnames addObject:self.tracker.trackerName];
         for (valueObj *vo in self.tracker.valObjTable) {
             [mtnames addObject:vo.valueName];
         }
-        everyTrackerNames = [[NSArray alloc] initWithArray:mtnames];
-        [mtnames release];
+        _everyTrackerNames = [[NSArray alloc] initWithArray:mtnames];
     }
-    return everyTrackerNames;
+    return _everyTrackerNames;
 }
 
 - (void)didReceiveMemoryWarning
@@ -254,7 +233,7 @@
     int i;
 
     if (nil == self.nr) {
-        self.nr = [[[notifyReminder alloc] init] autorelease];
+        self.nr = [[notifyReminder alloc] init];
         self.nr.msg = self.tracker.trackerName;
         self.nr.tid = self.tracker.toid;
         self.nr.fromLast=YES; // default to this as probably more common
@@ -299,7 +278,6 @@
             }
         }
         self.monthDays.text = [nma componentsJoinedByString:@","];
-        [nma release];
         [self clearWeekDays];
         [self clearEvery];
     } else { // if (self.nr.everyVal) {
@@ -676,7 +654,6 @@
     //}
     //[self.navigationController pushViewController:nrvc animated:YES];
     
-    [nrvc2 release];
     
 }
 
@@ -778,7 +755,7 @@
     
     DBGLog(@"change to -- %@ --",[[sender titleLabel] text]);
     
-    [activeField resignFirstResponder];
+    [self.activeField resignFirstResponder];
     [self doDelayDaysButtonState];
     
     /*
@@ -976,25 +953,25 @@
 - (IBAction)startHrChange:(UITextField*)sender {
     DBGLog(@"hrChange %@",sender.text);
     [self limitTimeTF:sender max:23];
-    [self timeTfUpdate:startSlider hrtf:self.startHr mntf:self.startMin ampml:self.startTimeAmPm];
+    [self timeTfUpdate:self.startSlider hrtf:self.startHr mntf:self.startMin ampml:self.startTimeAmPm];
 }
 
 - (IBAction)startMinChange:(UITextField*)sender {
     DBGLog(@"minChange %@",sender.text);
     [self limitTimeTF:sender max:59];
-    [self timeTfUpdate:startSlider hrtf:self.startHr mntf:self.startMin ampml:self.startTimeAmPm];
+    [self timeTfUpdate:self.startSlider hrtf:self.startHr mntf:self.startMin ampml:self.startTimeAmPm];
 }
 
 - (IBAction)finishHrChange:(UITextField*)sender {
     DBGLog(@"hrChange %@",sender.text);
     [self limitTimeTF:sender max:23];
-    [self timeTfUpdate:finishSlider hrtf:self.finishHr mntf:self.finishMin ampml:self.finishTimeAmPm];
+    [self timeTfUpdate:self.finishSlider hrtf:self.finishHr mntf:self.finishMin ampml:self.finishTimeAmPm];
 }
 
 - (IBAction)finishMinChange:(UITextField*)sender {
     DBGLog(@"minChange %@",sender.text);
     [self limitTimeTF:sender max:59];
-    [self timeTfUpdate:finishSlider hrtf:self.finishHr mntf:self.finishMin ampml:self.finishTimeAmPm];
+    [self timeTfUpdate:self.finishSlider hrtf:self.finishHr mntf:self.finishMin ampml:self.finishTimeAmPm];
 }
 
 - (IBAction)timesChange:(UITextField*)sender {
@@ -1014,13 +991,13 @@
 - (void)TFdidBeginEditing:(UITextField *)textField
 {
 	DBGLog(@"tf begin editing");
-    activeField = textField;
+    self.activeField = textField;
 }
 
 - (void)keyboardWillShow:(NSNotification *)n
 {
     //DBGLog(@"configTVObjVC keyboardwillshow");
-    CGFloat boty = activeField.frame.origin.y + activeField.frame.size.height + MARGIN;
+    CGFloat boty = self.activeField.frame.origin.y + self.activeField.frame.size.height + MARGIN;
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
 }
 
@@ -1037,7 +1014,7 @@
 	DBGLog(@"I am touched at %f, %f.",touchPoint.x, touchPoint.y);
 #endif
     
-	[activeField resignFirstResponder];
+	[self.activeField resignFirstResponder];
 }
 
 - (void)viewDidUnload {

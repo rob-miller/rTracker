@@ -10,18 +10,19 @@
 #import <sqlite3.h>
 
 
-@interface tObjBase : NSObject {
+@interface tObjBase : NSObject
+/*{
 
 	NSInteger toid;
 	NSString *dbName;
 	NSString *sql;
 	sqlite3 *tDb;
 	int tuniq;
-}
+}*/
 
 @property (nonatomic) NSInteger toid;
-@property (nonatomic, retain) NSString *sql;
-@property (nonatomic, retain) NSString *dbName;
+@property (nonatomic, strong) NSString *sql;
+@property (nonatomic, strong) NSString *dbName;
 @property (nonatomic) sqlite3 *tDb; 
 @property (nonatomic) NSInteger tuniq;
 

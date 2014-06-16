@@ -11,7 +11,7 @@
 
 @implementation voNumber
 
-@synthesize dtf;
+@synthesize dtf=_dtf;
 
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
@@ -54,48 +54,42 @@
 	return YES;
 }
 
-- (void) dealloc {
-    //DBGLog(@"voNumber dealloc");
-    self.dtf = nil;
-    [dtf release];
-    [super dealloc];
-}
 
 - (UITextField*) dtf {
-    if (nil == dtf) {
+    if (nil == _dtf) {
         DBGLog(@"init %@ : x=%f y=%f w=%f h=%f",self.vo.valueName,self.vosFrame.origin.x,self.vosFrame.origin.y,self.vosFrame.size.width,self.vosFrame.size.height);
-        dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
+        _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
-        dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-        dtf.textColor = [UIColor blackColor];
-        dtf.font = [UIFont systemFontOfSize:17.0];
-        dtf.backgroundColor = [UIColor whiteColor];
-        dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+        _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
+        _dtf.textColor = [UIColor blackColor];
+        _dtf.font = [UIFont systemFontOfSize:17.0];
+        _dtf.backgroundColor = [UIColor whiteColor];
+        _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
-        dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-        dtf.placeholder = @"<enter number>";
-        dtf.textAlignment = UITextAlignmentRight;
+        _dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+        _dtf.placeholder = @"<enter number>";
+        _dtf.textAlignment = UITextAlignmentRight;
         //[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
         
-        dtf.returnKeyType = UIReturnKeyDone;
+        _dtf.returnKeyType = UIReturnKeyDone;
         
-        dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+        _dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
         
         //dtf.tag = kViewTag;		// tag this control so we can remove it later for recycled cells
-        dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
+        _dtf.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed
         
         // Add an accessibility label that describes what the text field is for.
-        [dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
-        dtf.text=@"";
+        [_dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
+        _dtf.text=@"";
         
     }
     //DBGLog(@"num dtf rc= %d",[dtf retainCount]);
     
-    return dtf;
+    return _dtf;
 }
 
 - (void) resetData {
-    if (nil != dtf) {  // not self as don't want to instantiate prematurely
+    if (nil != _dtf) {  // not self as don't want to instantiate prematurely
         self.dtf.text = @"";
     }
     self.vo.useVO = YES;
@@ -143,7 +137,7 @@
 }
 
 - (NSString*) update:(NSString*)instr {   // confirm textfield not forgotten
-    if ((nil == dtf) // NOT self.dtf as we want to test if is instantiated
+    if ((nil == _dtf) // NOT self.dtf as we want to test if is instantiated
         ||
         !([instr isEqualToString:@""])
         ){ 

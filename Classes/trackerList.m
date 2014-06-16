@@ -13,7 +13,7 @@
 
 @implementation trackerList
 
-@synthesize topLayoutNames, topLayoutIDs, topLayoutPriv, topLayoutReminderCount;
+@synthesize topLayoutNames=_topLayoutNames, topLayoutIDs=_topLayoutIDs, topLayoutPriv=_topLayoutPriv, topLayoutReminderCount=_topLayoutReminderCount;
 //@synthesize tObj;
 
 /******************************
@@ -67,29 +67,16 @@
 	//DBGLog(@"init trackerList");
 	
 	if ((self = [super init])) {
-		topLayoutNames = [[NSMutableArray alloc] init];
-		topLayoutIDs = [[NSMutableArray alloc] init];
-        topLayoutPriv = [[NSMutableArray alloc] init];
-        topLayoutReminderCount = [[NSMutableArray alloc] init];
+		_topLayoutNames = [[NSMutableArray alloc] init];
+		_topLayoutIDs = [[NSMutableArray alloc] init];
+        _topLayoutPriv = [[NSMutableArray alloc] init];
+        _topLayoutReminderCount = [[NSMutableArray alloc] init];
         
 		[self initTDb];
 	} 
 	return self;
 }
 
-- (void) dealloc {
-	//DBGLog(@"trackerlist dealloc");
-	self.topLayoutNames = nil;
-	[topLayoutNames release];
-	self.topLayoutIDs = nil;
-	[topLayoutIDs release];
-	self.topLayoutPriv = nil;
-	[topLayoutPriv release];
-    self.topLayoutReminderCount = nil;
-    [topLayoutReminderCount release];
-    
-	[super dealloc];
-}
 
 #pragma mark -
 #pragma mark TopLayoutTable <-> db support 
@@ -223,7 +210,6 @@
     self.sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[rTracker_resource toSqlStr:str]];
     [self toQry2AryI:i1];
     NSArray *ra = [NSArray arrayWithArray:i1];
-    [i1 release];
     return ra;
 }
 
@@ -304,10 +290,10 @@
 {
 	DBGTLIST(self);
 
-	id tName = [[self.topLayoutNames objectAtIndex:fromRow] retain];
-	id tID = [[self.topLayoutIDs objectAtIndex:fromRow] retain];
-    id tPriv = [[self.topLayoutPriv objectAtIndex:fromRow] retain];
-	id tRC= [[self.topLayoutReminderCount objectAtIndex:fromRow] retain];
+	id tName = [self.topLayoutNames objectAtIndex:fromRow];
+	id tID = [self.topLayoutIDs objectAtIndex:fromRow];
+    id tPriv = [self.topLayoutPriv objectAtIndex:fromRow];
+	id tRC= [self.topLayoutReminderCount objectAtIndex:fromRow];
     
 	[self.topLayoutNames removeObjectAtIndex:fromRow];
 	[self.topLayoutIDs removeObjectAtIndex:fromRow];
@@ -319,10 +305,6 @@
 	[self.topLayoutPriv insertObject:tPriv atIndex:toRow];
 	[self.topLayoutReminderCount insertObject:tRC atIndex:toRow];
 	
-	[tName release];
-	[tID release];
-    [tPriv release];
-    [tRC release];
     
 	//DBGTLIST(self);
 }
@@ -345,7 +327,6 @@
 	for (valueObj *vo in srcTO.valObjTable) {
 		valueObj *newVO = [newTO copyVoConfig:vo];
 		[newTO addValObj:newVO];
-		[newVO release];
 	}
 	
 	[newTO saveConfig];
@@ -361,7 +342,6 @@
     DBGLog(@"delete tracker all name:%@ id:%d rowtext= %@", to.trackerName, to.toid, [self.topLayoutNames objectAtIndex:row] );
     [to clearScheduledReminders];
 	[to deleteTrackerDB];
-	[to release];
 	[self.topLayoutNames removeObjectAtIndex:row];
 	[self.topLayoutIDs removeObjectAtIndex:row];
     [self.topLayoutPriv removeObjectAtIndex:row];
@@ -373,7 +353,6 @@
 	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
 	[to deleteTrackerRecordsOnly];
-	[to release];
 }
 
 - (void) exportAll {
@@ -383,7 +362,6 @@
     for (NSNumber *tid in self.topLayoutIDs) {
         trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
         [to saveToItunes];
-        [to release];
         
         [rTracker_resource setProgressVal:(ndx/all)];
         ndx += 1.0;
@@ -444,9 +422,8 @@
                         DBGLog(@"deleting orphan %d file %@",ftid,fn);
                         [rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
                     } else {
-                        trackerObj *to = [[trackerObj alloc]init:ftid];
-                        DBGLog(@"%@ iv: %d orphan file: %@",fn, ftid, to.trackerName );
-                        [to release];
+                        //trackerObj *to = [[trackerObj alloc]init:ftid];
+                        DBGLog(@"%@ iv: %d orphan file: %@",fn, ftid, [[trackerObj alloc]init:ftid].trackerName );
                     }
                 }
                 
@@ -471,10 +448,6 @@
         }
     }
     
-    [i1 release];
-    [s1 release];
-    [dictTid2Ndx release];
-    [dictTid2Filename release];
     self.sql = nil;
     
 }
@@ -514,7 +487,6 @@
         to.trackerName = newName;
         [self addToTopLayoutTable:to];
     }
-    [to release];
 }
 
 - (BOOL) recoverOrphans {
@@ -585,10 +557,6 @@
         }
     }
     
-    [i1 release];
-    [s1 release];
-    [dictTid2Ndx release];
-    [dictTid2Filename release];
     self.sql = nil;
     
     return didRecover;

@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "valueObj.h"
 
-@interface vogd : NSObject {
+@interface vogd : NSObject
+/*{
     valueObj *vo;
     NSArray *xdat;
     NSArray *ydat;
@@ -20,11 +21,11 @@
     double vScale;
     
     CGFloat yZero;
-}
+}*/
 
-@property(nonatomic,retain) valueObj *vo;
-@property(nonatomic,retain) NSArray *xdat;
-@property(nonatomic,retain) NSArray *ydat;
+@property(nonatomic,strong) valueObj *vo;
+@property(nonatomic,strong) NSArray *xdat;
+@property(nonatomic,strong) NSArray *ydat;
 @property(nonatomic) double minVal;
 @property(nonatomic) double maxVal;
 @property(nonatomic) double vScale;

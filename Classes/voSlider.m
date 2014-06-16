@@ -11,7 +11,7 @@
 
 @implementation voSlider
 
-@synthesize sliderCtl,sdflt;
+@synthesize sliderCtl=_sliderCtl,sdflt=_sdflt;
 
 - (id) initWithVO:(valueObj *)valo {
 	if ((self = [super initWithVO:valo])) {
@@ -24,11 +24,6 @@
     self.vo.useVO=NO;
 }
 
-- (void) dealloc {
-    self.sliderCtl = nil;
-    [sliderCtl release];
-	[super dealloc];
-}
 
 - (UITableViewCell*) voTVCell:(UITableView *)tableView {
 	return [super voTVEnabledCell:tableView];
@@ -81,12 +76,12 @@
 */
 
 - (UISlider*) sliderCtl {
-    if (nil == sliderCtl) {
+    if (nil == _sliderCtl) {
        // DBGLog(@"create sliderCtl");
         //CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
         
-        sliderCtl = [[UISlider alloc] initWithFrame:self.vosFrame];
-        [sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
+        _sliderCtl = [[UISlider alloc] initWithFrame:self.vosFrame];
+        [_sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
 /*
         if ([(NSString*) [self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"]) {
             [sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -94,7 +89,7 @@
         }
 */
         // in case the parent view draws with a custom color or gradient, use a transparent color
-        sliderCtl.backgroundColor = [UIColor clearColor];
+        _sliderCtl.backgroundColor = [UIColor clearColor];
         
         NSNumber *nsmin = [self.vo.optDict objectForKey:@"smin"];
         NSNumber *nsmax = [self.vo.optDict objectForKey:@"smax"];
@@ -104,12 +99,12 @@
         CGFloat smax = (nsmax ? [nsmax floatValue] : SLIDRMAXDFLT);
         self.sdflt = (nsdflt ? [nsdflt floatValue] : SLIDRDFLTDFLT);
         
-        sliderCtl.minimumValue = smin;
-        sliderCtl.maximumValue = smax;
-        sliderCtl.continuous = YES;
+        _sliderCtl.minimumValue = smin;
+        _sliderCtl.maximumValue = smax;
+        _sliderCtl.continuous = YES;
         // Add an accessibility label that describes the slider.
         //[sliderCtl setAccessibilityLabel:NSLocalizedString(@"StandardSlider", @"")];
-        [sliderCtl setAccessibilityLabel:[NSString stringWithFormat:@"%@ slider", self.vo.valueName]];
+        [_sliderCtl setAccessibilityLabel:[NSString stringWithFormat:@"%@ slider", self.vo.valueName]];
         
         //sliderCtl.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 
@@ -124,7 +119,7 @@
          */
     }
     
-    return sliderCtl;
+    return _sliderCtl;
 }
 
 - (UIView*) voDisplay:(CGRect) bounds

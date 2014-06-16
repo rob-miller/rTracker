@@ -34,7 +34,10 @@
  */
 
 @interface notifyReminderViewController : UIViewController <UITextFieldDelegate>
+
 {
+    NSUInteger weekdays[7];
+/*
     trackerObj *tracker;
     notifyReminder *nr;
     //BOOL tmpReminder;         // nr.rid=0 // displayed reminder is only in view controller, no entry in tracker.reminders
@@ -46,64 +49,65 @@
     NSUInteger firstWeekDay;
     NSUInteger everyTrackerNdx;
     uint8_t everyMode;
-    NSUInteger weekdays[7];
     NSString *lastDefaultMsg;
     BOOL delayDaysState;
+*/
 }
 
-@property (nonatomic,retain) trackerObj *tracker;
-@property (nonatomic,retain) notifyReminder *nr;
+
+@property (nonatomic,strong) trackerObj *tracker;
+@property (nonatomic,strong) notifyReminder *nr;
 //@property (nonatomic) BOOL tmpReminder;
 
-@property (nonatomic,retain) NSArray *weekdayBtns;
-@property (nonatomic,retain) NSArray *everyTrackerNames;
-@property (nonatomic,retain) UIImage *chkImg;
-@property (nonatomic,retain) UIImage *unchkImg;
-@property (nonatomic,retain) NSString *lastDefaultMsg;
+@property (nonatomic,strong) NSArray *weekdayBtns;
+@property (nonatomic,strong) NSArray *everyTrackerNames;
+@property (nonatomic,strong) UIImage *chkImg;
+@property (nonatomic,strong) UIImage *unchkImg;
+@property (nonatomic,strong) NSString *lastDefaultMsg;
 
 @property (nonatomic) NSUInteger firstWeekDay;
 @property (nonatomic) NSUInteger everyTrackerNdx;
 @property (nonatomic) uint8_t everyMode;
 @property (nonatomic) BOOL delayDaysState;
 
-@property (nonatomic,retain) IBOutlet UINavigationBar *navBar;
-@property (nonatomic,retain) IBOutlet UIBarButtonItem *prevBarButton;
-@property (nonatomic,retain) IBOutlet UIBarButtonItem *nextAddBarButton;
+@property (nonatomic,strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic,strong) IBOutlet UIBarButtonItem *prevBarButton;
+@property (nonatomic,strong) IBOutlet UIBarButtonItem *nextAddBarButton;
 
 - (IBAction)prevBtn:(id)sender;
 - (IBAction)nextAddBtn:(id)sender;
 
-@property (retain, nonatomic) IBOutlet UITextField *msgTF;
+@property (nonatomic, strong) IBOutlet UITextField *msgTF;
 
-@property (retain, nonatomic) IBOutlet UIButton *enableButton;
+@property (nonatomic, strong) IBOutlet UIButton *enableButton;
 - (IBAction)enableBtn:(id)sender;
 
-@property (nonatomic,retain) IBOutlet UIButton *delayDaysButton;
+@property (nonatomic,strong) IBOutlet UIButton *delayDaysButton;
 - (IBAction)delayDaysBtn:(id)sender;
 
-@property (nonatomic,retain) IBOutlet UILabel *thenOnLabel;
+@property (nonatomic,strong) IBOutlet UILabel *thenOnLabel;
 
-@property (nonatomic,retain) IBOutlet UIButton *wdButton1;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton2;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton3;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton4;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton5;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton6;
-@property (nonatomic,retain) IBOutlet UIButton *wdButton7;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton1;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton2;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton3;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton4;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton5;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton6;
+@property (nonatomic,strong) IBOutlet UIButton *wdButton7;
 
 - (IBAction) wdBtn:(id)sender;
 
 
-@property (nonatomic,retain) IBOutlet UILabel *monthDaysLabel;
-@property (nonatomic,retain) IBOutlet UITextField *monthDays;
+@property (nonatomic,strong) IBOutlet UILabel *monthDaysLabel;
+@property (nonatomic,strong) IBOutlet UITextField *monthDays;
 
 - (IBAction)monthDaysChange:(id)sender;
 
-@property (nonatomic,retain) IBOutlet UITextField *everyTF;
-@property (nonatomic,retain) IBOutlet UIButton *everyButton;
-@property (nonatomic,retain) IBOutlet UIButton *fromLastButton;
-@property (nonatomic,retain) IBOutlet UILabel *fromLastLabel;
-@property (nonatomic,retain) IBOutlet UIButton *everyTrackerButton;
+@property (nonatomic,strong) IBOutlet UITextField *everyTF;
+@property (nonatomic,strong) IBOutlet UIButton *everyButton;
+@property (nonatomic,strong) IBOutlet UIButton *fromLastButton;
+@property (nonatomic,strong) IBOutlet UILabel *fromLastLabel;
+@property (nonatomic,strong) IBOutlet UIButton *everyTrackerButton;
 
 - (IBAction)everyTFChange:(id)sender;
 - (IBAction)everyBtn:(id)sender;
@@ -112,37 +116,37 @@
 
 - (IBAction)TFdidBeginEditing:(id)sender;
 
-@property (nonatomic,assign) UITextField *activeField;   //just a pointer, no retain
+@property (nonatomic,unsafe_unretained) UITextField *activeField;   //just a pointer, no retain
 
 //@property (nonatomic,retain) IBOutlet UISegmentedControl *weekMonthEvery;
 //- (IBAction)weekMonthEveryChange:(id)sender;
 
 
-@property (nonatomic,retain) IBOutlet UITextField *startHr;
-@property (nonatomic,retain) IBOutlet UITextField *startMin;
-@property (nonatomic,retain) IBOutlet UISlider *startSlider;
-@property (nonatomic,retain) IBOutlet UILabel *startTimeAmPm;
-@property (nonatomic,retain) IBOutlet UILabel *startLabel;
+@property (nonatomic,strong) IBOutlet UITextField *startHr;
+@property (nonatomic,strong) IBOutlet UITextField *startMin;
+@property (nonatomic,strong) IBOutlet UISlider *startSlider;
+@property (nonatomic,strong) IBOutlet UILabel *startTimeAmPm;
+@property (nonatomic,strong) IBOutlet UILabel *startLabel;
 
 //start
 - (IBAction)startHrChange:(id)sender;
 - (IBAction)startMinChange:(id)sender;
 - (IBAction)startSliderAction:(id)sender;
 
-@property (nonatomic,retain) IBOutlet UITextField *finishHr;
-@property (nonatomic,retain) IBOutlet UITextField *finishMin;
-@property (nonatomic,retain) IBOutlet UISlider *finishSlider;
-@property (nonatomic,retain) IBOutlet UILabel *finishTimeAmPm;
-@property (nonatomic,retain) IBOutlet UILabel *finishLabel;
-@property (nonatomic,retain) IBOutlet UILabel *finishColon;
+@property (nonatomic,strong) IBOutlet UITextField *finishHr;
+@property (nonatomic,strong) IBOutlet UITextField *finishMin;
+@property (nonatomic,strong) IBOutlet UISlider *finishSlider;
+@property (nonatomic,strong) IBOutlet UILabel *finishTimeAmPm;
+@property (nonatomic,strong) IBOutlet UILabel *finishLabel;
+@property (nonatomic,strong) IBOutlet UILabel *finishColon;
 
 
-@property (nonatomic,retain) IBOutlet UITextField *repeatTimes;
-@property (nonatomic,retain) IBOutlet UILabel *repeatTimesLabel;
-@property (nonatomic,retain) IBOutlet UIButton *intervalButton;
+@property (nonatomic,strong) IBOutlet UITextField *repeatTimes;
+@property (nonatomic,strong) IBOutlet UILabel *repeatTimesLabel;
+@property (nonatomic,strong) IBOutlet UIButton *intervalButton;
 
 - (IBAction) enableFinishBtn:(id)sender;
-@property (nonatomic,retain) IBOutlet UIButton *enableFinishButton;
+@property (nonatomic,strong) IBOutlet UIButton *enableFinishButton;
 
  //fin
 - (IBAction)finishHrChange:(id)sender;
@@ -154,7 +158,7 @@
 */
 
 
-@property (nonatomic,retain) IBOutlet UIToolbar *toolBar;
+@property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
 
 - (IBAction)btnDone:(id)sender;
 - (IBAction)btnGear:(id)sender;
