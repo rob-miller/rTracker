@@ -45,6 +45,9 @@
 - (void) toQry2AryID : (NSMutableArray *)i1 d1:(NSMutableArray *)d1;
 - (void) toQry2AryI : (NSMutableArray *) inAry;
 
+-(void) toQry2DictII : (NSMutableDictionary*) dict;
+-(void) toQry2SetI : (NSMutableSet*) set;
+
 - (void) toExecSql;
 - (void) toExecSqlIgnErr;
 

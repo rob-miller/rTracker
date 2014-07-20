@@ -78,15 +78,15 @@ in_vpriv:(NSInteger)in_vpriv
 	if ((self = [super init])) {
 		self.useVO = YES;
 		self.parentTracker = parentTO;
-		self.vid = [(NSNumber*) [dict objectForKey:@"vid"] integerValue];
+		self.vid = [(NSNumber*) dict[@"vid"] integerValue];
         [(trackerObj*) self.parentTracker minUniquev:self.vid];
-		self.valueName = (NSString*) [dict objectForKey:@"valueName"];
-        self.optDict = (NSMutableDictionary*) [dict objectForKey:@"optDict"];
-        self.vpriv = [(NSNumber*) [dict objectForKey:@"vpriv"] integerValue];
-		self.vtype = [(NSNumber*) [dict objectForKey:@"vtype"] integerValue];
+		self.valueName = (NSString*) dict[@"valueName"];
+        self.optDict = (NSMutableDictionary*) dict[@"optDict"];
+        self.vpriv = [(NSNumber*) dict[@"vpriv"] integerValue];
+		self.vtype = [(NSNumber*) dict[@"vtype"] integerValue];
         // setting vtype sets vo.useVO through vos init
-		self.vcolor = [(NSNumber*) [dict objectForKey:@"vcolor"] integerValue];
-		self.vGraphType = [(NSNumber*) [dict objectForKey:@"vGraphType"] integerValue];
+		self.vcolor = [(NSNumber*) dict[@"vcolor"] integerValue];
+		self.vGraphType = [(NSNumber*) dict[@"vGraphType"] integerValue];
         
 	}
 	
@@ -153,15 +153,13 @@ in_vpriv:(NSInteger)in_vpriv
             self.optDict
            );
     */
-     return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInteger:self.vid],@"vid",
-            [NSNumber numberWithInteger:self.vtype],@"vtype",
-            [NSNumber numberWithInteger:self.vpriv],@"vpriv",
-            self.valueName,@"valueName",
-            [NSNumber numberWithInteger:self.vcolor],@"vcolor",
-            [NSNumber numberWithInteger:self.vGraphType],@"vGraphType",
-            self.optDict,@"optDict",
-            nil];
+     return @{@"vid": @(self.vid),
+            @"vtype": @(self.vtype),
+            @"vpriv": @(self.vpriv),
+            @"valueName": self.valueName,
+            @"vcolor": @(self.vcolor),
+            @"vGraphType": @(self.vGraphType),
+            @"optDict": self.optDict};
 }
 
 
@@ -304,7 +302,7 @@ in_vpriv:(NSInteger)in_vpriv
 // called when the checkmark button is touched 
 - (void)checkAction:(id)sender
 {
-	DBGLog(@"checkbox ticked for %@ new state= %d",valueName, !self.useVO);
+	DBGLog(@"checkbox ticked for %@ new state= %d",_valueName, !self.useVO);
 	UIImage *checkImage;
 	
 	// note: we don't use 'sender' because this action method can be called separate from the button (i.e. from table selection)
@@ -322,7 +320,7 @@ in_vpriv:(NSInteger)in_vpriv
 		if (self.vtype == VOT_CHOICE)
 			((UISegmentedControl *) self.display).selectedSegmentIndex =  UISegmentedControlNoSegment;
 		else if (self.vtype == VOT_SLIDER) {
-			NSNumber *nsdflt = [self.optDict objectForKey:@"sdflt"];
+			NSNumber *nsdflt = (self.optDict)[@"sdflt"];
 			CGFloat sdflt =  nsdflt ? [nsdflt floatValue] : SLIDRDFLTDFLT;
 			[((UISlider *) self.display) setValue:sdflt animated:YES];
 		}
@@ -366,7 +364,7 @@ in_vpriv:(NSInteger)in_vpriv
 
 
 + (const NSArray *) allGraphs {
-	return [NSArray arrayWithObjects:@"dots", @"bar",@"line", @"line+dots", @"pie", /*@"no graph",*/ nil];
+	return @[@"dots", @"bar",@"line", @"line+dots", @"pie"];
 }
 
 
@@ -438,15 +436,15 @@ in_vpriv:(NSInteger)in_vpriv
         int i;
         for (i=0; i< CHOICES; i++) {
             NSString *key = [NSString stringWithFormat:@"cc%d",i];
-            NSNumber *ncol = [self.optDict objectForKey:key];
+            NSNumber *ncol = (self.optDict)[key];
             if (ncol != nil) {
                 NSInteger col = [ncol integerValue];
                 if (col < 0) {
                     DBGErr(@"%@ invalid choice %i color (negative): %d",VOINF,i,col);
-                    [self.optDict setObject:[NSNumber numberWithInt:0] forKey:key];
+                    (self.optDict)[key] = @0;
                 } else if (col > ([[rTracker_resource colorSet] count] -1)) {
                     DBGErr(@"%@ invalid choice %i color (too large): %d max color= %i",VOINF,i,col,([[rTracker_resource colorSet] count] -1));
-                    [self.optDict setObject:[NSNumber numberWithInt:0] forKey:key];
+                    (self.optDict)[key] = @0;
                 }
             }
         }

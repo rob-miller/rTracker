@@ -101,10 +101,10 @@
 - (void) addToTopLayoutTable:(trackerObj*) tObj {
     DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
     
-    [self.topLayoutIDs addObject:[NSNumber numberWithInt:tObj.toid]];
+    [self.topLayoutIDs addObject:@(tObj.toid)];
     [self.topLayoutNames addObject:tObj.trackerName];
-    [self.topLayoutPriv addObject:[NSNumber numberWithInt:[[tObj.optDict valueForKey:@"privacy"] intValue]]];
-    [self.topLayoutReminderCount addObject:[NSNumber numberWithInt:[tObj enabledReminderCount]]];
+    [self.topLayoutPriv addObject:@([[tObj.optDict valueForKey:@"privacy"] intValue])];
+    [self.topLayoutReminderCount addObject:@([tObj enabledReminderCount])];
     
     [self confirmTopLayoutEntry:tObj];
 }
@@ -160,9 +160,9 @@
 	self.sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
 	[self toExecSql];
 	for (NSString *tracker in self.topLayoutNames) {
-		NSInteger tid = [[self.topLayoutIDs objectAtIndex:nrank] intValue];
-		NSInteger priv = [[self.topLayoutPriv objectAtIndex:nrank] intValue];
-		NSInteger rc = [[self.topLayoutReminderCount objectAtIndex:nrank] intValue];
+		NSInteger tid = [(self.topLayoutIDs)[nrank] intValue];
+		NSInteger priv = [(self.topLayoutPriv)[nrank] intValue];
+		NSInteger rc = [(self.topLayoutReminderCount)[nrank] intValue];
         
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
 		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %d, \"%@\", %d, %d);",nrank+1,tid,[rTracker_resource toSqlStr:tracker], priv,rc];  // rank in db always non-0
@@ -173,16 +173,16 @@
 }
 
 - (int) getTIDfromIndex:(NSUInteger)ndx {
-	return [[self.topLayoutIDs objectAtIndex:ndx] intValue];
+	return [(self.topLayoutIDs)[ndx] intValue];
 }
 
 - (int) getPrivFromLoadedTID:(int)tid {
     
-    int ndx = [self.topLayoutIDs indexOfObject:[NSNumber numberWithInt:tid]];
+    int ndx = [self.topLayoutIDs indexOfObject:@(tid)];
     if (NSNotFound == ndx) {
         return MAXPRIV;
     }
-    return [[self.topLayoutPriv objectAtIndex:ndx] intValue];
+    return [(self.topLayoutPriv)[ndx] intValue];
     
     //return [[self.topLayoutPriv objectAtIndex:[self.topLayoutIDs indexOfObject:[NSNumber numberWithInt:tid]]] intValue];
 }
@@ -219,7 +219,7 @@
 //
 ////
 - (void) fixDictTID:(NSDictionary*)tdict {
-    NSNumber *tid = [tdict objectForKey:@"tid"];
+    NSNumber *tid = tdict[@"tid"];
     [self minUniquev:[tid intValue]];
     
     if ([self checkTIDexists:tid]) {
@@ -248,7 +248,7 @@
 - (void) updateTID:(int)old new:(int)new {
 
     if (old == new) return;
-    if ([self checkTIDexists:[NSNumber numberWithInt:new]]) {
+    if ([self checkTIDexists:@(new)]) {
         [self updateTID:new new:[self getUnique]];
     }
 
@@ -290,10 +290,10 @@
 {
 	DBGTLIST(self);
 
-	id tName = [self.topLayoutNames objectAtIndex:fromRow];
-	id tID = [self.topLayoutIDs objectAtIndex:fromRow];
-    id tPriv = [self.topLayoutPriv objectAtIndex:fromRow];
-	id tRC= [self.topLayoutReminderCount objectAtIndex:fromRow];
+	id tName = (self.topLayoutNames)[fromRow];
+	id tID = (self.topLayoutIDs)[fromRow];
+    id tPriv = (self.topLayoutPriv)[fromRow];
+	id tRC= (self.topLayoutReminderCount)[fromRow];
     
 	[self.topLayoutNames removeObjectAtIndex:fromRow];
 	[self.topLayoutIDs removeObjectAtIndex:fromRow];
@@ -337,7 +337,7 @@
 
 - (void) deleteTrackerAllRow:(NSUInteger)row
 {
-	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
+	int tid = [(self.topLayoutIDs)[row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
     DBGLog(@"delete tracker all name:%@ id:%d rowtext= %@", to.trackerName, to.toid, [self.topLayoutNames objectAtIndex:row] );
     [to clearScheduledReminders];
@@ -350,7 +350,7 @@
 
 - (void) deleteTrackerRecordsRow:(NSUInteger)row
 {
-	int tid = [[self.topLayoutIDs objectAtIndex:row] intValue];
+	int tid = [(self.topLayoutIDs)[row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
 	[to deleteTrackerRecordsOnly];
 }
@@ -398,7 +398,7 @@
     NSUInteger c = [i1 count];
     NSUInteger i;
     for (i=0;i<c;i++) {
-        [dictTid2Ndx setObject:[NSNumber numberWithUnsignedInt:i] forKey:[i1 objectAtIndex:i]];
+        dictTid2Ndx[i1[i]] = @(i);
     }
     
     NSError *err;
@@ -412,8 +412,8 @@
         for (fn in fileList) {
             int ftid = [[fn substringFromIndex:4] intValue];
             if (ftid) {
-                [dictTid2Filename setObject:fn forKey:[NSNumber numberWithInt:ftid]];
-                NSNumber *ftidNdx = [dictTid2Ndx objectForKey:[NSNumber numberWithInt:ftid]];
+                dictTid2Filename[@(ftid)] = fn;
+                NSNumber *ftidNdx = dictTid2Ndx[@(ftid)];
                 if (ftidNdx) {
                     DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
                 } else {
@@ -435,11 +435,11 @@
         NSNumber *tlTid;
         i=0;
         for (tlTid in i1) {
-            NSString *tltidFilename = [dictTid2Filename objectForKey:tlTid];
+            NSString *tltidFilename = dictTid2Filename[tlTid];
             if (tltidFilename) {
                 DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
             } else {
-                NSString *tname = [s1 objectAtIndex:i];
+                NSString *tname = s1[i];
                 DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
                 self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
                 [self toExecSql];
@@ -457,7 +457,7 @@
     trackerObj *to;
     int newTid = ftid;
     
-    if ([self checkTIDexists:[NSNumber numberWithInt:ftid]]) {
+    if ([self checkTIDexists:@(ftid)]) {
         newTid = [self getUnique];
     }
     NSString *newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
@@ -499,7 +499,7 @@
     NSUInteger c = [i1 count];
     NSUInteger i;
     for (i=0;i<c;i++) {
-        [dictTid2Ndx setObject:[NSNumber numberWithUnsignedInt:i] forKey:[i1 objectAtIndex:i]];
+        dictTid2Ndx[i1[i]] = @(i);
     }
     
     NSError *err;
@@ -514,8 +514,8 @@
             
             int ftid = [[fn substringFromIndex:4] intValue];
             if (ftid && [fn hasPrefix:@"trkr"] && [fn hasSuffix:@"sqlite3"]) {
-                [dictTid2Filename setObject:fn forKey:[NSNumber numberWithInt:ftid]];
-                NSNumber *ftidNdx = [dictTid2Ndx objectForKey:[NSNumber numberWithInt:ftid]];
+                dictTid2Filename[@(ftid)] = fn;
+                NSNumber *ftidNdx = dictTid2Ndx[@(ftid)];
                 if (ftidNdx) {
                     DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
                 } else {
@@ -544,11 +544,11 @@
         NSNumber *tlTid;
         i=0;
         for (tlTid in i1) {
-            NSString *tltidFilename = [dictTid2Filename objectForKey:tlTid];
+            NSString *tltidFilename = dictTid2Filename[tlTid];
             if (tltidFilename) {
                 DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
             } else {
-                NSString *tname = [s1 objectAtIndex:i];
+                NSString *tname = s1[i];
                 DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
                 self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
                 [self toExecSql];

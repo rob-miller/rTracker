@@ -316,7 +316,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (int) loadTrackerDict:(NSDictionary*)tdict tname:(NSString*)tname {
     
     // get input tid
-    NSNumber *newTID = [tdict objectForKey:@"tid"];
+    NSNumber *newTID = tdict[@"tid"];
     DBGLog(@"load input: %@ tid %@",tname, newTID);
     
     int newTIDi = [newTID intValue];
@@ -382,13 +382,13 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         objName = @"plist";
     } else {  // else is an rtrk
         NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfURL:url];
-        tname = [rtdict objectForKey:@"trackerName"];
-        tdict = [rtdict objectForKey:@"configDict"];
-        dataDict = [rtdict objectForKey:@"dataDict"];
+        tname = rtdict[@"trackerName"];
+        tdict = rtdict[@"configDict"];
+        dataDict = rtdict[@"dataDict"];
         objName = @"rtrk";
     }
 
-    int c = [(NSArray *)[tdict objectForKey:@"valObjTable"] count];
+    int c = [(NSArray *)tdict[@"valObjTable"] count];
     int c2 = (nil == dataDict ? 0 : [dataDict count]);
     if ((c>20) || (c2>20))
         [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,objName] waitUntilDone:NO];
@@ -506,7 +506,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         if (plistFile) {
             [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
         } else {
-            [self.stashedTIDs addObject:[NSNumber numberWithInt:rtrkTid]];
+            [self.stashedTIDs addObject:@(rtrkTid)];
         }
         
         self.readingFile=NO;
@@ -766,15 +766,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void) refreshToolBar:(BOOL)animated {
     //DBGLog(@"refresh tool bar, noshow= %d",(PVNOSHOW == self.privacyObj.showing));
     //DBGLog(@"refresh tool bar");
-	[self setToolbarItems:[NSArray arrayWithObjects: 
-                           //self.addBtn,
-						   self.flexibleSpaceButtonItem,
+	[self setToolbarItems:@[self.flexibleSpaceButtonItem,
                            self.helpBtn,
 						   //self.payBtn, 
-                           self.privateBtn, 
-                           //self.multiGraphBtn, 
-						   //self.flexibleSpaceButtonItem, 
-						   nil] 
+                           self.privateBtn] 
 				 animated:animated];
 }
 
@@ -792,25 +787,25 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     
     for (i=0;i<c && nil == name;i++) {
         NSString *w=nil;
-        if (![@"" isEqual: (w = [words objectAtIndex:i])]) {
+        if (![@"" isEqual: (w = words[i])]) {
             name = w;
         }
     }
     
     NSUInteger prodNdx=0;
-    NSString *longName = [words objectAtIndex:0];
+    NSString *longName = words[0];
     
     for (prodNdx =0; prodNdx<c;prodNdx++) {
-        if ( (NSOrderedSame == [@"iphone" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
-            || (NSOrderedSame == [@"ipad" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
-            || (NSOrderedSame == [@"ipod" caseInsensitiveCompare:[words objectAtIndex:prodNdx]])
-            || (NSOrderedSame == [@"itouch" caseInsensitiveCompare:[words objectAtIndex:prodNdx]]) ) {
+        if ( (NSOrderedSame == [@"iphone" caseInsensitiveCompare:words[prodNdx]])
+            || (NSOrderedSame == [@"ipad" caseInsensitiveCompare:words[prodNdx]])
+            || (NSOrderedSame == [@"ipod" caseInsensitiveCompare:words[prodNdx]])
+            || (NSOrderedSame == [@"itouch" caseInsensitiveCompare:words[prodNdx]]) ) {
             break;
         }
     }
     if ((1 <= prodNdx) && (prodNdx < c)) {
         for (i=1;i<prodNdx;i++) {
-            longName = [longName stringByAppendingFormat:@" %@",[words objectAtIndex:i]];
+            longName = [longName stringByAppendingFormat:@" %@",words[i]];
         }
     } else if ((0 == prodNdx) || (prodNdx >= c)) {
             longName = nil;
@@ -1036,6 +1031,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
     //[rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
     
+    [rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]];
+    
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
     if (resetPassPref) [self.privacyObj resetPw];
@@ -1087,7 +1084,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 - (void) jumpMaxPriv {
     if (nil == self.stashedPriv) {
-        self.stashedPriv = [NSNumber numberWithInt:[privacyV getPrivacyValue]];
+        self.stashedPriv = @([privacyV getPrivacyValue]);
         DBGLog(@"stashed priv %@",self.stashedPriv);
     }
 
@@ -1115,6 +1112,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
     [self restorePriv];
     //[self refreshViewPart2];
+
+    [self.navigationController setToolbarHidden:NO animated:NO];
 
     [super viewWillAppear:animated];
 }
@@ -1454,12 +1453,12 @@ BOOL stashAnimated;
     [self.scheduledReminderCounts removeAllObjects];
     for (int i=0; i<[eventArray count]; i++)
     {
-        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        UILocalNotification* oneEvent = eventArray[i];
         NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        NSNumber *tid =[userInfoCurrent objectForKey:@"tid"];
-        int c = [[self.scheduledReminderCounts objectForKey:tid] intValue];
+        NSNumber *tid =userInfoCurrent[@"tid"];
+        int c = [(self.scheduledReminderCounts)[tid] intValue];
         c++;
-        [self.scheduledReminderCounts setObject:[NSNumber numberWithInt:c] forKey:tid];
+        (self.scheduledReminderCounts)[tid] = @(c);
     }
     
 }
@@ -1549,7 +1548,7 @@ BOOL stashAnimated;
         erc += [nsn integerValue];
     }
     for (NSNumber *tid in self.scheduledReminderCounts) {
-        src += [[self.scheduledReminderCounts objectForKey:tid] integerValue];
+        src += [(self.scheduledReminderCounts)[tid] integerValue];
     }
     
     return (erc > src ? erc-src : 0);
@@ -1575,9 +1574,9 @@ BOOL stashAnimated;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-    NSNumber *tid = [self.tlist.topLayoutIDs objectAtIndex:row];
-    int erc = [[self.tlist.topLayoutReminderCount objectAtIndex:row] intValue];
-    int src = [[self.scheduledReminderCounts objectForKey:tid] intValue];
+    NSNumber *tid = (self.tlist.topLayoutIDs)[row];
+    int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
+    int src = [(self.scheduledReminderCounts)[tid] intValue];
    
     NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
@@ -1585,9 +1584,9 @@ BOOL stashAnimated;
         formatString = @"> %@";
         //bg = [UIColor redColor];
     }
-    DBGLog(@"erc= %d  src= %d",erc,src);
+    //DBGLog(@"erc= %d  src= %d",erc,src);
     
-	cell.textLabel.text = [NSString stringWithFormat:formatString,[self.tlist.topLayoutNames objectAtIndex:row]];  // gross but simplest offset option
+	cell.textLabel.text = [NSString stringWithFormat:formatString,(self.tlist.topLayoutNames)[row]];  // gross but simplest offset option
     //cell.textLabel.backgroundColor = bg;
     //cell.textLabel.backgroundColor = [UIColor clearColor];
     

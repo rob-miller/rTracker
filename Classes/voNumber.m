@@ -101,7 +101,7 @@
 	//if (![self.vo.value isEqualToString:dtf.text]) {
         
         if ([self.vo.value isEqualToString:@""]) {
-            if ([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"] /* && ![to hasData] */) {  // only if new entry
+            if ([(self.vo.optDict)[@"nswl"] isEqualToString:@"1"] /* && ![to hasData] */) {  // only if new entry
                 trackerObj *to = (trackerObj*)self.vo.parentTracker;
                 to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d and date<%d",
                           self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
@@ -156,18 +156,18 @@
 
 - (void) setOptDictDflts {
     
-    if (nil == [self.vo.optDict objectForKey:@"nswl"]) 
-        [self.vo.optDict setObject:(NSWLDFLT ? @"1" : @"0") forKey:@"nswl"];
+    if (nil == (self.vo.optDict)[@"nswl"]) 
+        (self.vo.optDict)[@"nswl"] = (NSWLDFLT ? @"1" : @"0");
     
-    if (nil == [self.vo.optDict objectForKey:@"autoscale"]) 
-        [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
+    if (nil == (self.vo.optDict)[@"autoscale"]) 
+        (self.vo.optDict)[@"autoscale"] = (AUTOSCALEDFLT ? @"1" : @"0");
 
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     
@@ -190,7 +190,7 @@
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
                           key:@"swlBtn"
-                        state:([[self.vo.optDict objectForKey:@"nswl"] isEqualToString:@"1"])  // default:0
+                        state:([(self.vo.optDict)[@"nswl"] isEqualToString:@"1"])  // default:0
                         addsv:YES
     ];
 	frame.origin.x = MARGIN;

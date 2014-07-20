@@ -90,8 +90,8 @@
 														   timeStyle:(NSDateFormatterStyle)NSDateFormatterShortStyle];
 		NSArray *dta = [datestr componentsSeparatedByString:@" "];
         
-		NSString *ds = (NSString *) [dta objectAtIndex:0];
-		NSString *ts = (NSString *) [dta objectAtIndex:1];
+		NSString *ds = (NSString *) dta[0];
+		NSString *ts = (NSString *) dta[1];
         
         ds = [ds stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 

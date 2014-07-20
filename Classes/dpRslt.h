@@ -12,6 +12,7 @@
 #define DPA_NEW			1
 #define DPA_SET			2
 #define DPA_GOTO		3
+#define DPA_GOTO_POST	4
 
 
 @interface dpRslt : NSObject

@@ -179,9 +179,11 @@
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.month = section;
+    /*
     DBGLog(@"cal %@",self.calendar);
     DBGLog(@"offset %@",offset);
     DBGLog(@"firstDate %@",self.firstDate);
+    */
     
     return [self.calendar dateByAddingComponents:offset toDate:self.firstDate options:0];
 }

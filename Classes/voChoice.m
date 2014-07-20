@@ -44,7 +44,7 @@
     NSUInteger segNdx = [self.segmentedControl selectedSegmentIndex];
     if (UISegmentedControlNoSegment != segNdx) {
 
-        NSString *val = [self.vo.optDict objectForKey:[NSString stringWithFormat:@"cv%d",segNdx]];
+        NSString *val = (self.vo.optDict)[[NSString stringWithFormat:@"cv%d",segNdx]];
         if (nil == val) {
             rslt = [NSString stringWithFormat:@"%d",segNdx+1];
         } else {
@@ -131,7 +131,7 @@
         NSMutableArray *segmentTextContent = [[NSMutableArray alloc] init];
         for (i=0;i<CHOICES;i++) {
             NSString *key = [NSString stringWithFormat:@"c%d",i];
-            NSString *s = [self.vo.optDict objectForKey:key];
+            NSString *s = (self.vo.optDict)[key];
             if ((s != nil) && (![s isEqualToString:@""])) 
                 [segmentTextContent addObject:s];
         }
@@ -141,7 +141,7 @@
         _segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
         _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
-        if ([(NSString*) [self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"]) {  
+        if ([(NSString*) (self.vo.optDict)[@"shrinkb"] isEqualToString:@"1"]) {  
             int j=0;
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
@@ -205,7 +205,7 @@
 }
 
 - (NSArray*) voGraphSet {
-	return [NSArray arrayWithObjects:@"dots",@"bar",/*@"pie",*/ nil];
+	return @[@"dots",@"bar"];
 }
 
 - (void) ctfDone:(UITextField *)tf
@@ -217,7 +217,7 @@
 	int i=0;
 	NSString *key;
 	for (key in self.ctvovcp.wDict) {
-		if ([self.ctvovcp.wDict objectForKey:key] == tf) {
+		if ((self.ctvovcp.wDict)[key] == tf) {
 			const char *kstr = [key UTF8String];
 			sscanf(kstr,"%dtf",&i);
 			break;
@@ -225,24 +225,24 @@
 	}
 	
 	DBGLog(@"set choice %d: %@",i, tf.text);
-	[self.vo.optDict setObject:tf.text forKey:[NSString stringWithFormat:@"c%d",i]];
+	(self.vo.optDict)[[NSString stringWithFormat:@"c%d",i]] = tf.text;
 	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
-	UIButton *b = [self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dbtn",i]];
+	UIButton *b = (self.ctvovcp.wDict)[[NSString stringWithFormat:@"%dbtn",i]];
 	if ([tf.text isEqualToString:@""]) {
 		b.backgroundColor = [UIColor clearColor];
 		[self.vo.optDict removeObjectForKey:cc];
 		//TODO: should offer to delete any stored data
 	} else {
-		NSNumber *ncol = [self.vo.optDict objectForKey:cc];
+		NSNumber *ncol = (self.vo.optDict)[cc];
 		
 		if (ncol == nil) {
 			NSInteger col = [self.vo.parentTracker nextColor];
-			[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
-			b.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
+			(self.vo.optDict)[cc] = @(col);
+			b.backgroundColor = [rTracker_resource colorSet][col];
 		} 
 	}
 	if (++i<CHOICES) {
-		[[self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
+		[(self.ctvovcp.wDict)[[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
 	} else {
 		[tf resignFirstResponder];
 	}
@@ -260,7 +260,7 @@
 	int i=0;
 	NSString *key;
 	for (key in self.ctvovcp.wDict) {
-		if ([self.ctvovcp.wDict objectForKey:key] == tf) {
+		if ((self.ctvovcp.wDict)[key] == tf) {
 			const char *kstr = [key UTF8String];
 			sscanf(kstr,"%dtfv",&i);
 			break;
@@ -269,13 +269,13 @@
 	
     if (! [@"" isEqualToString:tf.text]) {
         DBGLog(@"set choice value %d: %@",i, tf.text);
-        [self.vo.optDict setObject:tf.text forKey:[NSString stringWithFormat:@"cv%d",i]];
+        (self.vo.optDict)[[NSString stringWithFormat:@"cv%d",i]] = tf.text;
     } else {
         [self.vo.optDict removeObjectForKey:[NSString stringWithFormat:@"cv%d",i]];
     }
     
 	//if (++i<CHOICES) {
-		[[self.ctvovcp.wDict objectForKey:[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
+		[(self.ctvovcp.wDict)[[NSString stringWithFormat:@"%dtf",i]] becomeFirstResponder];
 	//} else {
 	//	[tf resignFirstResponder];
 	//}
@@ -289,7 +289,7 @@
 	int i=0;
 	
 	for (NSString *key in self.ctvovcp.wDict) {
-		if ([self.ctvovcp.wDict objectForKey:key] == btn) {
+		if ((self.ctvovcp.wDict)[key] == btn) {
 			const char *kstr = [key UTF8String];
 			sscanf(kstr,"%dbtn",&i);
 			break;
@@ -297,15 +297,15 @@
 	}
 	
 	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
-	NSNumber *ncol = [self.vo.optDict objectForKey:cc];
+	NSNumber *ncol = (self.vo.optDict)[cc];
 	if (ncol == nil) {
 		// do nothing as no choice label set so button not active
 	} else {
 		NSInteger col = [ncol integerValue];
 		if (++col >= [[rTracker_resource colorSet] count])
 			col=0;
-		[self.vo.optDict setObject:[NSNumber numberWithInteger:col] forKey:cc];
-		btn.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:col];
+		(self.vo.optDict)[cc] = @(col);
+		btn.backgroundColor = [rTracker_resource colorSet][col];
 	}
 	
 }
@@ -315,18 +315,18 @@
 
 - (void) setOptDictDflts {
     
-    if (nil == [self.vo.optDict objectForKey:@"shrinkb"]) 
-        [self.vo.optDict setObject:(SHRINKBDFLT ? @"1" : @"0") forKey:@"shrinkb"];
+    if (nil == (self.vo.optDict)[@"shrinkb"]) 
+        (self.vo.optDict)[@"shrinkb"] = (SHRINKBDFLT ? @"1" : @"0");
 
-    if (nil == [self.vo.optDict objectForKey:@"exportvalb"])
-        [self.vo.optDict setObject:(EXPORTVALBDFLT ? @"1" : @"0") forKey:@"exportvalb"];
+    if (nil == (self.vo.optDict)[@"exportvalb"])
+        (self.vo.optDict)[@"exportvalb"] = (EXPORTVALBDFLT ? @"1" : @"0");
     
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     
@@ -371,7 +371,7 @@
                          action:@selector(ctfvDone:)
                             num:YES
                           place:[NSString stringWithFormat:@"%d",i+1]
-                           text:[self.vo.optDict objectForKey:[NSString stringWithFormat:@"cv%d",i]]
+                           text:(self.vo.optDict)[[NSString stringWithFormat:@"cv%d",i]]
                           addsv:YES ];
 
 		frame.origin.x += MARGIN + tfvWidth;
@@ -383,7 +383,7 @@
 					   action:@selector(ctfDone:) 
 						  num:NO 
 						place:[NSString stringWithFormat:@"choice %d",i+1]
-						 text:[self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]]
+						 text:(self.vo.optDict)[[NSString stringWithFormat:@"c%d",i]]
 						addsv:YES ];
 		
 		frame.origin.x += MARGIN + tfWidth;
@@ -395,15 +395,15 @@
 		[[btn layer] setCornerRadius:8.0f];
 		[[btn layer] setMasksToBounds:YES];
 		[[btn layer] setBorderWidth:1.0f];
-		NSNumber *cc = [self.vo.optDict objectForKey:[NSString stringWithFormat:@"cc%d",i]];
+		NSNumber *cc = (self.vo.optDict)[[NSString stringWithFormat:@"cc%d",i]];
 		if (cc == nil) {
 			btn.backgroundColor = [UIColor clearColor];
 		} else {
-			btn.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:[cc integerValue]];
+			btn.backgroundColor = [rTracker_resource colorSet][[cc integerValue]];
 		}
 		
 		[btn addTarget:self action:@selector(choiceColorButtonAction:) forControlEvents:UIControlEventTouchDown];
-		[ctvovc.wDict setObject:btn forKey:[NSString stringWithFormat:@"%dbtn",i]];
+		(ctvovc.wDict)[[NSString stringWithFormat:@"%dbtn",i]] = btn;
 		[ctvovc.view addSubview:btn];
 		
 		frame.origin.x = MARGIN + (j * (tfvWidth + tfWidth + ctvovc.LFHeight + 3*MARGIN));
@@ -429,7 +429,7 @@
 	
 	[ctvovc configCheckButton:frame 
                           key:@"csbBtn"
-                        state:[[self.vo.optDict objectForKey:@"shrinkb"] isEqualToString:@"1"] // default:0
+                        state:[(self.vo.optDict)[@"shrinkb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
 
@@ -444,7 +444,7 @@
 	
 	[ctvovc configCheckButton:frame
                           key:@"cevBtn"
-                        state:[[self.vo.optDict objectForKey:@"exportvalb"] isEqualToString:@"1"] // default:0
+                        state:[(self.vo.optDict)[@"exportvalb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
     
@@ -476,10 +476,10 @@
            [self getSegmentIndexForValue],
            [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]] );
 #endif
-    if ([(NSString*) [self.vo.optDict objectForKey:@"exportvalb"] isEqualToString:@"1"]) {
+    if ([(NSString*) (self.vo.optDict)[@"exportvalb"] isEqualToString:@"1"]) {
         return (NSString*) self.vo.value;
     } else {
-        return [self.vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]];
+        return (self.vo.optDict)[[NSString stringWithFormat:@"c%d",[self getSegmentIndexForValue]]];
     }
 }
 
@@ -488,7 +488,7 @@
 
 - (NSString*) mapCsv2Value:(NSString*)inCsv {
     NSMutableDictionary *optDict = self.vo.optDict;
-    if ([(NSString*) [optDict objectForKey:@"exportvalb"] isEqualToString:@"1"]) {
+    if ([(NSString*) optDict[@"exportvalb"] isEqualToString:@"1"]) {
         // we simply store the value, up to the user to provide a choice to match it
         return inCsv;
     }
@@ -500,10 +500,10 @@
     DBGLog(@"inCsv= %@",inCsv);
     for (ndx=0; ndx <count;ndx++) {
         NSString *key = [NSString stringWithFormat:@"c%d",ndx];
-        NSString *val = [optDict objectForKey:key];
+        NSString *val = optDict[key];
         if (nil != val) {
             maxc = ndx;
-            lastColor = [[optDict objectForKey:[NSString stringWithFormat:@"cc%d",ndx]] integerValue];
+            lastColor = [optDict[[NSString stringWithFormat:@"cc%d",ndx]] integerValue];
             if ([val isEqualToString:inCsv]) {
                 //DBGLog(@"matched, returning %d",ndx+1);
                 //return [NSString stringWithFormat:@"%d",ndx+1];    // found match, return 1-based index and be done
@@ -535,12 +535,12 @@
         maxc++;  // maxc is last one used because there were no blanks, so inc to next
     }
     
-    [optDict setObject:inCsv forKey:[NSString stringWithFormat:@"c%d",maxc]];
+    optDict[[NSString stringWithFormat:@"c%d",maxc]] = inCsv;
 
     if (++lastColor >= [[rTracker_resource colorSet] count])
         lastColor=0;
     
-    [optDict setObject:[NSNumber numberWithInteger:lastColor] forKey:[NSString stringWithFormat:@"cc%d",maxc]];
+    optDict[[NSString stringWithFormat:@"cc%d",maxc]] = @(lastColor);
 
     DBGLog(@"created choice %@ choice c%d color %d",inCsv,maxc,lastColor);
     

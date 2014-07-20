@@ -242,7 +242,7 @@
 		NSString *fieldName;
 		if (fieldNamesCount > fieldCount)
 		{
-			fieldName = [fieldNames objectAtIndex:fieldCount];
+			fieldName = fieldNames[fieldCount];
 		}
 		else
 		{
@@ -251,7 +251,7 @@
 			fieldNamesCount++;
 		}
 		
-		[record setObject:field forKey:[fieldName stringByAppendingFormat:@":%d",fieldCount]];
+		record[[fieldName stringByAppendingFormat:@":%d",fieldCount]] = field;
         
 		fieldCount++;
 

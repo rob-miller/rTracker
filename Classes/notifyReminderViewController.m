@@ -80,7 +80,7 @@
         }
         self->weekdays[i] = wd-1;  // firstWeekDay is 1-indexed, switch to 0-indexed
         
-        [(UIButton*)[self.weekdayBtns objectAtIndex:i] setTitle:[[dateFormatter shortWeekdaySymbols] objectAtIndex:(self->weekdays[i])] forState:UIControlStateNormal];
+        [(UIButton*)(self.weekdayBtns)[i] setTitle:[dateFormatter shortWeekdaySymbols][(self->weekdays[i])] forState:UIControlStateNormal];
         //DBGLog(@"i=%d wd=%d sdayName= %@",i,wd,[[dateFormatter shortWeekdaySymbols] objectAtIndex:(self->weekdays[i])]);
     }
     
@@ -100,7 +100,30 @@
     
     [self guiFromNr];
     
+    [self.gearButton setTitleTextAttributes:@{
+                                         NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                         //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                         } forState:UIControlStateNormal];
+    [self.btnHelpOutlet setTitleTextAttributes:@{
+                                                 NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                                 //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                                 } forState:UIControlStateNormal];
     
+    self.btnDoneOutlet.title = @"\u2611";
+    [self.btnDoneOutlet setTitleTextAttributes:@{
+                                                 NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                                 //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                                 } forState:UIControlStateNormal];
+
+    
+    [self.nextAddBarButton setTitleTextAttributes:@{
+                                                 NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                                 //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                                 } forState:UIControlStateNormal];
+    [self.prevBarButton setTitleTextAttributes:@{
+                                                    NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                                    //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                                    } forState:UIControlStateNormal];
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
@@ -151,7 +174,7 @@
 
 - (NSArray*) weekdayBtns {
     if (nil == _weekdayBtns) {
-        _weekdayBtns = [[NSArray alloc] initWithObjects:self.wdButton1, self.wdButton2, self.wdButton3, self.wdButton4, self.wdButton5, self.wdButton6, self.wdButton7, nil];
+        _weekdayBtns = @[self.wdButton1, self.wdButton2, self.wdButton3, self.wdButton4, self.wdButton5, self.wdButton6, self.wdButton7];
     }
     return _weekdayBtns;
 }
@@ -195,6 +218,8 @@
 												 name:UIKeyboardWillHideNotification
 											   object:self.view.window];
     
+    [self.navigationController setToolbarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
 }
 
@@ -292,7 +317,7 @@
             if (self.nr.vid) {
                 int c = [self.tracker.valObjTable count];
                 for (i=0; i< c; i++) {
-                    if (self.nr.vid == ((valueObj*)[self.tracker.valObjTable objectAtIndex:i]).vid) {
+                    if (self.nr.vid == ((valueObj*)(self.tracker.valObjTable)[i]).vid) {
                         self.everyTrackerNdx = i+1;
                     }
                 }
@@ -309,7 +334,7 @@
         [self clearMonthDays];
         
         for (i=0;i<7;i++) {  // added weekdays to every
-            ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
+            ((UIButton*)(self.weekdayBtns)[i]).selected = (BOOL) (0 != (self.nr.weekDays & (0x01 << self->weekdays[i])));
         }
     }
 /*
@@ -344,7 +369,7 @@
 -(void) clearWeekDays {
     int i;
     for (i=0;i<7;i++) {
-        ((UIButton*)[self.weekdayBtns objectAtIndex:i]).selected = NO;
+        ((UIButton*)(self.weekdayBtns)[i]).selected = NO;
     }
     
 }
@@ -396,11 +421,11 @@
         self.nr.everyMode = self.everyMode;
         self.nr.fromLast = self.fromLastButton.selected;
         if (![self.everyTrackerButton isHidden]) {
-            self.nr.vid = ( self.everyTrackerNdx ? ((valueObj*)[self.tracker.valObjTable objectAtIndex:(self.everyTrackerNdx-1)]).vid : 0 );
+            self.nr.vid = ( self.everyTrackerNdx ? ((valueObj*)(self.tracker.valObjTable)[(self.everyTrackerNdx-1)]).vid : 0 );
         }
         int i;
         for (i=0; i<7; i++) {
-            if ([(UIButton*)[self.weekdayBtns objectAtIndex:i] isSelected]) {
+            if ([(UIButton*)(self.weekdayBtns)[i] isSelected]) {
                 self.nr.weekDays |= (0x01 << (self->weekdays[i]));
             }
         }
@@ -458,7 +483,7 @@
 
     if ([self ddbTitleIsDelay]) {
         for (i=0; i<7; i++) {
-            if ([(UIButton*)[self.weekdayBtns objectAtIndex:i] isSelected]) {   // if any one is set, no it is not null
+            if ([(UIButton*)(self.weekdayBtns)[i] isSelected]) {   // if any one is set, no it is not null
                 return NO;
             }
         }
@@ -672,7 +697,7 @@
         if ((![self.fromLastButton isHidden]) && ([self.fromLastButton isSelected])) {
             if (self.everyTrackerNdx) {
                 self.msgTF.text = [NSString stringWithFormat:@"%@ : %@",self.tracker.trackerName,
-                                   ((valueObj*)[self.tracker.valObjTable objectAtIndex:(self.everyTrackerNdx-1)]).valueName];
+                                   ((valueObj*)(self.tracker.valObjTable)[(self.everyTrackerNdx-1)]).valueName];
                 self.lastDefaultMsg = self.msgTF.text;
                 return;
             }
@@ -681,7 +706,7 @@
     }
 }
 - (void) setEveryTrackerBtnName {
-    [self.everyTrackerButton setTitle:[self.everyTrackerNames objectAtIndex:self.everyTrackerNdx] forState:UIControlStateNormal];
+    [self.everyTrackerButton setTitle:(self.everyTrackerNames)[self.everyTrackerNdx] forState:UIControlStateNormal];
     [self.everyTrackerButton setTitleColor:(self.everyTrackerNdx ? [UIColor blueColor] : [UIColor colorWithRed:0.5 green:0.0 blue:1.0 alpha:1.0]) forState:UIControlStateNormal];
     [self updateMessage];
 }
@@ -704,7 +729,7 @@
 -(void) hideWeekdays:(BOOL)state {
     int i;
     for (i=0;i<7;i++) {
-        ((UIButton*)[self.weekdayBtns objectAtIndex:i]).hidden=state;
+        ((UIButton*)(self.weekdayBtns)[i]).hidden=state;
     }
     
     self.thenOnLabel.hidden = state;

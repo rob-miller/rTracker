@@ -28,8 +28,8 @@ NSUInteger DeviceSystemMajorVersion() {
     static NSUInteger _deviceSystemMajorVersion = -1;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _deviceSystemMajorVersion = [[[[[UIDevice currentDevice] systemVersion]
-                                       componentsSeparatedByString:@"."] objectAtIndex:0] intValue];
+        _deviceSystemMajorVersion = [[[[UIDevice currentDevice] systemVersion]
+                                       componentsSeparatedByString:@"."][0] intValue];
     });
     return _deviceSystemMajorVersion;
 }
@@ -43,7 +43,7 @@ NSUInteger DeviceSystemMajorVersion() {
     } else {
         paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);  // files not accessible
     }
-	NSString *docsDir = [paths objectAtIndex:0];
+	NSString *docsDir = paths[0];
 	
 	//DBGLog(@"ioFilePath= %@",[docsDir stringByAppendingPathComponent:fname] );
 	
@@ -128,20 +128,18 @@ BOOL hasAmPm=NO;
 //---------------------------
 
 + (NSArray *) colorSet {
-	return [NSArray arrayWithObjects:
-                [UIColor redColor], [UIColor greenColor], [UIColor blueColor],
+	return @[[UIColor redColor], [UIColor greenColor], [UIColor blueColor],
                 [UIColor cyanColor], [UIColor yellowColor], [UIColor magentaColor],
                 [UIColor orangeColor], [UIColor purpleColor], [UIColor brownColor], 
-                [UIColor whiteColor], [UIColor lightGrayColor], [UIColor darkGrayColor], nil];
+                [UIColor whiteColor], [UIColor lightGrayColor], [UIColor darkGrayColor]];
 		
 }
 
 + (NSArray *) colorNames {
-	return [NSArray arrayWithObjects:
-            @"red", @"green", @"blue",
+	return @[@"red", @"green", @"blue",
             @"cyan", @"yellow", @"magenta",
             @"orange", @"purple", @"brown", 
-            @"white", @"lightGray", @"darkGray", nil];
+            @"white", @"lightGray", @"darkGray"];
 }
 
 
@@ -358,6 +356,18 @@ static BOOL hideRTimes=HIDERTIMESDFLT;
 }
 */
 
+static BOOL toldAboutSwipe=false;
+
++ (BOOL)getToldAboutSwipe {
+	return toldAboutSwipe;
+}
+
++ (void)setToldAboutSwipe:(BOOL)toldSwipe {
+	toldAboutSwipe = toldSwipe;
+	DBGLog(@"updateToldAboutSwipe:%d",toldAboutSwipe);
+}
+
+
 
 //---------------------------
 static int lastStashedTid=0;
@@ -483,7 +493,7 @@ static int lastStashedTid=0;
     NSDictionary* userInfo = [n userInfo];
 	
     // get the size of the keyboard
-    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey
+    NSValue* boundsValue = userInfo[UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
 	CGRect viewFrame = view.frame;
@@ -542,7 +552,8 @@ void systemAudioCallback (SystemSoundID ssID,void *clientData) {
     NSURL *soundURL = [[NSBundle mainBundle]
                        URLForResource:soundFileName
                        withExtension:nil
-                       subdirectory:@"sounds"];
+                       //subdirectory:@"sounds"
+                       ];
     
     DBGLog(@"soundfile = %@ soundurl= %@",soundFileName,soundURL);
     

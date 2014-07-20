@@ -26,7 +26,7 @@
 
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    RootViewController *rootController = (RootViewController *) [self.navigationController.viewControllers objectAtIndex:0];
+    RootViewController *rootController = (RootViewController *) (self.navigationController.viewControllers)[0];
     if (nil == [[NSUserDefaults standardUserDefaults] objectForKey:@"reload_sample_trackers_pref"]) {
 
         //((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
@@ -39,15 +39,15 @@
          NSDictionary *settingsPropertyList = [NSDictionary 
                                                dictionaryWithContentsOfFile:settingsPropertyListPath];
          
-         NSMutableArray     *preferenceArray = [settingsPropertyList objectForKey:@"PreferenceSpecifiers"];
+         NSMutableArray     *preferenceArray = settingsPropertyList[@"PreferenceSpecifiers"];
          NSMutableDictionary *registerableDictionary = [NSMutableDictionary dictionary];
          
          for (int i = 0; i < [preferenceArray count]; i++)  { 
-             NSString  *key = [[preferenceArray objectAtIndex:i] objectForKey:@"Key"];
+             NSString  *key = preferenceArray[i][@"Key"];
              
              if (key)  {
-                 id  value = [[preferenceArray objectAtIndex:i] objectForKey:@"DefaultValue"];
-                 [registerableDictionary setObject:value forKey:key];
+                 id  value = preferenceArray[i][@"DefaultValue"];
+                 registerableDictionary[key] = value;
              }
          }
          
@@ -82,12 +82,12 @@
     [rTracker_resource initHasAmPm];
     
     // for when actually not running, not just in background:
-    UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     if (nil != notification) {
         DBGLog(@"responding to local notification with msg : %@",notification.alertBody);
         //[rTracker_resource alert:@"launched with locNotification" msg:notification.alertBody];
 
-        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
     
     
@@ -142,7 +142,7 @@
 */
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    UIViewController *rootController = (self.navigationController.viewControllers)[0];
     if (0 == buttonIndex) {   // do nothing
     } else {                  // go to the pending tracker
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:self.pendingTid waitUntilDone:NO];
@@ -182,8 +182,8 @@
         [rTracker_resource playSound:notification.soundName];
         [self doQuickAlert:notification.alertAction msg:notification.alertBody delay:2];
     } else {
-        RootViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
-        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
+        RootViewController *rootController = (self.navigationController.viewControllers)[0];
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
     //[rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
     
@@ -221,7 +221,7 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
 	// Save data if appropriate
 	//DBGLog(@"rt app delegate: app will resign active");
-    UIViewController *rootController = [self.navigationController.viewControllers objectAtIndex:0];
+    UIViewController *rootController = (self.navigationController.viewControllers)[0];
     UIViewController *topController = [self.navigationController.viewControllers lastObject];
     
     [((RootViewController *)rootController).privacyObj lockDown];  // hiding is handled after startup - viewDidAppear() below

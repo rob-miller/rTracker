@@ -27,14 +27,14 @@
 - (void)boolBtnAction:(UIButton *)imageButton
 {  // default is unchecked or nil // 25.i.14 use assigned val // was "so only certain is if =1" ?
 	if ([self.vo.value isEqualToString:@""]) {
-        NSString *bv = [self.vo.optDict objectForKey:@"boolval"];
+        NSString *bv = (self.vo.optDict)[@"boolval"];
         //if (nil == bv) {
             //bv = BOOLVALDFLTSTR;
             //[self.vo.optDict setObject:bv forKey:@"boolval"];
         //}
 		[self.vo.value setString:bv];
 		[self.imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
-        if ([@"1" isEqualToString:[self.vo.optDict objectForKey:@"setstrackerdate"]]) {
+        if ([@"1" isEqualToString:(self.vo.optDict)[@"setstrackerdate"]]) {
             [self.vo setTrackerDateToNow];
         }
 	} else {
@@ -69,7 +69,7 @@
 }
 
 - (NSArray*) voGraphSet {
-	return [NSArray arrayWithObjects:@"dots", @"bar", nil];
+	return @[@"dots", @"bar"];
 }
 
 #pragma mark -
@@ -92,20 +92,20 @@
 #pragma mark options page
 
 - (void) setOptDictDflts {
-    NSString *bv = [self.vo.optDict objectForKey:@"boolval"];
+    NSString *bv = (self.vo.optDict)[@"boolval"];
     if ((nil == bv) || ([@"" isEqualToString:bv])) {
-        [self.vo.optDict setObject:BOOLVALDFLTSTR forKey:@"boolval"];
+        (self.vo.optDict)[@"boolval"] = BOOLVALDFLTSTR;
     }
-    NSString *std = [self.vo.optDict objectForKey:@"setstrackerdate"];
+    NSString *std = (self.vo.optDict)[@"setstrackerdate"];
     if ((nil == std) || ([@"" isEqualToString:std])) {
-        [self.vo.optDict setObject:(SETSTRACKERDATEDFLT ? @"1" : @"0") forKey:@"setstrackerdate"];
+        (self.vo.optDict)[@"setstrackerdate"] = (SETSTRACKERDATEDFLT ? @"1" : @"0");
     }
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val)
         return YES;
     
@@ -137,7 +137,7 @@
                      action:nil
                         num:YES
                       place:BOOLVALDFLTSTR
-                       text:[self.vo.optDict objectForKey:@"boolval"]
+                       text:(self.vo.optDict)[@"boolval"]
                       addsv:YES ];
 	
     
@@ -153,7 +153,7 @@
 	
 	[ctvovc configCheckButton:frame
                           key:@"stdBtn"
-                        state:[[self.vo.optDict objectForKey:@"setstrackerdate"] isEqualToString:@"1"] // default:0
+                        state:[(self.vo.optDict)[@"setstrackerdate"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
     
@@ -171,8 +171,8 @@
 
 - (NSString*) mapCsv2Value:(NSString*)inCsv {
     
-    if ([[self.vo.optDict objectForKey:@"boolval"] doubleValue] !=  [inCsv doubleValue]) {
-        [self.vo.optDict setObject:inCsv forKey:@"boolval"];
+    if ([(self.vo.optDict)[@"boolval"] doubleValue] !=  [inCsv doubleValue]) {
+        (self.vo.optDict)[@"boolval"] = inCsv;
     }
     return inCsv;
 }

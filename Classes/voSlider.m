@@ -49,7 +49,7 @@
 	if (!self.vo.useVO)
 		[self.vo enableVO];
 
-    if ([(NSString*) [self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"]) {
+    if ([(NSString*) (self.vo.optDict)[@"integerstepsb"] isEqualToString:@"1"]) {
         UISlider *slider = (UISlider *)sender;
         int ival = (int) slider.value + 0.5;        
         [slider setValue:(float) ival animated:YES];
@@ -91,9 +91,9 @@
         // in case the parent view draws with a custom color or gradient, use a transparent color
         _sliderCtl.backgroundColor = [UIColor clearColor];
         
-        NSNumber *nsmin = [self.vo.optDict objectForKey:@"smin"];
-        NSNumber *nsmax = [self.vo.optDict objectForKey:@"smax"];
-        NSNumber *nsdflt = [self.vo.optDict objectForKey:@"sdflt"];
+        NSNumber *nsmin = (self.vo.optDict)[@"smin"];
+        NSNumber *nsmax = (self.vo.optDict)[@"smax"];
+        NSNumber *nsdflt = (self.vo.optDict)[@"sdflt"];
         
         CGFloat smin = (nsmin ? [nsmin floatValue] : SLIDRMINDFLT);
         CGFloat smax = (nsmax ? [nsmax floatValue] : SLIDRMAXDFLT);
@@ -194,22 +194,22 @@
 
 
 - (void) setOptDictDflts {
-    if (nil == [self.vo.optDict objectForKey:@"smin"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%3.1f",SLIDRMINDFLT] forKey:@"smin"];
-    if (nil == [self.vo.optDict objectForKey:@"smax"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%3.1f",SLIDRMAXDFLT] forKey:@"smax"];
-    if (nil == [self.vo.optDict objectForKey:@"sdflt"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%3.1f",SLIDRDFLTDFLT] forKey:@"sdflt"];
+    if (nil == (self.vo.optDict)[@"smin"]) 
+        (self.vo.optDict)[@"smin"] = [NSString stringWithFormat:@"%3.1f",SLIDRMINDFLT];
+    if (nil == (self.vo.optDict)[@"smax"]) 
+        (self.vo.optDict)[@"smax"] = [NSString stringWithFormat:@"%3.1f",SLIDRMAXDFLT];
+    if (nil == (self.vo.optDict)[@"sdflt"]) 
+        (self.vo.optDict)[@"sdflt"] = [NSString stringWithFormat:@"%3.1f",SLIDRDFLTDFLT];
     
-    if (nil == [self.vo.optDict objectForKey:@"integerstepsb"])
-        [self.vo.optDict setObject:(INTEGERSTEPSBDFLT ? @"1" : @"0") forKey:@"integerstepsb"];
+    if (nil == (self.vo.optDict)[@"integerstepsb"])
+        (self.vo.optDict)[@"integerstepsb"] = (INTEGERSTEPSBDFLT ? @"1" : @"0");
 
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     
@@ -256,7 +256,7 @@
 				   action:nil
 					  num:YES 
 					place:[NSString stringWithFormat:@"%3.1f",SLIDRMINDFLT] 
-					 text:[self.vo.optDict objectForKey:@"smin"] 
+					 text:(self.vo.optDict)[@"smin"] 
 					addsv:YES ];
 	
 	frame.origin.x += tfWidth + MARGIN;
@@ -272,7 +272,7 @@
 				   action:nil
 					  num:YES 
 					place:[NSString stringWithFormat:@"%3.1f",SLIDRMAXDFLT] 
-					 text:[self.vo.optDict objectForKey:@"smax"]
+					 text:(self.vo.optDict)[@"smax"]
 					addsv:YES ];
 	
 	frame.origin.y += frame.size.height + MARGIN;
@@ -290,7 +290,7 @@
 				   action:nil
 					  num:YES 
 					place:[NSString stringWithFormat:@"%3.1f",SLIDRDFLTDFLT]
-					 text:[self.vo.optDict objectForKey:@"sdflt"]
+					 text:(self.vo.optDict)[@"sdflt"]
 					addsv:YES ];
 	
 	frame.origin.y += frame.size.height + MARGIN;
@@ -309,7 +309,7 @@
 	
 	[ctvovc configCheckButton:frame
                           key:@"sisBtn"
-                        state:[[self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"] // default:0
+                        state:[(self.vo.optDict)[@"integerstepsb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
     

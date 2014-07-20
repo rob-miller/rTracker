@@ -198,8 +198,8 @@ static int editMode;
 	
 	// Create and configure the segmented control
 	UISegmentedControl *editToggle = [[UISegmentedControl alloc]
-									  initWithItems:[NSArray arrayWithObjects:@"Edit tracker",
-													 @"Edit items", nil]];
+									  initWithItems:@[@"Edit tracker",
+													 @"Edit items"]];
 	editToggle.segmentedControlStyle = UISegmentedControlStyleBar;
 	editToggle.selectedSegmentIndex = 0;
 	editMode = 0;
@@ -210,7 +210,11 @@ static int editMode;
 	UIBarButtonItem *editToggleButtonItem = [[UIBarButtonItem alloc]
 											 initWithCustomView:editToggle];
 
-    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    //UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [infoBtn setTitle:@"⚙" forState:UIControlStateNormal];
+    infoBtn.titleLabel.font = [UIFont systemFontOfSize:28.0];
+    
     [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
     infoBtn.frame = CGRectMake(0, 0, 44, 44);
     UIBarButtonItem *setupBtnItem = [[UIBarButtonItem alloc] initWithCustomView:infoBtn];
@@ -225,15 +229,12 @@ static int editMode;
 	
 	// Set our toolbar items
     
-	self.toolbarItems = [NSArray arrayWithObjects:
-                         //flexibleSpaceButtonItem,
-						 setupBtnItem,
+	self.toolbarItems = @[setupBtnItem,
                          flexibleSpaceButtonItem,
                          editToggleButtonItem,
                          flexibleSpaceButtonItem,
                          //[self.copyBtn autorelease], // analyze wants this but crashes later!
-                         self.copyBtn,
-                         nil];
+                         self.copyBtn];
     
     //self.copyBtn = nil;  // this stops crash, but lose control in toggleEdit() below
     //[copyBtn release];
@@ -364,7 +365,7 @@ DBGLog(@"btnAddValue was pressed!");
 - (void) delVOlocal:(NSUInteger) row
 {
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
-	[self.table deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
+	[self.table deleteRowsAtIndexPaths:@[self.deleteIndexPath]
 						   withRowAnimation:UITableViewRowAnimationFade];
 }
 
@@ -381,14 +382,14 @@ DBGLog(@"btnAddValue was pressed!");
 	
 	if (buttonIndex == checkValObjDelete.destructiveButtonIndex) {
 		NSUInteger row = [self.deleteIndexPath row];
-		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+		valueObj *vo = (self.tempTrackerObj.valObjTable)[row];
 		DBGLog(@"checkValObjDelete: will delete row %d name %@ id %d",row, vo.valueName,vo.vid);
 		//[self delVOdb:vo.vid];
         [self addDelVO:vo];
 		[self delVOlocal:row];
 	} else {
 		//DBGLog(@"check valobjdelete cancelled");
-        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
 	}
 	self.deleteIndexPath=nil;
 }
@@ -508,22 +509,22 @@ DBGLog(@"btnAddValue was pressed!");
             }
 			cell.textLabel.text = @"";
 		} else {
-			valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+			valueObj *vo = (self.tempTrackerObj.valObjTable)[row];
             //DBGLog(@"starting section 1 cell for %@",vo.valueName);
 			cell.textLabel.text = vo.valueName; 
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			//cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
-            if ([@"0" isEqualToString:[vo.optDict objectForKey:@"graph"]])
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", [self.tempTrackerObj.votArray objectAtIndex:vo.vtype]];
+            if ([@"0" isEqualToString:(vo.optDict)[@"graph"]])
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", (self.tempTrackerObj.votArray)[vo.vtype]];
             else if (VOT_CHOICE == vo.vtype)  // vColor = -1
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
-                                             [vo.vos.voGraphSet objectAtIndex:vo.vGraphType]];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",(self.tempTrackerObj.votArray)[vo.vtype],
+                                             (vo.vos.voGraphSet)[vo.vGraphType]];
             else if (VOT_INFO == vo.vtype)  // vColor = -1, no graph
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype]];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",(self.tempTrackerObj.votArray)[vo.vtype]];
             else 
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",[self.tempTrackerObj.votArray objectAtIndex:vo.vtype],
-                                             [vo.vos.voGraphSet objectAtIndex:vo.vGraphType],
-                                             [[rTracker_resource colorNames] objectAtIndex:vo.vcolor]];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",(self.tempTrackerObj.votArray)[vo.vtype],
+                                             (vo.vos.voGraphSet)[vo.vGraphType],
+                                             [rTracker_resource colorNames][vo.vcolor]];
 		}
         //DBGLog(@"loaded section 1 row %i : .%@. : .%@.",row, cell.textLabel.text, cell.detailTextLabel.text);
     }
@@ -555,7 +556,7 @@ DBGLog(@"btnAddValue was pressed!");
 	DBGLog(@"atc: move row from %d:%d to %d:%d",fromSection, fromRow, toSection, toRow);
 #endif
     
-	valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:fromRow];
+	valueObj *vo = (self.tempTrackerObj.valObjTable)[fromRow];
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:fromRow];
 	if (toRow > [self.tempTrackerObj.valObjTable count])
 		toRow = [self.tempTrackerObj.valObjTable count];
@@ -586,7 +587,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		DBGLog(@"atc: delete row %d ",row);
 		self.deleteIndexPath = indexPath;
         
-		valueObj *vo = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+		valueObj *vo = (self.tempTrackerObj.valObjTable)[row];
 		if ((! self.tempTrackerObj.tDb) // no db created yet for this tempTrackerObj
             || (! self.tempTrackerObj.toid))   // this tempTrackerObj not written to db yet at all
 		{ 
@@ -635,7 +636,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         avc = [[addValObjController alloc] initWithNibName:@"addValObjController7" bundle:nil ];
     }
 	avc.parentTrackerObj = self.tempTrackerObj;
-	avc.tempValObj = [self.tempTrackerObj.valObjTable objectAtIndex:row];
+	avc.tempValObj = (self.tempTrackerObj.valObjTable)[row];
 	[avc stashVals];
     
 	[self.navigationController pushViewController:avc animated:YES];

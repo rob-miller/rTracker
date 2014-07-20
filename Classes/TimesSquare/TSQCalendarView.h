@@ -57,7 +57,7 @@
  The delegate must adopt the `TSQCalendarViewDelegate` protocol.
  The `TSQCalendarView` class, which does not retain the delegate, invokes each protocol method the delegate implements.
  */
-// when min is ios5 @property (nonatomic, weak) id<TSQCalendarViewDelegate> delegate;
+// when rTracker min supported is ios5 can use weak : @property (nonatomic, weak) id<TSQCalendarViewDelegate> delegate;
 @property (nonatomic, unsafe_unretained) id<TSQCalendarViewDelegate> delegate;
 
 /** Whether to pin the header to the top of the view.
@@ -131,5 +131,15 @@
  @param date Midnight on the date being selected.
  */
 - (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date;
+
+/** Asks the delegate for a textColor for a particular date.
+ 
+ This method should be relatively efficient, as it is called repeatedly to color individual day labels on the calendar view.
+ 
+ @param calendarView The calendar view that is selecting a date.
+ @param date Midnight on the date being selected.
+ @return UIColor for the date.
+ */
+- (UIColor*)calendarView:(TSQCalendarView *)calendarView colorForDate:(NSDate *)date;
 
 @end

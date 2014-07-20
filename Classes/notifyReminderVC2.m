@@ -26,7 +26,7 @@
         NSMutableArray *sfa = [[NSMutableArray alloc]init];
         self.datePicker.date = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.parentNRVC.nr.saveDate];
         
-        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/sounds"] error:NULL];
+        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[NSBundle mainBundle] bundlePath] error:NULL];
         for (NSString *fileName in files) {
             if ([fileName hasSuffix:@".caf"]) {
                 [sfa addObject:fileName];
@@ -41,6 +41,17 @@
 {
     [super viewDidLoad];
     self.datePicker.date = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.parentNRVC.nr.saveDate];
+    [self.btnHelpOutlet setTitleTextAttributes:@{
+                                              NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                              //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                              } forState:UIControlStateNormal];
+
+    self.btnDoneOutlet.title = @"\u2611";
+    [self.btnDoneOutlet setTitleTextAttributes:@{
+                                                 NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                                 //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                                 } forState:UIControlStateNormal];
+
     // Do any additional setup after loading the view.
 }
 
@@ -54,6 +65,9 @@
         [self.soundPicker selectRow:ndx inComponent:0 animated:false];
         self.btnTestOutlet.enabled=true;
     }
+    
+    [self.navigationController setToolbarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
 }
 - (void)didReceiveMemoryWarning
@@ -119,7 +133,7 @@
 			 forComponent:(NSInteger)component {
     int c = [self.soundFiles count];
     if (row < c) {
-        return [[[self.soundFiles objectAtIndex:row]
+        return [[(self.soundFiles)[row]
                  stringByReplacingOccurrencesOfString:@"_" withString:@" "]
                 stringByReplacingOccurrencesOfString:@".caf" withString:@""];
     } else if (row == c) {
@@ -133,7 +147,7 @@
 {
     int c = [self.soundFiles count];
     if (row < c) {
-        self.parentNRVC.nr.soundFileName = [self.soundFiles objectAtIndex:row];
+        self.parentNRVC.nr.soundFileName = (self.soundFiles)[row];
         self.btnTestOutlet.enabled=true;
     } else {
         self.btnTestOutlet.enabled=false;

@@ -160,6 +160,12 @@
             } else {
                 UIButton *button = self.dayButtons[index];
                 button.enabled = ![self.calendarView.delegate respondsToSelector:@selector(calendarView:shouldSelectDate:)] || [self.calendarView.delegate calendarView:self.calendarView shouldSelectDate:date];
+                if ([self.calendarView.delegate respondsToSelector:@selector(calendarView:colorForDate:)]) {
+                    UIColor *c = [self.calendarView.delegate calendarView:self.calendarView colorForDate:date];
+                    if (nil != c) {
+                        [button setTitleColor:c forState:UIControlStateNormal];
+                    }
+                }
                 button.hidden = NO;
             }
         }

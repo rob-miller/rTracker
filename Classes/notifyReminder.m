@@ -59,23 +59,23 @@
 - (id) initWithDict:(NSDictionary*)dict {
 
     if((self = [super init])) {
-        self.rid = [[dict objectForKey:@"rid"] intValue];
-        self.monthDays = (uint32_t) [[dict objectForKey:@"monthDays"] unsignedIntValue];
-        self.weekDays = (uint8_t) [[dict objectForKey:@"weekDays"] unsignedIntValue];
-        self.everyMode = (uint8_t) [[dict objectForKey:@"everyMode"] unsignedIntValue];
-        self.everyVal = [[dict objectForKey:@"everyVal"] intValue];
-        self.start = [[dict objectForKey:@"start"] intValue];
-        self.until = [[dict objectForKey:@"until"] intValue];
-        self.times = [[dict objectForKey:@"times"] intValue];
-        self.msg = (NSString*) [dict objectForKey:@"msg"];
-        self.soundFileName = (NSString*) [dict objectForKey:@"soundFile"];
+        self.rid = [dict[@"rid"] intValue];
+        self.monthDays = (uint32_t) [dict[@"monthDays"] unsignedIntValue];
+        self.weekDays = (uint8_t) [dict[@"weekDays"] unsignedIntValue];
+        self.everyMode = (uint8_t) [dict[@"everyMode"] unsignedIntValue];
+        self.everyVal = [dict[@"everyVal"] intValue];
+        self.start = [dict[@"start"] intValue];
+        self.until = [dict[@"until"] intValue];
+        self.times = [dict[@"times"] intValue];
+        self.msg = (NSString*) dict[@"msg"];
+        self.soundFileName = (NSString*) dict[@"soundFile"];
         
-        [self putFlags:[[dict objectForKey:@"flags"] unsignedIntValue]];
+        [self putFlags:[dict[@"flags"] unsignedIntValue]];
         
-        self.tid = [[dict objectForKey:@"tid"] intValue];
-        self.vid = [[dict objectForKey:@"vid"] intValue];
+        self.tid = [dict[@"tid"] intValue];
+        self.vid = [dict[@"vid"] intValue];
         
-        self.saveDate = [[dict objectForKey:@"saveDate"] intValue];
+        self.saveDate = [dict[@"saveDate"] intValue];
     }
     DBGLog(@"%@",self);
     return self;
@@ -168,23 +168,23 @@
 }
 
 - (NSDictionary*) dictFromNR {
-    int flags = [self getFlags];
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt:self.rid],@"rid",
-            [NSNumber numberWithUnsignedInt:self.monthDays],@"monthDays",
-            [NSNumber numberWithUnsignedInt:self.weekDays],@"weekDays",
-            [NSNumber numberWithUnsignedInt:self.everyMode],@"everyMode",
-            [NSNumber numberWithInt:self.everyVal],@"everyVal",
-            [NSNumber numberWithInt:self.start],@"start",
-            [NSNumber numberWithInt:self.until],@"until",
-            [NSNumber numberWithInt:self.times],@"times",
-            self.msg,@"msg",
-            self.soundFileName,@"soundFile",
-            [NSNumber numberWithUnsignedInt:flags],@"flags",
-            [NSNumber numberWithInt:self.tid],@"tid",
-            [NSNumber numberWithInt:self.vid],@"vid",
-            [NSNumber numberWithInt:self.saveDate],@"saveDate",
-            nil];
+    unsigned int flags = [self getFlags];
+    return @{
+            @"rid": @(self.rid),
+            @"monthDays": @(self.monthDays),
+            @"weekDays": @(self.weekDays),
+            @"everyMode": @(self.everyMode),
+            @"everyVal": @(self.everyVal),
+            @"start": @(self.start),
+            @"until": @(self.until),
+            @"times": @(self.times),
+            @"msg": self.msg,
+            @"soundFile": (self.soundFileName ? self.soundFileName : @""),
+            @"flags": @(flags),
+            @"tid": @(self.tid),
+            @"vid": @(self.vid),
+            @"saveDate": @(self.saveDate)
+            };
 }
 /*
 - (void) neighbourRid:(char)test {
@@ -331,7 +331,7 @@
                 wd -= 7;
             }
             weekdays[i] = wd-1;  // firstWeekDay is 1-indexed, switch to 0-indexed
-            wdNames[i] = [[dateFormatter shortWeekdaySymbols] objectAtIndex:weekdays[i]];
+            wdNames[i] = [dateFormatter shortWeekdaySymbols][weekdays[i]];
         }
         
         for (i=0;i<7;i++) {
@@ -373,15 +373,16 @@
     self.localNotif.alertBody = self.msg;
     self.localNotif.alertAction = NSLocalizedString(@"rTracker reminder", nil);
     
-    if (nil == self.soundFileName) {
+    self.localNotif.applicationIconBadgeNumber = 1;
+    
+    if (nil == self.soundFileName || [@"" isEqualToString:self.soundFileName]) {
         self.localNotif.soundName = UILocalNotificationDefaultSoundName;
     } else {
         self.localNotif.soundName = self.soundFileName;
     }
-    self.localNotif.applicationIconBadgeNumber = 1;
     
     //NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.tid] forKey:@"tid"];
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:self.tid],@"tid",[NSNumber numberWithInt:self.rid],@"rid",nil];
+    NSDictionary *infoDict = @{@"tid": @(self.tid),@"rid": @(self.rid)};
     self.localNotif.userInfo = infoDict;
     DBGLog(@"created.");
 }
@@ -391,10 +392,10 @@
     NSArray *eventArray = [app scheduledLocalNotifications];
     for (int i=0; i<[eventArray count]; i++)
     {
-        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        UILocalNotification* oneEvent = eventArray[i];
         NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if (([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.tid)
-            && ([[userInfoCurrent objectForKey:@"rid"] integerValue] == self.rid))
+        if (([userInfoCurrent[@"tid"] integerValue] == self.tid)
+            && ([userInfoCurrent[@"rid"] integerValue] == self.rid))
         {
             [app cancelLocalNotification:oneEvent];
         }

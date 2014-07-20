@@ -31,5 +31,7 @@
 - (IBAction)btnTest:(id)sender;
 
 @property (strong, nonatomic) IBOutlet UIButton *btnTestOutlet;
+@property (unsafe_unretained, nonatomic) IBOutlet UIBarButtonItem *btnHelpOutlet;
+@property (unsafe_unretained, nonatomic) IBOutlet UIBarButtonItem *btnDoneOutlet;
 
 @end

@@ -81,7 +81,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 
 	//[self.navigationController setToolbarHidden:YES animated:YES];
 	
-    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    //UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [infoBtn setTitle:@"\u2699" forState:UIControlStateNormal];   // @"⚙"
+    infoBtn.titleLabel.font = [UIFont systemFontOfSize:28.0];
+
     [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
     infoBtn.frame = CGRectMake(0, 0, 44, 44);
     UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc] initWithCustomView:infoBtn];
@@ -94,7 +98,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 								action:@selector(btnSetup)];
     */
     
-	self.toolbarItems = [NSArray arrayWithObjects: setupBtn, nil];
+	self.toolbarItems = @[setupBtn];
 	
 	
 	sizeVOTLabel = [addValObjController maxLabelFromArray:self.parentTrackerObj.votArray];
@@ -119,7 +123,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self.votPicker selectRow:self.tempValObj.vGraphType inComponent:2 animated:NO];
 		[self updateForPickerRowSelect:self.tempValObj.vGraphType inComponent:2];
         if (VOT_INFO != self.tempValObj.vtype) {
-            NSString *g = [allGraphs objectAtIndex:self.tempValObj.vGraphType];
+            NSString *g = allGraphs[self.tempValObj.vGraphType];
             self.graphTypes = [self.tempValObj.vos voGraphSet];
 
             NSInteger row=0;
@@ -199,7 +203,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		self.graphTypes = [self.tempValObj.vos voGraphSet];
 		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
 	}
-	
+    [self.navigationController setToolbarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
 }
 
@@ -252,14 +257,14 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     }
     
     if (VOT_FUNC == self.tempValObj.vtype) {
-        [self.parentTrackerObj.optDict setObject:@"1" forKey:@"dirtyFns"];
+        (self.parentTrackerObj.optDict)[@"dirtyFns"] = @"1";
     }
     
 	row = [self.votPicker selectedRowInComponent:2];
     if (VOT_INFO == self.tempValObj.vtype) {
         self.tempValObj.vGraphType = VOG_NONE;
     } else {
-        self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
+        self.tempValObj.vGraphType = [valueObj mapGraphType:(self.graphTypes)[row]];
 	}
     
 	if (self.tempValObj.vid == 0) {
@@ -270,25 +275,25 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     
     // no default fdlc so if set stays set - delete on del cons from fn
     
-	NSInteger v = [[self.tempValObj.optDict objectForKey:@"frep0"] integerValue] ;
+	NSInteger v = [(self.tempValObj.optDict)[@"frep0"] integerValue] ;
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv0"];
     
-	v = [[self.tempValObj.optDict objectForKey:@"frep1"] integerValue] ;
+	v = [(self.tempValObj.optDict)[@"frep1"] integerValue] ;
 	if (v >= FREPDFLT) 
 		[self.tempValObj.optDict removeObjectForKey:@"frv1"];
 	
-    if ([(NSString*) [self.tempValObj.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) {
+    if ([(NSString*) (self.tempValObj.optDict)[@"autoscale"] isEqualToString:@"0"]) {
         
         // override no autoscale if gmin, gmax both set and equal
         double gmn, gmx;
         
-        if ( ([[NSScanner localizedScannerWithString:[self.tempValObj.optDict objectForKey:@"gmin"]] scanDouble:&gmn])
+        if ( ([[NSScanner localizedScannerWithString:(self.tempValObj.optDict)[@"gmin"]] scanDouble:&gmn])
             &&
-             ([[NSScanner localizedScannerWithString:[self.tempValObj.optDict objectForKey:@"gmax"]] scanDouble:&gmx])
+             ([[NSScanner localizedScannerWithString:(self.tempValObj.optDict)[@"gmax"]] scanDouble:&gmx])
             ){
             if (gmn == gmx) {
-                [self.tempValObj.optDict setObject:@"1" forKey:@"autoscale"];
+                (self.tempValObj.optDict)[@"autoscale"] = @"1";
             }
         }
     }
@@ -423,7 +428,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
-			label.text = [self.parentTrackerObj.votArray objectAtIndex:row];
+			label.text = (self.parentTrackerObj.votArray)[row];
             //if (kIS_LESS_THAN_IOS7) {
                 label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
             //} else {
@@ -439,7 +444,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			//label = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 			//[label retain];
 			//label.frame = frame;
-			label.backgroundColor = [[rTracker_resource colorSet] objectAtIndex:row];
+			label.backgroundColor = [rTracker_resource colorSet][row];
 			break;
 		case 2:
 			frame.size = sizeGTLabel;
@@ -448,7 +453,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 									  label.backgroundColor = [UIColor clearColor]; //greenColor];
-			label.text = [self.graphTypes objectAtIndex:row];
+			label.text = (self.graphTypes)[row];
             //if (kIS_LESS_THAN_IOS7) {
                 label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
             //} else {
@@ -526,7 +531,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	} else if (component == 1) {
 		self.tempValObj.vcolor = row;
 	} else if (component == 2) {
-		self.tempValObj.vGraphType = [valueObj mapGraphType:[self.graphTypes objectAtIndex:row]];
+		self.tempValObj.vGraphType = [valueObj mapGraphType:(self.graphTypes)[row]];
 	}
 	
 	[self updateForPickerRowSelect:row inComponent:component];

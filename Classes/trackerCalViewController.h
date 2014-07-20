@@ -11,8 +11,10 @@
 
 #import "trackerObj.h"
 #import "dpRslt.h"
+#import "TimesSquare/TSQCalendarView.h"
 
-@interface trackerCalViewController : UIViewController
+
+@interface trackerCalViewController : UIViewController <TSQCalendarViewDelegate>
 /*
  {
     trackerObj *tracker;
@@ -24,6 +26,12 @@
 @property (nonatomic,strong) dpRslt *dpr;
 
 @property (nonatomic, strong) NSCalendar *calendar;
+
+@property (nonatomic,strong) NSMutableDictionary *dateSelDict;
+
+@property (nonatomic) BOOL SpecDate;
+
+- (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date;
 
 
 @end

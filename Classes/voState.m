@@ -50,16 +50,16 @@
 
 - (void) setOptDictDflts {
     
-    if (nil == [self.vo.optDict objectForKey:@"graph"]) 
-        [self.vo.optDict setObject:(GRAPHDFLT ? @"1" : @"0") forKey:@"graph"];
-    if (nil == [self.vo.optDict objectForKey:@"privacy"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
+    if (nil == (self.vo.optDict)[@"graph"]) 
+        (self.vo.optDict)[@"graph"] = (GRAPHDFLT ? @"1" : @"0");
+    if (nil == (self.vo.optDict)[@"privacy"]) 
+        (self.vo.optDict)[@"privacy"] = [NSString stringWithFormat:@"%d",PRIVDFLT];
     
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     
@@ -120,7 +120,7 @@
 	
 	[ctvovc configCheckButton:frame 
                           key:@"ggBtn" 
-                        state:(![[self.vo.optDict objectForKey:@"graph"] isEqualToString:@"0"])  // default = @"1"
+                        state:(![(self.vo.optDict)[@"graph"] isEqualToString:@"0"])  // default = @"1"
                         addsv:YES
      ];
 	
@@ -143,7 +143,7 @@
 					 action:nil
 						num:YES 
 					  place:[NSString stringWithFormat:@"%d",PRIVDFLT] 
-					   text:[self.vo.optDict objectForKey:@"privacy"]
+					   text:(self.vo.optDict)[@"privacy"]
 					  addsv:YES ];
 	
 	
@@ -304,11 +304,11 @@
 //}
 
 - (NSArray*) voGraphSet {
-	return [NSArray arrayWithObjects:@"dots", nil];
+	return @[@"dots"];
 }
 
 + (NSArray*) voGraphSetNum {
-	return [NSArray arrayWithObjects:@"dots",@"bar",@"line", @"line+dots", nil];
+	return @[@"dots",@"bar",@"line", @"line+dots"];
 }
 
 

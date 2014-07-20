@@ -188,6 +188,15 @@
     [self.table reloadData];
     self.didSave=NO;
     
+    if (![rTracker_resource getToldAboutSwipe]) { // if not yet told
+        if (0 != [self.tracker prevDate]) {  //  and have previous data
+            [rTracker_resource alert:@"Swipe control" msg:@"Swipe for earlier entries"];
+            [rTracker_resource setToldAboutSwipe:true];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutSwipe"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
     [super viewDidAppear:animated];
 }
 
@@ -231,6 +240,22 @@
 				[self setTrackerDate:targD];
 				break;
 			}
+			case DPA_GOTO_POST:  // for TimesSquare calendar which gives date with time=midnight (= beginning of day)
+			{
+                int targD = 0;
+                if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
+                    targD = (int) [self.dpr.date timeIntervalSince1970];
+                    if (! [self.tracker loadData:targD]) {
+                        self.tracker.trackerDate = self.dpr.date;
+                        targD = [self.tracker postDate];
+                        if (!targD)
+                            targD = 0;  // if no post date, must mean today so new tracker
+                            //targD = [self.tracker prevDate];
+                    }
+                }
+				[self setTrackerDate:targD];
+				break;
+			}
 			case DPA_CANCEL:
 				break;
 			default:
@@ -268,7 +293,9 @@
 
     [self showSaveBtn];
     [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable 
-    
+
+    [self.navigationController setToolbarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
 	
 }
@@ -759,32 +786,30 @@
 	DBGLog(@"lastD = %d %@",lastD,[NSDate dateWithTimeIntervalSince1970:lastD]);
 */	
 	self.currDateBtn = nil;
-#if RELEASE
-	if (prevD ==0) 
-		[tbi addObject:self.fixed1SpaceButtonItem];
-	else
-		[tbi addObject:self.prevDateBtn];
-#else 
-    [tbi addObject:self.fixed1SpaceButtonItem];
-#endif
+
+	if (postD != 0 || (lastD == currD)) {
+		[tbi addObject:self.delBtn];
+	} else {
+        [tbi addObject:self.fixed1SpaceButtonItem];
+    }
+    
+    [tbi addObject:self.flexibleSpaceButtonItem];
     
 	[tbi addObject:self.currDateBtn];
 	
-#if !RELEASE
-    if ((prevD !=0) || (postD !=0)) {
-        [tbi addObject:self.flexibleSpaceButtonItem];
+    [tbi addObject:self.flexibleSpaceButtonItem];
+    if ((prevD !=0) || (postD !=0) || (lastD == currD)) {
         [tbi addObject:self.calBtn];
-        [tbi addObject:self.flexibleSpaceButtonItem];
+	} else {
+        [tbi addObject:self.fixed1SpaceButtonItem];
     }
-#endif
-
+    [tbi addObject:self.flexibleSpaceButtonItem];
+    
 	if (postD != 0 || (lastD == currD)) {
-#if RELEASE
-		[tbi addObject:self.postDateBtn];
-		[tbi addObject:self.flexibleSpaceButtonItem];
-#endif
-		[tbi addObject:self.delBtn];
-	}
+        [tbi addObject:self.skip2EndBtn];
+	} else {
+        [tbi addObject:self.fixed1SpaceButtonItem];
+    }
 
 	//[tbi addObject:[self testBtn]];
 	 
@@ -811,6 +836,9 @@
             self.alertResponse=0;
             [self btnCancel];
             //[self dealloc];
+        } else if (CSSHOWCAL==self.alertResponse) {
+            self.alertResponse=0;
+            [self btnCal];
         }
     }
 }
@@ -906,7 +934,7 @@ else do btnCancel/btnSave
 	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
     [self saveActions];
 
-	if ([[self.tracker.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) {  // default:1
+	if ([(self.tracker.optDict)[@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
 		if (![self.toolbarItems containsObject:self.postDateBtn])
 			[self.tracker resetData];
@@ -979,11 +1007,11 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 }
 
 - (void) checkPrivWarn {
-    NSInteger tpriv = [[self.tracker.optDict objectForKey:@"privacy"] integerValue];
+    NSInteger tpriv = [(self.tracker.optDict)[@"privacy"] integerValue];
     NSInteger vprivmax = PRIVDFLT;
     
 	for (valueObj *vo in self.tracker.valObjTable) {
-        vo.vpriv = [[vo.optDict objectForKey:@"privacy"] integerValue];
+        vo.vpriv = [(vo.optDict)[@"privacy"] integerValue];
         if (vo.vpriv > vprivmax) {
             vprivmax = vo.vpriv;
         }
@@ -1007,26 +1035,28 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#if RELEASE
-- (void) btnPrevDate {
-#else
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
-#endif
 	int targD = [self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
 	} 
 	[self setTrackerDate:targD];
+
+    if (targD >0)
+        [self.table reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationRight)];
 }
 
-#if RELEASE
-- (void) btnPostDate {
-#else
 - (void)handleViewSwipeLeft:(UISwipeGestureRecognizer *)gesture {
-#endif
-	[self setTrackerDate:[self.tracker postDate]];
+    int targD = [self.tracker postDate];
+	[self setTrackerDate:targD];
+    if (targD >0)
+        [self.table reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationLeft)];
+    
 }
 
+-(void)btnSkip2End {
+    [self setTrackerDate:0];
+}
 - (datePickerVC*) dpvc
 { 
 	if (_dpvc == nil) {
@@ -1128,10 +1158,16 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 
 -(void) btnCal {
     DBGLog(@"cal btn");
-	
+    if (self.needSave) {
+        self.alertResponse=CSSHOWCAL;
+        [self alertChkSave];
+        return;
+    }
+
 	//self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
 	self.dpr.date = self.tracker.trackerDate;
     self.tsCalVC.dpr = self.dpr;
+    self.tsCalVC.tracker = self.tracker;
     
 	self.tsCalVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
@@ -1153,8 +1189,8 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 
 #pragma mark -
 #pragma mark UIBar button getters
+/*
 
-#if RELEASE
 - (UIBarButtonItem *) prevDateBtn {
 	if (_prevDateBtn == nil) {
 		_prevDateBtn = [[UIBarButtonItem alloc]
@@ -1179,8 +1215,9 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	
 	return _postDateBtn;
 }
-#endif
-    
+
+*/
+ 
 - (UIBarButtonItem *) currDateBtn {
 	//DBGLog(@"currDateBtn called");
 	if (_currDateBtn == nil) {
@@ -1224,11 +1261,16 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (UIBarButtonItem *) calBtn {
 	if (_calBtn == nil) {
 		_calBtn = [[UIBarButtonItem alloc]
-				  initWithTitle:@"Cal"
+				  initWithTitle:@"\u2630" //@"Cal"
 				  style:UIBarButtonItemStyleBordered
 				  target:self
 				  action:@selector(btnCal)];
-        _calBtn.tintColor = [UIColor colorWithRed:0.0 green:1.0 blue:0.5 alpha:1.0];
+        _calBtn.tintColor = [UIColor colorWithRed:0.0 green:0.8 blue:0.0 alpha:1.0];
+        //_calBtn.tintColor = [UIColor greenColor];
+        [_calBtn setTitleTextAttributes:@{
+                                          NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                          //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                          } forState:UIControlStateNormal];
 	}
 	
 	return _calBtn;
@@ -1237,15 +1279,40 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (UIBarButtonItem *) delBtn {
 	if (_delBtn == nil) {
 		_delBtn = [[UIBarButtonItem alloc]
-				  initWithTitle:@"Del"
-				  style:UIBarButtonItemStyleBordered
+                   initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+				  //initWithTitle:@"\u2612" //@"Del"
+				  //style:UIBarButtonItemStyleBordered
 				  target:self
 				  action:@selector(btnDel)];
         _delBtn.tintColor = [UIColor redColor];
+        //[_delBtn setTitleTextAttributes:@{
+         //                                 NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+         //                                 ,NSForegroundColorAttributeName: [UIColor redColor]
+         //                                 } forState:UIControlStateNormal];
 	}
 	
 	return _delBtn;
 }
+
+- (UIBarButtonItem *) skip2EndBtn {
+    if (_skip2EndBtn == nil) {
+        _skip2EndBtn = [[UIBarButtonItem alloc]
+                   initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+                   //initWithTitle:@"\u2b72" //@"Cal"
+                   //style:UIBarButtonItemStyleBordered
+                   target:self
+                   action:@selector(btnSkip2End)];
+        //_calBtn.tintColor = [UIColor colorWithRed:0.0 green:0.8 blue:0.0 alpha:1.0];
+        //_calBtn.tintColor = [UIColor greenColor];
+        //[_calBtn setTitleTextAttributes:@{
+        //                                  NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+        //                                  ,NSForegroundColorAttributeName: [UIColor blueColor]
+        //                                  } forState:UIControlStateNormal];
+    }
+    
+    return _skip2EndBtn;
+}
+    
 
 #pragma mark -
 #pragma mark mail support
@@ -1288,8 +1355,10 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     
     MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
     mailer.mailComposeDelegate = self;
-    NSArray *toRecipients = [NSArray arrayWithObjects:[self.tracker.optDict objectForKey:@"dfltEmail"], nil];
-    [mailer setToRecipients:toRecipients];
+    if ([self.tracker.optDict objectForKey:@"dfltEmail"]) {
+        NSArray *toRecipients = @[(self.tracker.optDict)[@"dfltEmail"]];
+        [mailer setToRecipients:toRecipients];
+    }
     NSString *emailBody;
     NSString *ext;
     
@@ -1399,7 +1468,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSUInteger row = [indexPath row];
-	valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
+	valueObj *vo = (valueObj *) (self.tracker.valObjTable)[row];
     //DBGLog(@"uvc table cell at index %d label %@",row,vo.valueName);
 	
 	return [vo.vos voTVCell:tableView];
@@ -1415,7 +1484,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSInteger vt = ((valueObj*) [self.tracker.valObjTable objectAtIndex:[indexPath row]]).vtype;
+	NSInteger vt = ((valueObj*) (self.tracker.valObjTable)[[indexPath row]]).vtype;
 	if ( vt == VOT_CHOICE || vt == VOT_SLIDER )
 		return CELL_HEIGHT_TALL;
 	return CELL_HEIGHT_NORMAL;
@@ -1430,7 +1499,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	// [self.navigationController pushViewController:anotherViewController animated:YES];
 	// [anotherViewController release];
 
-    valueObj *vo = (valueObj*) [self.tracker.valObjTable objectAtIndex:[indexPath row]];
+    valueObj *vo = (valueObj*) (self.tracker.valObjTable)[[indexPath row]];
 
 #if DEBUGLOG
 	NSUInteger row = [indexPath row];
@@ -1439,7 +1508,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 #endif
 
     if (VOT_INFO == vo.vtype) {
-        NSString *url = [vo.optDict objectForKey:@"infourl"];
+        NSString *url = (vo.optDict)[@"infourl"];
         NSRange urlCheck = [url rangeOfString:@"://"];
         if (urlCheck.location == NSNotFound) {
             url = [@"http://" stringByAppendingString:url];

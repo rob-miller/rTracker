@@ -252,7 +252,7 @@ static unsigned int theKey;
 	self.context = UIGraphicsGetCurrentContext();
 	CGContextSetLineWidth(self.context, 1.0f);
 	CGContextSetAlpha(self.context, 1.0f);
-	self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
+	self.myFont = [UIFont fontWithName:@FONTNAME size:FONTSIZE];
 	[self updateTT];
 	[self drawTicTac];
 	

@@ -45,6 +45,7 @@
 
 #define CSCANCEL    1
 #define CSSETDATE   2
+#define CSSHOWCAL   3
 
 @property(nonatomic,strong) trackerObj *tracker;
 @property (nonatomic, strong) datePickerVC *dpvc;
@@ -68,6 +69,7 @@
 @property (nonatomic, strong) UIBarButtonItem *currDateBtn;
 @property (nonatomic, strong) UIBarButtonItem *calBtn;
 @property (nonatomic, strong) UIBarButtonItem *delBtn;
+@property (nonatomic, strong) UIBarButtonItem *skip2EndBtn;
 @property (nonatomic, strong) UIBarButtonItem *flexibleSpaceButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *fixed1SpaceButtonItem;
 //@property (nonatomic, retain) UIBarButtonItem *testBtn;

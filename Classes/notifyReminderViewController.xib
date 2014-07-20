@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1072" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
@@ -7,6 +7,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="notifyReminderViewController">
             <connections>
+                <outlet property="btnDoneOutlet" destination="367" id="Tt4-MF-iei"/>
+                <outlet property="btnHelpOutlet" destination="1053" id="qHw-Xw-aun"/>
                 <outlet property="delayDaysButton" destination="nFu-OQ-Q19" id="fj3-tW-QY1"/>
                 <outlet property="enableButton" destination="paO-m9-63J" id="oRl-OO-5nk"/>
                 <outlet property="enableFinishButton" destination="19" id="1Nd-3w-WIu"/>
@@ -21,6 +23,7 @@
                 <outlet property="finishTimeAmPm" destination="IrX-P7-jyf" id="Q7M-jL-Swn"/>
                 <outlet property="fromLastButton" destination="1018" id="7vU-RA-HsW"/>
                 <outlet property="fromLastLabel" destination="1054" id="6ck-bB-YMw"/>
+                <outlet property="gearButton" destination="zaD-xe-EXR" id="q9H-0u-0vQ"/>
                 <outlet property="intervalButton" destination="20" id="309"/>
                 <outlet property="monthDays" destination="911" id="1154"/>
                 <outlet property="msgTF" destination="313" id="3Dp-pQ-bsH"/>
@@ -263,6 +266,7 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                     <connections>
+                        <action selector="TFdidBeginEditing:" destination="-1" eventType="editingDidBegin" id="M2S-MS-eIy"/>
                         <action selector="finishHrChange:" destination="-1" eventType="editingDidEndOnExit" id="C3H-8l-Q2e"/>
                         <outlet property="delegate" destination="-1" id="HdH-YN-LFo"/>
                     </connections>
@@ -280,6 +284,7 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                     <connections>
+                        <action selector="TFdidBeginEditing:" destination="-1" eventType="editingDidBegin" id="oqB-Ja-IFg"/>
                         <action selector="finishMinChange:" destination="-1" eventType="editingDidEndOnExit" id="f9K-Ru-w9O"/>
                         <outlet property="delegate" destination="-1" id="FEb-TM-3FG"/>
                     </connections>
@@ -341,7 +346,7 @@
                     <rect key="frame" x="-5" y="436" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
-                        <barButtonItem systemItem="done" id="367">
+                        <barButtonItem title="Item" id="367">
                             <connections>
                                 <action selector="btnDone:" destination="-1" id="1145"/>
                             </connections>

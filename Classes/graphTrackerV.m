@@ -84,9 +84,9 @@
     DBGLog(@"vtChoiceSetColor transformed %f",val);
     int choice = [vogd.vo getChoiceIndexForValue:[NSString stringWithFormat:@"%f",val]];
     NSString *cc = [NSString stringWithFormat:@"cc%d",choice];
-    NSInteger col = [[vogd.vo.optDict objectForKey:cc] integerValue];
-    CGContextSetFillColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);
-    CGContextSetStrokeColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]).CGColor);
+    NSInteger col = [(vogd.vo.optDict)[cc] integerValue];
+    CGContextSetFillColorWithColor(context,((UIColor *) [rTracker_resource colorSet][col]).CGColor);
+    CGContextSetStrokeColorWithColor(context,((UIColor *) [rTracker_resource colorSet][col]).CGColor);
 }
 
 #define LXNOTSTARTED -1.0f
@@ -425,8 +425,8 @@
     }
     
     if (vo.vtype != VOT_CHOICE) {
-        CGContextSetFillColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:vo.vcolor]).CGColor);
-        CGContextSetStrokeColorWithColor(context,((UIColor *) [[rTracker_resource colorSet] objectAtIndex:vo.vcolor]).CGColor);
+        CGContextSetFillColorWithColor(context,((UIColor *) [rTracker_resource colorSet][vo.vcolor]).CGColor);
+        CGContextSetStrokeColorWithColor(context,((UIColor *) [rTracker_resource colorSet][vo.vcolor]).CGColor);
     }
 
 	switch (vo.vGraphType) {
@@ -476,7 +476,7 @@
 {
     int barCount=0;
 	for (valueObj *vo in self.tracker.valObjTable) {
-		if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+		if (![(vo.optDict)[@"graph"] isEqualToString:@"0"]) {
             if (VOG_BAR == vo.vGraphType) {
                 barCount++;
             }
@@ -486,7 +486,7 @@
     
 	for (valueObj *vo in self.tracker.valObjTable) {
         if (vo != self.gtvCurrVO) {
-            if (![[vo.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+            if (![(vo.optDict)[@"graph"] isEqualToString:@"0"]) {
                 //DBGLog(@"drawGraph %@",vo.valueName);
                 [self plotVO:vo context:context barCount:barCount];
                 if (VOG_BAR == vo.vGraphType) {
@@ -496,7 +496,7 @@
         }
 	}
     // plot selected last for best hightlight
-    if (![[self.gtvCurrVO.optDict objectForKey:@"graph"] isEqualToString:@"0"]) {
+    if (![(self.gtvCurrVO.optDict)[@"graph"] isEqualToString:@"0"]) {
         //DBGLog(@"drawGraph %@",vo.valueName);
         [self plotVO:self.gtvCurrVO context:context barCount:barCount];
         if (VOG_BAR == self.gtvCurrVO.vGraphType) {

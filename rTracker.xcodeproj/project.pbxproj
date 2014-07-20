@@ -14,7 +14,6 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
-		D405303C1902D4FB009ABFC3 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = D405303B1902D4FB009ABFC3 /* sounds */; };
 		D40607DF17D7CB5A00C05A38 /* closedview-button-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D517D7CB5A00C05A38 /* closedview-button-7.png */; };
 		D40607E017D7CB5A00C05A38 /* closedview-button-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */; };
 		D40607E117D7CB5A00C05A38 /* closedview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */; };
@@ -113,16 +112,35 @@
 		D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */; };
 		D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */; };
 		D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */; };
+		D457D8A91955AEF7004526CF /* bell 3.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A61955AEF7004526CF /* bell 3.caf */; };
+		D457D8AA1955AEF7004526CF /* bell 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A71955AEF7004526CF /* bell 2.caf */; };
+		D457D8AB1955AEF7004526CF /* bell 4.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A81955AEF7004526CF /* bell 4.caf */; };
+		D457D8AE1955B256004526CF /* ping 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8AC1955B256004526CF /* ping 2.caf */; };
+		D457D8AF1955B256004526CF /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8AD1955B256004526CF /* ping.caf */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4620056182C046E00F6F2C2 /* notifyReminder.m */; };
 		D46D15D617CE8FB500BB3EBE /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D517CE8FB500BB3EBE /* icon120.png */; };
 		D46D15D817CE8FFF00BB3EBE /* icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = D46D15D717CE8FFF00BB3EBE /* icon80.png */; };
+		D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
+		D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */; };
+		D473ED4019571F8A00B4702C /* CalendarRow.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3619571F8A00B4702C /* CalendarRow.png */; };
+		D473ED4119571F8A00B4702C /* CalendarRow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3719571F8A00B4702C /* CalendarRow@2x.png */; };
+		D473ED4219571F8A00B4702C /* CalendarRowBottom.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3819571F8A00B4702C /* CalendarRowBottom.png */; };
+		D473ED4319571F8A00B4702C /* CalendarRowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3919571F8A00B4702C /* CalendarRowBottom@2x.png */; };
+		D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3A19571F8A00B4702C /* CalendarSelectedDate.png */; };
+		D473ED4519571F8A00B4702C /* CalendarSelectedDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3B19571F8A00B4702C /* CalendarSelectedDate@2x.png */; };
+		D473ED4619571F8A00B4702C /* CalendarTodaysDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */; };
+		D473ED4719571F8A00B4702C /* CalendarTodaysDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */; };
 		D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D473F25919050136000B0FC8 /* AudioToolbox.framework */; };
 		D4786E65148D864C000E144A /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4786E64148D864C000E144A /* Icon-Small@2x.png */; };
 		D47B564519411739002B0CCA /* trackerCalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B564419411739002B0CCA /* trackerCalViewController.m */; };
 		D47B5648194118D5002B0CCA /* trackerCalCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */; };
 		D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
 		D47D169119028FBE006563B9 /* notifyReminderVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = D47D169019028FBE006563B9 /* notifyReminderVC2.m */; };
+		D47EE39C19556555007D0263 /* bell 1.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE39B19556555007D0263 /* bell 1.caf */; };
+		D47EE3A61955664F007D0263 /* bugle_call.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A31955664F007D0263 /* bugle_call.caf */; };
+		D47EE3A71955664F007D0263 /* bugle_charge.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A41955664F007D0263 /* bugle_charge.caf */; };
+		D47EE3A81955664F007D0263 /* fail_wah_wah_wah.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A51955664F007D0263 /* fail_wah_wah_wah.caf */; };
 		D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
 		D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8014A9E2E300CE0547 /* fullview-button.png */; };
 		D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8214A9E2F100CE0547 /* shadeview-button.png */; };
@@ -214,7 +232,6 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D40518B613787B5500F001BA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D405303B1902D4FB009ABFC3 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = Resources/sounds; sourceTree = "<group>"; };
 		D40607D517D7CB5A00C05A38 /* closedview-button-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-7.png"; path = "Resources/png/closedview-button-7.png"; sourceTree = "<group>"; };
 		D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-7@2x.png"; path = "Resources/png/closedview-button-7@2x.png"; sourceTree = "<group>"; };
 		D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue-7.png"; path = "Resources/png/closedview-button-blue-7.png"; sourceTree = "<group>"; };
@@ -273,12 +290,27 @@
 		D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue.png"; path = "Resources/png/closedview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button-blue.png"; path = "Resources/png/fullview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button-blue.png"; path = "Resources/png/shadeview-button-blue.png"; sourceTree = "<group>"; };
+		D457D8A61955AEF7004526CF /* bell 3.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 3.caf"; sourceTree = "<group>"; };
+		D457D8A71955AEF7004526CF /* bell 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 2.caf"; sourceTree = "<group>"; };
+		D457D8A81955AEF7004526CF /* bell 4.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 4.caf"; sourceTree = "<group>"; };
+		D457D8AC1955B256004526CF /* ping 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ping 2.caf"; sourceTree = "<group>"; };
+		D457D8AD1955B256004526CF /* ping.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ping.caf; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
 		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
 		D4620055182C046E00F6F2C2 /* notifyReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminder.h; sourceTree = "<group>"; };
 		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminder.m; sourceTree = "<group>"; };
 		D46D15D517CE8FB500BB3EBE /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon120.png; path = Resources/png/icon120.png; sourceTree = "<group>"; };
 		D46D15D717CE8FFF00BB3EBE /* icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon80.png; path = Resources/png/icon80.png; sourceTree = "<group>"; };
+		D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarPreviousMonth.png; path = Resources/png/CalendarPreviousMonth.png; sourceTree = "<group>"; };
+		D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarPreviousMonth@2x.png"; path = "Resources/png/CalendarPreviousMonth@2x.png"; sourceTree = "<group>"; };
+		D473ED3619571F8A00B4702C /* CalendarRow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarRow.png; path = Resources/png/CalendarRow.png; sourceTree = "<group>"; };
+		D473ED3719571F8A00B4702C /* CalendarRow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarRow@2x.png"; path = "Resources/png/CalendarRow@2x.png"; sourceTree = "<group>"; };
+		D473ED3819571F8A00B4702C /* CalendarRowBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarRowBottom.png; path = Resources/png/CalendarRowBottom.png; sourceTree = "<group>"; };
+		D473ED3919571F8A00B4702C /* CalendarRowBottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarRowBottom@2x.png"; path = "Resources/png/CalendarRowBottom@2x.png"; sourceTree = "<group>"; };
+		D473ED3A19571F8A00B4702C /* CalendarSelectedDate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarSelectedDate.png; path = Resources/png/CalendarSelectedDate.png; sourceTree = "<group>"; };
+		D473ED3B19571F8A00B4702C /* CalendarSelectedDate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarSelectedDate@2x.png"; path = "Resources/png/CalendarSelectedDate@2x.png"; sourceTree = "<group>"; };
+		D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarTodaysDate.png; path = Resources/png/CalendarTodaysDate.png; sourceTree = "<group>"; };
+		D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarTodaysDate@2x.png"; path = "Resources/png/CalendarTodaysDate@2x.png"; sourceTree = "<group>"; };
 		D473F25919050136000B0FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D4786E64148D864C000E144A /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Resources/png/Icon-Small@2x.png"; sourceTree = "<group>"; };
 		D47B564319411739002B0CCA /* trackerCalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalViewController.h; sourceTree = "<group>"; };
@@ -293,6 +325,10 @@
 		D47ECFF219411BE600DCCF12 /* TSQCalendarMonthHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarMonthHeaderCell.h; sourceTree = "<group>"; };
 		D47ECFF319411BE600DCCF12 /* TSQCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarRowCell.h; sourceTree = "<group>"; };
 		D47ECFF419411BE600DCCF12 /* TSQCalendarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSQCalendarView.h; sourceTree = "<group>"; };
+		D47EE39B19556555007D0263 /* bell 1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 1.caf"; sourceTree = "<group>"; };
+		D47EE3A31955664F007D0263 /* bugle_call.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_call.caf; sourceTree = "<group>"; };
+		D47EE3A41955664F007D0263 /* bugle_charge.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_charge.caf; sourceTree = "<group>"; };
+		D47EE3A51955664F007D0263 /* fail_wah_wah_wah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fail_wah_wah_wah.caf; sourceTree = "<group>"; };
 		D47FBB7E14A9E2D700CE0547 /* closedview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button.png"; path = "Resources/png/closedview-button.png"; sourceTree = "<group>"; };
 		D47FBB8014A9E2E300CE0547 /* fullview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button.png"; path = "Resources/png/fullview-button.png"; sourceTree = "<group>"; };
 		D47FBB8214A9E2F100CE0547 /* shadeview-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button.png"; path = "Resources/png/shadeview-button.png"; sourceTree = "<group>"; };
@@ -497,6 +533,7 @@
 				28A0AAE50D9B0CCF005BE974 /* rTracker_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				D4A316C01191987E00F062AC /* MainWindow.xib */,
+				D47ECFEF19411BE600DCCF12 /* TimesSquare */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -504,10 +541,27 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				D47ECFEF19411BE600DCCF12 /* TimesSquare */,
+				D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */,
+				D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */,
+				D473ED3619571F8A00B4702C /* CalendarRow.png */,
+				D473ED3719571F8A00B4702C /* CalendarRow@2x.png */,
+				D473ED3819571F8A00B4702C /* CalendarRowBottom.png */,
+				D473ED3919571F8A00B4702C /* CalendarRowBottom@2x.png */,
+				D473ED3A19571F8A00B4702C /* CalendarSelectedDate.png */,
+				D473ED3B19571F8A00B4702C /* CalendarSelectedDate@2x.png */,
+				D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */,
+				D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */,
+				D457D8AD1955B256004526CF /* ping.caf */,
+				D457D8AC1955B256004526CF /* ping 2.caf */,
+				D47EE39B19556555007D0263 /* bell 1.caf */,
+				D457D8A71955AEF7004526CF /* bell 2.caf */,
+				D457D8A61955AEF7004526CF /* bell 3.caf */,
+				D457D8A81955AEF7004526CF /* bell 4.caf */,
+				D47EE3A31955664F007D0263 /* bugle_call.caf */,
+				D47EE3A41955664F007D0263 /* bugle_charge.caf */,
+				D47EE3A51955664F007D0263 /* fail_wah_wah_wah.caf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
-				D405303B1902D4FB009ABFC3 /* sounds */,
 				D4B3009215A9B51A0042319D /* sampleTrackers */,
 				D40607D517D7CB5A00C05A38 /* closedview-button-7.png */,
 				D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */,
@@ -629,11 +683,11 @@
 				D47ECFF119411BE600DCCF12 /* TSQCalendarCell.h */,
 				D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */,
 				D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */,
+				D47ECFF319411BE600DCCF12 /* TSQCalendarRowCell.h */,
 				D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */,
 				D47ECFF419411BE600DCCF12 /* TSQCalendarView.h */,
 				D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */,
 				D47ECFF219411BE600DCCF12 /* TSQCalendarMonthHeaderCell.h */,
-				D47ECFF319411BE600DCCF12 /* TSQCalendarRowCell.h */,
 			);
 			name = TimesSquare;
 			path = Classes/TimesSquare;
@@ -875,14 +929,18 @@
 			files = (
 				D4A3150D11903F5E00F062AC /* addTrackerController.xib in Resources */,
 				D4A316C11191987E00F062AC /* MainWindow.xib in Resources */,
+				D473ED4719571F8A00B4702C /* CalendarTodaysDate@2x.png in Resources */,
 				D4A317B51192B7C800F062AC /* configTlistController.xib in Resources */,
 				D4A0F8B117D92E9100CB86E6 /* launchRetina_7.png in Resources */,
+				D473ED4319571F8A00B4702C /* CalendarRowBottom@2x.png in Resources */,
 				D48F9FB3119B4CA600B37C93 /* addValObjController.xib in Resources */,
-				D405303C1902D4FB009ABFC3 /* sounds in Resources */,
 				D40607E217D7CB5A00C05A38 /* closedview-button-blue-7@2x.png in Resources */,
 				D40607E317D7CB5A00C05A38 /* fullview-button-blue-7.png in Resources */,
+				D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */,
 				D4A0F8B317D92E9100CB86E6 /* launchRetina4_7.png in Resources */,
+				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
+				D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */,
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
 				D44695C517D6894A00BB5A38 /* configTlistController7.xib in Resources */,
 				D49854B112312A400009E458 /* useTrackerController.xib in Resources */,
@@ -891,6 +949,7 @@
 				D4D7DCEB125B25E00049EB93 /* checked.png in Resources */,
 				D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */,
 				D40607E617D7CB5A00C05A38 /* shadeview-button-7@2x.png in Resources */,
+				D473ED4219571F8A00B4702C /* CalendarRowBottom.png in Resources */,
 				D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */,
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
 				D4C18741128A971000A612C4 /* voDataEdit.xib in Resources */,
@@ -915,6 +974,7 @@
 				D46D15D617CE8FB500BB3EBE /* icon120.png in Resources */,
 				D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */,
 				D4A0F8B217D92E9100CB86E6 /* Default~iphone.png in Resources */,
+				D473ED4119571F8A00B4702C /* CalendarRow@2x.png in Resources */,
 				D46D15D817CE8FFF00BB3EBE /* icon80.png in Resources */,
 				D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */,
 				D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */,
@@ -927,6 +987,18 @@
 				D40607E417D7CB5A00C05A38 /* fullview-button-blue-7@2x.png in Resources */,
 				D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */,
 				D4F7A07D17D9319C00D10906 /* Default@2x.png in Resources */,
+				D47EE3A61955664F007D0263 /* bugle_call.caf in Resources */,
+				D47EE3A71955664F007D0263 /* bugle_charge.caf in Resources */,
+				D47EE3A81955664F007D0263 /* fail_wah_wah_wah.caf in Resources */,
+				D47EE39C19556555007D0263 /* bell 1.caf in Resources */,
+				D457D8AA1955AEF7004526CF /* bell 2.caf in Resources */,
+				D473ED4019571F8A00B4702C /* CalendarRow.png in Resources */,
+				D473ED4519571F8A00B4702C /* CalendarSelectedDate@2x.png in Resources */,
+				D457D8A91955AEF7004526CF /* bell 3.caf in Resources */,
+				D457D8AB1955AEF7004526CF /* bell 4.caf in Resources */,
+				D457D8AF1955B256004526CF /* ping.caf in Resources */,
+				D473ED4619571F8A00B4702C /* CalendarTodaysDate.png in Resources */,
+				D457D8AE1955B256004526CF /* ping 2.caf in Resources */,
 				D438640B17D932A10074730D /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1133,7 +1205,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Realidata Limited (DM8S4B24P4)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1167,8 +1239,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Realidata Limited (DM8S4B24P4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Realidata Limited (DM8S4B24P4)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;
@@ -1415,8 +1487,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Realidata Limited (DM8S4B24P4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Realidata Limited (DM8S4B24P4)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DEBUGGING_SYMBOLS = default;

@@ -138,7 +138,7 @@
 
 - (void) imagePickerController:(UIImagePickerController *)picker
 		 didFinishPickingMediaWithInfo:(NSDictionary *)mediaInfo {
-	self.imageView.image = [mediaInfo objectForKey:UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
+	self.imageView.image = mediaInfo[UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
 	//[picker dismissModalViewControllerAnimated:YES];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
@@ -159,7 +159,7 @@
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     

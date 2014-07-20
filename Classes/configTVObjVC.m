@@ -80,7 +80,7 @@
 	}
 	
 	if ((name == nil) || [name isEqualToString:@""]) 
-		name = [NSString stringWithFormat:@"<%@>",[self.to.votArray objectAtIndex:self.vo.vtype]];
+		name = [NSString stringWithFormat:@"<%@>",(self.to.votArray)[self.vo.vtype]];
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"Configure %@",name]];
 	name = nil;
 	 
@@ -96,17 +96,25 @@
 
 	
 	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]
-								initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                initWithTitle:@"\u2611" //@"Cal"  // ballot box with check
+                                style:UIBarButtonItemStyleBordered
+								//initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 								target:self
 								action:@selector(btnDone:)];
+
+    [doneBtn setTitleTextAttributes:@{
+                                      NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                      // doesn't work?  ,NSForegroundColorAttributeName: [UIColor greenColor]
+                                      } forState:UIControlStateNormal];
+    
 	if (self.vdlConfigVO && self.vo.vtype == VOT_FUNC) {
 		[(voFunction*)self.vo.vos funcVDL:self donebutton:doneBtn];
 	} else {
-		self.toolBar.items = [NSArray arrayWithObjects: doneBtn, nil];
+		self.toolBar.items = @[doneBtn];
 	}
 
     // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-568.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
 	   
@@ -125,6 +133,9 @@
 											 selector:@selector(keyboardWillHide:) 
 												 name:UIKeyboardWillHideNotification 
 											   object:self.view.window];
+
+    [self.navigationController setToolbarHidden:NO animated:NO];
+
 	[super viewWillAppear:animated];
 }
 
@@ -288,7 +299,7 @@
 	rlab.text = text;
 	rlab.backgroundColor = [UIColor clearColor];
 
-	[self.wDict setObject:rlab forKey:key];
+	(self.wDict)[key] = rlab;
 	if (addsv)
 		[self.view addSubview:rlab];
 	
@@ -302,36 +313,36 @@
 	NSString *okey=nil, *dflt, *ndflt=nil, *img;
 	BOOL dfltState=AUTOSCALEDFLT;
 	
-	if ( btn == [self.wDict objectForKey:@"nasBtn"] ) {
+	if ( btn == (self.wDict)[@"nasBtn"] ) {
 		okey = @"autoscale"; dfltState=AUTOSCALEDFLT;
-		if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:@"0"]) { // will switch on
+		if ([(NSString*) (self.vo.optDict)[okey] isEqualToString:@"0"]) { // will switch on
 			[self removeGraphMinMax];
             //[self addGraphFromZero];  // ASFROMZERO
 		} else {
             //[self removeGraphFromZero];
 			[self addGraphMinMax];      // ASFROMZERO
 		}
-	} else if ( btn == [self.wDict objectForKey:@"csbBtn"] ) {  
+	} else if ( btn == (self.wDict)[@"csbBtn"] ) {  
 		okey = @"shrinkb"; dfltState=SHRINKBDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"cevBtn"] ) {
+	} else if ( btn == (self.wDict)[@"cevBtn"] ) {
 		okey = @"exportvalb"; dfltState=EXPORTVALBDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"stdBtn"] ) {
+	} else if ( btn == (self.wDict)[@"stdBtn"] ) {
 		okey = @"setstrackerdate"; dfltState=SETSTRACKERDATEDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"sisBtn"] ) {
+	} else if ( btn == (self.wDict)[@"sisBtn"] ) {
 		okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbnlBtn"] ) {
+	} else if ( btn == (self.wDict)[@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbniBtn"] ) {
+	} else if ( btn == (self.wDict)[@"tbniBtn"] ) {
 		okey = @"tbni"; dfltState=TBNIDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"tbhiBtn"] ) {
+	} else if ( btn == (self.wDict)[@"tbhiBtn"] ) {
 		okey = @"tbhi"; dfltState=TBHIDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"ggBtn"] ) {
+	} else if ( btn == (self.wDict)[@"ggBtn"] ) {
 		okey = @"graph"; dfltState=GRAPHDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"swlBtn"] ) {
+	} else if ( btn == (self.wDict)[@"swlBtn"] ) {
 		okey = @"nswl"; dfltState=NSWLDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"srBtn"] ) {
+	} else if ( btn == (self.wDict)[@"srBtn"] ) {
 		okey = @"savertn"; dfltState=SAVERTNDFLT;
-	} else if ( btn == [self.wDict objectForKey:@"graphLastBtn"] ) {
+	} else if ( btn == (self.wDict)[@"graphLastBtn"] ) {
 		okey = @"graphlast"; dfltState=GRAPHLASTDFLT;
 	}else {
 		dbgNSAssert(0,@"ckButtonAction cannot identify btn");
@@ -345,19 +356,19 @@
 	}
 	
 	if (self.vo == nil) {
-		if ([(NSString*) [self.to.optDict objectForKey:okey] isEqualToString:ndflt]) {
-			[self.to.optDict setObject:dflt forKey:okey]; 
+		if ([(NSString*) (self.to.optDict)[okey] isEqualToString:ndflt]) {
+			(self.to.optDict)[okey] = dflt; 
 			img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
 		} else {
-			[self.to.optDict setObject:ndflt forKey:okey];
+			(self.to.optDict)[okey] = ndflt;
 			img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
 		}
 	} else {
-		if ([(NSString*) [self.vo.optDict objectForKey:okey] isEqualToString:ndflt]) {
-			[self.vo.optDict setObject:dflt forKey:okey]; 
+		if ([(NSString*) (self.vo.optDict)[okey] isEqualToString:ndflt]) {
+			(self.vo.optDict)[okey] = dflt; 
 			img = (dfltState ? @"checked.png" : @"unchecked.png"); // going to default state
 		} else {
-			[self.vo.optDict setObject:ndflt forKey:okey];
+			(self.vo.optDict)[okey] = ndflt;
 			img = (dfltState ? @"unchecked.png" : @"checked.png"); // going to not default state
 		}
 	}
@@ -373,7 +384,7 @@
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 
-	[self.wDict setObject:imageButton forKey:key];
+	(self.wDict)[key] = imageButton;
 	[imageButton addTarget:self action:@selector(checkBtnAction:) forControlEvents:UIControlEventTouchUpInside];
 	
 	[imageButton setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")] 
@@ -398,7 +409,7 @@
 	//imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
 	
 	if (nil != key) {
-        [self.wDict setObject:button forKey:key];
+        (self.wDict)[key] = button;
     }
     
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
@@ -412,22 +423,22 @@
     self.processingTfDone = YES;
     
 	NSString *okey=nil, *nkey=nil;
-	if ( tf == [self.wDict objectForKey:@"nminTF"] ) {
+	if ( tf == (self.wDict)[@"nminTF"] ) {
 		okey = @"gmin";
 		nkey = @"nmaxTF";
-	} else if ( tf == [self.wDict objectForKey:@"nmaxTF"] ) {
+	} else if ( tf == (self.wDict)[@"nmaxTF"] ) {
 		okey = @"gmax";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"sminTF"] ) {
+	} else if ( tf == (self.wDict)[@"sminTF"] ) {
 		okey = @"smin";
 		nkey = @"smaxTF";
-	} else if ( tf == [self.wDict objectForKey:@"smaxTF"] ) {
+	} else if ( tf == (self.wDict)[@"smaxTF"] ) {
 		okey = @"smax";
 		nkey = @"sdfltTF";
-	} else if ( tf == [self.wDict objectForKey:@"sdfltTF"] ) {
+	} else if ( tf == (self.wDict)[@"sdfltTF"] ) {
 		okey = @"sdflt";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"gpTF"] ) {
+	} else if ( tf == (self.wDict)[@"gpTF"] ) {
 		okey = @"privacy";
 		nkey = nil;
         
@@ -442,31 +453,31 @@
             tf.text = [NSString stringWithFormat:@"%d",PRIVDFLT];
         }
         
-	} else if ( tf == [self.wDict objectForKey:@"gmdTF"] ) {
+	} else if ( tf == (self.wDict)[@"gmdTF"] ) {
 		okey = @"graphMaxDays";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"deTF"] ) {
+	} else if ( tf == (self.wDict)[@"deTF"] ) {
 		okey = @"dfltEmail";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"fr0TF"] ) {
+	} else if ( tf == (self.wDict)[@"fr0TF"] ) {
 		okey = @"frv0";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"fr1TF"] ) {
+	} else if ( tf == (self.wDict)[@"fr1TF"] ) {
 		okey = @"frv1";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"fnddpTF"] ) {
+	} else if ( tf == (self.wDict)[@"fnddpTF"] ) {
 		okey = @"fnddp";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"bvalTF"] ) {
+	} else if ( tf == (self.wDict)[@"bvalTF"] ) {
 		okey = @"boolval";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"ivalTF"] ) {
+	} else if ( tf == (self.wDict)[@"ivalTF"] ) {
 		okey = @"infoval";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:@"iurlTF"] ) {
+	} else if ( tf == (self.wDict)[@"iurlTF"] ) {
 		okey = @"infourl";
 		nkey = nil;
-	} else if ( tf == [self.wDict objectForKey:CTFKEY] ) {
+	} else if ( tf == (self.wDict)[CTFKEY] ) {
 		okey = LCKEY;
 		nkey = nil;
 	} else {
@@ -476,14 +487,14 @@
 
 	if (self.vo == nil) {      // tracker config
 		DBGLog(@"to set %@: %@", okey, tf.text);    
-		[self.to.optDict setObject:tf.text forKey:okey];
+		(self.to.optDict)[okey] = tf.text;
 	} else {                   // valobj config
 		DBGLog(@"vo set %@: %@", okey, tf.text);
-		[self.vo.optDict setObject:tf.text forKey:okey];
+		(self.vo.optDict)[okey] = tf.text;
 	}
 		
 	if (nkey) {
-		[[self.wDict objectForKey:nkey] becomeFirstResponder];
+		[(self.wDict)[nkey] becomeFirstResponder];
 	} else {
 		[tf resignFirstResponder];
 	}
@@ -505,7 +516,7 @@
                                                         num:num
                                                       place:place text:text];
     	
-	[self.wDict setObject:rtf forKey:key];
+	(self.wDict)[key] = rtf;
     
     if (addsv)
 		[self.view addSubview:rtf];
@@ -516,7 +527,7 @@
 
 	UITextView *rtv = [[UITextView alloc] initWithFrame:frame];
 	rtv.editable = NO;
-	[self.wDict setObject:rtv forKey:key];
+	(self.wDict)[key] = rtv;
 	
 	rtv.text = text;
     //[rtv scrollRangeToVisible: (NSRange) { (NSUInteger) ([text length]-1), (NSUInteger)1 }];  // works 1st time but text is cached so doesn't work subsequently
@@ -536,7 +547,7 @@
 	myPickerView.delegate = caller;
 	myPickerView.dataSource = caller;
 	
-	[self.wDict setObject:myPickerView forKey:key];
+	(self.wDict)[key] = myPickerView;
 	[self.view addSubview:myPickerView];
 	
 	
@@ -551,10 +562,10 @@
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
 	
-	[[self.wDict objectForKey:@"nminLab"] removeFromSuperview];
-	[[self.wDict objectForKey:@"nminTF"] removeFromSuperview];
-	[[self.wDict objectForKey:@"nmaxLab"] removeFromSuperview];
-	[[self.wDict objectForKey:@"nmaxTF"] removeFromSuperview];
+	[(self.wDict)[@"nminLab"] removeFromSuperview];
+	[(self.wDict)[@"nminTF"] removeFromSuperview];
+	[(self.wDict)[@"nmaxLab"] removeFromSuperview];
+	[(self.wDict)[@"nmaxTF"] removeFromSuperview];
 	
 	[UIView commitAnimations];
 }
@@ -565,10 +576,10 @@
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
 	
-	[self.view addSubview:[self.wDict objectForKey:@"nminLab"]];
-	[self.view addSubview:[self.wDict objectForKey:@"nminTF"]];
-	[self.view addSubview:[self.wDict objectForKey:@"nmaxLab"]];
-	[self.view addSubview:[self.wDict objectForKey:@"nmaxTF"]];
+	[self.view addSubview:(self.wDict)[@"nminLab"]];
+	[self.view addSubview:(self.wDict)[@"nminTF"]];
+	[self.view addSubview:(self.wDict)[@"nmaxLab"]];
+	[self.view addSubview:(self.wDict)[@"nmaxTF"]];
 	
 	[UIView commitAnimations];
 }
@@ -585,7 +596,7 @@
 	
 	[self configCheckButton:frame 
 						key:@"nasBtn" 
-					  state:(![[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"])  // default:1
+					  state:(![(self.vo.optDict)[@"autoscale"] isEqualToString:@"0"])  // default:1
                       addsv:YES
      ];
 	
@@ -606,7 +617,7 @@
 				   action:nil
 					  num:YES 
 					place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"gmin"]  //was ngmin
+					 text:(self.vo.optDict)[@"gmin"]  //was ngmin
 					addsv:NO ];
 	
 	frame.origin.x += tfWidth + MARGIN;
@@ -622,10 +633,10 @@
 				   action:nil
 					  num:YES 
 					place:@"<number>" 
-					 text:[self.vo.optDict objectForKey:@"gmax"]  // was ngmax
+					 text:(self.vo.optDict)[@"gmax"]  // was ngmax
 					addsv:NO ];
 	
-	if ([[self.vo.optDict objectForKey:@"autoscale"] isEqualToString:@"0"]) 
+	if ([(self.vo.optDict)[@"autoscale"] isEqualToString:@"0"]) 
 		[self addGraphMinMax];
 	
 	return frame;
@@ -725,9 +736,9 @@
 
     for (int i=0; i<[eventArray count]; i++)
     {
-        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        UILocalNotification* oneEvent = eventArray[i];
         NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.to.toid) {
+        if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
             scheduledReminderCount++;
         }
     }
@@ -737,10 +748,10 @@
     //if (NO == [rTracker_resource getHideRTimes]) {
         for (int i=0; i<[eventArray count]; i++)
         {
-            UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+            UILocalNotification* oneEvent = eventArray[i];
             
             NSDictionary *userInfoCurrent = oneEvent.userInfo;
-            if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.to.toid) {
+            if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
                 titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
                                                               [NSDateFormatter localizedStringFromDate:[oneEvent fireDate] dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
             }
@@ -786,7 +797,7 @@
 	
 	[self configCheckButton:frame 
 						key:@"srBtn" 
-					  state:(![[self.to.optDict objectForKey:@"savertn"] isEqualToString:@"0"]) // default = @"1"
+					  state:(![(self.to.optDict)[@"savertn"] isEqualToString:@"0"]) // default = @"1"
                       addsv:YES
      ];
 	
@@ -811,7 +822,7 @@
 				   action:nil
 					  num:YES 
 					place:[NSString stringWithFormat:@"%d",PRIVDFLT] 
-					 text:[self.to.optDict objectForKey:@"privacy"]
+					 text:(self.to.optDict)[@"privacy"]
 					addsv:YES ];
    
     //TODO: privacy values when password not set up....
@@ -834,7 +845,7 @@
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
-    NSString *gMaxDays = [self.to.optDict objectForKey:@"graphMaxDays"];
+    NSString *gMaxDays = (self.to.optDict)[@"graphMaxDays"];
     if ([gMaxDays isEqualToString:@"0"]) {
             gMaxDays = @"";
     }
@@ -870,45 +881,52 @@
 	frame.size.width = self.view.frame.size.width - (2*SPACE) - labframe.size.width - MARGIN;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
-    NSString *dfltEmail = [self.to.optDict objectForKey:@"dfltEmail"];
+    NSString *dfltEmail = (self.to.optDict)[@"dfltEmail"];
         
 	[self configTextField:frame
 					  key:@"deTF"
 				   target:nil
 				   action:nil
-					  num:YES
+					  num:NO
 					place:@" "
 					 text:dfltEmail
 					addsv:YES ];
     
 
-    if ((nil == self.vo) && (nil != self.to.dbName)) {
-//#if !RELEASE
-        
-        // reminder config button:
+    if (nil == self.vo) {
         
         frame.origin.x = MARGIN;
         //frame.origin.x += frame.size.width + MARGIN + SPACE;
         frame.origin.y += MARGIN + frame.size.height;
         
-        [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
-        
-//#endif
-        
-        // dbInfo values button:
-        
-        frame.origin.x = MARGIN;
-        //frame.origin.x += frame.size.width + MARGIN + SPACE;
-        frame.origin.y += MARGIN + frame.size.height;
-        
-        [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
-        
-        // 'reset reminders' button
-        frame.origin.x = MARGIN;
-        //frame.origin.x += frame.size.width + MARGIN + SPACE;
-        frame.origin.y += MARGIN + frame.size.height;
-        
-        [self configActionBtn:frame key:nil label:@"set reminders" target:self action:@selector(setRemindersBtn)];
+        if (nil != self.to.dbName) {
+            
+            // reminder config button:
+            
+            [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
+            
+            // dbInfo values button:
+            
+            frame.origin.x = MARGIN;
+            //frame.origin.x += frame.size.width + MARGIN + SPACE;
+            frame.origin.y += MARGIN + frame.size.height;
+            
+            [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
+            
+            // 'reset reminders' button
+            
+            frame.origin.x = MARGIN;
+            //frame.origin.x += frame.size.width + MARGIN + SPACE;
+            frame.origin.y += MARGIN + frame.size.height;
+            
+            [self configActionBtn:frame key:nil label:@"set reminders" target:self action:@selector(setRemindersBtn)];
+        } else {
+
+            frame.origin.y += MARGIN + frame.size.height;
+            //labframe =
+            [self configLabel:@"(Save to enable reminders)" frame:frame key:@"erLab" addsv:YES];
+            
+        }
     }
 }
 

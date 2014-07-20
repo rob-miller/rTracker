@@ -36,7 +36,7 @@
 	NSString *ts = [self.fnArray componentsJoinedByString:@" "];
     //DBGLog(@"saving fnArray ts= .%@.",ts);
 	if (0 < [ts length]) {
-		[self.vo.optDict setObject:ts forKey:@"func"];
+		(self.vo.optDict)[@"func"] = ts;
 	}
 }
 
@@ -47,11 +47,11 @@
 	// [self.fnArray addObjectsFromArray: [[self.vo.optDict objectForKey:@"func"] componentsSeparatedByString:@" "];
 	// but prefer to keep as NSNumbers 
 	
-	NSArray *tmp = [[self.vo.optDict objectForKey:@"func"] componentsSeparatedByString:@" "];
+	NSArray *tmp = [(self.vo.optDict)[@"func"] componentsSeparatedByString:@" "];
 	for (NSString *s in tmp) {
         if (![@"" isEqualToString:s]) {
             //[self.fnArray addObject:[NSNumber numberWithInteger:[s integerValue]]];
-            [self.fnArray addObject:[NSNumber numberWithDouble:[s doubleValue]]];  // because of constant
+            [self.fnArray addObject:@([s doubleValue])];  // because of constant
         }
 	}
 }
@@ -67,10 +67,10 @@
 - (void) loadConfig {
 	[self loadFnArray];
     if ((nil == [self.vo.optDict valueForKey:@"frep0"])) {
-        [self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep0"];
+        (self.vo.optDict)[@"frep0"] = @FREPDFLT;
     }
     if ((nil == [self.vo.optDict valueForKey:@"frep1"])) {
-        [self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
+        (self.vo.optDict)[@"frep1"] = @FREPDFLT;
     }
     
 }
@@ -87,8 +87,8 @@
     DBGLog(@"start fnArray= %@",self.fnArray);
 #endif
 	for (i=0; i< max; i++) {
-		if ([[self.fnArray objectAtIndex:i] integerValue] == oldVID) {
-			[self.fnArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInteger:newVID]];
+		if ([(self.fnArray)[i] integerValue] == oldVID) {
+			(self.fnArray)[i] = @(newVID);
 		}
 	}
 #if DEBUGFUNCTION
@@ -98,10 +98,10 @@
 	
 	for (i=0;i<2;i++) {
 		NSString *key = [NSString stringWithFormat:@"frep%d",i];
-		NSNumber *nep = [self.vo.optDict objectForKey:key];
+		NSNumber *nep = (self.vo.optDict)[key];
 		NSInteger ep = [nep integerValue];
 		if (ep == oldVID) {
-			[self.vo.optDict setObject:[NSNumber numberWithInteger:newVID] forKey:key];
+			(self.vo.optDict)[key] = @(newVID);
 		}
 	}
 }
@@ -112,8 +112,8 @@
 - (NSArray*) epTitles {
 	if (_epTitles == nil) {
 		// n.b.: tied to FREP symbol defns in voFunctions.h
-		_epTitles = [[NSArray alloc] initWithObjects: @"entry", @"hours", @"days", @"weeks", @"months", @"years",
-                    @"cal days",@"cal weeks",@"cal months", @"cal years",nil];
+		_epTitles = @[@"entry", @"hours", @"days", @"weeks", @"months", @"years",
+                    @"cal days",@"cal weeks",@"cal months", @"cal years"];
 	}
 	return _epTitles;
 }
@@ -143,7 +143,7 @@
         NSNumber *fn1argsArr[ARG1CNT];
         int i;
         for (i=0;i<ARG1CNT;i++) {
-            fn1argsArr[i] = [NSNumber numberWithInt:fn1argToks[i]];
+            fn1argsArr[i] = @(fn1argToks[i]);
         }
         _fn1args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn1argsArr count:ARG1CNT] copyItems:YES];
     }
@@ -156,7 +156,7 @@
         NSNumber *fn2argsArr[ARG2CNT];
         int i;
         for (i=0;i<ARG2CNT;i++) {
-            fn2argsArr[i] = [NSNumber numberWithInt:fn2argToks[i]];
+            fn2argsArr[i] = @(fn2argToks[i]);
         }
         _fn2args = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fn2argsArr count:ARG2CNT] copyItems:YES];
     }
@@ -170,7 +170,7 @@
         NSNumber *fnTimeOpsArr[TIMECNT];
         int i;
         for (i=0;i<TIMECNT;i++) {
-            fnTimeOpsArr[i] = [NSNumber numberWithInt:fnTimeOpToks[i]];
+            fnTimeOpsArr[i] = @(fnTimeOpToks[i]);
         }
         _fnTimeOps = [[NSArray alloc] initWithArray:[NSArray arrayWithObjects:fnTimeOpsArr count:TIMECNT] copyItems:YES];
     }
@@ -188,16 +188,16 @@
         
         int i,j=0;
         for (i=0; i< ARG1CNT; i++) {
-            fnTokNSNarr[j++] = [self.fn1args objectAtIndex:i];
+            fnTokNSNarr[j++] = (self.fn1args)[i];
         }
         for (i=0; i< ARG2CNT; i++) {
-            fnTokNSNarr[j++] = [self.fn2args objectAtIndex:i];
+            fnTokNSNarr[j++] = (self.fn2args)[i];
         }
         for (i=0; i< TIMECNT; i++) {
-            fnTokNSNarr[j++] = [self.fnTimeOps objectAtIndex:i];
+            fnTokNSNarr[j++] = (self.fnTimeOps)[i];
         }
         for (i=0; i< (PARENCNT+OTHERCNT); i++) {
-            fnTokNSNarr[j++] = [NSNumber numberWithInt:fnTokArr[i]];
+            fnTokNSNarr[j++] = @(fnTokArr[i]);
         }
         //fnStrDict = [NSDictionary dictionaryWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
         _fnStrDict = [[NSDictionary alloc] initWithObjects:fnStrArr forKeys:fnTokNSNarr count:TOTFNCNT];
@@ -261,7 +261,7 @@
 - (int) getEpDate:(int)ndx maxdate:(int)maxdate {
 
 	NSString *key = [NSString stringWithFormat:@"frep%d",ndx];
-	NSNumber *nep = [self.vo.optDict objectForKey:key];
+	NSNumber *nep = (self.vo.optDict)[key];
 	NSInteger ep = [nep integerValue];
 	NSInteger epDate;
 	trackerObj *to = MyTracker;
@@ -285,7 +285,7 @@
 		// ep is (offset * -1)+1 into epTitles, with optDict:frv0 multiplier
 
 		NSString *vkey = [NSString stringWithFormat:@"frv%d",ndx];
-		NSInteger ival = [[self.vo.optDict objectForKey:vkey] integerValue] * ( ndx ? 1 : -1 ) ; // negative offset if ep0
+		NSInteger ival = [(self.vo.optDict)[vkey] integerValue] * ( ndx ? 1 : -1 ) ; // negative offset if ep0
 		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 		NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
         
@@ -370,8 +370,8 @@
 	if (datePair == nil) 
 		return nil;
 	
-	int epd0 = [[datePair objectAtIndex:0] intValue];
-	int epd1 = [[datePair objectAtIndex:1] intValue];
+	int epd0 = [datePair[0] intValue];
+	int epd1 = [datePair[1] intValue];
 
 	NSInteger maxc = [self.fnArray count];
 	NSInteger vid;
@@ -382,10 +382,10 @@
 	double v1 = 0.0f;
 	
 	while (self.currFnNdx < maxc) {
-		NSInteger currTok = [[self.fnArray objectAtIndex:self.currFnNdx] integerValue];
+		NSInteger currTok = [(self.fnArray)[self.currFnNdx] integerValue];
 		if (isFn1Arg(currTok)) {
 			self.currFnNdx++;
-			vid = [[self.fnArray objectAtIndex:self.currFnNdx] integerValue];
+			vid = [(self.fnArray)[self.currFnNdx] integerValue];
 			switch (currTok) {
 				case FN1ARGDELTA :
 					if (epd1 == 0) {
@@ -422,7 +422,7 @@
 	}
 	
 	
-	return [NSNumber numberWithDouble:result];
+	return @(result);
 	
 }
 
@@ -456,10 +456,10 @@
 	
 	while (self.currFnNdx < maxc) {
         // recursive function, self.currFnNdx holds our current processing position
-		NSInteger currTok = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];
+		NSInteger currTok = [(self.fnArray)[self.currFnNdx++] integerValue];
 		if (isFn1Arg(currTok)) {
             // currTok is function taking 1 argument, so get it
-            vid = [[self.fnArray objectAtIndex:self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
+            vid = [(self.fnArray)[self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
             //valueObj *valo = [to getValObj:vid];
             NSString *sv1 = [to getValObj:vid].value;
             BOOL nullV1 = (nil == sv1 || [@"" isEqualToString:sv1]);
@@ -498,7 +498,7 @@
                     //		  vid,epd0,epd1];
                     //result = [to toQry2Float];  // --> + v1;
                     
-                    double c = [[self.vo.optDict objectForKey:@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
+                    double c = [(self.vo.optDict)[@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
                     // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
                     if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
                         to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and val <> '' and date >=%d and date <%d;",
@@ -659,9 +659,9 @@
 #if DEBUGFUNCTION
             DBGLog(@"paren close: result= %f", result);
 #endif
-			return [NSNumber numberWithDouble:result];
+			return @(result);
         } else if (FNCONSTANT == currTok) {
-                result = [[self.fnArray objectAtIndex:self.currFnNdx++] doubleValue];
+                result = [(self.fnArray)[self.currFnNdx++] doubleValue];
                 self.currFnNdx++;  // skip the bounding constant tok
 #if DEBUGFUNCTION
             DBGLog(@"constant: result= %f", result);
@@ -716,7 +716,7 @@
 	}
 
     DBGLog(@"%@ calcFnValueWithCurrent rtn: %@", self.vo.valueName, [NSNumber numberWithDouble:result]);
-	return [NSNumber numberWithDouble:result];
+	return @(result);
 
 }
 
@@ -762,7 +762,7 @@
   */
     
 	if (ep0date == 0)  {// start endpoint not ok
-        NSNumber *nep = [self.vo.optDict objectForKey:@"frep0"];
+        NSNumber *nep = (self.vo.optDict)[@"frep0"];
         NSInteger ep = [nep integerValue];
         if (! (nep == nil || ep == FREPENTRY) ) {  // allow to go through if just looking for previous entry and this is first
             return instr;
@@ -774,7 +774,7 @@
 	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
 	
     if (val != nil) {
-        NSNumber *nddp = [self.vo.optDict objectForKey:@"fnddp"];
+        NSNumber *nddp = (self.vo.optDict)[@"fnddp"];
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
         return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
     }
@@ -833,7 +833,7 @@
 
 - (NSInteger) epToRow:(NSInteger)component {
 	NSString *key = [NSString stringWithFormat:@"frep%d",component];
-	NSNumber *n = [self.vo.optDict objectForKey:key];
+	NSNumber *n = (self.vo.optDict)[key];
 	NSInteger ep = [n integerValue];
     DBGLog(@"comp= %d ep= %d n= %@ ",component,ep,n);
 	if (n == nil || ep == FREPDFLT) {// no endpoint defined, so default row 0
@@ -856,13 +856,13 @@
 		NSInteger votc = [self.votWoSelf count];   //[MyTracker.valObjTable count];
 		if (row <= votc) {
             DBGLog(@" returning %@",((valueObj*) [self.votWoSelf objectAtIndex:row-1]).valueName);
-			return ((valueObj*) [self.votWoSelf objectAtIndex:row-1]).valueName;  //((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).valueName;
+			return ((valueObj*) (self.votWoSelf)[row-1]).valueName;  //((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).valueName;
 		} else {
 			row -= votc;
 		}
 	}
     DBGLog(@" returning %@",[self.epTitles objectAtIndex:row]);
-	return [self.epTitles objectAtIndex:row];
+	return (self.epTitles)[row];
 }
 
 // 
@@ -879,23 +879,23 @@
 		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
 		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
 		
-		UITextField *vtf= [self.ctvovcp.wDict objectForKey:vtfkey];
-		vtf.text = [self.vo.optDict objectForKey:vkey];
+		UITextField *vtf= (self.ctvovcp.wDict)[vtfkey];
+		vtf.text = (self.vo.optDict)[vkey];
 		[self.ctvovcp.view addSubview:vtf];
-		[self.ctvovcp.view addSubview:[self.ctvovcp.wDict objectForKey:pre_vkey]];
-		UILabel *postLab = [self.ctvovcp.wDict objectForKey:post_vkey];
+		[self.ctvovcp.view addSubview:(self.ctvovcp.wDict)[pre_vkey]];
+		UILabel *postLab = (self.ctvovcp.wDict)[post_vkey];
 		//postLab.text = [[self fnrRowTitle:row] stringByReplacingOccurrencesOfString:@"cal " withString:@"c "];
 		postLab.text = [self fnrRowTitle:row];
         DBGLog(@" postlab= %@",postLab.text);
 		[self.ctvovcp.view addSubview:postLab];
         
-        if ((0 == component) && (ISCALFREP([[self.vo.optDict objectForKey:key] integerValue]))) {
-            UIButton *ckBtn = [self.ctvovcp.wDict objectForKey:@"graphLastBtn"];
-            BOOL state = (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"]) ; // default:1
+        if ((0 == component) && (ISCALFREP([(self.vo.optDict)[key] integerValue]))) {
+            UIButton *ckBtn = (self.ctvovcp.wDict)[@"graphLastBtn"];
+            BOOL state = (![(self.vo.optDict)[@"graphlast"] isEqualToString:@"0"]) ; // default:1
             [ckBtn setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")]
                          forState: UIControlStateNormal];
             [self.ctvovcp.view addSubview:ckBtn];
-            UILabel *glLab = [self.ctvovcp.wDict objectForKey:@"graphLastLabel"];
+            UILabel *glLab = (self.ctvovcp.wDict)[@"graphLastLabel"];
             [self.ctvovcp.view addSubview:glLab];
         }
         
@@ -927,7 +927,7 @@
 	frame.origin.x = 0.0;
 	
 	frame = [self.ctvovcp configPicker:frame key:@"frPkr" caller:self];
-	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"frPkr"];
+	UIPickerView *pkr = (self.ctvovcp.wDict)[@"frPkr"];
 	
     DBGLog(@"pkr component 0 selectRow %d",[self epToRow:0]);
 	[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
@@ -953,7 +953,7 @@
 				   action:nil
 					  num:YES 
 					place:nil
-					 text:[self.vo.optDict objectForKey:@"frv0"] 
+					 text:(self.vo.optDict)[@"frv0"] 
 					addsv:NO ];
 	
 	frame.origin.x += tfWidth + 2*SPACE;
@@ -974,7 +974,7 @@
     frame.origin.x += labframe.size.width + SPACE;
     [self.ctvovcp configCheckButton:frame
                                 key:@"graphLastBtn"
-                              state:(![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])  // default:1
+                              state:(![(self.vo.optDict)[@"graphlast"] isEqualToString:@"0"])  // default:1
                               addsv:NO
      ];
 
@@ -1039,7 +1039,7 @@
             } else {
                 //NSInteger ndx = (i * -1) -1;
                 //[fstr appendString:[self.fnStrs objectAtIndex:ndx]];  xxx   // get str for token
-                [fstr appendString:[self.fnStrDict objectForKey:[NSNumber numberWithInt:i]]];
+                [fstr appendString:(self.fnStrDict)[@(i)]];
                 if (isFn1Arg(i)) {
                     [fstr appendString:@"["];
                     closePending=YES;
@@ -1060,18 +1060,18 @@
 
 
 - (void) updateFnTV {
-	UITextView *ftv = [self.ctvovcp.wDict objectForKey:@"fdefnTV2"];
+	UITextView *ftv = (self.ctvovcp.wDict)[@"fdefnTV2"];
 	ftv.text = [self voFnDefnStr];
 }
 
 - (void) btnAdd:(id)sender {
-	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
+	UIPickerView *pkr = (self.ctvovcp.wDict)[@"fdPkr"];
 	NSInteger row = [pkr selectedRowInComponent:0];
-	NSNumber *ntok = [self.fnTitles objectAtIndex:row];    // get tok from fnTitle and add to fnArray
+	NSNumber *ntok = (self.fnTitles)[row];    // get tok from fnTitle and add to fnArray
 	[self.fnArray addObject:ntok];
     if (FNCONSTANT == [ntok intValue]) {  // constant has const_tok on both sides to help removal
-        UITextField *vtf= [self.ctvovcp.wDict objectForKey:CTFKEY];
-        [self.fnArray addObject:[NSNumber numberWithDouble:[vtf.text doubleValue]]];
+        UITextField *vtf= (self.ctvovcp.wDict)[CTFKEY];
+        [self.fnArray addObject:@([vtf.text doubleValue])];
         [self.fnArray addObject:ntok];
         [self.ctvovcp tfDone:vtf];
     }
@@ -1083,7 +1083,7 @@
 - (void) btnDelete:(id)sender {
     // i= constTok remove token and value  -- done
     //  also [self.tempValObj.optDict removeObjectForKey:@"fdc"]; -- can't be sure with mult consts
-	UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
+	UIPickerView *pkr = (self.ctvovcp.wDict)[@"fdPkr"];
 	if (0 < [self.fnArray count]) {
         if (FNCONSTANT == [[self.fnArray lastObject] intValue]) {
             [self.fnArray removeLastObject];  // remove bounding token after
@@ -1166,18 +1166,18 @@
 	NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
 	NSString *pre = component ? @"current" : @"previous";
 	
-	NSNumber *n = [self.vo.optDict objectForKey:key];
+	NSNumber *n = (self.vo.optDict)[key];
 	NSInteger ep = [n integerValue];
 	NSUInteger ep2 = n ? (ep+1)*-1 : 0; // invalid if ep is tmpUniq (negative)
 	
 	if (n == nil || ep == FREPDFLT) // no endpoint defined, default is 'entry'
-		return [NSString stringWithFormat:@"%@ %@", pre, [self.epTitles objectAtIndex:ep2]];  // FREPDFLT
+		return [NSString stringWithFormat:@"%@ %@", pre, (self.epTitles)[ep2]];  // FREPDFLT
 	if (ep >= 0 || ep <= -TMPUNIQSTART )  // endpoint is vid and valobj saved, or tmp vid as valobj not saved
 		return [NSString stringWithFormat:@"%@ %@", pre, ((valueObj*)[MyTracker getValObj:ep]).valueName];
 	
 	// ep is hours / days / months entry
 	return [NSString stringWithFormat:@"%@%d %@",  
-			(component ? @"+" : @"-"), [[self.vo.optDict objectForKey:vkey] intValue], [self.epTitles objectAtIndex:ep2]];
+			(component ? @"+" : @"-"), [(self.vo.optDict)[vkey] intValue], (self.epTitles)[ep2]];
 }
 
 - (NSString*) voRangeStr {
@@ -1232,7 +1232,7 @@
 					 action:nil
 						num:YES 
 					  place:[NSString stringWithFormat:@"%d",FDDPDFLT] 
-					   text:[self.vo.optDict objectForKey:@"fnddp"]
+					   text:(self.vo.optDict)[@"fnddp"]
 					  addsv:YES ];
 	
 	
@@ -1261,10 +1261,10 @@
 		DBGLog(@"funcDone 1: %@",[self.vo.optDict objectForKey:@"func"]);
 
 		// frep0 and 1 not set if user did not click on range picker
-		if ([self.vo.optDict objectForKey:@"frep0"] == nil) 
-			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep0"];
-		if ([self.vo.optDict objectForKey:@"frep1"] == nil) 
-			[self.vo.optDict setObject:[NSNumber numberWithInt:FREPDFLT] forKey:@"frep1"];
+		if ((self.vo.optDict)[@"frep0"] == nil) 
+			(self.vo.optDict)[@"frep0"] = @FREPDFLT;
+		if ((self.vo.optDict)[@"frep1"] == nil) 
+			(self.vo.optDict)[@"frep1"] = @FREPDFLT;
 		
 		DBGLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
 		
@@ -1283,7 +1283,7 @@
 													initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
 													target:nil action:nil];
 		
-		NSArray *segmentTextContent = [NSArray arrayWithObjects: @"Overview", @"Range", @"Fn definition", nil];
+		NSArray *segmentTextContent = @[@"Overview", @"Range", @"Fn definition"];
 		
 		UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
 		//[segmentTextContent release];
@@ -1294,10 +1294,10 @@
 		UIBarButtonItem *scButtonItem = [[UIBarButtonItem alloc]
 										 initWithCustomView:segmentedControl];
 		
-		ctvovc.toolBar.items = [NSArray arrayWithObjects: db, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem, nil];
+		ctvovc.toolBar.items = @[db, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem];
 		
 	} else {
-        ctvovc.toolBar.items = [NSArray arrayWithObjects: db,nil];
+        ctvovc.toolBar.items = @[db];
     }
     
 }
@@ -1339,25 +1339,25 @@
 #pragma mark protocol: voDrawOptions page 
 
 - (void) setOptDictDflts {
-    if (nil == [self.vo.optDict objectForKey:@"frep0"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FREPDFLT] forKey:@"frep0"];
-    if (nil == [self.vo.optDict objectForKey:@"frep1"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FREPDFLT] forKey:@"frep1"];
-    if (nil == [self.vo.optDict objectForKey:@"fnddp"]) 
-        [self.vo.optDict setObject:[NSString stringWithFormat:@"%d", FDDPDFLT] forKey:@"fnddp"];
-    if (nil == [self.vo.optDict objectForKey:@"func"]) 
-        [self.vo.optDict setObject:@"" forKey:@"func"];
-    if (nil == [self.vo.optDict objectForKey:@"autoscale"])
-        [self.vo.optDict setObject:(AUTOSCALEDFLT ? @"1" : @"0") forKey:@"autoscale"];
-    if (nil == [self.vo.optDict objectForKey:@"graphlast"])
-        [self.vo.optDict setObject:(GRAPHLASTDFLT ? @"1" : @"0") forKey:@"graphlast"];
+    if (nil == (self.vo.optDict)[@"frep0"]) 
+        (self.vo.optDict)[@"frep0"] = [NSString stringWithFormat:@"%d", FREPDFLT];
+    if (nil == (self.vo.optDict)[@"frep1"]) 
+        (self.vo.optDict)[@"frep1"] = [NSString stringWithFormat:@"%d", FREPDFLT];
+    if (nil == (self.vo.optDict)[@"fnddp"]) 
+        (self.vo.optDict)[@"fnddp"] = [NSString stringWithFormat:@"%d", FDDPDFLT];
+    if (nil == (self.vo.optDict)[@"func"]) 
+        (self.vo.optDict)[@"func"] = @"";
+    if (nil == (self.vo.optDict)[@"autoscale"])
+        (self.vo.optDict)[@"autoscale"] = (AUTOSCALEDFLT ? @"1" : @"0");
+    if (nil == (self.vo.optDict)[@"graphlast"])
+        (self.vo.optDict)[@"graphlast"] = (GRAPHLASTDFLT ? @"1" : @"0");
     
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val) 
         return YES;
     
@@ -1399,15 +1399,15 @@
 	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];   xxx // add nsnumber token, enumerated by fn class
 	//}
     for (i=0; i<ARG1CNT; i++) {
-        [self.fnTitles addObject:[self.fn1args objectAtIndex:i]];
+        [self.fnTitles addObject:(self.fn1args)[i]];
     }
-    [self.fnTitles addObject:[NSNumber numberWithInt:FNCONSTANT]];
+    [self.fnTitles addObject:@FNCONSTANT];
 }
 
 - (void) ftAddTimeSet {
 	int i;
     for (i=0; i<TIMECNT; i++) {
-        [self.fnTitles addObject:[self.fnTimeOps objectAtIndex:i]];
+        [self.fnTitles addObject:(self.fnTimeOps)[i]];
     }
 	//for (i=FNTIMEFIRST;i>=FNTIMELAST;i--) {
 	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];   xxx
@@ -1417,7 +1417,7 @@
 - (void) ftAdd2OpSet {
 	int i;
     for (i=0;i<ARG2CNT;i++) {
-        [self.fnTitles addObject:[self.fn2args objectAtIndex:i]];
+        [self.fnTitles addObject:(self.fn2args)[i]];
     }
 	//for (i=FN2ARGFIRST;i>=FN2ARGLAST;i--) {
 	//	[self.fnTitles addObject:[NSNumber numberWithInt:i]];  xxx
@@ -1427,7 +1427,7 @@
 - (void) ftAddVOs {
 	for (valueObj *valo in MyTracker.valObjTable) {
         if (valo != self.vo) {
-            [self.fnTitles addObject:[NSNumber numberWithInteger:valo.vid]];
+            [self.fnTitles addObject:@(valo.vid)];
         }
 	}
 }
@@ -1443,13 +1443,13 @@
 		}
 	}
 	if (pcount > 0) 
-		[self.fnTitles addObject:[NSNumber numberWithInt:FNPARENCLOSE]];
+		[self.fnTitles addObject:@FNPARENCLOSE];
 }
 
 - (void) ftStartSet {
 	[self ftAddFnSet];
     [self ftAddTimeSet];
-	[self.fnTitles addObject:[NSNumber numberWithInt:FNPARENOPEN]];
+	[self.fnTitles addObject:@FNPARENOPEN];
 	[self ftAddVOs];
 }
 
@@ -1481,7 +1481,7 @@
 
 - (NSString*) fnTokenToStr:(NSInteger)tok {  // convert token to str
 	if (isFn(tok)) {
-        return [self.fnStrDict objectForKey:[NSNumber numberWithInt:tok] ];
+        return (self.fnStrDict)[@(tok)];
 		//tok = (tok * -1) -1;
 		//return [self.fnStrs objectAtIndex:tok];
 	} else {	
@@ -1495,7 +1495,7 @@
 }
 
 - (NSString*) fndRowTitle:(NSInteger)row {
-	return [self fnTokenToStr:[[self.fnTitles objectAtIndex:row] integerValue]];   // get nsnumber(tok) from fnTitles, convert to int, convert to str to be placed in specified picker rox
+	return [self fnTokenToStr:[(self.fnTitles)[row] integerValue]];   // get nsnumber(tok) from fnTitles, convert to int, convert to str to be placed in specified picker rox
 }
 
 - (NSInteger) fnrRowCount:(NSInteger)component {
@@ -1541,7 +1541,7 @@
 
 - (void) updateForPickerRowSelect:(NSInteger)row inComponent:(NSInteger)component {
 	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
-		[((UIPickerView*) [self.ctvovcp.wDict objectForKey:@"frPkr"]) reloadComponent:(component ? 0 : 1)];
+		[((UIPickerView*) (self.ctvovcp.wDict)[@"frPkr"]) reloadComponent:(component ? 0 : 1)];
 	} //else {
 		//[((UIPickerView*) [self.wDict objectForKey:@"fnPkr"]) reloadComponent:0];
 	//}
@@ -1549,16 +1549,16 @@
 
 - (void) showConstTF {
     // display constant box
-    UITextField *vtf= [self.ctvovcp.wDict objectForKey:CTFKEY];
-    vtf.text = [self.vo.optDict objectForKey:LCKEY];
-    [self.ctvovcp.view addSubview:[self.ctvovcp.wDict objectForKey:CLKEY]];
+    UITextField *vtf= (self.ctvovcp.wDict)[CTFKEY];
+    vtf.text = (self.vo.optDict)[LCKEY];
+    [self.ctvovcp.view addSubview:(self.ctvovcp.wDict)[CLKEY]];
     [self.ctvovcp.view addSubview:vtf];
 }
 
 - (void) hideConstTF {
     // hide constant box
-    [((UIView*) [self.ctvovcp.wDict objectForKey:CTFKEY]) removeFromSuperview];
-    [((UIView*) [self.ctvovcp.wDict objectForKey:CLKEY]) removeFromSuperview];
+    [((UIView*) (self.ctvovcp.wDict)[CTFKEY]) removeFromSuperview];
+    [((UIView*) (self.ctvovcp.wDict)[CLKEY]) removeFromSuperview];
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component  
@@ -1571,20 +1571,18 @@
 		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
 		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
         
-		[((UIView*) [self.ctvovcp.wDict objectForKey:pre_vkey]) removeFromSuperview];
-		[((UIView*) [self.ctvovcp.wDict objectForKey:vtfkey]) removeFromSuperview];
-		[((UIView*) [self.ctvovcp.wDict objectForKey:post_vkey]) removeFromSuperview];
-        [((UIView*) [self.ctvovcp.wDict objectForKey:@"graphLastBtn"]) removeFromSuperview];
-        [((UIView*) [self.ctvovcp.wDict objectForKey:@"graphLastLabel"]) removeFromSuperview];
+		[((UIView*) (self.ctvovcp.wDict)[pre_vkey]) removeFromSuperview];
+		[((UIView*) (self.ctvovcp.wDict)[vtfkey]) removeFromSuperview];
+		[((UIView*) (self.ctvovcp.wDict)[post_vkey]) removeFromSuperview];
+        [((UIView*) (self.ctvovcp.wDict)[@"graphLastBtn"]) removeFromSuperview];
+        [((UIView*) (self.ctvovcp.wDict)[@"graphLastLabel"]) removeFromSuperview];
         
 		if (row == 0) {
-			[self.vo.optDict setObject:[NSNumber numberWithInt:-1.0f] forKey:key];
+			(self.vo.optDict)[key] = @-1;
 		} else if (row <= votc) {
-			[self.vo.optDict setObject:[NSNumber numberWithInteger:
-										((valueObj*) [self.votWoSelf objectAtIndex:row-1]).vid]   //((valueObj*) [MyTracker.valObjTable objectAtIndex:row-1]).vid]
-								forKey:key];  
+			(self.vo.optDict)[key] = @(((valueObj*) (self.votWoSelf)[row-1]).vid);  
 		} else { 
-			[self.vo.optDict setObject:[NSNumber numberWithInt:(((row - votc) +1) * -1)] forKey:key];
+			(self.vo.optDict)[key] = @(((row - votc) +1) * -1);
 			[self updateValTF:row component:component];
 		}
 		DBGLog(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
@@ -1608,7 +1606,7 @@
 - (void) trimFnVals:(NSInteger)frep0 {
     DBGLog(@"ep= %d",frep0);
     
-    NSInteger ival = [[self.vo.optDict objectForKey:@"frv0"] integerValue] *  -1 ; // negative offset if ep0
+    NSInteger ival = [(self.vo.optDict)[@"frv0"] integerValue] *  -1 ; // negative offset if ep0
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
 
@@ -1698,10 +1696,10 @@
 }
 
 -(void) doTrimFnVals {
-    NSInteger frep0 = [[self.vo.optDict objectForKey:@"frep0"] integerValue];
+    NSInteger frep0 = [(self.vo.optDict)[@"frep0"] integerValue];
     if (ISCALFREP(frep0)
         &&
-        (![[self.vo.optDict objectForKey:@"graphlast"] isEqualToString:@"0"])
+        (![(self.vo.optDict)[@"graphlast"] isEqualToString:@"0"])
         &&
         MyTracker.goRecalculate
         ) {

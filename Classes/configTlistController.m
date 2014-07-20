@@ -128,6 +128,7 @@ static int selSegNdx=SegmentEdit;
 - (void)viewWillAppear:(BOOL)animated {
 	
 	DBGLog(@"ctlc: viewWillAppear");
+    [self.navigationController setToolbarHidden:YES animated:NO];
 	
 	[self.table reloadData];
 	selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
@@ -180,7 +181,7 @@ static int selSegNdx=SegmentEdit;
 	[self.tlist deleteTrackerAllRow:row];
 	//[self.deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
 	//					   withRowAnimation:UITableViewRowAnimationFade];
-	[self.table deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
+	[self.table deleteRowsAtIndexPaths:@[self.deleteIndexPath]
                                 withRowAnimation:UITableViewRowAnimationFade];
 	[self.tlist reloadFromTLT];
 }
@@ -200,10 +201,10 @@ static int selSegNdx=SegmentEdit;
 		[self delTracker];
 	} else if (buttonIndex == checkTrackerDelete.cancelButtonIndex) {
 		DBGLog(@"cancelled tracker delete");
-        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
 	} else {
         [self delTrackerRecords];
-        [self.table reloadRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     }
 
     self.deleteIndexPath = nil;
@@ -245,7 +246,7 @@ static int selSegNdx=SegmentEdit;
     
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
-	cell.textLabel.text = [self.tlist.topLayoutNames objectAtIndex:row];
+	cell.textLabel.text = (self.tlist.topLayoutNames)[row];
 	
     return cell;
 }
@@ -271,7 +272,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	self.deleteIndexPath = indexPath;;
 	
     NSString *acTitle;
-    NSString *tname = [self.tlist.topLayoutNames objectAtIndex:[indexPath row]];
+    NSString *tname = (self.tlist.topLayoutNames)[[indexPath row]];
     
 	int toid = [self.tlist getTIDfromIndex:[indexPath row]];
 	trackerObj *to = [[trackerObj alloc] init:toid];
@@ -294,7 +295,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                          cancelButtonTitle:@"Cancel"
                                          destructiveButtonTitle:@"Delete tracker"
                                          otherButtonTitles:delRecTitle,nil];
-		[checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
+    // no toolbar! [checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
+    [checkTrackerDelete showInView:self.view];
 }
 
 // Override to support row selection in the table view.

@@ -99,7 +99,7 @@
 
 - (NSString*) trackerName {
     if (nil == _trackerName) {
-        _trackerName = [self.optDict objectForKey:@"name"];
+        _trackerName = (self.optDict)[@"name"];
     }
     return _trackerName;
 }
@@ -108,7 +108,7 @@
     if (_trackerName != trackerNameValue) {
         _trackerName = trackerNameValue;
         if (trackerNameValue) { // if not nil
-            [self.optDict setObject:trackerNameValue forKey:@"name"];
+            (self.optDict)[@"name"] = trackerNameValue;
         } else {
             [self.optDict removeObjectForKey:@"name"];
         }
@@ -117,8 +117,8 @@
 
 - (CGSize) maxLabel {
     if ((! _maxLabel.height) || (! _maxLabel.width)) {
-        CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
-        CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
+        CGFloat w = [(self.optDict)[@"width"] floatValue];
+        CGFloat h = [(self.optDict)[@"height"] floatValue];
         _maxLabel = (CGSize) {w,h};
     }
     return _maxLabel;
@@ -128,8 +128,8 @@
     if ((_maxLabel.height != maxLabelValue.height) || (_maxLabel.width != maxLabelValue.width)) {
         _maxLabel = maxLabelValue;
         if (_maxLabel.height != 0.0 && _maxLabel.width != 0.0) {
-            [self.optDict setObject:[NSNumber numberWithFloat:_maxLabel.width] forKey:@"width"];
-            [self.optDict setObject:[NSNumber numberWithFloat:_maxLabel.height] forKey:@"height"];
+            (self.optDict)[@"width"] = @(_maxLabel.width);
+            (self.optDict)[@"height"] = @(_maxLabel.height);
         } else {
             [self.optDict removeObjectForKey:@"width"];
             [self.optDict removeObjectForKey:@"height"];
@@ -138,12 +138,12 @@
 }
 
 - (NSInteger) prevTID {
-    return [(NSNumber*) [self.optDict objectForKey:@"prevTID"] integerValue];
+    return [(NSNumber*) (self.optDict)[@"prevTID"] integerValue];
 }
 
 - (void) setPrevTID:(NSInteger)prevTIDvalue {
     if (prevTIDvalue) {
-        [self.optDict setObject:[NSNumber numberWithInteger:prevTIDvalue] forKey:@"prevTID"];
+        (self.optDict)[@"prevTID"] = @(prevTIDvalue);
     } else {
         [self.optDict removeObjectForKey:@"prevTID"];
     }
@@ -221,7 +221,7 @@
 - (id)initWithDict:(NSDictionary*) dict {
 	if ((self = [self init])) {
 		//DBGLog(@"init trackerObj from dict id: %d",[dict objectForKey:@"tid"]);
-		self.toid = [(NSNumber*) [dict objectForKey:@"tid"] integerValue];
+		self.toid = [(NSNumber*) dict[@"tid"] integerValue];
 		[self confirmDb];
 		[self loadConfigFromDict:dict];
 	}
@@ -243,24 +243,24 @@
 
 - (void) sortVoTableByArray:(NSArray*)arr {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    NSUInteger ndx1=0, ndx2=0, c=0, c2=0;
+    NSInteger ndx1=0, ndx2=0, c=0, c2=0;
     valueObj *vo;
     for (vo in self.valObjTable) {
-        [dict setObject:[NSNumber numberWithInteger:ndx1] forKey:[NSNumber numberWithInt:vo.vid]];
+        dict[@(vo.vid)] = @(ndx1);
         ndx1++;
     }
     
     c = [self.valObjTable count];
     c2 = [arr count];
     for (ndx1=0,ndx2=0; ndx1<c && ndx2<c2; ndx1++,ndx2++) {
-        int currVid = ((valueObj*)[self.valObjTable objectAtIndex:ndx1]).vid;
-        int targVid = ((valueObj*)[arr objectAtIndex:ndx2]).vid;
+        int currVid = ((valueObj*)(self.valObjTable)[ndx1]).vid;
+        int targVid = ((valueObj*)arr[ndx2]).vid;
         //DBGLog(@"ndx2: %d  targVid:%d",ndx2,targVid);
         if (currVid != targVid) {
-            NSUInteger targNdx = [((NSNumber*)[dict objectForKey:[NSNumber numberWithInt:targVid]]) unsignedIntegerValue];
+            NSUInteger targNdx = [((NSNumber*)dict[@(targVid)]) unsignedIntegerValue];
             [self.valObjTable exchangeObjectAtIndex:ndx1 withObjectAtIndex:targNdx];
-            [dict setObject:[NSNumber numberWithInt:targNdx] forKey:[NSNumber numberWithUnsignedInt:currVid]];
-            [dict setObject:[NSNumber numberWithInt:ndx1] forKey:[NSNumber numberWithUnsignedInt:targVid]];
+            dict[@(currVid)] = @(targNdx);
+            dict[@(targVid)] = @(ndx1);
 
         }
         
@@ -270,17 +270,17 @@
 }
 
 - (void) voSetFromDict:(valueObj*)vo dict:(NSDictionary*)dict {
-    vo.optDict = (NSMutableDictionary*) [dict objectForKey:@"optDict"];
-    vo.vpriv = [(NSNumber*) [dict objectForKey:@"vpriv"] integerValue];
-    vo.vtype = [(NSNumber*) [dict objectForKey:@"vtype"] integerValue];
-    vo.vcolor = [(NSNumber*) [dict objectForKey:@"vcolor"] integerValue];
-    vo.vGraphType = [(NSNumber*) [dict objectForKey:@"vGraphType"] integerValue];
+    vo.optDict = (NSMutableDictionary*) dict[@"optDict"];
+    vo.vpriv = [(NSNumber*) dict[@"vpriv"] integerValue];
+    vo.vtype = [(NSNumber*) dict[@"vtype"] integerValue];
+    vo.vcolor = [(NSNumber*) dict[@"vcolor"] integerValue];
+    vo.vGraphType = [(NSNumber*) dict[@"vGraphType"] integerValue];
 }
 
 - (void) rescanVoIds:(NSMutableDictionary*)existingVOs {
     [existingVOs removeAllObjects];
     for (valueObj *vo in self.valObjTable) {
-        [existingVOs setObject:vo forKey:[NSNumber numberWithInt:vo.vid]];
+        existingVOs[@(vo.vid)] = vo;
     }
 }
 
@@ -289,14 +289,14 @@
 - (void) confirmTOdict:(NSDictionary*)dict {
     
     //---- optDict ----//
-    NSDictionary *newOptDict = [dict objectForKey:@"optDict"];
+    NSDictionary *newOptDict = dict[@"optDict"];
     NSString *key;
     for (key in newOptDict) {               // overwrite options with new input
-        [self.optDict setObject:[newOptDict objectForKey:key] forKey:key];  // incoming optDict may be incomplete, assume obsolete optDict entries not a problem
+        (self.optDict)[key] = newOptDict[key];  // incoming optDict may be incomplete, assume obsolete optDict entries not a problem
     }
     
     //---- reminders ----//
-	NSArray *rda = [dict objectForKey:@"reminders"];
+	NSArray *rda = dict[@"reminders"];
     for (NSDictionary *rd in rda) {
         notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
         nr.tid = self.toid;
@@ -304,7 +304,7 @@
     }
 
     //---- valObjTable and db ----//
-    NSArray *newValObjs = [dict objectForKey:@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
+    NSArray *newValObjs = dict[@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
     [rTracker_resource stashProgressBarMax:[newValObjs count]];
     
     NSMutableDictionary *existingVOs = [[NSMutableDictionary alloc] init];
@@ -314,20 +314,20 @@
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^recover\\d+$" options:0 error:NULL];
 
     for (NSDictionary *voDict in newValObjs) {
-        NSNumber *nVidN = [voDict objectForKey:@"vid"];                // new VID
-        NSString *nVname = [voDict objectForKey:@"valueName"];
-        NSInteger nVtype = [(NSNumber*)[voDict objectForKey:@"vtype"] integerValue];
+        NSNumber *nVidN = voDict[@"vid"];                // new VID
+        NSString *nVname = voDict[@"valueName"];
+        NSInteger nVtype = [(NSNumber*)voDict[@"vtype"] integerValue];
         BOOL addVO=YES;
-        BOOL createdVO=NO;
+        //BOOL createdVO=NO;
         
-        valueObj *eVO = [existingVOs objectForKey:nVidN];
+        valueObj *eVO = existingVOs[nVidN];
         if (eVO) {                                          // self has vid;
             NSUInteger recoveredName = [regex numberOfMatchesInString:eVO.valueName options:0 range:NSMakeRange(0, [eVO.valueName length])];
             if ([nVname isEqualToString:eVO.valueName] || (1==recoveredName)) {       // name matches same vid or name is recovered1234
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
                     [self rescanVoIds:existingVOs];                     // re-validate
                     eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo
-                    createdVO=YES;
+                    //createdVO=YES;
                 } else {
                     addVO=NO;     // name and VID match so we overwrite existing vo
                     [self voSetFromDict:eVO dict:voDict];
@@ -360,7 +360,7 @@
             }
             if ((! foundMatch) || (! eVO)) {
                 eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
-                createdVO=YES;
+                //createdVO=YES;
             }
         }
                   
@@ -559,8 +559,7 @@ if (addVO) {
 	NSEnumerator *e2 = [s2 objectEnumerator];
 	
 	for ( NSString *key in s1 ) {
-		[self.optDict setObject:([key isEqualToString:@"name"] ? [rTracker_resource fromSqlStr:[e2 nextObject]] : [e2 nextObject])
-                         forKey:key];
+		(self.optDict)[key] = ([key isEqualToString:@"name"] ? [rTracker_resource fromSqlStr:[e2 nextObject]] : [e2 nextObject]);
 	}
 
     [self setTrackerVersion];
@@ -573,8 +572,8 @@ if (addVO) {
 
     DBGLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
 	
-    CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
-	CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
+    CGFloat w = [(self.optDict)[@"width"] floatValue];
+	CGFloat h = [(self.optDict)[@"height"] floatValue];
 	self.maxLabel = (CGSize) {w,h};
 	
 	NSMutableArray *i1 = [[NSMutableArray alloc] init];
@@ -618,7 +617,7 @@ if (addVO) {
 		e2 = [s2 objectEnumerator];
 		
 		for (NSString *key in s1 ) {
-			[vo.optDict setObject:[e2 nextObject] forKey:key];
+			(vo.optDict)[key] = [e2 nextObject];
 		}
 		
 		if (vo.vcolor > self.nextColor)
@@ -653,7 +652,7 @@ if (addVO) {
 	
 	dbgNSAssert(self.toid,@"tObj load from dict toid=0");
 	
-    self.optDict = [dict objectForKey:@"optDict"];
+    self.optDict = dict[@"optDict"];
 
     [self setTrackerVersion];
     [self setToOptDictDflts];  // probably redundant
@@ -666,7 +665,7 @@ if (addVO) {
 	//CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
 	//self.maxLabel = (CGSize) {w,h};
 	
-    NSArray *voda = [dict objectForKey:@"valObjTable"];
+    NSArray *voda = dict[@"valObjTable"];
     for (NSDictionary *vod in voda) {
         valueObj *vo = [[valueObj alloc] initWithDict:(id)self dict:vod];
         DBGLog(@"add vo %@",vo.valueName);
@@ -682,7 +681,7 @@ if (addVO) {
 		[vo.vos loadConfig];  // loads from vo optDict
 	}
 
-	NSArray *rda = [dict objectForKey:@"reminders"];
+	NSArray *rda = dict[@"reminders"];
     for (NSDictionary *rd in rda) {
         notifyReminder *nr = [[notifyReminder alloc] initWithDict:rd];
         [self.reminders addObject:nr];
@@ -730,11 +729,11 @@ if (addVO) {
 //  version change for 1.0.7 to include version info with tracker
 - (void) setTrackerVersion {
     
-    if ((nil == [self.optDict objectForKey:@"rt_build"])) {
-        [self.optDict setObject:[NSNumber numberWithInt:RTDB_VERSION] forKey:@"rtdb_version"];
-        [self.optDict setObject:[NSNumber numberWithInt:RTFN_VERSION] forKey:@"rtfn_version"];
-        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"rt_version"];
-        [self.optDict setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"rt_build"];
+    if ((nil == (self.optDict)[@"rt_build"])) {
+        (self.optDict)[@"rtdb_version"] = @RTDB_VERSION;
+        (self.optDict)[@"rtfn_version"] = @RTFN_VERSION;
+        (self.optDict)[@"rt_version"] = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+        (self.optDict)[@"rt_build"] = [[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"];
         [self saveToOptDict];
         
         DBGLog(@"tracker init version info");
@@ -744,14 +743,14 @@ if (addVO) {
 // setToOptDictDflts
 //  fields not stored in db if they are set to default values, so here set set those values in Tobj if not read in from db
 - (void) setToOptDictDflts {
-    if ((nil == [self.optDict objectForKey:@"savertn"])) {
-        [self.optDict setObject:(SAVERTNDFLT ? @"1" : @"0") forKey:@"savertn"];
+    if ((nil == (self.optDict)[@"savertn"])) {
+        (self.optDict)[@"savertn"] = (SAVERTNDFLT ? @"1" : @"0");
     }
-    if ((nil == [self.optDict objectForKey:@"privacy"])) {
-        [self.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
+    if ((nil == (self.optDict)[@"privacy"])) {
+        (self.optDict)[@"privacy"] = [NSString stringWithFormat:@"%d",PRIVDFLT];
     }
-    if ((nil == [self.optDict objectForKey:@"graphMaxDays"])) {
-        [self.optDict setObject:[NSString stringWithFormat:@"%d",GRAPHMAXDAYSDFLT] forKey:@"graphMaxDays"];
+    if ((nil == (self.optDict)[@"graphMaxDays"])) {
+        (self.optDict)[@"graphMaxDays"] = [NSString stringWithFormat:@"%d",GRAPHMAXDAYSDFLT];
     }
 }
 
@@ -763,7 +762,7 @@ if (addVO) {
 	NSString *key, *val;
 	
 	for (key in s1) {
-		val = [self.optDict objectForKey:key];
+		val = (self.optDict)[key];
 		self.sql = [NSString stringWithFormat:@"delete from trkrInfo where field='%@';",key];
 		
 		if (val == nil) {
@@ -788,7 +787,7 @@ if (addVO) {
 	
 	for (NSString *key in self.optDict) {
 		self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('%@', '%@');",
-					key, ([key isEqualToString:@"name"] ? [rTracker_resource toSqlStr:[self.optDict objectForKey:key]] : [self.optDict objectForKey:key])];
+					key, ([key isEqualToString:@"name"] ? [rTracker_resource toSqlStr:(self.optDict)[key]] : (self.optDict)[key])];
 		[self toExecSql];
 	}
 	
@@ -869,7 +868,7 @@ if (addVO) {
     [self clearVoOptDict:vo];
     for (NSString *key in vo.optDict) {
         self.sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%d, '%@', '%@');",
-                    vo.vid, key, [vo.optDict objectForKey:key]];
+                    vo.vid, key, (vo.optDict)[key]];
         [self toExecSql];
     }
 }
@@ -911,7 +910,7 @@ if (addVO) {
         
 		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
 		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
-					vo.vid, i++, vo.vtype, [rTracker_resource toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [[vo.optDict objectForKey:@"privacy"] intValue]];
+					vo.vid, i++, vo.vtype, [rTracker_resource toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
 		[self toExecSql];
 		
 		[self saveVoOptdict:vo];
@@ -1119,8 +1118,7 @@ if (addVO) {
                 [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
                 //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
             }
-            [tData setObject:[[NSDictionary alloc] initWithDictionary:vData copyItems:YES]
-                              forKey:[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]]];
+            tData[[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]]] = [[NSDictionary alloc] initWithDictionary:vData copyItems:YES];
             
             //DBGLog(@"genRtrk vData: %@ for %@",vData,self.trackerDate);
             //DBGLog(@"genRtrk: tData= %@",tData);
@@ -1133,13 +1131,10 @@ if (addVO) {
         
     }
     // configDict not optional -- always need tid for load of data
-    NSDictionary *rtrkDict = [NSDictionary dictionaryWithObjectsAndKeys:   // think this does not need release as is not alloc'd?
-                              [NSString stringWithFormat:@"%d",self.toid],@"tid",     // changed from 'toid' key 10 july
-                              self.trackerName,@"trackerName",
-                              [self dictFromTO],@"configDict",
-                              tData,@"dataDict",
-                              //[[NSDictionary alloc] initWithDictionary:tData copyItems:YES],@"dataDict",
-                              nil];
+    NSDictionary *rtrkDict = @{@"tid": [NSString stringWithFormat:@"%d",self.toid],     // changed from 'toid' key 10 july
+                              @"trackerName": self.trackerName,
+                              @"configDict": [self dictFromTO],
+                              @"dataDict": tData};
     
     
     NSString *fp = [self getPath:RTRKext];
@@ -1198,12 +1193,10 @@ if (addVO) {
     }
     NSArray *rda = [NSArray arrayWithArray:rdma];
     
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt:self.toid],@"tid",
-            self.optDict, @"optDict",
-            rda, @"reminders",
-            voda,@"valObjTable",
-            nil];
+    return @{@"tid": @(self.toid),
+            @"optDict": self.optDict,
+            @"reminders": rda,
+            @"valObjTable": voda};
     
 }
 
@@ -1215,14 +1208,14 @@ if (addVO) {
     for (dateIntStr in dataDict) {
         NSDate *tdate= [NSDate dateWithTimeIntervalSinceReferenceDate:[dateIntStr doubleValue]];
         int tdi = [tdate timeIntervalSince1970];
-        NSDictionary *vdata = [dataDict objectForKey:dateIntStr];
+        NSDictionary *vdata = dataDict[dateIntStr];
         NSString *vids;
         int mp = BIGPRIV;
         for (vids in vdata) {
             NSInteger vid = [vids integerValue];
             valueObj *vo = [self getValObj:vid];
             //NSString *val = [vo.vos mapCsv2Value:[vdata objectForKey:vids]];
-            NSString *val = [vdata objectForKey:vids];
+            NSString *val = vdata[vids];
             self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
                         vid,tdi,[rTracker_resource toSqlStr:val]];
             [self toExecSql];
@@ -1326,7 +1319,7 @@ if (addVO) {
             //DBGLog(@"vname= %@",vo.valueName);
             if (VOT_INFO != vo.vtype) {
                 haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
-                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",[self.votArray objectAtIndex:vo.vtype],(vo.vcolor > -1 ? [[rTracker_resource colorNames] objectAtIndex:vo.vcolor] : @""),vo.vid];
+                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",(self.votArray)[vo.vtype],(vo.vcolor > -1 ? [rTracker_resource colorNames][vo.vcolor] : @""),vo.vid];
                 outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
             }
         }
@@ -1341,7 +1334,7 @@ if (addVO) {
                     if (VOT_INFO != vo.vtype) {
                         NSString *voStr=@"";
                         if (vo.vtype == VOT_CHOICE) {
-                            voStr = [vo.optDict objectForKey:[NSString stringWithFormat:@"c%d",i]];
+                            voStr = (vo.optDict)[[NSString stringWithFormat:@"c%d",i]];
                             if (nil == voStr) {
                                 voStr = @"";
                             }
@@ -1394,7 +1387,7 @@ if (addVO) {
 
 - (void)receiveRecord:(NSDictionary *)aRecord
 {
-    NSString *tsStr = [aRecord objectForKey:TIMESTAMP_KEY];
+    NSString *tsStr = aRecord[TIMESTAMP_KEY];
     if (nil == tsStr) {
         self.csvReadFlags |= CSVNOTIMESTAMP;
         return;
@@ -1406,7 +1399,7 @@ if (addVO) {
     if (! [@"" isEqualToString:tsStr]) {
         ts = [self strToDate:tsStr];
         if (nil == ts) {  // try without time spec
-            ts = [self strToDateOnly:[aRecord objectForKey:TIMESTAMP_KEY]];
+            ts = [self strToDateOnly:aRecord[TIMESTAMP_KEY]];
         }
         if (nil == ts) {
             self.csvReadFlags |= CSVNOREADDATE;
@@ -1438,7 +1431,7 @@ if (addVO) {
             NSInteger voRank;
             int valobjID,valobjPriv,valobjType;
             NSArray *csvha;
-            if (nil == (csvha = [self.csvHeaderDict objectForKey:key])) {
+            if (nil == (csvha = (self.csvHeaderDict)[key])) {
                 NSRange splitPos = [key rangeOfString:@":" options:NSBackwardsSearch];
                 voName = [key substringToIndex:splitPos.location];
                 voRank = [[key substringFromIndex:(splitPos.location+splitPos.length)] integerValue];
@@ -1446,21 +1439,18 @@ if (addVO) {
                 self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:voName]];
                 
                 [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
-                [self.csvHeaderDict setObject:[NSArray arrayWithObjects:
-                                               voName,
-                                               [NSNumber numberWithInteger:voRank],
-                                               [NSNumber numberWithInt:valobjID],
-                                               [NSNumber numberWithInt:valobjPriv],
-                                               [NSNumber numberWithInt:valobjType],
-                                               nil]
-                                       forKey:key];
+                (self.csvHeaderDict)[key] = @[voName,
+                                               @(voRank),
+                                               @(valobjID),
+                                               @(valobjPriv),
+                                               @(valobjType)];
                 
             } else {
-                voName = [csvha objectAtIndex:0];
-                voRank = [[csvha objectAtIndex:1] integerValue];
-                valobjID =[[csvha objectAtIndex:2] intValue];
-                valobjPriv =[[csvha objectAtIndex:3] intValue];
-                valobjType =[[csvha objectAtIndex:4] intValue];
+                voName = csvha[0];
+                voRank = [csvha[1] integerValue];
+                valobjID =[csvha[2] intValue];
+                valobjPriv =[csvha[3] intValue];
+                valobjType =[csvha[4] intValue];
             }
             
             DBGLog(@"name=%@ rank=%d val=%@ id=%d priv=%d type=%d",voName,voRank,[aRecord objectForKey:key], valobjID,valobjPriv,valobjType);
@@ -1468,11 +1458,11 @@ if (addVO) {
             BOOL configuredValObj=NO;
             if (0 == its) { // no timestamp for tracker config data
                 // voType : color : vid
-                NSArray *valComponents = [(NSString*)[aRecord objectForKey:key] componentsSeparatedByString:@":"];
+                NSArray *valComponents = [(NSString*)aRecord[key] componentsSeparatedByString:@":"];
                 int c = [valComponents count];
                 int inVid=0;
                 if (c>2) {
-                    inVid = [[valComponents objectAtIndex:2] integerValue];
+                    inVid = [valComponents[2] integerValue];
                 }
                 
                 if ((0 == valobjID) || (inVid == valobjID))  {  // no vo exists with this name or we match the specified ID
@@ -1480,7 +1470,7 @@ if (addVO) {
                     DBGLog(@"created new / updated valObj with id=%d",valobjID);
                     self.csvReadFlags |= CSVCREATEDVO;
                     
-                    configuredValObj = [self configVOinDb:valobjID vots:[valComponents objectAtIndex:0] vocs:(c>1 ? [valComponents objectAtIndex:1]:nil) rank:voRank];
+                    configuredValObj = [self configVOinDb:valobjID vots:valComponents[0] vocs:(c>1 ? valComponents[1]:nil) rank:voRank];
                     if (configuredValObj)
                         self.csvReadFlags |= CSVCONFIGVO;
                     
@@ -1491,7 +1481,7 @@ if (addVO) {
             //[idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
             
             if (!configuredValObj) {
-                NSString *val2Store = [rTracker_resource toSqlStr:[aRecord objectForKey:key]];
+                NSString *val2Store = [rTracker_resource toSqlStr:aRecord[key]];
                 
                 if (![@"" isEqualToString:val2Store]) {  // could still be config data, timestamp not needed
                     if ((VOT_CHOICE == valobjType)
@@ -1749,7 +1739,7 @@ if (addVO) {
             [self.reminders addObject:tnr];
         }
         self.reminderNdx=0;
-        return [self.reminders objectAtIndex:0];
+        return (self.reminders)[0];
     } else {
         self.reminderNdx=-1;
         return nil;
@@ -1777,7 +1767,7 @@ if (addVO) {
 
 - (notifyReminder*) nextReminder {
     if ([self haveNextReminder]) {
-        return [self.reminders objectAtIndex:++self.reminderNdx];
+        return (self.reminders)[++self.reminderNdx];
     }
     return nil;
 }
@@ -1788,7 +1778,7 @@ if (addVO) {
 
 - (notifyReminder*) prevReminder {
     if ([self havePrevReminder]) {
-        return [self.reminders objectAtIndex:--self.reminderNdx];
+        return (self.reminders)[--self.reminderNdx];
     }
     return nil;
 }
@@ -1799,7 +1789,7 @@ if (addVO) {
 
 - (notifyReminder*) currReminder {
     if ([self haveCurrReminder]) {
-        return [self.reminders objectAtIndex:self.reminderNdx];
+        return (self.reminders)[self.reminderNdx];
     }
     return nil;
 }
@@ -1843,9 +1833,6 @@ if (addVO) {
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 
     [self setReminder:saveNR today:today gregorian:gregorian];
-    
-    [today release];
-    [gregorian release];
 #endif
     //*/
     
@@ -2265,9 +2252,9 @@ if (addVO) {
     NSArray *eventArray = [app scheduledLocalNotifications];
     for (int i=0; i<[eventArray count]; i++)
     {
-        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        UILocalNotification* oneEvent = eventArray[i];
         NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.toid) {
+        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
             [app cancelLocalNotification:oneEvent];
         }
     }
@@ -2297,10 +2284,10 @@ if (addVO) {
     NSArray *eventArray = [app scheduledLocalNotifications];
     for (int i=0; i<[eventArray count]; i++)
     {
-        UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+        UILocalNotification* oneEvent = eventArray[i];
         NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([[userInfoCurrent objectForKey:@"tid"] integerValue] == self.toid) {
-            [ridSet addObject:[userInfoCurrent objectForKey:@"rid"]];
+        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
+            [ridSet addObject:userInfoCurrent[@"rid"]];
         }
     }
     
@@ -2309,7 +2296,7 @@ if (addVO) {
     
     [self loadReminders];
     for (notifyReminder* nr in self.reminders) {
-        if (nr.reminderEnabled && ![ridSet containsObject:[NSNumber numberWithInt:nr.rid]]) {
+        if (nr.reminderEnabled && ![ridSet containsObject:@(nr.rid)]) {
             //[self setReminder:nr today:today gregorian:gregorian];
             [self setReminder:nr today:today gregorian:cal];
         }
@@ -2405,18 +2392,18 @@ if (addVO) {
     NSString *newstr = [NSString stringWithFormat:@"%d",new];
     for (valueObj *vo in self.valObjTable) {
 		if (VOT_FUNC == vo.vtype) {
-            NSString *fnstr = [vo.optDict objectForKey:@"func"];
+            NSString *fnstr = (vo.optDict)[@"func"];
             
             NSMutableArray *fMarray = [NSMutableArray arrayWithArray:[fnstr componentsSeparatedByString:@" "]];
             NSInteger i,c;
             c = [fMarray count];
             for (i=0;i<c;i++) {
-                if ([oldstr isEqualToString:[fMarray objectAtIndex:i]]) {
-                    [fMarray replaceObjectAtIndex:i withObject:newstr];
+                if ([oldstr isEqualToString:fMarray[i]]) {
+                    fMarray[i] = newstr;
                }
             }
             fnstr = [fMarray componentsJoinedByString:@" "];
-            [vo.optDict setObject:fnstr forKey:@"func"];
+            (vo.optDict)[@"func"] = fnstr;
 
             
             self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func'",fnstr,vo.vid]; // keep consistent
@@ -2564,7 +2551,7 @@ if (addVO) {
     
     NSString *key;
     for (key in srcVO.optDict) {
-        [newVO.optDict setObject:[srcVO.optDict objectForKey:key] forKey:key];
+        (newVO.optDict)[key] = (srcVO.optDict)[key];
     }
 	
 	return newVO;
@@ -2693,7 +2680,7 @@ if (addVO) {
 }
 
 - (int) getPrivacyValue {
-    return [[self.optDict objectForKey:@"privacy"] intValue];
+    return [(self.optDict)[@"privacy"] intValue];
 }
 
 @end

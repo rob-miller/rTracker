@@ -73,7 +73,7 @@
     
     // add views for title, axes and labels
     
-    self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
+    self.myFont = [UIFont fontWithName:@FONTNAME size:FONTSIZE];
     CGFloat labelHeight = self.myFont.lineHeight +2.0f;
     
     // view for title
@@ -218,9 +218,12 @@
          self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
      }
      
-    if (nil != [self.tracker.optDict objectForKey:@"dirtyFns"]) {
+    if (nil != (self.tracker.optDict)[@"dirtyFns"]) {
         [self fireRecalculateFns];
     }
+     
+     [self.navigationController setToolbarHidden:YES animated:NO];
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -584,13 +587,13 @@
     CGFloat maxw=0.0f;
     
     for (valueObj *vo in self.tracker.valObjTable) {
-        if ([@"1" isEqualToString:[vo.optDict objectForKey:@"graph"]]) {
+        if ([@"1" isEqualToString:(vo.optDict)[@"graph"]]) {
             switch (vo.vtype) {
                 case VOT_NUMBER:
                 case VOT_FUNC:
-                    if ([@"0" isEqualToString:[vo.optDict objectForKey:@"autoscale"]]) {
-                        maxw = [self testDblWidth:[[vo.optDict objectForKey:@"gmin"] doubleValue] max:maxw];
-                        maxw = [self testDblWidth:[[vo.optDict objectForKey:@"gmax"] doubleValue] max:maxw];
+                    if ([@"0" isEqualToString:(vo.optDict)[@"autoscale"]]) {
+                        maxw = [self testDblWidth:[(vo.optDict)[@"gmin"] doubleValue] max:maxw];
+                        maxw = [self testDblWidth:[(vo.optDict)[@"gmax"] doubleValue] max:maxw];
                     } else {
                         self.tracker.sql = [NSString stringWithFormat:@"select min(val collate BINARY) from voData where id=%d;",vo.vid];  // CMPSTRDBL
                         maxw = [self testDblWidth:[self.tracker toQry2Double] max:maxw];
@@ -599,14 +602,14 @@
                     }
                     break;
                 case VOT_SLIDER: {
-                    NSNumber *nmin = [vo.optDict objectForKey:@"smin"];
-                    NSNumber *nmax = [vo.optDict objectForKey:@"smax"];
+                    NSNumber *nmin = (vo.optDict)[@"smin"];
+                    NSNumber *nmax = (vo.optDict)[@"smax"];
                     maxw = [self testDblWidth:( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) ) max:maxw];
                     maxw = [self testDblWidth:( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) ) max:maxw];
                     break;
                 }
                 case VOT_BOOLEAN: {
-                    NSNumber *bval = [vo.optDict objectForKey:@"boolval"];
+                    NSNumber *bval = (vo.optDict)[@"boolval"];
                     maxw = [self testDblWidth:( bval ? [bval doubleValue] : d(BOOLVALDFLT) ) max:maxw];
                     break;
                 }
@@ -614,7 +617,7 @@
                     int i;
                     for (i=0;i<CHOICES;i++) {
                         NSString *key = [NSString stringWithFormat:@"c%d",i];
-                        NSString *s = [vo.optDict objectForKey:key];
+                        NSString *s = (vo.optDict)[key];
                         if ((s != nil) && (![s isEqualToString:@""])) 
                             maxw = [self testStrWidth:s max:maxw];
                     }
@@ -636,7 +639,7 @@
 
 
 - (BOOL) testSetVO:(valueObj*)vo {
-    if ([@"1" isEqualToString:[vo.optDict objectForKey:@"graph"]]) {
+    if ([@"1" isEqualToString:(vo.optDict)[@"graph"]]) {
         self.currVO = vo;
         return YES;
     }
@@ -656,7 +659,7 @@
         NSUInteger maxc = [self.tracker.valObjTable count];
         while (TRUE) {
             while (ndx < maxc) {
-                if ([self testSetVO:[self.tracker.valObjTable objectAtIndex:ndx]])
+                if ([self testSetVO:(self.tracker.valObjTable)[ndx]])
                     return;
                 ndx++;
             }

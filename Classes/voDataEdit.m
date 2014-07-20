@@ -39,6 +39,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
 	[self.vo.vos dataEditVWAppear:self];
+    //[self.navigationController setToolbarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
     
 }

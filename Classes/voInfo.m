@@ -92,18 +92,18 @@
 #pragma mark options page
 
 - (void) setOptDictDflts {
-    if (nil == [self.vo.optDict objectForKey:@"infoval"])
-        [self.vo.optDict setObject:BOOLVALDFLTSTR forKey:@"infoval"];
+    if (nil == (self.vo.optDict)[@"infoval"])
+        (self.vo.optDict)[@"infoval"] = BOOLVALDFLTSTR;
 
-    [self.vo.optDict setObject:@"0" forKey:@"graph"];
-    [self.vo.optDict setObject:[NSString stringWithFormat:@"%d",PRIVDFLT] forKey:@"privacy"];
+    (self.vo.optDict)[@"graph"] = @"0";
+    (self.vo.optDict)[@"privacy"] = [NSString stringWithFormat:@"%d",PRIVDFLT];
     
     return [super setOptDictDflts];
 }
 
 - (BOOL) cleanOptDictDflts:(NSString*)key {
     
-    NSString *val = [self.vo.optDict objectForKey:key];
+    NSString *val = (self.vo.optDict)[key];
     if (nil == val)
         return YES;
     
@@ -117,7 +117,7 @@
 }
 
 - (NSString*) update:(NSString*)instr {
-    return [self.vo.optDict objectForKey:@"infoval"];
+    return (self.vo.optDict)[@"infoval"];
 }
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
@@ -136,7 +136,7 @@
                      action:nil
                         num:YES
                       place:INFOVALDFLTSTR
-                       text:[self.vo.optDict objectForKey:@"infoval"]
+                       text:(self.vo.optDict)[@"infoval"]
                       addsv:YES ];
 
     frame.origin.y += frame.size.height + MARGIN;
@@ -154,7 +154,7 @@
                      action:nil
                         num:YES
                       place:INFOURLDFLTSTR
-                       text:[self.vo.optDict objectForKey:@"infourl"]
+                       text:(self.vo.optDict)[@"infourl"]
                       addsv:YES ];
 
     
@@ -168,8 +168,8 @@
 
 - (NSString*) mapCsv2Value:(NSString*)inCsv {
     
-    if ([[self.vo.optDict objectForKey:@"infoval"] doubleValue] !=  [inCsv doubleValue]) {
-        [self.vo.optDict setObject:inCsv forKey:@"infoval"];
+    if ([(self.vo.optDict)[@"infoval"] doubleValue] !=  [inCsv doubleValue]) {
+        (self.vo.optDict)[@"infoval"] = inCsv;
     }
     return inCsv;
 }

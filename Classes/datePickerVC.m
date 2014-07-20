@@ -31,7 +31,7 @@
 								initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 								target:self
 								action:@selector(btnCancel:)];
-	self.toolBar.items = [NSArray arrayWithObjects: cancelBtn, nil];
+	self.toolBar.items = @[cancelBtn];
 	
     if (![rTracker_resource getSeparateDateTimePicker]) {
         self.dtSegmentedControl.hidden = YES;

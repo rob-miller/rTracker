@@ -59,7 +59,8 @@ NSUInteger DeviceSystemMajorVersion();
 //+ (BOOL)getHideRTimes;
 //+ (void)setHideRTimes:(BOOL)hideRTimes;
 
-
++ (BOOL)getToldAboutSwipe;
++ (void)setToldAboutSwipe:(BOOL)toldSwipe;
     
     
 + (void) stashTracker:(int)tid;

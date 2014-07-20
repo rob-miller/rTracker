@@ -1456,10 +1456,59 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+    - convert to 'Modern Objective C syntax'  -- mostly box format for NSArrays, NSDictionarys
+    - added reloadSections to indicate date swipe in useTracker
 
-++ 
+17 june 2014
+   - implement click on date in calendar -> load tracker
 
-+ fix graph paper background for tracker 'i' config
+20 june 2014
+   - hide toolbar in configTlist viewWillAppear as well
+
+21 june 2014
+   - move sounds out of 'sounds' subdir, into Resources top level -- notification sounds working again on phone
+   - add more sounds
+   - problem with 'ping' sound -- eventually sorted with 'ad hoc' distribution, install via iTunes - replace app bundle like app store install
+   -- gen for ad hoc release, use different (not app store) certificate / distribution profile
+   -- add to library in iTunes (file menu), then drag app icon to iPhone menu (from app icon can right-click -> get info and see update date)
+   -- wait for app icon on iphone to update 
+
+22 june 2014
+   - confirm version on app store has problem of not finding sound files, so does not play on notification event
+   - timesSquare calendar with color days by 1 ordered valObj
+   -- still some problem with privacy pulling out dates that shoudn't
+
+23 june 2014
+   - worked out date selection, problem was Fns calc'd over all days and need to only report when have non-private data for day
+
+24 june 2014
+   - switched 'i' info buttons to unicode gear, also 'Done' and 'Del' to unicode images
+
+25 June 2014
+   - Done buttons for notifyReminder forms to unicode checkboxes
+   - one-off alert to inform to swipe to earlier data records
+   - use tracker: trashcan icon for delete, skip2end, move buttons around
+   - change 'default email' text field to be letters instead of number keyboard
+   - remove RELEASE #if's for next release
+
+02 july 2014
+   - reminder 'until' time text boxes scroll up with keyboard
+   - fix graph paper background for tracker 'i' config -- why only configtvobjvc?
+   - set to no color ("") for calendar day color for choice button (outside 0..[colorset count]) -- ideally should go and get color for button
+
+19 July 2014
+   - add label '(Save to enable reminders)' when creating tracker before save
+
+20 July 2014:
+   - set to v 1.1.9, prep for release
+
+--- commit ---
+
+
+
+ 
+
+
 
 
 

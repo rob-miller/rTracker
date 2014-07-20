@@ -50,19 +50,19 @@
         togd *myTOGD = myTracker.togd;
         
         if ((self.vo.vtype == VOT_NUMBER || self.vo.vtype == VOT_FUNC) 
-            && ([@"0" isEqualToString:[self.vo.optDict objectForKey:@"autoscale"]])
+            && ([@"0" isEqualToString:(self.vo.optDict)[@"autoscale"]])
             ) { 
             //DBGLog(@"autoscale= %@", [self.vo.optDict objectForKey:@"autoscale"]);
-            self.minVal = [self getMinMax:@"min" alt:[self.vo.optDict objectForKey:@"gmin"]];
-            self.maxVal = [self getMinMax:@"max" alt:[self.vo.optDict objectForKey:@"gmax"]];
+            self.minVal = [self getMinMax:@"min" alt:(self.vo.optDict)[@"gmin"]];
+            self.maxVal = [self getMinMax:@"max" alt:(self.vo.optDict)[@"gmax"]];
         } else if (self.vo.vtype == VOT_SLIDER) {
-            NSNumber *nmin = [self.vo.optDict objectForKey:@"smin"];
-            NSNumber *nmax = [self.vo.optDict objectForKey:@"smax"];
+            NSNumber *nmin = (self.vo.optDict)[@"smin"];
+            NSNumber *nmax = (self.vo.optDict)[@"smax"];
             self.minVal = ( nmin ? [nmin doubleValue] : d(SLIDRMINDFLT) );
             self.maxVal = ( nmax ? [nmax doubleValue] : d(SLIDRMAXDFLT) );
         } else if (self.vo.vtype == VOT_BOOLEAN) {
             double offVal = 0.0;
-            double onVal = [[self.vo.optDict objectForKey:@"boolval"] doubleValue];
+            double onVal = [(self.vo.optDict)[@"boolval"] doubleValue];
             if (offVal < onVal) {
                 self.minVal = offVal;
                 self.maxVal = onVal;
@@ -107,9 +107,9 @@
         }
 
         double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
-        if (nil == [self.vo.optDict objectForKey:@"gmax"])
+        if (nil == (self.vo.optDict)[@"gmax"])
             self.maxVal += yScaleExpand;   // +5% each way for visibility unless specified
-        if (nil == [self.vo.optDict objectForKey:@"gmin"])
+        if (nil == (self.vo.optDict)[@"gmin"])
             self.minVal -= yScaleExpand;
         
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
@@ -154,8 +154,8 @@
 
             //DBGLog(@"num final: %f %f",d,v);
             
-            [mxdat addObject:[NSNumber numberWithDouble:d]];
-            [mydat addObject:[NSNumber numberWithDouble:v]];
+            [mxdat addObject:@(d)];
+            [mydat addObject:@(v)];
             
         }
         
@@ -204,8 +204,8 @@
             d *= myTOGD.dateScale;
             //d+= border;
             
-            [mxdat addObject:[NSNumber numberWithDouble:d]];
-            [mydat addObject: [NSNumber numberWithDouble:self.vScale]];  //[e nextObject]];
+            [mxdat addObject:@(d)];
+            [mydat addObject: @(self.vScale)];  //[e nextObject]];
         }
         
         
@@ -292,7 +292,7 @@
             double v = d( [rTracker_resource countLines:s] );
             if (v > self.maxVal)
                 self.maxVal = v;
-            [i2 addObject:[NSNumber numberWithDouble:v]];
+            [i2 addObject:@(v)];
         }
         
         if (self.maxVal < d(YTICKS))
@@ -317,8 +317,8 @@
             v -= self.minVal;
             v *= self.vScale;            
             
-            [mxdat addObject:[NSNumber numberWithDouble:d]];
-            [mydat addObject:[NSNumber numberWithDouble:v]];
+            [mxdat addObject:@(d)];
+            [mydat addObject:@(v)];
         }
         
         
@@ -334,7 +334,7 @@
 
 - (UIColor*) myGraphColor {
     if (self.vo.vtype != VOT_CHOICE) 
-        return( (UIColor *) [[rTracker_resource colorSet] objectAtIndex:self.vo.vcolor] );
+        return( (UIColor *) [rTracker_resource colorSet][self.vo.vcolor] );
     else
         return  [UIColor whiteColor];
 }

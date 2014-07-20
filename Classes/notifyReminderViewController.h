@@ -160,8 +160,13 @@
 
 @property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
 
+@property (unsafe_unretained, nonatomic) IBOutlet UIBarButtonItem *gearButton;
+@property (unsafe_unretained, nonatomic) IBOutlet UIBarButtonItem *btnDoneOutlet;
+@property (unsafe_unretained, nonatomic) IBOutlet UIBarButtonItem *btnHelpOutlet;
+
 - (IBAction)btnDone:(id)sender;
 - (IBAction)btnGear:(id)sender;
 - (IBAction)btnHelp:(id)sender;
+
 
 @end

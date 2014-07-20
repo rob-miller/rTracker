@@ -44,8 +44,8 @@
 
 - (void) vtChoiceSetColor:(CGContextRef)context ndx:(int)ndx{
     NSString *cc = [NSString stringWithFormat:@"cc%d",ndx];
-    NSInteger col = [[self.vogd.vo.optDict objectForKey:cc] integerValue];
-    [((UIColor *) [[rTracker_resource colorSet] objectAtIndex:col]) set];
+    NSInteger col = [(self.vogd.vo.optDict)[cc] integerValue];
+    [((UIColor *) [rTracker_resource colorSet][col]) set];
 }
 
 
@@ -88,12 +88,12 @@
                 int choice = (int)(YTICKS-i)-1;
                 [self vtChoiceSetColor:context ndx:choice];
                 NSString *ch = [NSString stringWithFormat:@"c%d",choice];
-                vstr = [self.vogd.vo.optDict objectForKey:ch];
+                vstr = (self.vogd.vo.optDict)[ch];
                 break;
             }
             case VOT_BOOLEAN:
                 if (1 == i) {
-                    vstr = [self.vogd.vo.optDict objectForKey:@"boolval"];
+                    vstr = (self.vogd.vo.optDict)[@"boolval"];
                     y = 0.2 * step;
                 } else {
                     vstr = @"";
@@ -111,7 +111,7 @@
                 break;
                 
             case VOT_TEXTB:
-                if ([(NSString*) [self.vogd.vo.optDict objectForKey:@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
+                if ([(NSString*) (self.vogd.vo.optDict)[@"tbnl"] isEqualToString:@"1"]) { // linecount is a num for graph
                     // fall through to default - handle as number
                 } else if (1 == i) {
                     vstr = @"1";
@@ -128,7 +128,7 @@
 
             default:
                 if (vtype == VOT_FUNC) {
-                    int fnddp = [[self.vogd.vo.optDict objectForKey:@"fnddp"] intValue];
+                    int fnddp = [(self.vogd.vo.optDict)[@"fnddp"] intValue];
                     fmt = [NSString stringWithFormat:@"%%0.%df",fnddp];
                 } else if (vtype == VOT_TEXTB) {
                     fmt = @"%0.1f";
