@@ -121,7 +121,7 @@
 }
 
 
-
+/*
 - (void) viewDidUnload {
 	DBGLog(@"atc: viewdidunload");
 	self.nameField = nil;
@@ -140,7 +140,7 @@
 	
 	[super viewDidUnload];
 }
-
+*/
 # pragma mark -
 # pragma mark toolbar support
 

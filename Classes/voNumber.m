@@ -68,7 +68,7 @@
         
         _dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
         _dtf.placeholder = @"<enter number>";
-        _dtf.textAlignment = UITextAlignmentRight;
+        _dtf.textAlignment = NSTextAlignmentRight; // ios6 UITextAlignmentRight;
         //[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
         
         _dtf.returnKeyType = UIReturnKeyDone;

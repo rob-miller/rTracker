@@ -135,7 +135,7 @@
 	
 	// Release any cached data, images, etc that aren't in use.
 }
-
+/*
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
@@ -169,7 +169,7 @@
 	
 	[super viewDidUnload];
 }
-
+*/
 - (void) viewDidAppear:(BOOL)animated {
     //DBGLog(@"utc view did appear!");
      // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
@@ -357,7 +357,7 @@
 
 
 # pragma mark view rotation methods
-
+/*
  // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 
@@ -394,7 +394,7 @@
 	
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
-
+*/
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
@@ -487,12 +487,12 @@
     gt.parentUTC = self;
     
     self.fwdRotations = NO;
-     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
          [self presentViewController:gt animated:YES completion:NULL];
-     } else {
-         [self presentModalViewController:gt animated:YES];
+     //} else {
+     //    [self presentModalViewController:gt animated:YES];
          //[self addChildViewController:self.modalViewController];
-     }
+     //}
     DBGLog(@"graph up");
 }
 
@@ -501,11 +501,11 @@
     //self.view = nil;
     self.fwdRotations=YES;
     
-     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
          [self dismissViewControllerAnimated:YES completion:NULL];
-     } else {
-         [self dismissModalViewControllerAnimated:YES];
-     }
+     //} else {
+     //    [self dismissModalViewControllerAnimated:YES];
+     //}
     //[UIViewController attemptRotationToDeviceOrientation];
     DBGLog(@"graph down");
 }
@@ -574,12 +574,15 @@
         boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
         // activeField.superview.superview.frame.origin.y - coff.y ;
         //+ activeField.superview.superview.frame.size.height + MARGIN;
-    } else {
+    } else if (kIS_LESS_THAN_IOS8) {
         boty = self.tracker.activeControl.superview.superview.superview.frame.origin.y - coff.y;
         boty += self.tracker.activeControl.superview.superview.superview.frame.size.height;
+    } else {  // ios 8 and above
+        boty = self.tracker.activeControl.superview.superview.frame.origin.y + self.tracker.activeControl.superview.superview.frame.size.height - coff.y;
     }
 
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
+
     
     /*
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
@@ -1082,11 +1085,11 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
-    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+    //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
         [self presentViewController:self.dpvc animated:YES completion:NULL];
-    } else {
-        [self presentModalViewController:self.dpvc animated:YES];
-    }
+    //} else {
+    //    [self presentModalViewController:self.dpvc animated:YES];
+    //}
 	/*
 	
 	
@@ -1171,11 +1174,11 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     
 	self.tsCalVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
-    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+    //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
         [self presentViewController:self.tsCalVC animated:YES completion:NULL];
-    } else {
-        [self presentModalViewController:self.tsCalVC animated:YES];
-    }
+    //} else {
+    //    [self presentModalViewController:self.tsCalVC animated:YES];
+    //}
 }
 
 - (trackerCalViewController*) tsCalVC {
@@ -1380,10 +1383,13 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     
     [mailer setMessageBody:emailBody isHTML:YES];
     if ([self attachTrackerData:mailer key:btnTitle]) {
-        [self presentModalViewController:mailer animated:YES];
+        [self presentViewController:mailer animated:YES completion:NULL];
+        //[self presentModalViewController:mailer animated:YES];
     }
-
+#if RELEASE
     [rTracker_resource deleteFileAtPath:[self.tracker getPath:ext]];
+#endif
+    
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
@@ -1407,7 +1413,8 @@ NSString *emItunesExport = @"save for PC (iTunes)";
             break;
     }
     // Remove the mail view
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL ];
+    //[self dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark -

@@ -109,6 +109,7 @@ static int selSegNdx=SegmentEdit;
 	// Release any cached data, images, etc that aren't in use.
 }
 
+/*
 - (void)viewDidUnload {
 	
 	DBGLog(@"configTlistController view didunload");
@@ -124,6 +125,7 @@ static int selSegNdx=SegmentEdit;
 	[super viewDidLoad];
 	
 }
+*/
 
 - (void)viewWillAppear:(BOOL)animated {
 	

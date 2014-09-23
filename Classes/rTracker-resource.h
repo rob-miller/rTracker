@@ -18,6 +18,7 @@
 // Loading Resources Conditionally
 NSUInteger DeviceSystemMajorVersion();
 #define kIS_LESS_THAN_IOS7 (DeviceSystemMajorVersion() < 7)
+#define kIS_LESS_THAN_IOS8 (DeviceSystemMajorVersion() < 8)
 
 @interface rTracker_resource : NSObject {
     

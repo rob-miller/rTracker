@@ -19,7 +19,7 @@
 #define kAnimationDuration 0.3
 
 #define kViewTag		((NSInteger) 1)
-#define kViewTag2		((NSInteger) 2)
+//#define kViewTag2		((NSInteger) 2)
 
 #define TMPUNIQSTART		1000
 

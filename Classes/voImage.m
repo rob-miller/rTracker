@@ -120,13 +120,14 @@
 - (void) dataEditVWDisappear:(UIViewController*)vc {
 }
 
+/*
 - (void) dataEditVDidUnload {
 	self.imageView = nil;
 	self.takePhotoButton = nil;
 	self.selectFromCameraRollButton = nil;
 	self.pickFromLibraryButton = nil;
 }
-
+*/
 
 #pragma mark -
 #pragma mark imagePickerController delegate support 

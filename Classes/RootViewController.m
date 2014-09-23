@@ -1267,7 +1267,7 @@ BOOL stashAnimated;
 
 
 }
-
+/*
 - (void)viewDidUnload {
 	// Release anything that can be recreated in viewDidLoad or on demand.
 	// e.g. self.myOutlet = nil;
@@ -1287,6 +1287,7 @@ BOOL stashAnimated;
     [super viewDidUnload];
 	
 }
+*/
 
 - (void) startRvcActivityIndicator {
     //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];

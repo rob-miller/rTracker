@@ -68,6 +68,11 @@
     
     CGFloat tw = srect.size.width;   // swap because landscape only implementation and view not loaded yet
     CGFloat th = srect.size.height;
+    
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        th = srect.size.width;   // swap back because fixed!
+        tw = srect.size.height;
+    }
     srect.size.width = th;
     srect.size.height = tw;
     
@@ -355,14 +360,14 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
-
+/*
 - (void)viewDidUnload {
 	self.tracker = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
-
+*/
 
 - (void)dealloc {
     DBGLog(@"deallocating graphTrackerVC");
@@ -372,6 +377,7 @@
 #pragma mark -
 # pragma mark view rotation methods
 
+/* pre ios6
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (0 != self.shakeLock)
         return NO;
@@ -402,6 +408,7 @@
 	
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
+*/
 
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation 

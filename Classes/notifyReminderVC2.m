@@ -109,12 +109,14 @@
 }
 */
 
+/*
 - (void)viewDidUnload {
     [self setDatePicker:nil];
     [self setSoundPicker:nil];
     [self setBtnTestOutlet:nil];
     [super viewDidUnload];
 }
+*/
 
 #pragma mark -
 #pragma mark Picker Data Source Methods

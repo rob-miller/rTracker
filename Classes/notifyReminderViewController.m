@@ -1042,10 +1042,12 @@
 	[self.activeField resignFirstResponder];
 }
 
+/*
 - (void)viewDidUnload {
     [self setMsgTF:nil];
     [self setEnableButton:nil];
     [super viewDidUnload];
 }
+*/
 
 @end

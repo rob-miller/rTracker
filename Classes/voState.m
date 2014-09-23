@@ -219,7 +219,7 @@
 	UILabel *label = [[UILabel alloc] initWithFrame:bounds];
 	label.tag=kViewTag;
 	label.font = [UIFont boldSystemFontOfSize:18.0];
-	label.textAlignment = UITextAlignmentLeft;
+    label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
 	label.textColor = [UIColor blackColor];
 	label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
 	label.contentMode = UIViewContentModeTopLeft;
@@ -298,8 +298,11 @@
 - (void) dataEditVWDisappear:(UIViewController*)vc {
 }
 
+/*
 - (void) dataEditVDidUnload {
 }
+*/
+
 //- (void) dataEditFinished {
 //}
 

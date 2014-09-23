@@ -180,7 +180,7 @@ static UILabel *captionLabel;
     captionLabel.backgroundColor = [UIColor clearColor];
     captionLabel.textColor = [UIColor whiteColor];
     captionLabel.adjustsFontSizeToFitWidth = YES;
-    captionLabel.textAlignment = UITextAlignmentCenter;
+    captionLabel.textAlignment = NSTextAlignmentCenter ;  // ios6 UITextAlignmentCenter;
     captionLabel.text = str;
     [outerView addSubview:captionLabel];
 
@@ -467,7 +467,7 @@ static int lastStashedTid=0;
     
 	if (num) {
 		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
-		rtf.textAlignment = UITextAlignmentRight;
+        rtf.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;
 	}
 	rtf.placeholder = place;
 	

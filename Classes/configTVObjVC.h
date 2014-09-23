@@ -38,6 +38,7 @@
 @property (nonatomic) BOOL vdlConfigVO;
 @property (nonatomic,strong) trackerObj *to;
 @property (nonatomic,strong) valueObj *vo;
+@property (nonatomic,strong) NSDictionary *voOptDictStash;
 @property (nonatomic,strong) NSMutableDictionary *wDict;
 @property (nonatomic) CGFloat lasty;
 @property (nonatomic) CGRect saveFrame;

@@ -23,6 +23,7 @@
 @synthesize tempValObj=_tempValObj;
 @synthesize parentTrackerObj= _parentTrackerObj;
 @synthesize graphTypes= _graphTypes;
+@synthesize voOptDictStash=_voOptDictStash;
 
 // setting to _foo breaks size calc for picker, think because is iboutlet?
 @synthesize labelField=_labelField;
@@ -173,6 +174,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 }
 
+/*
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
@@ -193,6 +195,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	[super viewDidUnload];
 }
+*/
 
 - (void)viewWillAppear:(BOOL)animated {
 	
@@ -232,6 +235,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (IBAction)btnCancel {
 	//DBGLog(@"addVObjC: btnCancel was pressed!");
     [self retrieveVals];
+    self.tempValObj.optDict = [[NSMutableDictionary alloc] initWithDictionary:self.voOptDictStash copyItems:YES];
+    self.voOptDictStash=nil;
 	[self leave];
 }
 
@@ -243,7 +248,8 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
         return;
     
     }
-    
+    self.voOptDictStash=nil;
+
 	self.tempValObj.valueName = self.labelField.text;  // in case neglected to 'done' keyboard
 	[self.labelField resignFirstResponder];
     
@@ -317,6 +323,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	ctvovc.to = self.parentTrackerObj;
 	//[parentTrackerObj retain];
 	ctvovc.vo = self.tempValObj;
+    if (nil == self.voOptDictStash) {
+        self.voOptDictStash = [[NSDictionary alloc] initWithDictionary:self.tempValObj.optDict copyItems:YES];
+    }
 	//[tempValObj retain];
 	ctvovc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	//[self presentModalViewController:ctvovc animated:YES];

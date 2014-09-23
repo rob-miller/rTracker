@@ -168,6 +168,7 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+/*
 - (void)viewDidUnload {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
@@ -181,6 +182,7 @@
 	self.navBar = nil;
 
 }
+*/
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 #if DEBUGLOG

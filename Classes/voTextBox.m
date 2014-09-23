@@ -157,10 +157,11 @@
                                                   //object:self.devc.view.window];
 
  }
-
+/*
 - (void) dataEditVDidUnload {
 	self.devc = nil;
 }
+*/
 
 //- (void) dataEditFinished {
 //	[self.vo.value setString:self.textView.text];
@@ -481,19 +482,20 @@
 - (NSArray*) namesArray {
     
 	if (nil == _namesArray) {
-        ABAddressBookRef addressBook = ABAddressBookCreate();
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);
+        // ios6  ABAddressBookRef addressBook = ABAddressBookCreate();
         __block BOOL accessGranted = NO;
         
         if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
             if (ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
                 dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-                ABAddressBookRef addressBook = ABAddressBookCreate();
+                ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);  // ios6 ABAddressBookCreate();
                 ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
                     accessGranted = granted;
                     dispatch_semaphore_signal(sema);
                 });
                 dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-                dispatch_release(sema);
+                // not needed with ios6 arc :  dispatch_release(sema);
                 CFRelease(addressBook);
             }
             

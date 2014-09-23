@@ -67,6 +67,7 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+/*
 - (void)viewDidUnload {
 	DBGLog(@"vde view did unload");
 	
@@ -76,7 +77,7 @@
 	[self.vo.vos dataEditVDidUnload];
 	self.vo = nil;
 }
-
+*/
 
 - (void)dealloc {
 	

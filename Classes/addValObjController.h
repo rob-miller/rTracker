@@ -19,6 +19,8 @@
 @property (nonatomic,strong) trackerObj *parentTrackerObj;  // this makes a retain cycle....
 @property (nonatomic,strong) NSArray *graphTypes;
 
+@property (nonatomic,strong) NSDictionary *voOptDictStash;
+
 // UI element properties 
 @property (nonatomic,strong) IBOutlet UITextField *labelField;
 @property (nonatomic,strong) IBOutlet UIPickerView *votPicker;

@@ -1504,6 +1504,28 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+02 Aug 2014
+   - added 'if not RELEASE, do not delete .rtrk on email' so can gen .rtrks from simulator
+
+15 aug 2014
+   - removed 'one last chance' fn reload from db if fnArray empty on voFnDefnStr -- caused problems for del btn when deleting 0th item
+   -- added (refactored) reloadEmptyFnArray in voDrawOptions so fnArray reloaded from db on entry if array empty
+   - added 'voOptDictStash' to configValObj so cancel out of configValObj restores options (esp freps and fnarray) as were on entry 
+
+18 sept 2014
+   - working on having correct launch screen sizes for all devices - launchScreen.xib for ios8 and later
+   - min supported now ios6 (iphone 3gs, 4th gen ipod touch)
+
+23 sep 2014
+   - switch to fixing ios8 keyboard scroll error asap -- yet another superview count for ios8! only problem in useTracker
+   - oops graph view generation now fast enough (?) that do not swap width and height at startup (ios8)
+   - release as 1.1.10
+
++ check mail func as changing present view controller calls (ios6)
+
++ crash on turn back to portrait while re-calculating graph (deleted miles per us gal from car tracker)
++ crash on import .rtrk into simulator - progress bar -- but not consistent
+
 
 
  

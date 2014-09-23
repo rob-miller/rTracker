@@ -786,7 +786,7 @@
 - (UILabel*) rlab {
     if (nil == _rlab) {
         _rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
-        _rlab.textAlignment = UITextAlignmentRight;
+        _rlab.textAlignment = NSTextAlignmentRight; // ios6 UITextAlignmentRight;
     }
     return _rlab;
 }
@@ -1014,10 +1014,13 @@
 //  strings in fnStrs or valueObj names
 //
 
-- (NSString*) voFnDefnStr {
+- (void) reloadEmptyFnArray {
     if (0==[self.fnArray count]) { // one last try if nothing there
         [self loadConfig];
     }
+}
+
+- (NSString*) voFnDefnStr {
 	NSMutableString *fstr = [[NSMutableString alloc] init];
 	BOOL closePending = NO;  //square brackets around target of Fn1Arg
 	BOOL constantPending = NO;  // next item is a number not tok or vid
@@ -1384,6 +1387,7 @@
 
 - (void) voDrawOptions:(configTVObjVC *)ctvovc {
 	self.ctvovcp = ctvovc;
+    [self reloadEmptyFnArray];
 	[self drawSelectedPage];
 }
 

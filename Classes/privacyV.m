@@ -537,7 +537,7 @@ static NSTimeInterval lastShow=0;
 			[@"100" sizeWithFont:[UIFont systemFontOfSize:18]]};
 		lframe.origin.x -= lframe.size.width/2.0f;
 		_ssValLab = [[UILabel alloc] initWithFrame:lframe];
-		_ssValLab.textAlignment = UITextAlignmentRight;
+        _ssValLab.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;
 		_ssValLab.text = @"2";  // MINPRIV +1
         _ssValLab.layer.cornerRadius = LBLRADIUS;
 		[_ssValLab setHidden:TRUE];
