@@ -51,13 +51,22 @@
                                                  NSFontAttributeName: [UIFont systemFontOfSize:28.0]
                                                  //,NSForegroundColorAttributeName: [UIColor greenColor]
                                                  } forState:UIControlStateNormal];
+    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+
 
     // Do any additional setup after loading the view.
 }
 
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self btnDone:nil];
+}
+
 - (void) viewWillAppear:(BOOL)animated {
     self.datePicker.date = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)self.parentNRVC.nr.saveDate];
-    int ndx = [self.soundFiles indexOfObject:self.parentNRVC.nr.soundFileName];
+    unsigned long ndx = [self.soundFiles indexOfObject:self.parentNRVC.nr.soundFileName];
     if ((nil == self.parentNRVC.nr.soundFileName) || (NSNotFound == ndx)) {
         [self.soundPicker selectRow:[self.soundFiles count] inComponent:0 animated:false];
         self.btnTestOutlet.enabled=false;
@@ -133,7 +142,7 @@
 
 - (NSString *) pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row
 			 forComponent:(NSInteger)component {
-    int c = [self.soundFiles count];
+    NSUInteger c = [self.soundFiles count];
     if (row < c) {
         return [[(self.soundFiles)[row]
                  stringByReplacingOccurrencesOfString:@"_" withString:@" "]
@@ -147,7 +156,7 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    int c = [self.soundFiles count];
+    NSUInteger c = [self.soundFiles count];
     if (row < c) {
         self.parentNRVC.nr.soundFileName = (self.soundFiles)[row];
         self.btnTestOutlet.enabled=true;

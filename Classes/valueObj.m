@@ -106,7 +106,7 @@ in_vpriv:(NSInteger)in_vpriv
 		self.parentTracker = parentTO;
 		self.vid = in_vid ;
         
-        parentTO.sql = [NSString stringWithFormat:@"select type, color, graphtype from voConfig where id=%d",in_vid];
+        parentTO.sql = [NSString stringWithFormat:@"select type, color, graphtype from voConfig where id=%ld",(long)in_vid];
         
         NSInteger in_vtype;
         NSInteger in_vcolor;
@@ -118,7 +118,7 @@ in_vpriv:(NSInteger)in_vpriv
         self.vcolor = in_vcolor;
 		self.vGraphType = in_vgraphtype;
         
-        parentTO.sql = [NSString stringWithFormat:@"select name from voConfig where id==%d",in_vid];
+        parentTO.sql = [NSString stringWithFormat:@"select name from voConfig where id==%ld",(long)in_vid];
         self.valueName = [parentTO toQry2Str];
 	}
 	
@@ -248,7 +248,7 @@ in_vpriv:(NSInteger)in_vpriv
 			//[self.value setString:@"0"];
 			break;
 		default:
-			dbgNSAssert1(0,@"valueObj init vtype %d not supported",vt);
+			dbgNSAssert1(0,@"valueObj init vtype %ld not supported",(long)vt);
             tvos = [[voNumber alloc] initWithVO:self]; // to clear analyzer worry 
             _vtype = VOT_NUMBER;  // consistency if we get here
 			break;
@@ -267,6 +267,9 @@ in_vpriv:(NSInteger)in_vpriv
 #pragma mark display fn dispatch
 
 - (UIView *) display:(CGRect)bounds {
+    if (_display && _display.frame.size.width != bounds.size.width)
+        _display = nil;
+        
 	if (_display == nil) {
         DBGLog(@"vo new display name:  %@ currVal: .%@.",self.valueName,self.value);
 		self.display = [self.vos voDisplay:bounds];
@@ -352,12 +355,12 @@ in_vpriv:(NSInteger)in_vpriv
 {
 #if DEBUGLOG
     if (od) {
-        DBGLog(@"value id %d name %@ type %d value .%@. optDict:",self.vid,self.valueName, self.vtype, self.value);
+        DBGLog(@"value id %ld name %@ type %ld value .%@. optDict:",(long)self.vid,self.valueName, (long)self.vtype, self.value);
         for (NSString *key in self.optDict) {
             DBGLog(@" %@ = %@ ",key,[self.optDict objectForKey:key] );
         }
     } else {
-        	DBGLog(@"value id %d name %@ type %d value .%@.",self.vid,self.valueName, self.vtype, self.value);
+        	DBGLog(@"value id %ld name %@ type %ld value .%@.",(long)self.vid,self.valueName, (long)self.vtype, self.value);
     }
 #endif
 }
@@ -388,49 +391,49 @@ in_vpriv:(NSInteger)in_vpriv
 }
 
 #if DEBUGERR
-#define VOINF [NSString stringWithFormat:@"t: %@ vo: %i %@",((trackerObj*)self.parentTracker).trackerName,self.vid,self.valueName]
+#define VOINF [NSString stringWithFormat:@"t: %@ vo: %li %@",((trackerObj*)self.parentTracker).trackerName,(long)self.vid,self.valueName]
 #endif
 
 - (void) validate {
     //DBGLog(@"%@",VOINF);
     
     if (self.vtype < 0) {
-        DBGErr(@"%@ invalid vtype (negative): %d",VOINF,self.vtype);
+        DBGErr(@"%@ invalid vtype (negative): %ld",VOINF,(long)self.vtype);
         self.vtype = 0;
     } else if (self.vtype > VOT_MAX) {
-        DBGErr(@"%@ invalid vtype (too large): %d max vtype= %i",VOINF,self.vtype,VOT_MAX);
+        DBGErr(@"%@ invalid vtype (too large): %ld max vtype= %li",VOINF,(long)self.vtype,(long)VOT_MAX);
         self.vtype = 0;
     }
     
     if (self.vpriv < 0) {
-        DBGErr(@"%@ invalid vpriv (too low): %d minpriv= %i, 0 accepted",VOINF,self.vpriv,MINPRIV);
+        DBGErr(@"%@ invalid vpriv (too low): %ld minpriv= %i, 0 accepted",VOINF,(long)self.vpriv,MINPRIV);
         self.vpriv = MINPRIV;
     } else if (self.vpriv > MAXPRIV) {
-        DBGErr(@"%@ invalid vtype (too large): %d maxpriv= %i",VOINF,self.vpriv,MAXPRIV);
+        DBGErr(@"%@ invalid vtype (too large): %ld maxpriv= %i",VOINF,(long)self.vpriv,MAXPRIV);
         self.vpriv = 0;
     }
 
     if (VOT_CHOICE != self.vtype && VOT_INFO != self.vtype) {
         if (self.vcolor < 0) {
-            DBGErr(@"%@ invalid vcolor (negative): %d",VOINF,self.vcolor);
+            DBGErr(@"%@ invalid vcolor (negative): %ld",VOINF,(long)self.vcolor);
             self.vcolor = 0;
         } else if (self.vcolor > ([[rTracker_resource colorSet] count] -1) ) {
-            DBGErr(@"%@ invalid vcolor (too large): %d max color= %i",VOINF,self.vcolor, ([[rTracker_resource colorSet] count] -1));
+            DBGErr(@"%@ invalid vcolor (too large): %ld max color= %lu",VOINF,(long)self.vcolor, (unsigned long)([[rTracker_resource colorSet] count] -1));
             self.vcolor = 0;
         }
     }
     
     if (self.vGraphType < 0) {
-        DBGErr(@"%@ invalid vGraphType (negative): %d",VOINF,self.vGraphType);
+        DBGErr(@"%@ invalid vGraphType (negative): %ld",VOINF,(long)self.vGraphType);
         self.vGraphType = 0;
     } else if (self.vGraphType > VOG_MAX) {
-        DBGErr(@"%@ invalid vGraphType (too large): %d max vGraphType= %i",VOINF,self.vGraphType,VOG_MAX);
+        DBGErr(@"%@ invalid vGraphType (too large): %ld max vGraphType= %i",VOINF,(long)self.vGraphType,VOG_MAX);
         self.vGraphType = 0;
     }
 
     if (VOT_CHOICE == self.vtype) {
         if (-1 != self.vcolor) {
-            DBGErr(@"%@ invalid choice vcolor (not -1): %d",VOINF,self.vcolor);
+            DBGErr(@"%@ invalid choice vcolor (not -1): %ld",VOINF,(long)self.vcolor);
             self.vcolor = -1;
         }
         int i;
@@ -440,10 +443,10 @@ in_vpriv:(NSInteger)in_vpriv
             if (ncol != nil) {
                 NSInteger col = [ncol integerValue];
                 if (col < 0) {
-                    DBGErr(@"%@ invalid choice %i color (negative): %d",VOINF,i,col);
+                    DBGErr(@"%@ invalid choice %i color (negative): %ld",VOINF,i,(long)col);
                     (self.optDict)[key] = @0;
                 } else if (col > ([[rTracker_resource colorSet] count] -1)) {
-                    DBGErr(@"%@ invalid choice %i color (too large): %d max color= %i",VOINF,i,col,([[rTracker_resource colorSet] count] -1));
+                    DBGErr(@"%@ invalid choice %i color (too large): %ld max color= %lu",VOINF,i,(long)col, (unsigned long)([[rTracker_resource colorSet] count] -1));
                     (self.optDict)[key] = @0;
                 }
             }
@@ -451,7 +454,7 @@ in_vpriv:(NSInteger)in_vpriv
     }
     if (VOT_INFO == self.vtype) {
         if (-1 != self.vcolor) {
-            DBGErr(@"%@ invalid info vcolor (not -1): %d",VOINF,self.vcolor);
+            DBGErr(@"%@ invalid info vcolor (not -1): %ld",VOINF,(long)self.vcolor);
             self.vcolor = -1;
         }
     }

@@ -29,7 +29,8 @@
 - (id) initWithParentView:(UIView*)pv {
 	CGRect frame = pv.frame;
 	DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
-	frame.origin.y = frame.size.height;// - 10.0f;
+    /*
+    frame.origin.y = frame.size.height;// - 10.0f;
 	if (kIS_LESS_THAN_IOS7) {
         frame.size.height *=0.25f;
         frame.origin.x = frame.size.width * 0.2f;
@@ -37,7 +38,8 @@
 	} else {
         frame.size.height *=0.35f;
     }
-    
+    */
+    frame.origin.x=0.0; frame.origin.y = 372.0; frame.size.width=320.0; frame.size.height=130.0;
 	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
@@ -46,9 +48,12 @@
         } else {
             //self.backgroundColor = [UIColor whiteColor];
             // set graph paper background
-            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+            ///*
+            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
             [self addSubview:bg];
             [self sendSubviewToBack:bg];
+            // */
+            //self.backgroundColor = [UIColor redColor];
         }
         self.layer.cornerRadius=8;
 		self.parentView = pv;
@@ -70,7 +75,9 @@
 		//DBGLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
 		//[pv addSubview:self];
 
-		[pv insertSubview:self atIndex:[pv.subviews count]-2];   // 9.iii.14 change from -1 probably due to keyboard view
+		[pv insertSubview:self atIndex:[pv.subviews count]-1];   // 9.iii.14 change from -1 probably due to keyboard view
+                                                                 // 15.xii.14 -2 back to -1
+        //[pv addSubview:self];    // <- try for debug!
         // Initialization code
     }
     return self;
@@ -84,27 +91,66 @@
 }
 */
 
-
-
 #pragma mark -
 #pragma mark external api
 
 - (void) hide {
-	CGRect f = self.frame;
+    
+    CGRect f = self.frame;
 	//f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
     //f.origin.y = ((UIView*)self.parent).frame.origin.y + ((UIView*)self.parent).frame.size.height;  // why different with privacyV ????
+    
     f.origin.y = self.parentView.frame.size.height;  // self.topy + self.frame.size.height;
     self.frame = f;
     self.hidden = YES;
+     
 }
 
 - (void) show {
-	CGRect f = self.frame;
+
+    CGRect f = self.frame;
     self.hidden = NO;
     DBGLog(@"show: topy= %f  f= %f %f %f %f",self.topy,f.origin.x,f.origin.y,f.size.width, f.size.height );
+
+    //[rTracker_resource willShowKeyboard:n view:self.view boty:boty];
+    
 	f.origin.y = self.topy - self.frame.size.height;
+    
 	self.frame = f;
 }
+
+//TODO: xxx rtm working here
+/*
+- (void)keyboardWillShow:(NSNotification *)n
+{
+    DBGLog(@"keyboardwillshow");
+    
+    CGFloat boty;
+    
+    if (kIS_LESS_THAN_IOS7) {
+        boty = self.activeField.superview.superview.frame.origin.y; // - coff.y;
+        // activeField.superview.superview.frame.origin.y - coff.y ;
+        //+ activeField.superview.superview.frame.size.height + MARGIN;
+    } else if (kIS_LESS_THAN_IOS8) {
+        boty = self.activeField.superview.superview.superview.frame.origin.y; // - coff.y;
+        boty += self.activeField.superview.superview.superview.frame.size.height;
+    } else {  // ios 8 and above
+        boty = self.activeField.superview.superview.frame.origin.y + self.activeField.superview.superview.frame.size.height; // - coff.y;
+    }
+
+    
+    //CGRect f = self.frame;
+    //CGFloat boty = self.topTF.frame.origin.y + 44;
+    //[rTracker_resource willShowKeyboard:n view:self boty:boty];
+
+}
+
+- (void)keyboardWillHide:(NSNotification *)n
+{
+    DBGLog(@"handling keyboard will hide");
+    [rTracker_resource willHideKeyboard];
+}
+*/
 
 - (void) hidePPWVAnimated:(BOOL)animated {
 	//DBGLog(@"hide ppwv anim=%d",animated);
@@ -122,6 +168,18 @@
 	if (animated) {
 		[UIView commitAnimations];
 	}
+    /*
+    //DBGLog(@"remove kybd will show notifcation");
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
+    // unregister for keyboard notifications while not visible.
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
+    */
+
     //self.hidden = YES;
 }
 
@@ -138,6 +196,18 @@
 }
 
 - (void) showPassRqstr {
+    /*
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    */
+    
+    
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:kAnimationDuration];
 
@@ -293,7 +363,7 @@
 	f.origin.x = 0.05f * f.size.width;
 	f.origin.y = vert * f.size.height;
 	f.size.width *= 0.9f;
-	f.size.height = [@"X" sizeWithFont:[UIFont systemFontOfSize:18]].height;
+    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].height;
 	//DBGLog(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 	return f;
 }
@@ -338,7 +408,7 @@
 		CGRect f = CGRectZero;
 		f.origin.x = 0.4f * self.frame.size.width;
 		f.origin.y = 0.65f * self.frame.size.height;
-		f.size = [ttl sizeWithFont:[UIFont systemFontOfSize:18]];
+        f.size = [ttl sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}];
 		_cancelBtn.frame = f;
 		//DBGLog(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 		[_cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];

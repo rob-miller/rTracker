@@ -76,6 +76,8 @@
 */
 
 - (UISlider*) sliderCtl {
+    if (_sliderCtl && _sliderCtl.frame.size.width != self.vosFrame.size.width) _sliderCtl=nil;  // first time around thinks size is 320, handle larger devices
+
     if (nil == _sliderCtl) {
        // DBGLog(@"create sliderCtl");
         //CGRect frame = CGRectMake(174.0, 12.0, 120.0, kSliderHeight);
@@ -203,6 +205,8 @@
     
     if (nil == (self.vo.optDict)[@"integerstepsb"])
         (self.vo.optDict)[@"integerstepsb"] = (INTEGERSTEPSBDFLT ? @"1" : @"0");
+    if (nil == (self.vo.optDict)[@"defaultenabledb"])
+        (self.vo.optDict)[@"defaultenabledb"] = (DEFAULTENABLEDBDFLT ? @"1" : @"0");
 
     return [super setOptDictDflts];
 }
@@ -229,6 +233,12 @@
         return YES;
     }
     
+    if (([key isEqualToString:@"defaultenabledb"] && [val isEqualToString:(DEFAULTENABLEDBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+    
     
     return [super cleanOptDictDflts:key];
 }
@@ -246,7 +256,7 @@
 	labframe = [ctvovc configLabel:@"min:" frame:frame key:@"sminLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-	CGFloat tfWidth = [@"9999999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; 
 	
@@ -302,7 +312,7 @@
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
-	
+    
 	labframe = [ctvovc configLabel:@"integer steps:" frame:frame key:@"sisLab" addsv:YES];
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
@@ -312,6 +322,24 @@
                         state:[(self.vo.optDict)[@"integerstepsb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
+    
+    /* 
+     * need more thought here -- if slider is enabled by default, can't open and leave without asking to save ?
+     *  /
+     
+    frame.origin.x = MARGIN;
+	frame.origin.y += labframe.size.height + MARGIN;
+    
+    labframe = [ctvovc configLabel:@"default enabled:" frame:frame key:@"sdeLab" addsv:YES];
+    
+    frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+    
+    [ctvovc configCheckButton:frame
+                          key:@"sdeBtn"
+                        state:[(self.vo.optDict)[@"defaultenabledb"] isEqualToString:@"1"] // default:0
+                        addsv:YES
+     ];
+    */
     
     
 

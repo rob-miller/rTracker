@@ -24,16 +24,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Separate date, time</string>
-			<key>Key</key>
-			<string>separate_date_time_pref</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
 			<string>Reset password</string>
 			<key>Key</key>
 			<string>reset_password_pref</string>

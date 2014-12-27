@@ -55,12 +55,13 @@
     // get our own frame
     
     CGRect srect = [[self view] bounds];
-    
+    /*
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") && SYSTEM_VERSION_LESS_THAN(@"6.0")) {
         srect.size.width -= 5;
         srect.size.height += 20;
         self.view.bounds = srect;
     }
+    */
     
     //srect.origin.y -= 50;
     
@@ -223,10 +224,10 @@
          self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
      }
      
-    if (nil != (self.tracker.optDict)[@"dirtyFns"]) {
-        [self fireRecalculateFns];
-    }
-     
+     if (nil != (self.tracker.optDict)[@"dirtyFns"]) {
+         [self fireRecalculateFns];
+     }
+     [self fireRegenSearchMatches];
      [self.navigationController setToolbarHidden:YES animated:NO];
 
 }
@@ -275,6 +276,24 @@
     [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO yloc:20.0f];
     [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
 }
+
+- (void) fireRegenSearchMatches {
+    if (nil != self.parentUTC.searchSet) {
+        NSMutableArray *xPoints = [[NSMutableArray alloc] init];
+        for (NSNumber *d in self.parentUTC.searchSet) {
+            if ([d floatValue] >= ((togd*)self.tracker.togd).firstDate) {
+                [xPoints addObject:[NSNumber numberWithFloat:([d floatValue] - ((togd*)self.tracker.togd).firstDate) * ((togd*)self.tracker.togd).dateScale]];
+            }
+        }
+        if (0 < [xPoints count]) {
+            self.gtv.searchXpoints = [NSArray arrayWithArray:xPoints];
+            return;  // success
+        }
+    }
+    // fall through to no match default result
+    self.gtv.searchXpoints = nil;
+}
+
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
@@ -432,7 +451,7 @@
 	}
 
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
-        if (self.interfaceOrientation ==  UIInterfaceOrientationPortrait) {
+        if ((self.interfaceOrientation ==  UIInterfaceOrientationPortrait) || (self.interfaceOrientation ==  UIInterfaceOrientationPortraitUpsideDown)) {
             [self.parentUTC returnFromGraph];
         }
     }
@@ -448,10 +467,11 @@
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"gt will rotate to interface orientation portrait duration: %f sec",duration);
             self.tracker.goRecalculate=NO; // stop!!!!
-			break;
+            break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"gt will rotate to interface orientation portrait upside down duration: %f sec", duration);
-			break;
+            self.tracker.goRecalculate=NO; // stop!!!!
+            break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"gt will rotate to interface orientation landscape left duration: %f sec", duration);
             self.gtv.doDrawGraph=TRUE;
@@ -559,8 +579,8 @@
         CGPoint touchPoint = [touch locationInView:self.gtv];  // sv=> full zoomed content size ; gtv => gtv frame but zoom/scroll mapped
         //DBGLog(@"gtv tap at %f, %f.  taps= %d  numTouches= %d",touchPoint.x, touchPoint.y, [touch tapCount],[touches count]);
         
-        int nearDate = ((togd*)self.tracker.togd).firstDate + (touchPoint.x * ((togd*)self.tracker.togd).dateScaleInv );
-        int newDate = [self.tracker dateNearest:nearDate];
+        NSInteger nearDate = ((togd*)self.tracker.togd).firstDate + (touchPoint.x * ((togd*)self.tracker.togd).dateScaleInv );
+        NSInteger newDate = [self.tracker dateNearest:nearDate];
         self.dpr.date = [NSDate dateWithTimeIntervalSince1970:newDate];
         self.dpr.action = DPA_GOTO;        
         //self.gtv.xMark = touchPoint.x;
@@ -581,7 +601,7 @@
 #pragma mark private methods
 
 - (CGFloat) testStrWidth:(NSString*)testStr max:(CGFloat)max {
-    CGSize tsize = [testStr sizeWithFont:self.myFont];
+    CGSize tsize = [testStr sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
     return (max < tsize.width ? tsize.width : max);
 }
 
@@ -602,9 +622,9 @@
                         maxw = [self testDblWidth:[(vo.optDict)[@"gmin"] doubleValue] max:maxw];
                         maxw = [self testDblWidth:[(vo.optDict)[@"gmax"] doubleValue] max:maxw];
                     } else {
-                        self.tracker.sql = [NSString stringWithFormat:@"select min(val collate BINARY) from voData where id=%d;",vo.vid];  // CMPSTRDBL
+                        self.tracker.sql = [NSString stringWithFormat:@"select min(val collate BINARY) from voData where id=%ld;",(long)vo.vid];  // CMPSTRDBL
                         maxw = [self testDblWidth:[self.tracker toQry2Double] max:maxw];
-                        self.tracker.sql = [NSString stringWithFormat:@"select max(val collate BINARY) from voData where id=%d;",vo.vid]; // CMPSTRDBL
+                        self.tracker.sql = [NSString stringWithFormat:@"select max(val collate BINARY) from voData where id=%ld;",(long)vo.vid]; // CMPSTRDBL
                         maxw = [self testDblWidth:[self.tracker toQry2Double] max:maxw];
                     }
                     break;

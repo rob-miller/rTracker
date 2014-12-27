@@ -44,7 +44,8 @@
 @property (nonatomic,strong) UITextView *textView;
 @property (nonatomic,unsafe_unretained) IBOutlet UIView *accessoryView;
 @property (nonatomic,strong) IBOutlet UIButton *addButton;
-@property (nonatomic,strong) IBOutlet UISegmentedControl *segControl;
+
+@property (nonatomic,weak) IBOutlet UISegmentedControl *segControl;
 @property (nonatomic,strong) UIPickerView *pv;
 
 @property (nonatomic,readonly) NSArray *alphaArray;
@@ -62,6 +63,11 @@
 @property (nonatomic) CGRect saveFrame;
 
 @property (nonatomic) BOOL showNdx;
+@property (nonatomic) BOOL accessAddressBook;
+
+@property (weak, nonatomic) IBOutlet UISegmentedControl *setSearchSeg;
+- (IBAction)setSearchSegChanged:(id)sender;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *orAndSeg;
 
 - (IBAction) addPickerData:(id)sender;
 - (IBAction) segmentChanged:(id)sender;

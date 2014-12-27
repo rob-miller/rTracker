@@ -175,7 +175,7 @@
 - (void) confirmDb {
 	dbgNSAssert(self.toid,@"tObj confirmDb toid=0");
 	if (! self.dbName) {
-		self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",self.toid];
+		self.dbName = [[NSString alloc] initWithFormat:@"trkr%ld.sqlite3",(long)self.toid];
 		//self.dbName = [[NSString alloc] initWithFormat:@"trkr%d.sqlite3",toid];
 		[self getTDb];
 		[self initTDb];
@@ -208,7 +208,7 @@
 	return self;
 }
 
-- (id)init:(int) tid {
+- (id)init:(NSInteger) tid {
 	if ((self = [self init])) {
 		//DBGLog(@"init trackerObj id: %d",tid);
 		self.toid = tid;
@@ -253,8 +253,8 @@
     c = [self.valObjTable count];
     c2 = [arr count];
     for (ndx1=0,ndx2=0; ndx1<c && ndx2<c2; ndx1++,ndx2++) {
-        int currVid = ((valueObj*)(self.valObjTable)[ndx1]).vid;
-        int targVid = ((valueObj*)arr[ndx2]).vid;
+        NSInteger currVid = ((valueObj*)(self.valObjTable)[ndx1]).vid;
+        NSInteger targVid = ((valueObj*)arr[ndx2]).vid;
         //DBGLog(@"ndx2: %d  targVid:%d",ndx2,targVid);
         if (currVid != targVid) {
             NSUInteger targNdx = [((NSNumber*)dict[@(targVid)]) unsignedIntegerValue];
@@ -305,7 +305,7 @@
 
     //---- valObjTable and db ----//
     NSArray *newValObjs = dict[@"valObjTable"];  // typo @"valObjTable@" removed 26.v.13
-    [rTracker_resource stashProgressBarMax:[newValObjs count]];
+    [rTracker_resource stashProgressBarMax:(int)[newValObjs count]];
     
     NSMutableDictionary *existingVOs = [[NSMutableDictionary alloc] init];
     NSMutableArray *newVOs = [[NSMutableArray alloc]init];
@@ -570,7 +570,7 @@ if (addVO) {
     
 	//self.trackerName = [self.optDict objectForKey:@"name"];
 
-    DBGLog(@"tObj loadConfig toid:%d name:%@",self.toid,self.trackerName);
+    DBGLog(@"tObj loadConfig toid:%ld name:%@",(long)self.toid,self.trackerName);
 	
     CGFloat w = [(self.optDict)[@"width"] floatValue];
 	CGFloat h = [(self.optDict)[@"height"] floatValue];
@@ -611,7 +611,7 @@ if (addVO) {
 		[s1 removeAllObjects];
 		[s2 removeAllObjects];
 		
-		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%d;",vo.vid];
+		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%ld;",(long)vo.vid];
 		[self toQry2ArySS :s1 s2:s2];
 		//e1 = [s1 objectEnumerator];
 		e2 = [s2 objectEnumerator];
@@ -659,7 +659,7 @@ if (addVO) {
     
 	//self.trackerName = [self.optDict objectForKey:@"name"];
     
-    DBGLog(@"tObj loadConfigFromDict toid:%d name:%@",self.toid,self.trackerName);
+    DBGLog(@"tObj loadConfigFromDict toid:%ld name:%@",(long)self.toid,self.trackerName);
 	
     //CGFloat w = [[self.optDict objectForKey:@"width"] floatValue];
 	//CGFloat h = [[self.optDict objectForKey:@"height"] floatValue];
@@ -703,7 +703,7 @@ if (addVO) {
 - (void) clearVoOptDict:(valueObj *)vo
 {
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
-	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%d;",vo.vid];
+	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%ld;",(long)vo.vid];
 	[self toQry2AryS:s1];
     for (NSString *dk in vo.optDict) {
         if (! [s1 containsObject:dk]) {
@@ -712,7 +712,7 @@ if (addVO) {
     }
 
 	for (NSString *key in s1) {
-		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%d and field='%@';",vo.vid,key];
+		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%ld and field='%@';",(long)vo.vid,key];
 
 		if (([vo.vos cleanOptDictDflts:key])) {
 			[self toExecSql];
@@ -818,15 +818,15 @@ if (addVO) {
     
     NSInteger rank = [self toQry2Int] +1;
     
-    self.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
-                vid, rank, 0, [rTracker_resource toSqlStr:name], 0, 0, MINPRIV];
+    self.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %ld, %d, '%@', %d, %d, %d);",
+                (long)vid, (long)rank, 0, [rTracker_resource toSqlStr:name], 0, 0, MINPRIV];
     [self toExecSql];
     
-    return vid;
+    return (int) vid;
 }
 
 // set type for valobj in db table if passed vot matches a type
--(BOOL) configVOinDb:(int)valObjID vots:(NSString*)vots vocs:(NSString*)vocs rank:(int)rank {
+-(BOOL) configVOinDb:(NSInteger)valObjID vots:(NSString*)vots vocs:(NSString*)vocs rank:(NSInteger)rank {
     BOOL rslt=NO;
     if ([@"" isEqualToString:vots]) return rslt;
     
@@ -835,10 +835,10 @@ if (addVO) {
     
     //DBGLog(@"vot= %d",vot);
     
-    self.sql = [NSString stringWithFormat:@"update voConfig set type=%d where id=%d",vot,valObjID];
+    self.sql = [NSString stringWithFormat:@"update voConfig set type=%lu where id=%ld",(unsigned long)vot,(long)valObjID];
     [self toExecSql];
     rslt=YES;
-    DBGLog(@"vot= %d",vot);
+    DBGLog(@"vot= %lu",(unsigned long)vot);
     if (! vocs) return rslt;
     
     DBGLog(@"search for %@",vocs);
@@ -849,13 +849,13 @@ if (addVO) {
         if (NSNotFound == voc) return rslt;
     }
 
-    DBGLog(@"voc= %d",voc);
+    DBGLog(@"voc= %lu",(unsigned long)voc);
     
-    self.sql = [NSString stringWithFormat:@"update voConfig set color=%d where id=%d",voc,valObjID];
+    self.sql = [NSString stringWithFormat:@"update voConfig set color=%lu where id=%ld",(unsigned long)voc,(long)valObjID];
     [self toExecSql];
     
     // rank only 0 for timestamp
-    self.sql = [NSString stringWithFormat:@"update voConfig set rank=%d where id=%d",rank,valObjID];
+    self.sql = [NSString stringWithFormat:@"update voConfig set rank=%ld where id=%ld",(long)rank,(long)valObjID];
     [self toExecSql];
     
     
@@ -867,8 +867,8 @@ if (addVO) {
 - (void) saveVoOptdict:(valueObj*) vo {
     [self clearVoOptDict:vo];
     for (NSString *key in vo.optDict) {
-        self.sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%d, '%@', '%@');",
-                    vo.vid, key, (vo.optDict)[key]];
+        self.sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%ld, '%@', '%@');",
+                    (long)vo.vid, key, (vo.optDict)[key]];
         [self toExecSql];
     }
 }
@@ -889,7 +889,7 @@ if (addVO) {
 			vo.vid = [self getUnique];
 			[self updateVORefs:vo.vid old:old];
 		}
-        [vids addObject:[NSString stringWithFormat:@"%d",vo.vid]];
+        [vids addObject:[NSString stringWithFormat:@"%ld",(long)vo.vid]];
 	}
 	
     // remove previous data - input rtrk may renumber and then some vids become obsolete -- if reading rtrk have done jumpMaxPriv
@@ -908,9 +908,9 @@ if (addVO) {
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
         
-		DBGLog(@"  vo %@  id %d", vo.valueName, vo.vid);
-		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
-					vo.vid, i++, vo.vtype, [rTracker_resource toSqlStr:vo.valueName], vo.vcolor, vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
+		DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
+		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
+					(long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
 		[self toExecSql];
 		
 		[self saveVoOptdict:vo];
@@ -953,23 +953,23 @@ if (addVO) {
 	}
 
 	if (rvo == nil) {
-		DBGLog(@"tObj getValObj failed to find vid %d",qVid);
+		DBGLog(@"tObj getValObj failed to find vid %ld",(long)qVid);
 	}
 	return rvo;
 }
 
-- (BOOL) loadData: (int) iDate {
+- (BOOL) loadData: (NSInteger) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
     DBGLog(@"trackerObj loadData for date %@",qDate);
 	[self resetData];
-	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %d and minpriv <= %d;",iDate, [privacyV getPrivacyValue]];
+	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
 	int c = [self toQry2Int];
 	if (c) {
 		self.trackerDate = qDate; // from convenience method above, so do the retain
 		NSMutableArray *i1 = [[NSMutableArray alloc] init];
 		NSMutableArray *s1 = [[NSMutableArray alloc] init];
-		self.sql = [NSString stringWithFormat:@"select id, val from voData where date = %d;", iDate];
+		self.sql = [NSString stringWithFormat:@"select id, val from voData where date = %ld;", (long)iDate];
 		[self toQry2AryIS :i1 s1:s1];
 		
 		NSEnumerator *e1 = [i1 objectEnumerator];
@@ -982,7 +982,7 @@ if (addVO) {
 			valueObj *vo = [self getValObj:vid];
 			//dbgNSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
-                DBGLog(@"vo id %d newValue: %@",vid,newVal);
+                DBGLog(@"vo id %ld newValue: %@",(long)vid,newVal);
                 
                 if ((VOT_CHOICE == vo.vtype) || (VOT_SLIDER == vo.vtype)) {
                     vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
@@ -998,7 +998,7 @@ if (addVO) {
 		
 		return YES;
 	} else {
-		DBGLog(@"tObj loadData: nothing for date %d %@", iDate, qDate);
+		DBGLog(@"tObj loadData: nothing for date %ld %@", (long)iDate, qDate);
 		return NO;
 	}
 }
@@ -1027,14 +1027,14 @@ if (addVO) {
 		
 		dbgNSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
 		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
-        DBGLog(@"  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
+        DBGLog(@"  vo %@  id %ld val %@", vo.valueName, (long)vo.vid, vo.value);
         if ([vo.value isEqualToString:@""]) {
-            self.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",vo.vid, tdi];
+            self.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)vo.vid, tdi];
         } else {
             haveData = YES;
             minPriv = MIN(vo.vpriv,minPriv);
-            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-                        vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
+                        (long)vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
         }
         [self toExecSql];
                         
@@ -1042,7 +1042,7 @@ if (addVO) {
 	}
 	
 	if (haveData) {
-		self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date,minpriv) values (%d,%d);", tdi,minPriv];
+		self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date,minpriv) values (%d,%ld);", tdi,(long)minPriv];
 		[self toExecSql];
 	} else {
 		self.sql = [NSString stringWithFormat:@"select count(*) from voData where date=%d;",tdi];
@@ -1057,7 +1057,7 @@ if (addVO) {
     self.sql = @"select count(*) from voData where val=''";
     int ndc = [self toQry2Int];
     if (0<ndc) {
-        DBGWarn(@"deleting %d empty values from tracker %d",ndc,self.toid);
+        DBGWarn(@"deleting %d empty values from tracker %ld",ndc,(long)self.toid);
         self.sql = @"delete from voData where val=''";
         [self toExecSql];
     }
@@ -1105,8 +1105,8 @@ if (addVO) {
     
     if (withData) {
         // save current trackerDate (NSDate->int)
-        int currDate = (int) [self.trackerDate timeIntervalSince1970];
-        int nextDate = [self firstDate];
+        NSInteger currDate = [self.trackerDate timeIntervalSince1970];
+        NSInteger nextDate = [self firstDate];
         
         float ndx = 1.0;
         float all = [self getDateCount];
@@ -1115,7 +1115,7 @@ if (addVO) {
             [self loadData:nextDate];
             NSMutableDictionary *vData = [[NSMutableDictionary alloc] init];
             for (valueObj *vo in self.valObjTable) {
-                [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%d",vo.vid]];
+                [vData setValue:vo.value forKey:[NSString stringWithFormat:@"%ld",(long)vo.vid]];
                 //DBGLog(@"genRtrk data: %@ for %@",vo.value,[NSString stringWithFormat:@"%d",vo.vid]);
             }
             tData[[NSString stringWithFormat:@"%d", (int) [self.trackerDate timeIntervalSinceReferenceDate]]] = [[NSDictionary alloc] initWithDictionary:vData copyItems:YES];
@@ -1131,7 +1131,7 @@ if (addVO) {
         
     }
     // configDict not optional -- always need tid for load of data
-    NSDictionary *rtrkDict = @{@"tid": [NSString stringWithFormat:@"%d",self.toid],     // changed from 'toid' key 10 july
+    NSDictionary *rtrkDict = @{@"tid": [NSString stringWithFormat:@"%ld",(long)self.toid],     // changed from 'toid' key 10 july
                               @"trackerName": self.trackerName,
                               @"configDict": [self dictFromTO],
                               @"dataDict": tData};
@@ -1203,28 +1203,28 @@ if (addVO) {
 // import data for a tracker -- direct in db so privacy not observed
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
-    [rTracker_resource stashProgressBarMax:[dataDict count]];
+    [rTracker_resource stashProgressBarMax:(int)[dataDict count]];
     
     for (dateIntStr in dataDict) {
         NSDate *tdate= [NSDate dateWithTimeIntervalSinceReferenceDate:[dateIntStr doubleValue]];
         int tdi = [tdate timeIntervalSince1970];
         NSDictionary *vdata = dataDict[dateIntStr];
         NSString *vids;
-        int mp = BIGPRIV;
+        NSInteger mp = BIGPRIV;
         for (vids in vdata) {
             NSInteger vid = [vids integerValue];
             valueObj *vo = [self getValObj:vid];
             //NSString *val = [vo.vos mapCsv2Value:[vdata objectForKey:vids]];
             NSString *val = vdata[vids];
-            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        vid,tdi,[rTracker_resource toSqlStr:val]];
+            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",
+                        (long)vid,tdi,[rTracker_resource toSqlStr:val]];
             [self toExecSql];
             
             if (vo.vpriv < mp) {
                 mp = vo.vpriv;
             }
         }
-        self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",tdi,mp];
+        self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",tdi,(long)mp];
         [self toExecSql];
         [rTracker_resource bumpProgressBar];
     }
@@ -1319,7 +1319,7 @@ if (addVO) {
             //DBGLog(@"vname= %@",vo.valueName);
             if (VOT_INFO != vo.vtype) {
                 haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
-                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%d",(self.votArray)[vo.vtype],(vo.vcolor > -1 ? [rTracker_resource colorNames][vo.vcolor] : @""),vo.vid];
+                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%ld",(self.votArray)[vo.vtype],(vo.vcolor > -1 ? [rTracker_resource colorNames][vo.vcolor] : @""),(long)vo.vid];
                 outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
             }
         }
@@ -1350,8 +1350,8 @@ if (addVO) {
     
     
     // save current trackerDate (NSDate->int)
-    int currDate = (int) [self.trackerDate timeIntervalSince1970];
-    int nextDate = [self firstDate];
+    NSInteger currDate = [self.trackerDate timeIntervalSince1970];
+    NSInteger nextDate = [self firstDate];
     
     float ndx = 1.0;
     float all = [self getDateCount];
@@ -1419,7 +1419,7 @@ if (addVO) {
     }
     
     BOOL gotData=NO;
-    int mp = BIGPRIV;
+    NSInteger mp = BIGPRIV;
 	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
 	{
         DBGLog(@"processing csv record: key= %@ value= %@", key, [aRecord objectForKey:key]);
@@ -1429,7 +1429,7 @@ if (addVO) {
             
             NSString *voName;
             NSInteger voRank;
-            int valobjID,valobjPriv,valobjType;
+            NSInteger valobjID,valobjPriv,valobjType;
             NSArray *csvha;
             if (nil == (csvha = (self.csvHeaderDict)[key])) {
                 NSRange splitPos = [key rangeOfString:@":" options:NSBackwardsSearch];
@@ -1453,21 +1453,21 @@ if (addVO) {
                 valobjType =[csvha[4] intValue];
             }
             
-            DBGLog(@"name=%@ rank=%d val=%@ id=%d priv=%d type=%d",voName,voRank,[aRecord objectForKey:key], valobjID,valobjPriv,valobjType);
+            DBGLog(@"name=%@ rank=%ld val=%@ id=%ld priv=%ld type=%ld",voName,(long)voRank,[aRecord objectForKey:key], (long)valobjID,(long)valobjPriv,(long)valobjType);
             
             BOOL configuredValObj=NO;
             if (0 == its) { // no timestamp for tracker config data
                 // voType : color : vid
                 NSArray *valComponents = [(NSString*)aRecord[key] componentsSeparatedByString:@":"];
-                int c = [valComponents count];
-                int inVid=0;
+                NSInteger c = [valComponents count];
+                NSInteger inVid=0;
                 if (c>2) {
                     inVid = [valComponents[2] integerValue];
                 }
                 
                 if ((0 == valobjID) || (inVid == valobjID))  {  // no vo exists with this name or we match the specified ID
-                    valobjID = [self createVOinDb:voName inVid:inVid];
-                    DBGLog(@"created new / updated valObj with id=%d",valobjID);
+                    valobjID = [self createVOinDb:voName inVid:(int)inVid];
+                    DBGLog(@"created new / updated valObj with id=%ld",(long)valobjID);
                     self.csvReadFlags |= CSVCREATEDVO;
                     
                     configuredValObj = [self configVOinDb:valobjID vots:valComponents[0] vocs:(c>1 ? valComponents[1]:nil) rank:voRank];
@@ -1494,12 +1494,12 @@ if (addVO) {
                 }
                 if (its != 0) { // if have date - then not config data
                     if ([@"" isEqualToString:val2Store]) {
-                        self.sql = [NSString stringWithFormat:@"delete from voData where id=%d and date=%d",valobjID,its];  // added jan 2014
+                        self.sql = [NSString stringWithFormat:@"delete from voData where id=%ld and date=%d",(long)valobjID,its];  // added jan 2014
                     } else {
                         if (valobjPriv < mp)
                             mp = valobjPriv;   // only fields with data
                         gotData=YES;
-                        self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",valobjID,its,val2Store];
+                        self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",(long)valobjID,its,val2Store];
                     }
                     [self toExecSql];
                 
@@ -1524,7 +1524,7 @@ if (addVO) {
     
     if (its != 0) {
         if (gotData) {
-            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];
+            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",its,(long)mp];
             [self toExecSql];
 
             //} else {  // csv file might have fewer columns than tracker does
@@ -1623,6 +1623,65 @@ if (addVO) {
 }
 */
 
+#pragma mark -
+#pragma save / load / remove temp tracker data file
+// save temp version of data only
+
+- (void) saveTempTrackerData {
+    NSMutableArray *saveData = [[NSMutableArray alloc]init];
+    for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC != vo.vtype) {
+            [saveData addObject:vo.value];
+        }
+    }
+    NSString *fp = [self getPath:TmpTrkrData];
+    if(! ([saveData writeToFile:fp atomically:YES])) {
+        DBGErr(@"problem writing file %@",fp);
+    }
+
+    NSMutableArray *saveNames = [[NSMutableArray alloc]init];
+    for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC != vo.vtype) {
+            [saveNames addObject:vo.valueName];
+        }
+    }
+    fp = [self getPath:TmpTrkrNames];
+    if(! ([saveNames writeToFile:fp atomically:YES])) {
+        DBGErr(@"problem writing file %@",fp);
+    }
+}
+
+// read temp version of data only
+- (BOOL) loadTempTrackerData {
+    
+    NSArray *checkNames = [[NSArray alloc] initWithContentsOfFile:[self getPath:TmpTrkrNames]];
+    if (0 == [checkNames count]) return false;
+    NSEnumerator *enumerator = [checkNames objectEnumerator];
+    for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC != vo.vtype) {
+            if (! [vo.valueName isEqualToString:[enumerator nextObject]]) {
+                [self removeTempTrackerData];
+                return false;
+            }
+        }
+    }
+
+    NSArray *loadData = [[NSArray alloc] initWithContentsOfFile:[self getPath:TmpTrkrData]];
+    if (0 == [loadData count]) return false;
+    enumerator = [loadData objectEnumerator];
+    for (valueObj *vo in self.valObjTable) {
+        if (VOT_FUNC != vo.vtype) {
+            [vo.value setString:[enumerator nextObject]];
+        }
+    }
+    return true;
+}
+
+- (void) removeTempTrackerData {
+    [rTracker_resource deleteFileAtPath:[self getPath:TmpTrkrData]];
+    [rTracker_resource deleteFileAtPath:[self getPath:TmpTrkrNames]];
+}
+
 
 #pragma mark -
 #pragma mark modify tracker object <-> db 
@@ -1664,7 +1723,7 @@ if (addVO) {
 	//valueObj *vo;
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
-		CGSize tsize = [vo.valueName sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+        CGSize tsize = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
         //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
 		if (tsize.width > lsize.width) {
 			lsize = tsize;
@@ -1674,7 +1733,9 @@ if (addVO) {
             }
         }
 	}
-	
+    CGFloat kww5 = ceilf( [rTracker_resource getKeyWindowWidth]/4.0 );
+    if (lsize.width < kww5) lsize.width = kww5;
+    
 	DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
 	//[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
 	//[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
@@ -1684,7 +1745,7 @@ if (addVO) {
 
 
 - (void) addValObj:(valueObj *) valObj {
-	DBGLog(@"addValObj to %@ id= %d : adding _%@_ id= %d, total items now %d",self.trackerName,self.toid, valObj.valueName, valObj.vid, [self.valObjTable count]);
+	DBGLog(@"addValObj to %@ id= %ld : adding _%@_ id= %ld, total items now %lu",self.trackerName,(long)self.toid, valObj.valueName, (long)valObj.vid, (unsigned long)[self.valObjTable count]);
 	
 	// check if toid already exists, then update
 	if (! [self updateValObj: valObj]) {
@@ -1873,22 +1934,22 @@ if (addVO) {
     NSDateComponents *todayComponents =
     [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
     //NSDateComponents *everyStartComponents = NULL;
-    int nowInt = (60 * [todayComponents hour]) + [todayComponents minute];
+    NSInteger nowInt = (60 * [todayComponents hour]) + [todayComponents minute];
     NSDate *lastEntryDate = [NSDate dateWithTimeIntervalSince1970:nr.saveDate]; // default to when reminder created
     
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
     [offsetComponents setDay:0];
     
-    int startInt= nr.start;
-    int finInt= nr.until;
+    NSInteger startInt= nr.start;
+    NSInteger finInt= nr.until;
     
     BOOL eventIsToday= [self weekMonthDaysIsToday:nr todayComponents:todayComponents];  // not today if does not meet weekday mask
     
     DBGLog(@"now= %@",today);
     DBGLog(@"%@",nr);
     
-    DBGLog(@"today: yr %d mo %d dy %d hr %d mn %d sc %d wkdy %d",
-           [todayComponents year], [todayComponents month], [todayComponents day], [todayComponents hour], [todayComponents minute], [todayComponents second], [todayComponents weekday]);
+    DBGLog(@"today: yr %ld mo %ld dy %ld hr %ld mn %ld sc %ld wkdy %ld",
+           (long)[todayComponents year], (long)[todayComponents month], (long)[todayComponents day], (long)[todayComponents hour], (long)[todayComponents minute], (long)[todayComponents second], (long)[todayComponents weekday]);
     DBGLog(@"startInt = %@ finInt= %@",[nr timeStr:startInt],[nr timeStr:finInt]);
     DBGLog(@"nowInt= %@",[nr timeStr:nowInt]);
     
@@ -1901,7 +1962,7 @@ if (addVO) {
         if (nr.fromLast) {
             int lastInt;
             if (nr.vid) {
-                self.sql = [NSString stringWithFormat:@"select date from voData where id=%d order by date desc limit 1", nr.vid];
+                self.sql = [NSString stringWithFormat:@"select date from voData where id=%ld order by date desc limit 1", (long)nr.vid];
             } else {
                 self.sql = @"select date from voData order by date desc limit 1";
             }
@@ -1918,8 +1979,8 @@ if (addVO) {
         // cannot do delay and then [x times in window] -- because can't differentiate (in window) vs (already done) from last save
         if (0!= (nr.everyMode & EV_DAYS)) {
 
-            int days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
-            int currFrac = days % nr.everyVal;
+            NSInteger days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
+            NSInteger currFrac = days % nr.everyVal;
             if ((0 != currFrac)                                 // if not exactly today
                 || (days<nr.everyVal)  // or (have not passed 1x target days offset)
                 ) {
@@ -1927,37 +1988,37 @@ if (addVO) {
                 [offsetComponents setDay:(nr.everyVal - currFrac)];
             }
             
-            DBGLog(@" every- days= %d days_mod_times= %d eventIsToday= %d",days,(days % nr.everyVal),eventIsToday);
+            DBGLog(@" every- days= %ld days_mod_times= %ld eventIsToday= %ld",(long)days,(long)(days % nr.everyVal),(long) eventIsToday);
             
         } else if (0!= (nr.everyMode & EV_WEEKS)) {
-            int weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
-            int currFrac = weeks % nr.everyVal;
+            NSInteger weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
+            NSInteger currFrac = weeks % nr.everyVal;
             if ((0 != currFrac)
                 || (weeks<nr.everyVal)
                 ) {
                 eventIsToday = FALSE;
-                [offsetComponents setWeek:(nr.everyVal - currFrac)];
+                [offsetComponents setWeekOfMonth:(nr.everyVal - currFrac)];
             }
-            DBGLog(@" every- weeks= %d weeks_mod_times= %d eventIsToday= %d",weeks,(weeks % nr.times),eventIsToday);
+            DBGLog(@" every- weeks= %ld weeks_mod_times= %ld eventIsToday= %ld",(long)weeks,(long)(weeks % nr.times),(long)eventIsToday);
             
         } else if (0!= (nr.everyMode & EV_MONTHS)) {
-            int months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMonthCalendarUnit calendar:gregorian];
-            int currFrac = months % nr.everyVal;
+            NSInteger months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMonthCalendarUnit calendar:gregorian];
+            NSInteger currFrac = months % nr.everyVal;
             if ((0 != currFrac)
                 || (months < nr.everyVal)
                 ) {
                 eventIsToday = FALSE;
                 [offsetComponents setMonth:(nr.everyVal - currFrac)];
             }
-            DBGLog(@" every- months= %d months_mod_times= %d eventIsToday= %d",months,(months % nr.times),eventIsToday);
+            DBGLog(@" every- months= %ld months_mod_times= %ld eventIsToday= %ld",(long)months,(long)(months % nr.times),(long)eventIsToday);
 
         } else { //EV_MINUTES or EV_HOURS => eventIsToday  // unless wraparound!  // or not selected weekdays!
-            int minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMinuteCalendarUnit calendar:gregorian];
-            int blockMinutes = (EV_HOURS == nr.everyMode ? 60 * nr.everyVal : nr.everyVal);
-            int currFrac = minutes % blockMinutes;
-            int targStart;
+            NSInteger minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMinuteCalendarUnit calendar:gregorian];
+            NSInteger blockMinutes = (EV_HOURS == nr.everyMode ? 60 * nr.everyVal : nr.everyVal);
+            NSInteger currFrac = minutes % blockMinutes;
+            NSInteger targStart;
 
-            DBGLog(@"sm= %d",currFrac);
+            DBGLog(@"sm= %ld",(long)currFrac);
             if (minutes < nowInt) { // or if 'every 5 mins' instead of 'delay 5 mins'
                 targStart = nowInt + (blockMinutes - currFrac);
                 //DBGLog(@"fractional targStart = %d",targStart);
@@ -1966,7 +2027,7 @@ if (addVO) {
                 //targStart = startInt; // if have passed delay interval then to early start time
                 //DBGLog(@"past delay interval so targStart = start = %d",targStart);
             }
-            DBGLog(@" every- mins/hrs -- add %d minutes  mins= %d  blockMins=%d times= %d targStart= %@",currFrac, minutes, blockMinutes, nr.everyVal, [nr timeStr:targStart]);
+            DBGLog(@" every- mins/hrs -- add %ld minutes  mins= %ld  blockMins=%ld times= %ld targStart= %@",(long)currFrac, (long)minutes, (long)blockMinutes, (long)nr.everyVal, [nr timeStr:targStart]);
             DBGLog (@" finInt= %@ targStart= %@ startInt= %@ eventIsToday= %d",[nr timeStr:finInt],[nr timeStr:targStart],[nr timeStr:startInt],eventIsToday);
             
             //offsetComponents day = 0 at this point unless added code above
@@ -1978,12 +2039,12 @@ if (addVO) {
                     eventIsToday = FALSE;
                     [offsetComponents setDay:((int) (targStart/(24*60)))]; // shift however many days required - know it is at least 1
                     targStart = (int) targStart % (24*60); // whatever left after removing days // was startInt;
-                    DBGLog(@"  - went past 24hr, add %d offset days, targStart now %@",[offsetComponents day],[nr timeStr:targStart]);
+                    DBGLog(@"  - went past 24hr, add %ld offset days, targStart now %@",(long)[offsetComponents day],[nr timeStr:targStart]);
                 //} else {
                     
                 //}
             } else if(!eventIsToday ) {  // if weekdays does not match (set above)
-                DBGLog(@"not today, reset targstart to %d %@",startInt,[nr timeStr:startInt]);
+                DBGLog(@"not today, reset targstart to %ld %@",(long)startInt,[nr timeStr:startInt]);
                 targStart = startInt;
             }
 
@@ -2005,12 +2066,12 @@ if (addVO) {
             }
 
            if (targStart < startInt) {                     // if too early shift to start time
-                DBGLog(@"  - before startInt, reset to startInt  startInt= %d targStart= %d ",startInt,targStart);
+                DBGLog(@"  - before startInt, reset to startInt  startInt= %ld targStart= %ld ",(long)startInt,(long)targStart);
                 targStart = startInt;
                 
             }
 
-            startInt = targStart;
+            startInt = (int) targStart;
         }
         
         DBGLog(@" every- lastEntry %@",lastEntryDate);
@@ -2043,8 +2104,8 @@ if (addVO) {
             nr.times = (nr.timesRandom ? 1 : 2); // safety: if 'until', must be at least 2 for interval (begin,end) or 1 for random
         }
         
-        int intervalStep = (int) (d(finInt - nr.start) / d( nr.times - (nr.timesRandom ? 0 : 1) )) + 0.5;  // if interval then 1x less 'times' for start
-        DBGLog(@"times= %d intervalStep= %d  startInt= %d  finInt= %d ",nr.times, intervalStep, nr.start, finInt);
+        NSInteger intervalStep = (int) (d(finInt - nr.start) / d( nr.times - (nr.timesRandom ? 0 : 1) )) + 0.5;  // if interval then 1x less 'times' for start
+        DBGLog(@"times= %ld intervalStep= %ld  startInt= %ld  finInt= %ld ",(long)nr.times, (long)intervalStep, (long)nr.start, (long)finInt);
         
         // startInt<finInt here because either startInt=nr.start or caught above in everyMode
         if (eventIsToday) {
@@ -2053,8 +2114,8 @@ if (addVO) {
                 [offsetComponents setDay:1];
                 DBGLog(@"time window past finInt");
             } else {
-                int tcount = nr.times;
-                int tstart = nr.start;
+                NSInteger tcount = nr.times;
+                NSInteger tstart = nr.start;
                 while (0<tcount && (tstart<nowInt || tstart<startInt)) {
                     tstart += intervalStep;
                     tcount--;
@@ -2098,7 +2159,7 @@ if (addVO) {
                     [offsetComponents setDay:1];
                 }
             }
-            DBGLog(@"randomise new startInt= %d => %@ (delta= %d)",startInt,[nr timeStr:startInt],delta);
+            DBGLog(@"randomise new startInt= %ld => %@ (delta= %d)",(long)startInt,[nr timeStr:startInt],delta);
         }
 
     }  else { // else nr.times == 1 => startInt remains at default
@@ -2123,13 +2184,14 @@ if (addVO) {
     // (3) work out next event day if not today
     
     if (! eventIsToday) {
-        int i;
-        int days = 0;
+        NSInteger i;
+        NSInteger days = 0;
         
         if (nr.monthDays) {  // not everyMode so offsetComponents not set above
-            int itoday = ([todayComponents day]-1);
-            int ifirst=-1;
-            int inext=-1;
+            NSInteger itoday =
+            ([todayComponents day]-1);
+            NSInteger ifirst=-1;
+            NSInteger inext=-1;
             
             if (itoday) {  // today not 0, i.e. 1st of month
                 for (i=0;i<itoday && (-1 == ifirst);i++) {
@@ -2147,7 +2209,7 @@ if (addVO) {
             }
             if (-1 != inext) {
                 days = inext-itoday;
-                DBGLog(@"not today- monthDays: today is %d, trigger on next= %d so +%d days",itoday,inext,days);
+                DBGLog(@"not today- monthDays: today is %ld, trigger on next= %ld so +%ld days",(long)itoday,(long)inext,(long)days);
                 if (0==days) {
                     [offsetComponents setMonth:1];
                     DBGLog(@"monthdays - days=0 so adding 1 month");
@@ -2162,9 +2224,9 @@ if (addVO) {
                 [dateComponents setDay:ifirst+1];
                 nextMonth = [gregorian dateFromComponents:dateComponents];
                 days = [self unitsWithinEraFromDate:today toDate:nextMonth calUnit:NSDayCalendarUnit calendar:gregorian];
-                DBGLog(@"not today- monthDays: today is %d, wrap around to first = %d so +%d days",itoday,ifirst,days);
+                DBGLog(@"not today- monthDays: today is %ld, wrap around to first = %ld so +%ld days",(long)itoday,(long)ifirst,(long)days);
             } else {
-                DBGErr(@"not today- monthDays fail: %0x today is %d",nr.monthDays,itoday);
+                DBGErr(@"not today- monthDays fail: %0x today is %ld",nr.monthDays,(long)itoday);
             }
             
             // offsetComponents not otherwised modified here because not every mode
@@ -2198,8 +2260,8 @@ if (addVO) {
             // work out the next weekday set in nr.weekdays
             
             //DBGLog(@"tmpTargDate weekday componenet is %d",[weekdayComponents weekday]);
-            int ttdWeekDay = [weekdayComponents weekday]-1;  // nr.weekdays is 0-indexed but NSDateComponents is not
-            int targWeekDay=0;
+            NSInteger ttdWeekDay = [weekdayComponents weekday]-1;  // nr.weekdays is 0-indexed but NSDateComponents is not
+            NSInteger targWeekDay=0;
             
             // arggg what if ttdWeekDay is 0
 
@@ -2221,8 +2283,8 @@ if (addVO) {
                 days += 7;  // wrap around into next week
             }
 
-            DBGLog(@"not today- weekdays: targ= %d curr= %d so +%d days",targWeekDay,ttdWeekDay,days);
-            DBGLog(@"event not today, about to add days %d to offsetComponents= %@",days,offsetComponents);
+            DBGLog(@"not today- weekdays: targ= %ld curr= %ld so +%ld days",(long)targWeekDay,(long)ttdWeekDay,(long)days);
+            DBGLog(@"event not today, about to add days %ld to offsetComponents= %@",(long)days,offsetComponents);
             [offsetComponents setDay:(days + [offsetComponents day])];  // ttdWeekDay is already an offset from today, add that here
         }
     }
@@ -2261,6 +2323,7 @@ if (addVO) {
 }
 
 - (void) setReminders {
+        
     // delete all reminders for this tracker
     [self clearScheduledReminders];
     // create uiLocalNotif here with access to nr data and tracker data
@@ -2320,13 +2383,13 @@ if (addVO) {
 #pragma mark -
 #pragma mark query tracker methods
 
-- (NSInteger) dateNearest:(int)targ {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date <= %d and minpriv <= %d order by date desc limit 1;", 
-                targ, (int) [privacyV getPrivacyValue] ];
+- (NSInteger) dateNearest:(NSInteger)targ {
+	self.sql = [NSString stringWithFormat:@"select date from trkrData where date <= %ld and minpriv <= %d order by date desc limit 1;", 
+                (long)targ, (int) [privacyV getPrivacyValue] ];
 	int rslt= [self toQry2Int];
     if (0 == rslt) {
-        self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date desc limit 1;", 
-                    targ, (int) [privacyV getPrivacyValue] ];
+        self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %ld and minpriv <= %d order by date desc limit 1;", 
+                    (long)targ, (int) [privacyV getPrivacyValue] ];
         rslt= [self toQry2Int];
 
     }
@@ -2334,7 +2397,7 @@ if (addVO) {
 	return rslt;
 }
 
-- (int) prevDate {
+- (NSInteger) prevDate {
 	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;", 
 		   (int) [self.trackerDate timeIntervalSince1970], (int) [privacyV getPrivacyValue] ];
 	int rslt= [self toQry2Int];
@@ -2342,24 +2405,25 @@ if (addVO) {
 	return rslt;
 }
 
-- (int) postDate {
+- (NSInteger) postDate {
 	self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date asc limit 1;", 
                 (int) [self.trackerDate timeIntervalSince1970],(int) [privacyV getPrivacyValue]  ];
-	int rslt= (NSInteger) [self toQry2Int];
+	NSInteger rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
 
-- (int) lastDate {
+- (NSInteger) lastDate {
 	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
-	int rslt= (NSInteger) [self toQry2Int];
+	NSInteger rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
 
-- (int) firstDate {
+- (NSInteger) firstDate {
 	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc limit 1;",(int) [privacyV getPrivacyValue]];
-	int rslt= (NSInteger) [self toQry2Int];
+	NSInteger
+    rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 	return rslt;
 }
@@ -2370,7 +2434,7 @@ if (addVO) {
 		if (vo.vid == vid)
 			return vo.valueName;
 	}
-	DBGLog(@"voGetNameForVID %d failed", vid);
+	DBGLog(@"voGetNameForVID %ld failed", (long)vid);
 	//return [NSString stringWithFormat:@"vid %d not found",vid];
     return @"not configured yet";
 }
@@ -2388,8 +2452,8 @@ if (addVO) {
 */
 
 - (void) updateVIDinFns:(NSInteger)old new:(NSInteger)new {
-    NSString *oldstr = [NSString stringWithFormat:@"%d",old];
-    NSString *newstr = [NSString stringWithFormat:@"%d",new];
+    NSString *oldstr = [NSString stringWithFormat:@"%ld",(long)old];
+    NSString *newstr = [NSString stringWithFormat:@"%ld",(long)new];
     for (valueObj *vo in self.valObjTable) {
 		if (VOT_FUNC == vo.vtype) {
             NSString *fnstr = (vo.optDict)[@"func"];
@@ -2406,7 +2470,7 @@ if (addVO) {
             (vo.optDict)[@"func"] = fnstr;
 
             
-            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%d and field='func'",fnstr,vo.vid]; // keep consistent
+            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%ld and field='func'",fnstr,(long)vo.vid]; // keep consistent
             [self toExecSql];
             
         }
@@ -2435,20 +2499,20 @@ if (addVO) {
     }
 
     // need to update at least voData, will write voInfo, voConfing out later but lets stay consistent
-    self.sql= [NSString stringWithFormat: @"update voData set id=%d where id=%d", newVID, vo.vid];
+    self.sql= [NSString stringWithFormat: @"update voData set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
     [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voInfo set id=%d where id=%d", newVID, vo.vid];
+    self.sql= [NSString stringWithFormat: @"update voInfo set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
     [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voConfig set id=%d where id=%d", newVID, vo.vid];
+    self.sql= [NSString stringWithFormat: @"update voConfig set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
     [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update reminders set vid=%d where vid=%d", newVID, vo.vid];
+    self.sql= [NSString stringWithFormat: @"update reminders set vid=%ld where vid=%ld", (long)newVID, (long)vo.vid];
     [self toExecSql];
 
     self.sql = nil;
     
     
     [self updateVIDinFns:vo.vid new:newVID];
-    DBGLog(@"changed %d to %d",vo.vid,newVID);
+    DBGLog(@"changed %ld to %ld",(long)vo.vid,(long)newVID);
     vo.vid = newVID;
 }
 
@@ -2456,7 +2520,7 @@ if (addVO) {
 - (BOOL) voHasData:(NSInteger) vid
 {
 	self.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d;", (int) vid];
-	int rslt= (NSInteger) [self toQry2Int];
+	NSInteger rslt= (NSInteger) [self toQry2Int];
 	self.sql = nil;
 
 	if (rslt == 0)
@@ -2524,11 +2588,11 @@ if (addVO) {
 	id obj = [n object];
 	if ([obj isMemberOfClass:[valueObj class]]) {
 		valueObj *vo = (valueObj*) [n object];
-		DBGLog(@"trackerObj %@ updated by vo %d : %@ => %@",self.trackerName,vo.vid,vo.valueName, vo.value);
+		DBGLog(@"trackerObj %@ updated by vo %ld : %@ => %@",self.trackerName,(long)vo.vid,vo.valueName, vo.value);
 	
 	} else {
 		voState *vos= (voState*) obj;
-		DBGLog(@"trackerObj %@ updated by vo (voState)  %d : %@ => %@",self.trackerName,vos.vo.vid,vos.vo.valueName, vos.vo.value);
+		DBGLog(@"trackerObj %@ updated by vo (voState)  %ld : %@ => %@",self.trackerName,(long)vos.vo.vid,vos.vo.valueName, vos.vo.value);
 	}
 #endif
     
@@ -2539,7 +2603,7 @@ if (addVO) {
 #pragma mark manipulate tracker's valObjs
 
 - (valueObj *) copyVoConfig: (valueObj *) srcVO {
-	DBGLog(@"copyVoConfig: to= id %d %@ input vid=%d %@", self.toid, self.trackerName, srcVO.vid,srcVO.valueName);
+	DBGLog(@"copyVoConfig: to= id %ld %@ input vid=%ld %@", (long)self.toid, self.trackerName, (long)srcVO.vid,srcVO.valueName);
 	
 	valueObj *newVO = [[valueObj alloc] init];
 	newVO.vid = [self getUnique];
@@ -2561,7 +2625,7 @@ if (addVO) {
 #pragma mark utility methods
 
 - (void) describe {
-	DBGLog(@"tracker id %d name %@ dbName %@", self.toid, self.trackerName, self.dbName);
+	DBGLog(@"tracker id %ld name %@ dbName %@", (long)self.toid, self.trackerName, self.dbName);
     DBGLog(@"db ver %@ fn ver %@ created by rt ver %@ build %@",
            [self.optDict objectForKey:@"rtdb_version"],[self.optDict objectForKey:@"rtfn_version"],
            [self.optDict objectForKey:@"rt_version"],[self.optDict objectForKey:@"rt_build"]
@@ -2578,7 +2642,7 @@ if (addVO) {
 
 - (void) setFnVals {
     int currDate = (int) [self.trackerDate timeIntervalSince1970];
-    int nextDate = [self firstDate];
+    NSInteger nextDate = [self firstDate];
     
     if (0 == nextDate) {  // no data yet for this tracker so do not generate a 0 value in database
         return;
@@ -2591,7 +2655,7 @@ if (addVO) {
         [self loadData:nextDate];
         for (valueObj *vo in self.valObjTable) {
             if (VOT_FUNC == vo.vtype) {
-                [vo.vos setFnVals:nextDate];
+                [vo.vos setFnVals:(int)nextDate];
             }
         }
 
@@ -2611,7 +2675,7 @@ if (addVO) {
 }
 
 - (void) recalculateFns {
-	DBGLog(@"tracker id %d name %@ dbname %@ recalculateFns", self.toid, self.trackerName, self.dbName);
+	DBGLog(@"tracker id %ld name %@ dbname %@ recalculateFns", (long)self.toid, self.trackerName, self.dbName);
 
     [rTracker_resource setProgressVal:0.0f];
     [self setFnVals];

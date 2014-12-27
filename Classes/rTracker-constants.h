@@ -58,4 +58,6 @@
 
 #define CSVext @".csv"
 #define RTRKext @".rtrk"
+#define TmpTrkrData @".tdata"
+#define TmpTrkrNames @".tnames"
 

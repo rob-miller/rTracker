@@ -52,12 +52,17 @@ NSUInteger DeviceSystemMajorVersion() {
 
 + (BOOL) deleteFileAtPath:(NSString*)fp {
     NSError *err;
-    DBGLog(@"deleting file at path %@",fp);
-    if (YES != [[NSFileManager defaultManager] removeItemAtPath:fp error:&err]) {
-        DBGErr(@"Error deleting file: %@ error: %@", fp, err);
-        return NO;
+    if (YES == [[NSFileManager defaultManager] fileExistsAtPath:fp]) {
+        DBGLog(@"deleting file at path %@",fp);
+        if (YES != [[NSFileManager defaultManager] removeItemAtPath:fp error:&err]) {
+            DBGErr(@"Error deleting file: %@ error: %@", fp, err);
+            return NO;
+        }
+        return YES;
+    } else {
+        DBGLog(@"request to delete non-existent file at path %@",fp);
+        return YES;
     }
-    return YES;
 }
 
 //---------------------------
@@ -74,9 +79,9 @@ BOOL hasAmPm=NO;
 
 // from http://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/TextLayout/Tasks/CountLines.html
 // Text Layout Programming Guide: Counting Lines of Text
-+ (unsigned int) countLines:(NSString*)str {
++ (NSUInteger) countLines:(NSString*)str {
     
-    unsigned int numberOfLines, index, stringLength = [str length];
+    NSUInteger numberOfLines, index, stringLength = [str length];
     
     for (index = 0, numberOfLines = 0; index < stringLength; numberOfLines++)
         index = NSMaxRange([str lineRangeForRange:NSMakeRange(index, 0)]);
@@ -144,6 +149,8 @@ BOOL hasAmPm=NO;
 
 
 //---------------------------
+#pragma mark -
+#pragma mark activity indicator support
 
 static UIActivityIndicatorView *activityIndicator=nil;
 static UIView *outerView;
@@ -309,6 +316,8 @@ static BOOL localDisable;
 }
 
 //---------------------------
+#pragma mark -
+#pragma mark option settings to remember
 
 static BOOL separateDateTimePicker=SDTDFLT;
 
@@ -343,6 +352,7 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 	DBGLog(@"updateSavePrivate:%d",savePrivate);
 }
 
+
 /*
 static BOOL hideRTimes=HIDERTIMESDFLT;
  
@@ -370,6 +380,10 @@ static BOOL toldAboutSwipe=false;
 
 
 //---------------------------
+
+#pragma mark -
+#pragma mark stash tracker
+
 static int lastStashedTid=0;
 
 + (void) stashTracker:(int)tid
@@ -434,6 +448,9 @@ static int lastStashedTid=0;
     }    
 }
 
+#pragma mark -
+#pragma mark sql
+
 
 + (NSString*) fromSqlStr:(NSString*) instr {
     NSString *outstr = [instr stringByReplacingOccurrencesOfString:@"''" withString:@"'"];
@@ -478,6 +495,9 @@ static int lastStashedTid=0;
 }
 
 //---------------------------------------
+
+#pragma mark -
+#pragma mark keyboard support
 
 + (void) willShowKeyboard:(NSNotification*)n view:(UIView*)view boty:(CGFloat)boty {
 
@@ -568,4 +588,223 @@ void systemAudioCallback (SystemSoundID ssID,void *clientData) {
 }
 
 
+
+//---------------------------
+#pragma mark -
+#pragma mark launchImage support
+
+// figure out launchImage
+/*
+static BOOL getOrientEnabled=false;
+
++(void) enableOrientationData
+{
+    if (getOrientEnabled) return;
+    //[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    getOrientEnabled=true;
+}
++(void) disableOrientationData
+{
+    if (! getOrientEnabled) return;
+    //[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    getOrientEnabled=false;
+}
+*/
++(BOOL)isDeviceiPhone
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        return TRUE;
+    }
+    
+    return FALSE;
+}
+
++(BOOL)isDeviceiPhone4
+{
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    // iphone6+  414, 736
+    // iphone6   375, 667
+    // iphone 5s 320, 568
+    // iphone 5  320, 568
+    // iphone 4s 320, 480
+    
+    
+    if ((size.height==480 && size.width==320) || (size.height==320 && size.width==480) )
+        return TRUE;
+    
+    return FALSE;
+}
+
+
++(BOOL)isDeviceRetina
+{
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
+        ([UIScreen mainScreen].scale == 2.0))        // Retina display
+    {
+        return TRUE;
+    }
+    else                                          // non-Retina display
+    {
+        return FALSE;
+    }
+}
+
+
++(BOOL)isDeviceiPhone5
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && (! [rTracker_resource isDeviceiPhone4]))
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
++(UIDeviceOrientation) getOrientationFromWindow
+{
+    UIWindow* window = [UIApplication sharedApplication].keyWindow;
+    if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+    CGRect f = window.frame;
+    DBGLog(@"window : width %f   height %f ", f.size.width , f.size.height);
+    if (f.size.height > f.size.width) return UIDeviceOrientationPortrait;
+    if (f.size.width > f.size.height) return UIDeviceOrientationLandscapeLeft; // could go further here
+    return UIDeviceOrientationUnknown;
+}
+
++(CGFloat) getKeyWindowWidth
+{
+    UIWindow* window = [UIApplication sharedApplication].keyWindow;
+    if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+    return window.frame.size.width;
+}
+
+
+#define MAXDIM_4S 480
+#define MAXDIM_5 568
+#define MAXDIM_6 667
+#define MAXDIM_6P 736
+
+#define CHOOSE(x,y) [mb URLForResource:x withExtension:nil] ? x : y
++(NSString*)getLaunchImageName
+{
+    NSBundle* mb = [NSBundle mainBundle];
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    
+    CGFloat maxDim = size.width > size.height ? size.width : size.height;
+    NSString *retStr;
+    
+    DBGLog(@"width %f  height %f",size.width, size.height);
+    /*
+     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if (UIDeviceOrientationUnknown == orientation) DBGLog(@"orientation unknown");
+    if (UIDeviceOrientationPortraitUpsideDown == orientation) DBGLog(@"orientation portrait upside down");
+    if (UIDeviceOrientationPortrait == orientation) DBGLog(@"orientation portrait");
+    */
+    
+    if ([self isDeviceiPhone])
+    {
+        if (maxDim < MAXDIM_4S) {
+            retStr = @"LaunchImage.png";                                                // non-retina iPhone
+        } else if (maxDim < MAXDIM_5) {
+            retStr = CHOOSE(@"LaunchImage-700@2x.png",@"LaunchImage@2x.png");             // iPhone 4s
+        } else if (maxDim < MAXDIM_6) {
+            retStr = CHOOSE(@"LaunchImage-700-568h@2x.png",@"LaunchImage-568h@2x.png");   // iPhone 5
+        } else if (maxDim <MAXDIM_6P) {
+            retStr = @"LaunchImage-800-667h@2x.png";                                      // iPhone 6
+        } else if (size.height < size.width) {                                          // if landscape
+            retStr = @"LaunchImage-800-Landscape-736h@3x.png";                            // iPhone 6+ or larger
+        } else {
+            retStr = @"LaunchImage-800-Portrait-736h@3x.png";                             // default: iPhone 6+ or larger, portrait
+        }
+    } else {     // iPad
+        if (size.height < size.width) {                                                 // if landscape  -- does not work at startup for ios7, orientation reports 'unknown'
+            if ([UIScreen mainScreen].scale == 1.0) {
+                retStr = CHOOSE(@"LaunchImage-700-Landscape~ipad.png", @"LaunchImage-Landscape~ipad.png");           // non-retina iPad
+            } else {
+                retStr = CHOOSE(@"LaunchImage-700-Landscape@2x~ipad.png", @"LaunchImage-Landscape@2x~ipad.png");     // retina iPad or larger
+            }
+        } else {
+            if ([UIScreen mainScreen].scale == 1.0) {
+                retStr = CHOOSE(@"LaunchImage-700-Portrait~ipad.png", @"LaunchImage-Portrait~ipad.png");           // non-retina iPad
+            } else {
+                retStr = CHOOSE(@"LaunchImage-700-Portrait@2x~ipad.png", @"LaunchImage-Portrait@2x~ipad.png");     // default: retina iPad or larger
+            }
+        }
+    }
+    DBGLog(@"LaunchImage: %@",retStr);
+    return(retStr);
+}
+
+
+/**************************
+ 
+ 640x1136   LaunchImage-568h@2x.png                iphone 5 retina
+ LaunchImage-700-568h@2x.png
+ LaunchImage-700-Landscape@2x~ipad.png
+ LaunchImage-700-Landscape~ipad.png
+ LaunchImage-700-Portrait@2x~ipad.png
+ LaunchImage-700-Portrait~ipad.png
+ LaunchImage-700@2x.png
+ 2048x1496  LaunchImage-Landscape@2x~ipad.png      ipad landscape retina
+ 1024x768   LaunchImage-Landscape~ipad.png         ipad landscape
+ 1536x2008  LaunchImage-Portrait@2x~ipad.png       ipad portrait retina
+ 768x1004   LaunchImage-Portrait~ipad.png          ipad portrait
+ 768x1024
+ 320x480    LaunchImage.png                        iphone 3gs
+ 640x960    LaunchImage@2x.png                     iphone retina
+ 750x1334   LaunchImage-800-667h@2x.png            iPhone 6
+ 1242x2208  LaunchImage-800-Portrait-736h@3x.png   iPhone 6 Plus Portrait
+ 
+ 
+ 
+ 
+ 
+ iphone6+  414, 736
+ iphone6   375, 667
+ iphone 5s 320, 568
+ iphone 5  320, 568
+ iphone 4s 320, 480
+ ipad retina 768, 1024
+ ipad air    768, 1024
+ ipad2       768, 1024
+ 
+ LaunchImage-568h@2x.png
+ LaunchImage-700-568h@2x.png
+ LaunchImage-700-Landscape@2x~ipad.png
+ LaunchImage-700-Landscape~ipad.png
+ LaunchImage-700-Portrait@2x~ipad.png
+ LaunchImage-700-Portrait~ipad.png
+ LaunchImage-700@2x.png
+ LaunchImage-800-667h@2x.png
+ LaunchImage-800-Landscape-736h@3x.png
+ LaunchImage-800-Portrait-736h@3x.png
+ LaunchImage-Landscape@2x~ipad.png
+ LaunchImage-Landscape~ipad.png
+ LaunchImage-Portrait@2x~ipad.png
+ LaunchImage-Portrait~ipad.png
+ LaunchImage.png
+ LaunchImage@2x.png
+ 
+ image name :
+ The LaunchImages are special, and aren't actually an asset catalog on the device. If you look using iFunBox/iExplorer/etc (or on the simulator, or in the build directory) you can see the final names, and then write code to use them
+ 
+ 
+ /Default-568h@2x.png
+ /Default-667h-Landscap@2x.png
+ /Default-667h@2x.png
+ /Default-736h-Landscape@3x.png
+ /Default-736h@3x.png
+ /Default-iphone.png
+ /Default-Landscape-ipad.png
+ /Default-Landscape@2x-ipad.png
+ /Default-Portrait-ipad.png
+ /Default-Portrait@2x-ipad.png
+ /Default.png
+ /Default@2x-iphone.png
+ /Default@2x.png
+ /Default~iphone.png
+ 
+
+ 
+ *************************/
 @end

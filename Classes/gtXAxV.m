@@ -97,8 +97,8 @@
 
         //DBGLog(@"ds= _%@_  ts= _%@_",ds,ts);  // US region gets comma at end of ds
         
-		CGSize dsize = [ds sizeWithFont:self.myFont];
-		CGSize tsize = [ts sizeWithFont:self.myFont];
+        CGSize dsize = [ds sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
+        CGSize tsize = [ts sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
         
 		x-= DOFFST;
 		if ((i == 1
@@ -106,7 +106,7 @@
 			dateStep < 24*60*60
 			||
              i == XTICKS) && x>nextXt) {
-            [ts drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];
+            [ts drawAtPoint:(CGPoint) {x,y} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
             nextXt = x+tsize.width;
         }
 		
@@ -119,7 +119,7 @@
              i == XTICKS) && x>(nextXd+10.0f)) {
             if ((i != 1) && (i != XTICKS))
                 AddLineTo(x2, y2);
-            [ds drawAtPoint:(CGPoint) {x,y} withFont:self.myFont];
+            [ds drawAtPoint:(CGPoint) {x,y} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
             nextXd = x+dsize.width;
         }
 		

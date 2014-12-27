@@ -9,6 +9,7 @@
 #import "voState.h"
 #import "rTracker-constants.h"
 #import "configTVObjVC.h"
+#import "rTracker-resource.h"
 
 #import "vogd.h"
 
@@ -133,7 +134,7 @@
 	//-- privacy level textfield
 	
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -173,6 +174,7 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor=nil;
 	} else {
 		// the cell is being recycled, remove old embedded controls
 		UIView *viewToRemove = nil;
@@ -193,7 +195,7 @@
 	bounds.size.width = checkImage.size.width ; //CHECKBOX_WIDTH; // cell.frame.size.width;
 	bounds.size.height = checkImage.size.height ; //self.tracker.maxLabel.height + 2*BMARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
      */
-    bounds.size.width = 30.0f;
+    bounds.size.width = 30.0f;  // for checkbox
     bounds.size.height = 30.0f;
 	
 
@@ -210,34 +212,66 @@
 		[cell.contentView addSubview:self.vo.checkButtonUseVO];
 	//}
 	
-	// cell label top row right 
+    cell.backgroundColor = [UIColor clearColor];
+
+    // cell label top row right
 	
 	bounds.origin.x += checkImage.size.width + MARGIN;
-	bounds.size.width = cell.frame.size.width - checkImage.size.width - (2.0*MARGIN);
+    
+    // [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    bounds.size.width =  screenSize.width - checkImage.size.width - (2.0*MARGIN); //cell.frame.size.width - checkImage.size.width - (2.0*MARGIN);
 	bounds.size.height = maxLabel.height + MARGIN; //CELL_HEIGHT_TALL/2.0; //self.tracker.maxLabel.height + BMARGIN;
 	
+
+    NSArray *splitStrArr = [self.vo.valueName componentsSeparatedByString:@"|"];
+    if (1<[splitStrArr count]) {
+        bounds.size.width /= 2.0;
+    }
 	UILabel *label = [[UILabel alloc] initWithFrame:bounds];
 	label.tag=kViewTag;
 	label.font = [UIFont boldSystemFontOfSize:18.0];
-    label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
-	label.textColor = [UIColor blackColor];
-	label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
-	label.contentMode = UIViewContentModeTopLeft;
-	label.text = self.vo.valueName;
+    label.textColor = [UIColor blackColor];
     label.alpha = 1.0;
+    label.backgroundColor = [UIColor clearColor];
+    //label.textColor = [UIColor blackColor];
+    
+    label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
+	//don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
+    label.contentMode = UIViewContentModeTopLeft;
+    label.text = splitStrArr[0]; //self.vo.valueName;
     //label.enabled = YES;
     DBGLog(@"enabled text= %@",label.text);
 
-    label.backgroundColor = [UIColor clearColor];
-    //label.textColor = [UIColor blackColor];
-    cell.backgroundColor = [UIColor clearColor];
 
 	[cell.contentView addSubview:label];
-	
+
+    if (1<[splitStrArr count]) {
+        bounds.origin.x += bounds.size.width;
+        bounds.size.width -= (2.0*MARGIN);
+        label = [[UILabel alloc] initWithFrame:bounds];
+        label.tag=kViewTag;
+        label.font = [UIFont boldSystemFontOfSize:18.0];
+        label.textColor = [UIColor blackColor];
+        label.alpha = 1.0;
+        label.backgroundColor = [UIColor clearColor];
+        //label.textColor = [UIColor blackColor];
+        
+        label.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentLeft;
+        // don't use - see above -- label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
+        label.contentMode = UIViewContentModeTopRight;
+        label.text = splitStrArr[1]; //self.vo.valueName;
+
+        //label.enabled = YES;
+        DBGLog(@"enabled text2= %@",label.text);
+        
+        [cell.contentView addSubview:label];
+    }
+  
 	bounds.origin.y = maxLabel.height + (3.0*MARGIN); //CELL_HEIGHT_TALL/2.0 + MARGIN; // 38.0f; //bounds.size.height; // + BMARGIN;
 	bounds.size.height = /*CELL_HEIGHT_TALL/2.0 ; // */ maxLabel.height + (1.5*MARGIN);
 	
-	bounds.size.width = cell.frame.size.width - (2.0f * MARGIN);
+	bounds.size.width = screenSize.width - (2.0f * MARGIN); // cell.frame.size.width - (2.0f * MARGIN);
 	bounds.origin.x = MARGIN; // 0.0f ;  //= bounds.origin.x + RMARGIN;
 	
     //DBGLog(@"votvenabledcell adding subview");
@@ -250,6 +284,7 @@
 	
 	CGRect bounds;
 	UITableViewCell *cell;
+    
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
 	//DBGLog(@"votvcell maxlabel= w= %f h= %f",maxLabel.width,maxLabel.height);
 	
@@ -259,6 +294,9 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        //cell.backgroundColor=nil;
+        //ell.backgroundColor = [UIColor clearColor];
+        //cell.backgroundColor = [UIColor blueColor];
         //DBGLog(@"new cell");
 	} else {
 		// the cell is being recycled, remove old embedded controls
@@ -271,16 +309,23 @@
         
         //DBGLog(@"recycled cell");
 	}
-
+    CGFloat cellWidth = cell.bounds.size.width;
+    DBGLog(@"cell width= %f",cellWidth);
+    DBGLog(@"kw width= %f",[rTracker_resource getKeyWindowWidth]);
+    
 	cell.textLabel.text = self.vo.valueName;
     //DBGLog(@"text= %@",cell.textLabel.text);
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.backgroundColor = [UIColor clearColor];
 	//cell.textLabel.tag = kViewTag;
+    
+    
+    //TODO: re-work here to put vo field right-justified in any size cell
+    
 	bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
 	bounds.origin.y = maxLabel.height - (MARGIN);
-	bounds.size.width = cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
+	bounds.size.width = [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;// cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
 	bounds.size.height = maxLabel.height + MARGIN;
 	
 	//DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);

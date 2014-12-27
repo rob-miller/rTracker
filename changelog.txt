@@ -1521,6 +1521,125 @@ TODO: regen all .rtrks on website
    - oops graph view generation now fast enough (?) that do not swap width and height at startup (ios8)
    - release as 1.1.10
 
+05 oct 2014
+   - add launch screens for different devices
+   
+09 oct 2014
+   - enable file encryption on databases
+
+15 oct 2014
+   - fill out icons for different devices (universal app)
+   - set 'toldAboutSwipe' in appDelegate if responding to notification but do not synchronise -- just want to avoid requester
+
+28 oct 2014
+   - implemented 'temp tracker data' file save, load, remove -- hopefully solve problem of losing unsaved data when leave/return to app
+
+02 nov 2014
+   - add safety 'temp tracker names' file parallel with 'temp traker data' -- names array must match valueNames, or delete files and return false
+   - highlight voTVEnabledCell and voTVCell where need to work on to set cell width for different hardware screens
+   
+27 nov 2014
+28 nov 2014
+   - working on background size for tableviews in bigger devices .. useTrackerController looks right and matches initial loaded image, rootViewController not right...
+29 nov 2014
+   - problem was selecting wrong (landscape) background image name because orientation returns 'unknown' when just starting up ... now some issues around cell lines
+
+30 nov 2014
+   - now trying to get rid of lines between cells - esp unused cells at end .. only rootview not useTracker...
+   -- got it!  MainWindow.xib still had tableview defined -- so two table views; removed
+   - getLaunchImageName does not know about all models (iphone 6's) .. also wrong for ipad2 (non-retina ipad)
+
+03 dec 2014
+04 dec 2014
+   - got all launch images correct for ios 7,8 -- still not named right for iphone 6+
+   - not getting simulator working for 6...
+
+10 dec 2014
+   - tested on Sam iPhone 5 with iOS 8.1.1, does not allow / suggest notifications as user reported
+   
+12 dec 2014
+`- added code to enable notifications under 8.1.1 -- not yet tested on Sam's phone but expect ok
+  - Database info reports if all notifications disabled in System Preferences
+  - work on LaunchImage code BUT at startup ios7.1 orientation unknown, when is known cannot seem to refresh tableView background
+  - progressing on useTrackerController display full width, but have crash now in ios 7 but not 8 -- utc viewDidLoad
+
+13 dec 2014
+   - fixed ios 7 crash -- setting maxLabel to 1/3 screen for bigger screens reulted in non-int coordinate somewhere, set to int and no crash
+   - fixed view problem on reloading launchImage - was that tableview still had old frame
+   - voDataEdit - lose xib; get frame width from key window;
+   - privacy password set up fucked up
+   - iOS 7 crash came back...
+
+14 dec 2014
+   - concluded will not support earlier iOS versions, current minimum will go to 7 (or maybe 8 if can't sort current 7.1 problem)
+   - got it! add -(void)loadView {  self.view = [UIView new]; }      // Ensure that we don't load an .xib file for this viewcontroller  [ after changing from .xib to programmatic view ]
+   - figured out problems with xibs resizing - rmove red 'fix' bars, don't add them
+   - worked out main problem with seeing ppw view, need to re-work geometries
+
+15 dec 2014
+   - switch all .xibs to current Xcode, iOS - autolayout etc. re-work start
+
+16 dec 2014
+   - remove separate date/time pref as date picker has resolution now [ oops, did not notice cannot set year now .. but can scoll back to previous year ]
+   - after many hours playing, got date picker view satisfactory with autolayout - see: http://stackoverflow.com/questions/20864823/springs-in-auto-layout-distribute-views-evenly-with-constraints-in-xcode-5
+   -- (1) anchor end objects; (2) spacer views between, all with width (height) equal to each other, leading/trailing (top/bottom) set to 0
+   - fix deprecated sizeWithFont -> [string sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17.0f]}];  [ use ceilf( )  on width, height results because result may be fractional ]
+
+17 dec 2014
+   - on creating replacement nib was unable to link referencing outlets because new xib does not know about class;
+   -- select file's owner, command-option-3 ( -> 'identity inspector'), set class to relevant string (addTrackerController)
+   - finished(?) addTrackerController xib init instead of programmatic setup
+   - updated certificates  ** note on updating provisioning profiles, do NOT delete any profiles, just revoke expired signing certs in member center, and request new from xcode (preferences / accounts / details)
+   - xib updated for addValObjController
+
+18 dec 2014
+   - got background image showing through for addTracker and addVaObj controllers ( spacer views not hidden / clearColor, addTracker worked when did not set background for tableview but set to clearColor)
+   - completed addValObjController xib update on code side
+   - completed notifyReminder, notifyReminderVC2 xib updates
+   - cleared ios7 change warnings on trackerObj
+   
+19 dec 2014
+   - clearing warnings
+   -- NSFontAttributeName:self.myFont -->  drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}
+   -- [str drawInRect:self.currRect withFont:self.myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter] -->
+   ---
+       NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+       paragraphStyle.lineBreakMode = NSLineBreakByClipping;
+       paragraphStyle.alignment = NSTextAlignmentCenter;
+       [str drawInRect:self.currRect withAttributes:@{NSFontAttributeName:self.myFont, NSParagraphStyleAttributeName: paragraphStyle}];
+   ---
+   - cleared all ios7 update warnings!
+   - graphs not labelled - suspect drawAtPoint withAttributes needs color?
+
+20 dec 2014
+   - yes on withAttributes:NSForegroundColorAttributeName, corrected above, corrected throughout
+   - status bar showing through graph title appears to be ios7 bug, not there in ios8
+   
+23 dec 2014
+   - have working fix for privacy views; not pretty, but same size for all devices. will fail on large keyboards....
+   - removed ppwV.xib as does not seem to be used
+   - check on deleteFileAtPath to avoid iOS error message
+   - tried to add 'default enabled' to slider but can't work out how to work with 'visited tracker but no change' action
+   - added 'swipe left to exit' for all views except useTrackerController (which is already swipe for previous entry -- can't get swipeUp to leave tracker to work)
+   - tweaked trackerlist table size so bottom entry accessible
+
+24 dec 2014
+   - added split 'enabled cell' (slider and multichoice) titles if contain '|' character
+   - fixed problem for larger displays, specifying 'autoresizingmask' for utc cells causes them to autoresize after initial rendering!
+
+25 dec 2014
+   - start on extra buttons for textbox edit -> search
+   - fix bugs handling addressbook access not granted
+   - more implementation on textbox searching
+
+26 dec 2014
+   - implemented search results in calendar, search result icon/alert report in utc, no exit on save if searchSet exists
+   - 'export all' now ignores privacy, goes to maxpriv (moved jumpMaxpriv into privacyV from rvc)
+   - implemented search results in graph
+   
+---commit ---
+
+   
 + check mail func as changing present view controller calls (ios6)
 
 + crash on turn back to portrait while re-calculating graph (deleted miles per us gal from car tracker)

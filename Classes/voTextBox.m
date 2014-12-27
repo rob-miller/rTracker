@@ -24,7 +24,7 @@
 @synthesize alphaArray=_alphaArray,namesArray=_namesArray,historyArray=_historyArray,namesNdx=_namesNdx,historyNdx=_historyNdx,parentUTC=_parentUTC;
 
 //@synthesize peopleDictionary,historyDictionary;
-@synthesize pv=_pv,showNdx=_showNdx;
+@synthesize pv=_pv,showNdx=_showNdx,accessAddressBook=_accessAddressBook, orAndSeg=_orAndSeg, setSearchSeg=_setSearchSeg;
 
 //BOOL keyboardIsShown=NO;
 
@@ -58,11 +58,13 @@
 
 - (void) tbBtnAction:(id)sender {
 	DBGLog(@"tbBtn Action.");
-	voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
+	//voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
+    voDataEdit *vde = [[voDataEdit alloc] init ];
 	vde.vo = self.vo;
 	self.devc = vde; // assign
     self.parentUTC = (useTrackerController*) [MyTracker.vc.navigationController visibleViewController];
-	[MyTracker.vc.navigationController pushViewController:vde animated:YES];
+
+    [MyTracker.vc.navigationController pushViewController:vde animated:YES];
     //[MyTracker.vc.navigationController push :vde animated:YES];
 	
 }
@@ -213,6 +215,15 @@
 #pragma mark -
 #pragma mark UITextViewDelegate
 
+- (IBAction)setSearchSegChanged:(id)sender {
+    if (0 == [self.setSearchSeg selectedSegmentIndex]) {
+        self.orAndSeg.hidden = YES;
+    } else {
+        self.orAndSeg.hidden = NO;
+    }
+}
+
+
 - (IBAction) addPickerData:(id)sender {
 	NSInteger row = 0;
 	NSString *str = nil;
@@ -225,7 +236,7 @@
 	if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
         if (0 == [self.namesArray count]) {
             [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here"];
-        } else {
+        } else if (self.accessAddressBook) {
             str = [NSString stringWithFormat:@"%@\n",(NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])))];
         }
 	} else {
@@ -244,7 +255,7 @@
 
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
-	DBGLog(@"segment changed: %d",ndx);
+	DBGLog(@"segment changed: %ld",(long)ndx);
     
     self.pv = nil;
     
@@ -256,8 +267,10 @@
             if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
                 [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
                 self.addButton.hidden = YES;
+                self.accessAddressBook = NO;
             } else {
                 self.addButton.hidden = NO;
+                self.accessAddressBook = YES;
             }
         } else {
             self.addButton.hidden = NO;
@@ -290,12 +303,42 @@
 	self.devc.navigationItem.rightBarButtonItem = nil;	// this will remove the "save" button
 	
     DBGLog(@"tb save: vo.val= .%@  tv.txt= %@",self.vo.value,self.textView.text);
-	if (! [self.vo.value isEqualToString:self.textView.text]) {
-		[self.vo.value setString:self.textView.text];
+    if (0 == [self.setSearchSeg selectedSegmentIndex]) {
+        if (! [self.vo.value isEqualToString:self.textView.text]) {
+            [self.vo.value setString:self.textView.text];
+            
+            self.vo.display = nil; // so will redraw this cell only
+            [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+        }
+    } else {
         
-        self.vo.display = nil; // so will redraw this cell only        
-		[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
-	}
+        NSSet *searchStrings = [NSSet setWithArray:[self.textView.text componentsSeparatedByString:@"\n"]];
+
+        NSString *sql = [NSString stringWithFormat:@"select distinct date from voData where id=%ld and (",(long)self.vo.vid]; // privacy ok because else can't see textbox
+        BOOL orAnd = [self.orAndSeg selectedSegmentIndex];
+        BOOL cont=NO;
+        for (NSString *ss in searchStrings) {
+            NSString *st = [ss stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            if (0< [st length]) {
+                if (cont) sql = [sql stringByAppendingString:(orAnd ? @" and " : @" or ")];
+                sql = [sql stringByAppendingString:[NSString stringWithFormat:@"val like '%%%@%%'",st]];
+                cont=YES;
+            };
+        }
+        
+        if(![sql hasSuffix:@"("]) {  // if ends with '(' then did not add any search terms
+            self.parentUTC.tracker.sql = [sql stringByAppendingString:@")"];
+            DBGLog(@"sql= %@",self.parentUTC.tracker.sql);
+            NSMutableArray *searchDates = [[NSMutableArray alloc] init];
+            [self.parentUTC.tracker toQry2AryI:searchDates];
+            if (0 < [searchDates count])
+                self.parentUTC.searchSet = [NSArray arrayWithArray:searchDates];
+            else
+                self.parentUTC.searchSet = nil;
+        } else
+            self.parentUTC.searchSet = nil;
+            
+    }
 }
 
 
@@ -480,7 +523,7 @@
 
 
 - (NSArray*) namesArray {
-    
+    if (! self.accessAddressBook) return nil;
 	if (nil == _namesArray) {
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);
         // ios6  ABAddressBookRef addressBook = ABAddressBookCreate();
@@ -505,8 +548,8 @@
         }
         
         if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
-            //[rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
-            CFRelease(addressBook);
+        //    [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            //CFRelease(addressBook);
             return nil;
         }
         
@@ -522,7 +565,7 @@
 						  peopleMutable,
 						  CFRangeMake(0, CFArrayGetCount(peopleMutable)),
 						  (CFComparatorFunction) ABPersonComparePeopleByName,
-						  (void*) ABPersonGetSortOrdering()
+						  (void*)(unsigned long) ABPersonGetSortOrdering()
 						  );
 
 		_namesArray = [[NSArray alloc] initWithArray:(__bridge NSArray*)peopleMutable];
@@ -538,7 +581,7 @@
 	if (nil == _historyArray) {
 		//NSMutableArray *his1 = [[NSMutableArray alloc] init];
 		NSMutableSet *s0 = [[NSMutableSet alloc] init];
-		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %d and val != '';",self.vo.vid];
+		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %ld and val != '';",(long)self.vo.vid];
 		NSMutableArray *his0 = [[NSMutableArray alloc] init];
 		[MyTracker toQry2AryS:his0];
 		for (NSString *s in his0) {
@@ -546,7 +589,7 @@
 #if DEBUGLOG
             NSArray *sepset= [s1 componentsSeparatedByString:@"\n"];
             DBGLog(@"s= %@",s1);
-            DBGLog(@"c= %d separated= .%@.",sepset.count,sepset);
+            DBGLog(@"c= %lu separated= .%@.",(unsigned long)sepset.count,sepset);
 #endif
 			[s0 addObjectsFromArray:[s1 componentsSeparatedByString:@"\n"]];
 		}
@@ -554,7 +597,7 @@
 		[s0 filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
 		_historyArray = [[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-        DBGLog(@"historyArray count= %d  content= .%@.",_historyArray.count,_historyArray);
+        DBGLog(@"historyArray count= %lu  content= .%@.",(unsigned long)_historyArray.count,_historyArray);
 		//historyArray = [[NSArray alloc] initWithArray:his1];
 		
 		//DBGLog(@"his array looks like:");
@@ -574,7 +617,7 @@
 
 - (NSMutableArray *) getNSMA:(id)dflt {
     int i;
-    int c = [self.alphaArray count];
+    NSUInteger c = [self.alphaArray count];
     
     NSMutableArray *tmpNSMA = [[NSMutableArray alloc] initWithCapacity:[self.alphaArray count]];
     for (i=0;i<c;i++)
@@ -670,7 +713,9 @@
 		return [self.alphaArray count];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			return [self.namesArray count];
+            if (self.accessAddressBook)
+                return [self.namesArray count];
+            else return 0;
 		} else {
 			return [self.historyArray count];
 		}
@@ -683,7 +728,8 @@
 		return (self.alphaArray)[row];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			return (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])));
+			if (self.accessAddressBook) return (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])));
+            else return @"";
 		} else {
 			return (self.historyArray)[row];
 		}
@@ -708,6 +754,7 @@
         } else {
             otherComponent = 0;
             if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
+                if (!self.accessAddressBook) return;
                 ABPropertyID abSortOrderProp = [self getABSortTok];
                 NSString *name =  (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)(self.namesArray)[row], abSortOrderProp));
                 if (nil == name) {
@@ -770,7 +817,7 @@
     if (0<ndx) {
         unichar c = [self.vo.value characterAtIndex:--ndx];
 
-        DBGLog(@".%@. lne=%d trim= .%@.",self.vo.value,ndx,[self.vo.value substringToIndex:ndx]);
+        DBGLog(@".%@. lne=%lu trim= .%@.",self.vo.value,(unsigned long)ndx,[self.vo.value substringToIndex:ndx]);
         DBGLog(@" %d %d %d : %d",[self.vo.value characterAtIndex:ndx-2],[self.vo.value characterAtIndex:ndx-1],[self.vo.value characterAtIndex:ndx],'\n');
         
         if (('\n' == c) || ('\r' == c)) {

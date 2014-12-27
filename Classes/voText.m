@@ -50,6 +50,8 @@
 
 
 - (UITextField*) dtf {
+    if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    
     if (nil == _dtf) {
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         

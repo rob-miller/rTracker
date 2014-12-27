@@ -124,8 +124,13 @@ static unsigned int theKey;
 - (void) sDraw:(NSString*)str {
 	
 	//[str drawAtPoint:self.currRect.origin withFont:myFont];
-	[str drawInRect:self.currRect withFont:self.myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
-	
+	//[str drawInRect:self.currRect withFont:self.myFont lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = NSLineBreakByClipping;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    [str drawInRect:self.currRect withAttributes:@{NSFontAttributeName:self.myFont, NSParagraphStyleAttributeName: paragraphStyle}];
 }
 
 - (void) setCurrPt:(int)x y:(int)y {

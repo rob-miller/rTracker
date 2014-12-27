@@ -24,6 +24,12 @@
 // UI element properties 
 @property (nonatomic,strong) IBOutlet UITextField *labelField;
 @property (nonatomic,strong) IBOutlet UIPickerView *votPicker;
+@property (nonatomic, strong) IBOutlet UIButton *infoBtn;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+
+- (IBAction) btnSetup:(id)sender;
+- (IBAction) labelFieldDone:(id)sender;
+
 
 +(CGSize) maxLabelFromArray:(const NSArray *)arr;
 

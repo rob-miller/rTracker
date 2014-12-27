@@ -8,6 +8,7 @@
 
 #import "gtVONameV.h"
 
+//TODO: is this used???
 
 @implementation gtVONameV
 
@@ -33,29 +34,29 @@
 
 
 - (void) drawCVOnextBtn:(CGContextRef)context {
-	CGSize tsize = [@"N" sizeWithFont:self.myFont];  // only need height
+    CGSize tsize = [@"N" sizeWithAttributes:@{NSFontAttributeName:self.myFont}];  // only need height
     CGPoint tpos = { self.bounds.size.width - tsize.width ,(tsize.height/2.0f) };  // right side
 	if (tpos.y > self.bounds.size.height)
 		tpos.y = self.bounds.size.height;
     
 	[self flipCTM:context];
-	[@"N" drawAtPoint:tpos withFont:self.myFont];
+	[@"N" drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
 	[self flipCTM:context];
 }
 
 - (void) drawCVOrefreshBtn:(CGContextRef)context {
-	CGSize tsize = [@"R" sizeWithFont:self.myFont];  // only need height
+    CGSize tsize = [@"R" sizeWithAttributes:@{NSFontAttributeName:self.myFont}];  // only need height
     CGPoint tpos = { self.bounds.size.width - (2.0f * tsize.width) ,(tsize.height/2.0f) };  // right side, 1 width in
 	if (tpos.y > self.bounds.size.height)
 		tpos.y = self.bounds.size.height;
     
 	[self flipCTM:context];
-	[@"R" drawAtPoint:tpos withFont:self.myFont];
+	[@"R" drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
 	[self flipCTM:context];
 }
 
 - (void) drawCVOName:(CGContextRef)context {
-    CGSize tsize = [self.currVO.valueName sizeWithFont:self.myFont];
+    CGSize tsize = [self.currVO.valueName sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
     CGPoint tpos = { 0.0f,(self.bounds.size.height - tsize.height)/2.0f }; // left side of view for vo name
     //CGPoint tpos = { ((self.bounds.size.width/2.0f) - tsize.width)/2.0f,((BORDER - tsize.height)/2.0f) };  // center left half
     //if (tpos.x < 0) 
@@ -64,7 +65,7 @@
         tpos.y = self.bounds.size.height;
     
     [self flipCTM:context];
-    [self.currVO.valueName drawAtPoint:tpos withFont:self.myFont];
+    [self.currVO.valueName drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
     [self flipCTM:context];
 }
 
@@ -86,8 +87,8 @@
 #if DEBUGLOG
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    return [NSString stringWithFormat:@"touch at %f, %f.  taps= %d  numTouches= %d",
-            touchPoint.x, touchPoint.y, [touch tapCount], [touches count]];
+    return [NSString stringWithFormat:@"touch at %f, %f.  taps= %lu  numTouches= %lu",
+            touchPoint.x, touchPoint.y, (unsigned long)[touch tapCount], (unsigned long)[touches count]];
 #endif
     return @"";
     

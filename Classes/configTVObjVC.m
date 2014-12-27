@@ -55,9 +55,14 @@
 
 - (void)btnDone:(UIButton *)btn
 {
-	if (self.vdlConfigVO && self.vo.vtype == VOT_FUNC) {
-		[((voFunction*)self.vo.vos) funcDone];
-	}
+    if (self.vdlConfigVO) {
+        // done editing value obj
+        if (self.vo.vtype == VOT_FUNC) {
+            [((voFunction*)self.vo.vos) funcDone];
+        }
+    } else {
+        // done editing tracker obj
+    }
 	
 	//ios6 [self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
@@ -114,11 +119,18 @@
 	}
 
     // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-568.png"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
+
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
 	   
     [super viewDidLoad];
+}
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self btnDone:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -295,7 +307,7 @@
 
 - (CGRect) configLabel:(NSString *)text frame:(CGRect)frame key:(NSString*)key addsv:(BOOL)addsv
 {
-	frame.size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]];
+    frame.size = [text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont labelFontSize]]}];
 	
 	UILabel *rlab = [[UILabel alloc] initWithFrame:frame];
 	rlab.text = text;
@@ -331,8 +343,10 @@
 	} else if ( btn == (self.wDict)[@"stdBtn"] ) {
 		okey = @"setstrackerdate"; dfltState=SETSTRACKERDATEDFLT;
 	} else if ( btn == (self.wDict)[@"sisBtn"] ) {
-		okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
-	} else if ( btn == (self.wDict)[@"tbnlBtn"] ) {
+        okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
+    } else if ( btn == (self.wDict)[@"sdeBtn"] ) {
+        okey = @"defaultenabledb"; dfltState=DEFAULTENABLEDBDFLT;
+    } else if ( btn == (self.wDict)[@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
 	} else if ( btn == (self.wDict)[@"tbniBtn"] ) {
 		okey = @"tbni"; dfltState=TBNIDFLT;
@@ -401,7 +415,7 @@
 - (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action {
 
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	frame.size.width = [label sizeWithFont:button.titleLabel.font].width + 4*SPACE;
+    frame.size.width = [label sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}].width + 4*SPACE;
 	if (frame.origin.x == -1.0f) {
 		frame.origin.x = self.view.frame.size.width - (frame.size.width + MARGIN); // right justify
 	}
@@ -609,7 +623,7 @@
 	labframe = [self configLabel:@"min:" frame:frame key:@"nminLab" addsv:NO];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-	CGFloat tfWidth = [@"9999999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -718,8 +732,8 @@
     self.to.sql = @"select count(*) from voConfig";
     int itemCount = [self.to toQry2Int];
     
-    titleStr = [NSString stringWithFormat:@"tracker number %d\n%d items\n%d date entries\n%d data points",
-                self.to.toid, itemCount, dateEntries,dataPoints];
+    titleStr = [NSString stringWithFormat:@"tracker number %ld\n%d items\n%d date entries\n%d data points",
+                (long)self.to.toid, itemCount, dateEntries,dataPoints];
     
     self.to.sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
     int orphanDatapoints = [self.to toQry2Int];
@@ -746,6 +760,7 @@
     }
     
     titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
+
     
     //if (NO == [rTracker_resource getHideRTimes]) {
         for (int i=0; i<[eventArray count]; i++)
@@ -759,6 +774,18 @@
             }
         }
     //}
+
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
+        // ios 8.1 must register for notifications
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+        UIUserNotificationSettings* uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
+            //[rTracker_resource alert:@"notifications disabled" msg:@"Please enable notifications for rTracker in System Preferences."];
+            titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
+        }
+#endif
+    }
+    
 
     
 //#endif
@@ -814,7 +841,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	CGFloat tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -843,7 +870,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	tfWidth = [@"999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    tfWidth = [@"999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	

@@ -90,17 +90,26 @@ static int selSegNdx=SegmentEdit;
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
 
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
-    //self.table.backgroundView = bg;
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    self.table.backgroundColor = [UIColor clearColor];
+    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.table.separatorColor = [UIColor clearColor];
     
     // set graph paper background
     //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
 
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+
 	[super viewDidLoad];
 }
 
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -152,7 +161,7 @@ static int selSegNdx=SegmentEdit;
 
 - (IBAction) modeChoice:(id)sender {
 
-	switch (selSegNdx = [sender selectedSegmentIndex]) {
+	switch (selSegNdx = (int) [sender selectedSegmentIndex]) {
 		case SegmentEdit :
 			//DBGLog(@"ctlc: set edit mode");
 			[self.table setEditing:NO animated:YES];
@@ -179,7 +188,7 @@ static int selSegNdx=SegmentEdit;
 - (void) delTracker
 {
 	NSUInteger row = [self.deleteIndexPath row];
-	DBGLog(@"checkTrackerDelete: will delete row %d ",row);
+	DBGLog(@"checkTrackerDelete: will delete row %lu ",(unsigned long)row);
 	[self.tlist deleteTrackerAllRow:row];
 	//[self.deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
 	//					   withRowAnimation:UITableViewRowAnimationFade];
@@ -190,7 +199,7 @@ static int selSegNdx=SegmentEdit;
 
 - (void) delTrackerRecords {
 	NSUInteger row = [self.deleteIndexPath row];
-	DBGLog(@"checkTrackerDelete: will delete records only for row %d ",row);
+	DBGLog(@"checkTrackerDelete: will delete records only for row %lu ",(unsigned long)row);
 	[self.tlist deleteTrackerRecordsRow:row];
 	[self.tlist reloadFromTLT];
 }
@@ -244,6 +253,7 @@ static int selSegNdx=SegmentEdit;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.backgroundColor=nil;
     }
     
 	// Configure the cell.
@@ -263,7 +273,7 @@ static int selSegNdx=SegmentEdit;
 	NSUInteger fromRow = [fromIndexPath row];
 	NSUInteger toRow = [toIndexPath row];
 	
-	DBGLog(@"ctlc: move row from %d to %d",fromRow, toRow);
+	DBGLog(@"ctlc: move row from %lu to %lu",(unsigned long)fromRow, (unsigned long)toRow);
 	[self.tlist reorderTLT :fromRow toRow:toRow];
 	[self.tlist reorderFromTLT];
 	
@@ -276,7 +286,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *acTitle;
     NSString *tname = (self.tlist.topLayoutNames)[[indexPath row]];
     
-	int toid = [self.tlist getTIDfromIndex:[indexPath row]];
+	NSInteger toid = [self.tlist getTIDfromIndex:[indexPath row]];
 	trackerObj *to = [[trackerObj alloc] init:toid];
 	int entries = [to countEntries];
     NSString *delRecTitle;
@@ -313,19 +323,20 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	//DBGLog(@"configTList selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
 	
 	if (selSegNdx == SegmentEdit) {
-		int toid = [self.tlist getTIDfromIndex:row];
-		DBGLog(@"will config toid %d",toid);
+		NSInteger toid = [self.tlist getTIDfromIndex:row];
+		DBGLog(@"will config toid %ld",(long)toid);
 		
 		addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 		atc.tlist = self.tlist;
         trackerObj *tto = [[trackerObj alloc] init:toid];
 		atc.tempTrackerObj = tto;
-	
+        [tto removeTempTrackerData];  // ttd array no longer valid if make any changes, can't be sure from here so wipe it
+
 		[self.navigationController pushViewController:atc animated:YES];
         //[atc.tempTrackerObj release]; // rtm 05 feb 2012 +1 alloc/init, +1 atc.temptto retain 
 	} else if (selSegNdx == SegmentCopy) {
-		int toid = [self.tlist getTIDfromIndex:row];
-		DBGLog(@"will copy toid %d",toid);
+		NSInteger toid = [self.tlist getTIDfromIndex:row];
+		DBGLog(@"will copy toid %ld",(long)toid);
 
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];

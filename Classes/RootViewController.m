@@ -24,8 +24,9 @@
 
 @implementation RootViewController
 
+@synthesize tableView=_tableView;
 @synthesize tlist=_tlist, refreshLock=_refreshLock;
-@synthesize privateBtn=_privateBtn, helpBtn=_helpBtn, privacyObj=_privacyObj, addBtn=_addBtn, editBtn=_editBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, initialPrefsLoad=_initialPrefsLoad,stashedPriv=_stashedPriv, readingFile=_readingFile, stashedTIDs=_stashedTIDs, scheduledReminderCounts=_scheduledReminderCounts;
+@synthesize privateBtn=_privateBtn, helpBtn=_helpBtn, privacyObj=_privacyObj, addBtn=_addBtn, editBtn=_editBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, initialPrefsLoad=_initialPrefsLoad, readingFile=_readingFile, stashedTIDs=_stashedTIDs, scheduledReminderCounts=_scheduledReminderCounts;
 
 //openUrlLock, inputURL,
 
@@ -122,8 +123,8 @@ static BOOL InstallSamples;
     
     NSString *file;
 
-    [self jumpMaxPriv];
-    
+    //[self jumpMaxPriv];
+    [privacyV jumpMaxPriv];
     while ((file = [dirEnum nextObject])) {
         trackerObj *to = nil;
         NSString *fname = [file lastPathComponent];
@@ -157,10 +158,10 @@ static BOOL InstallSamples;
             DBGLog(@"%@ load input: %@ as %@",loadObj,fname,tname);
 
             tname = [fname substringToIndex:inmatch.location];
-            int tid = [self.tlist getTIDfromName:tname];
+            NSInteger tid = [self.tlist getTIDfromName:tname];
             if (tid) {
                 to = [[trackerObj alloc]init:tid];
-                DBGLog(@" found existing tracker tid %d with matching name",tid);
+                DBGLog(@" found existing tracker tid %ld with matching name",(long)tid);
             } else if (rtcsv) {
                 to = [[trackerObj alloc] init];
                 to.trackerName = tname;
@@ -168,7 +169,7 @@ static BOOL InstallSamples;
                 [to saveConfig];
                 [self.tlist addToTopLayoutTable:to];
                 newRtcsvTracker = YES;
-                DBGLog(@"created new tracker for rtcsv, id= %d",to.toid);
+                DBGLog(@"created new tracker for rtcsv, id= %ld",(long)to.toid);
             }
 
             if (nil != to) {
@@ -177,7 +178,7 @@ static BOOL InstallSamples;
                 NSString *target = [docsDir stringByAppendingPathComponent:file];
                 NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
                 
-                [rTracker_resource stashProgressBarMax:[rTracker_resource countLines:csvString]];
+                [rTracker_resource stashProgressBarMax:(int)[rTracker_resource countLines:csvString]];
 
                 if (csvString)
                 {
@@ -195,7 +196,8 @@ static BOOL InstallSamples;
         
     }
     
-    [self restorePriv];
+    //[self restorePriv];
+    [privacyV restorePriv];
     
     if (newRtcsvTracker) {
         [self refreshViewPart2];
@@ -375,8 +377,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     }
     */
     
-    [self jumpMaxPriv];
-    
+    //[self jumpMaxPriv];
+    [privacyV jumpMaxPriv];
     if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
         objName = @"plist";
@@ -388,12 +390,12 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         objName = @"rtrk";
     }
 
-    int c = [(NSArray *)tdict[@"valObjTable"] count];
-    int c2 = (nil == dataDict ? 0 : [dataDict count]);
+    int c = (int) [(NSArray *)tdict[@"valObjTable"] count];
+    int c2 = (nil == dataDict ? 0 : (int) [dataDict count]);
     if ((c>20) || (c2>20))
         [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,objName] waitUntilDone:NO];
     
-    DBGLog(@"ltd enter dict= %d",[tdict count]);
+    DBGLog(@"ltd enter dict= %lu",(unsigned long)[tdict count]);
     tid = [self loadTrackerDict:tdict tname:tname];
 
     if (nil != dataDict) {
@@ -414,8 +416,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     DBGLog(@"ltd/ldd finish");
     
     //[self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
-    [self restorePriv];
-    
+    //[self restorePriv];
+    [privacyV restorePriv];
     [rTracker_resource deleteFileAtPath:[url path]];
     //if ((c>20) || (c2>20))
         [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
@@ -865,11 +867,14 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
             
             CGFloat maxWidth = (bw2 - bw1)-8; //self.view.bounds.size.width - btnWidths;
             //DBGLog(@"view wid= %f bw1= %f bw2= %f",self.view.bounds.size.width ,bw1,bw2);
-            CGSize namesize = [tn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
-            CGFloat nameWidth = namesize.width;
+            //CGSize namesize = [tn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
+            CGSize namesize = [tn2 sizeWithAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:20.0f]}];
+            CGFloat nameWidth = ceilf( namesize.width );
             
-            CGSize lnamesize = [ltn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
-            CGFloat lnameWidth = lnamesize.width;
+            //CGSize lnamesize = [ltn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
+            CGSize lnamesize = [ltn2 sizeWithAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:20.0f]}];
+
+            CGFloat lnameWidth = ceilf( lnamesize.width );
             
             //DBGLog(@"name wid= %f  maxwid= %f  name= %@",nameWidth,maxWidth,tname);
             if ((nil != longName) && (lnameWidth < maxWidth)) {
@@ -883,6 +888,39 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     }
 }
 
+// copied from http://www.creativepulse.gr/en/blog/2013/how-to-find-the-visible-width-and-height-in-an-ios-app
+- (CGSize)get_visible_size {
+    CGSize result;
+    
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        result.width = size.height;
+        result.height = size.width;
+    }
+    else {
+        result.width = size.width;
+        result.height = size.height;
+    }
+    
+    size = [[UIApplication sharedApplication] statusBarFrame].size;
+    result.height -= MIN(size.width, size.height);
+    
+    if (self.navigationController != nil) {
+        size = self.navigationController.navigationBar.frame.size;
+        result.height -= MIN(size.width, size.height);
+    }
+    
+    if (self.tabBarController != nil) {
+        size = self.tabBarController.tabBar.frame.size;
+        result.height -= MIN(size.width, size.height);
+    }
+    DBGLog(@"w= %f  h= %f",result.width, result.height);
+    
+    return result;
+}
+
+
 - (void)viewDidLoad {
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
@@ -892,7 +930,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;  //rm for ios7
     } else {
         //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"] forBarMetrics:UIBarMetricsDefault];
+        //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"] forBarMetrics:UIBarMetricsDefault];
     }
     self.navigationItem.rightBarButtonItem = self.addBtn;
 	//[self.addBtn release];
@@ -903,7 +941,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
     [self refreshToolBar:NO];
     
-    self.stashedPriv = nil;
+    //self.stashedPriv = nil;
     //self.openUrlLock = NO;
     self.readingFile=NO;
     
@@ -916,20 +954,57 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     } else {
         self.navigationController.toolbar.translucent = YES;
         ///*  // not really translucent -- cannot see list behind toolbar
-        [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]
-                                                forToolbarPosition:0
-                                                barMetrics:UIBarMetricsDefault];
+        //[self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]
+        //                                        forToolbarPosition:0
+        //                                        barMetrics:UIBarMetricsDefault];
          //*/
         self.navigationController.toolbar.backgroundColor =[UIColor clearColor];
 
     }
 
     [self initTitle];
+    DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchImage"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    //NSString *li = [rTracker_resource getLaunchImageName];
+    //[self.view addSubview:bg];
+    //[self.view sendSubviewToBack:bg];
+    
+    //[self.view setBackgroundColor:[UIColor clearColor]];
+    //[self.view setBackgroundColor:[UIColor blueColor]];
+    //CGRect f = self.view.frame;
+    //CGRect f2 = bg.frame;
+//*
+
+    CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
+    CGFloat statusBarHeight = statusBarFrame.size.height;
+    CGRect tableFrame = bg.frame;
+    tableFrame.size.height = [self get_visible_size].height - ( 2 * statusBarHeight );
+    self.tableView = [[UITableView alloc]initWithFrame: tableFrame style:UITableViewStylePlain];
+    
+    //self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStylePlain];
+    //self.tableView = [[UITableView alloc]initWithFrame:bg.frame style:UITableViewStylePlain];
+    
+    //self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     self.tableView.backgroundView = bg;
+    //self.tableView.backgroundColor = [UIColor clearColor];
+    //self.tableView.backgroundColor = [UIColor redColor];
+
+    //TODO: get rid of lines for unused cells!!!!
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	
+    //self.tableView.separatorColor = [UIColor redColor];
+    //UIView *tfv = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 10)];
+    //tfv.backgroundColor = [UIColor yellowColor];
+    //self.tableView.tableFooterView = tfv;
+    
+    [self.view addSubview:self.tableView];
+  //*/
+    
 	//[payBtn release];
 	//[multiGraphBtn release];
 
@@ -955,8 +1030,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 											   object:app];
 	
 	 */
-    
-	//[self scrollState];
+
+    //[self scrollState];
 	[super viewDidLoad];
     
     //[self.privacyObj initLocation];
@@ -1081,7 +1156,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [self countScheduledReminders];
     
 }
-
+/*
 - (void) jumpMaxPriv {
     if (nil == self.stashedPriv) {
         self.stashedPriv = @([privacyV getPrivacyValue]);
@@ -1103,6 +1178,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     self.stashedPriv = nil;
     
 }
+*/
 
 - (void)viewWillAppear:(BOOL)animated {
 
@@ -1110,10 +1186,17 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     //[self loadInputFiles];  // do this here as restarts are infrequent
 	//[self refreshView];
 
-    [self restorePriv];
+    //[self restorePriv];
+    [privacyV restorePriv];
     //[self refreshViewPart2];
 
     [self.navigationController setToolbarHidden:NO animated:NO];
+    CGRect f = self.view.frame;
+    if (f.size.width != self.tableView.frame.size.width) {
+        f.origin.x = 0.0; f.origin.y = 0.0;
+        self.tableView.frame = f;
+        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    }
 
     [super viewWillAppear:animated];
 }
@@ -1207,6 +1290,17 @@ BOOL stashAnimated;
     [self performSelectorOnMainThread:@selector(doOpenTrackerRejectable:) withObject:nsntid waitUntilDone:YES];
     [self.stashedTIDs removeLastObject];
 }
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    CGRect f = self.view.frame;
+    f.origin.x = 0.0; f.origin.y = 0.0;
+    self.tableView.frame = f;
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    DBGLog(@"rotated...");
+    
+}
+
 - (void) viewDidAppear:(BOOL)animated {
 	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
     /*
@@ -1215,7 +1309,9 @@ BOOL stashAnimated;
         [self openInputURL];
     } else
 */
-
+/*
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+*/
     if (! self.readingFile) {
         if (0 < [self.stashedTIDs count]) {
             [self doRejectableTracker];
@@ -1491,11 +1587,11 @@ BOOL stashAnimated;
         return;
     }
     configTlistController *ctlc;
-    if(kIS_LESS_THAN_IOS7) {
+    //if(kIS_LESS_THAN_IOS7) {
+    //    ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
+    //} else {
         ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
-    } else {
-        ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController7" bundle:nil ];
-    }
+    //}
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
     
@@ -1570,6 +1666,12 @@ BOOL stashAnimated;
         //[bg release];
 
         cell.backgroundColor = [UIColor clearColor];
+        //cell.backgroundColor = [UIColor greenColor];
+        
+        //UIView* separatorLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
+        //separatorLineView.backgroundColor =[UIColor redColor];
+        //[cell.contentView addSubview:separatorLineView];
+
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -1578,7 +1680,7 @@ BOOL stashAnimated;
     NSNumber *tid = (self.tlist.topLayoutIDs)[row];
     int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
     int src = [(self.scheduledReminderCounts)[tid] intValue];
-   
+    //DBGLog(@"src: %d  erc:  %d",src,erc);
     NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
@@ -1590,14 +1692,19 @@ BOOL stashAnimated;
 	cell.textLabel.text = [NSString stringWithFormat:formatString,(self.tlist.topLayoutNames)[row]];  // gross but simplest offset option
     //cell.textLabel.backgroundColor = bg;
     //cell.textLabel.backgroundColor = [UIColor clearColor];
-    
+    /*
+     cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor clearColor];
+    [cell.contentView addSubview:[[UIView alloc]init]];
+    */
     return cell;
 }
 
-- (BOOL) exceedsPrivacy:(int)tid {
+- (BOOL) exceedsPrivacy:(NSInteger)tid {
     return ([privacyV getPrivacyValue] < [self.tlist getPrivFromLoadedTID:tid]);
 }
-- (void)openTracker:(int)tid rejectable:(BOOL)rejectable {
+- (void)openTracker:(NSInteger)tid rejectable:(BOOL)rejectable {
     //if (rejectable) {
     //    [self jumpMaxPriv];
     //}
@@ -1618,10 +1725,12 @@ BOOL stashAnimated;
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 
-	useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
-	utc.tracker = to;
+	//useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
+	useTrackerController *utc = [[useTrackerController alloc] init];
+    utc.tracker = to;
     utc.rejectable = rejectable;
     utc.tlist = self.tlist;  // required so reject can fix topLevel list
+    utc.saveFrame = self.view.frame; // self.tableView.frame; //  view.frame;
     
     //if (rejectable) {
     //    [self.navigationController pushViewController:utc animated:NO];

@@ -126,7 +126,7 @@
 	CGRect labframe = [ctvovc configLabel:@"stored value:" frame:frame key:@"ivLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-	CGFloat tfWidth = [@"9999999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight;
 	

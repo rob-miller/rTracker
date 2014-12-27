@@ -15,7 +15,7 @@
 
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-	DBGLog(@"tf begin editing vid=%d",self.vo.vid);
+	DBGLog(@"tf begin editing vid=%ld",(long)self.vo.vid);
     //*activeField = textField;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
@@ -32,7 +32,7 @@
 */
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	DBGLog(@"tf end editing vid=%d",self.vo.vid);
+	DBGLog(@"tf end editing vid=%ld",(long)self.vo.vid);
 	//[self tfvoFinEdit:textField];
 	textField.textColor = [UIColor blackColor];
 	[self.vo.value setString:textField.text];
@@ -56,6 +56,8 @@
 
 
 - (UITextField*) dtf {
+    if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    
     if (nil == _dtf) {
         DBGLog(@"init %@ : x=%f y=%f w=%f h=%f",self.vo.valueName,self.vosFrame.origin.x,self.vosFrame.origin.y,self.vosFrame.size.width,self.vosFrame.size.height);
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
@@ -103,12 +105,12 @@
         if ([self.vo.value isEqualToString:@""]) {
             if ([(self.vo.optDict)[@"nswl"] isEqualToString:@"1"] /* && ![to hasData] */) {  // only if new entry
                 trackerObj *to = (trackerObj*)self.vo.parentTracker;
-                to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d and date<%d",
-                          self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%ld and date<%d",
+                          (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
                 int v = [to toQry2Int];
                 if (v>0) {
-                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<%d order by date desc limit 1;",
-                              self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
+                              (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
                     NSString *r = [to toQry2Str];
                     if (SYSTEM_VERSION_LESS_THAN(@"5.0")) {
                         self.dtf.textColor = [UIColor lightGrayColor];

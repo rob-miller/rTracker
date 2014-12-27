@@ -26,6 +26,7 @@
 @implementation graphTrackerV
 
 @synthesize tracker=_tracker,gtvCurrVO=_gtvCurrVO,selectedVO=_selectedVO,doDrawGraph=_doDrawGraph,xMark=_xMark,parentGTVC=_parentGTVC;
+@synthesize searchXpoints=_searchXpoints;
 
 /*
 -(id)initWithFrame:(CGRect)r
@@ -467,7 +468,7 @@
 		case VOG_NONE:  // nothing to do!
 			break;
 		default:
-			DBGErr(@"plotVO: vGraphType %d not recognised",vo.vGraphType);
+			DBGErr(@"plotVO: vGraphType %ld not recognised",(long)vo.vGraphType);
 			break;
 	}
 }
@@ -511,7 +512,17 @@
         AddLineTo(self.xMark,self.frame.size.height);
         Stroke;
     }
-     
+    if (self.searchXpoints) {
+        //UIColor *smColor = [UIColor colorWithRed:0.2 green:0.5 blue:1.0 alpha:0.7];
+        UIColor *smColor = [UIColor colorWithRed:1.0 green:0.1 blue:0.1 alpha:1.0];
+        CGContextSetFillColorWithColor(context,smColor.CGColor);
+        CGContextSetStrokeColorWithColor(context,smColor.CGColor);
+        for (NSNumber *xm in self.searchXpoints) {
+            MoveTo([xm floatValue], 0.0f);
+            AddLineTo([xm floatValue],self.frame.size.height);
+            Stroke;
+        }
+    }
 }
 
 #pragma mark -
@@ -590,8 +601,8 @@
     
 	UITouch *touch = [touches anyObject];
 	CGPoint touchPoint = [touch locationInView:self];
-	return [NSString stringWithFormat:@"touch at %f, %f.  taps= %d  numTouches= %d",
-            touchPoint.x, touchPoint.y, [touch tapCount], [touches count]];
+	return [NSString stringWithFormat:@"touch at %f, %f.  taps= %lu  numTouches= %lu",
+            touchPoint.x, touchPoint.y, (unsigned long)[touch tapCount], (unsigned long)[touches count]];
     //return @"";
 
 }

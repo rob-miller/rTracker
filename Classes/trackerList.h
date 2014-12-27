@@ -39,16 +39,16 @@
 - (void)reorderFromTLT;
 - (void)reloadFromTLT;
 
-- (int) getTIDfromIndex:(NSUInteger)ndx;
-- (int) getPrivFromLoadedTID:(int)tid;
+- (NSInteger) getTIDfromIndex:(NSUInteger)ndx;
+- (int) getPrivFromLoadedTID:(NSInteger)tid;
 
 - (BOOL)checkTIDexists:(NSNumber*)tid;
-- (int) getTIDfromName:(NSString*)str;
+- (NSInteger) getTIDfromName:(NSString*)str;
 - (NSArray*) getTIDFromNameDb:(NSString*)str;
 
 - (void) fixDictTID:(NSDictionary*)tdict;
-- (void) updateTLtid:(int)old new:(int)new;
-- (void) updateTID:(int)old new:(int)new;
+- (void) updateTLtid:(NSInteger)old new:(NSInteger)new;
+- (void) updateTID:(NSInteger)old new:(NSInteger)new;
 
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 

@@ -99,7 +99,7 @@
 }
 
 - (void) addToTopLayoutTable:(trackerObj*) tObj {
-    DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
+    DBGLog(@"%@ toid %ld",tObj.trackerName, (long)tObj.toid);
     
     [self.topLayoutIDs addObject:@(tObj.toid)];
     [self.topLayoutNames addObject:tObj.trackerName];
@@ -114,27 +114,27 @@
 	//[self toQry2Log];
     //DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
 	//DBGTLIST(self);
-	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%d;",tObj.toid];
-	int rank = [self toQry2Int];  // returns 0 if not found 
+	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%ld;",(long)tObj.toid];
+	NSInteger rank = [self toQry2Int];  // returns 0 if not found
 	if (rank == 0) {
         DBGLog(@"rank not found");
 	} else {
-        self.sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%i and priv <= %i;",rank,[privacyV getPrivacyValue]];
+        self.sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%li and priv <= %i;",(long)rank,[privacyV getPrivacyValue]];
         if (1 < [self toQry2Int]) {
-            DBGLog(@"too many at rank %i",rank);
+            DBGLog(@"too many at rank %li",(long)rank);
             rank = 0;
         }
     }
 	if (rank == 0) {
 		rank = [self.topLayoutNames count];  // so put at end
-        DBGLog(@"rank adjust, set to %d",rank);
+        DBGLog(@"rank adjust, set to %ld",(long)rank);
     }
     
     dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
     int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
     privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
-	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%i, %i, \"%@\", %i, %i);",
-				rank, tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal,[tObj enabledReminderCount]];
+	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%li, %li, \"%@\", %i, %i);",
+				(long)rank, (long)tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal,[tObj enabledReminderCount]];
 	[self toExecSql];
 	self.sql = nil;
 	
@@ -165,20 +165,20 @@
 		NSInteger rc = [(self.topLayoutReminderCount)[nrank] intValue];
         
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %d, \"%@\", %d, %d);",nrank+1,tid,[rTracker_resource toSqlStr:tracker], priv,rc];  // rank in db always non-0
+		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %ld, \"%@\", %ld, %ld);",nrank+1,(long)tid,[rTracker_resource toSqlStr:tracker], (long)priv,(long)rc];  // rank in db always non-0
 		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
 		self.sql = nil;
 		nrank++;
 	}
 }
 
-- (int) getTIDfromIndex:(NSUInteger)ndx {
+- (NSInteger) getTIDfromIndex:(NSUInteger)ndx {
 	return [(self.topLayoutIDs)[ndx] intValue];
 }
 
-- (int) getPrivFromLoadedTID:(int)tid {
+- (int) getPrivFromLoadedTID:(NSInteger)tid {
     
-    int ndx = [self.topLayoutIDs indexOfObject:@(tid)];
+    NSInteger ndx = [self.topLayoutIDs indexOfObject:@(tid)];
     if (NSNotFound == ndx) {
         return MAXPRIV;
     }
@@ -194,7 +194,7 @@
 }
 
 // return tid for first matching name
-- (int) getTIDfromName:(NSString *)str {
+- (NSInteger) getTIDfromName:(NSString *)str {
     int ndx=0;
     for (NSString *tname in self.topLayoutNames) {
         if ([tname isEqualToString:str])
@@ -229,23 +229,23 @@
     }
 }
 
-- (void) updateTLtid:(int)old new:(int)new {
+- (void) updateTLtid:(NSInteger)old new:(NSInteger)new {
     if (-1 == new) {
-        self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%d",old];
+        self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%ld",(long)old];
     } else if (old == new) {
         return;
     } else {
-        self.sql = [NSString stringWithFormat:@"update toplevel set id=%d where id=%d",new, old ];
+        self.sql = [NSString stringWithFormat:@"update toplevel set id=%ld where id=%ld",(long)new, (long)old ];
     }
     [self toExecSql];  
     self.sql = nil;
     
     [self loadTopLayoutTable];
     
-    DBGLog(@"changed toplevel TID %D to %d",old,new);
+    DBGLog(@"changed toplevel TID %lD to %ld",(long)old,(long)new);
 }
 
-- (void) updateTID:(int)old new:(int)new {
+- (void) updateTID:(NSInteger)old new:(NSInteger)new {
 
     if (old == new) return;
     if ([self checkTIDexists:@(new)]) {
@@ -253,8 +253,8 @@
     }
 
     // rename file
-    NSString *oldFname= [NSString stringWithFormat:@"trkr%d.sqlite3",old];
-    NSString *newFname= [NSString stringWithFormat:@"trkr%d.sqlite3",new];
+    NSString *oldFname= [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)old];
+    NSString *newFname= [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)new];
     NSError *error;
 
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -339,7 +339,7 @@
 {
 	int tid = [(self.topLayoutIDs)[row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
-    DBGLog(@"delete tracker all name:%@ id:%d rowtext= %@", to.trackerName, to.toid, [self.topLayoutNames objectAtIndex:row] );
+    DBGLog(@"delete tracker all name:%@ id:%ldd rowtext= %@", to.trackerName,(long) (long)to.toid, [self.topLayoutNames objectAtIndex:row] );
     [to clearScheduledReminders];
 	[to deleteTrackerDB];
 	[self.topLayoutNames removeObjectAtIndex:row];
@@ -357,15 +357,22 @@
 
 - (void) exportAll {
     float ndx=1.0;
-    float all = [self.topLayoutIDs count];
+    [privacyV jumpMaxPriv];  // reasonable to do this now with default encryption enabled
     
-    for (NSNumber *tid in self.topLayoutIDs) {
+    self.sql = @"select id from toplevel";  // ignore current (self) list because subject to privacy  
+    NSMutableArray *idSet = [[NSMutableArray alloc] init];
+    [self toQry2AryI:idSet];
+    float all = [idSet count];
+    
+    for (NSNumber *tid in idSet) {
         trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
         [to saveToItunes];
         
         [rTracker_resource setProgressVal:(ndx/all)];
         ndx += 1.0;
     }
+    
+    [privacyV restorePriv];
 }
 
 - (BOOL) testConflict:(NSString*) tname {
@@ -453,20 +460,20 @@
 }
 
 - (void) restoreTracker:(NSString*)fn ndx:(NSUInteger)ndx {
-    int ftid = [[fn substringFromIndex:ndx] intValue];
+    NSInteger ftid = [[fn substringFromIndex:ndx] intValue];
     trackerObj *to;
-    int newTid = ftid;
+    NSInteger newTid = ftid;
     
     if ([self checkTIDexists:@(ftid)]) {
         newTid = [self getUnique];
     }
-    NSString *newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
+    NSString *newFn = [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)newTid];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *error;
 
     while ([fm fileExistsAtPath:[rTracker_resource ioFilePath:newFn access:DBACCESS]]) {
         newTid = [self getUnique];
-        newFn = [NSString stringWithFormat:@"trkr%d.sqlite3",newTid];
+        newFn = [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)newTid];
     }
     
     if ([fm moveItemAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]

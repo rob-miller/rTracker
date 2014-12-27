@@ -21,7 +21,7 @@
 //#import "privacyV.h"
 @class privacyV;
 
-@interface RootViewController : UITableViewController
+@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
 /*
  {
 
@@ -38,11 +38,12 @@
 }
 */
 
+@property (nonatomic, strong) UITableView *tableView;
+
 @property (nonatomic,strong) trackerList *tlist;
 @property (nonatomic, strong) privacyV *privacyObj;
 @property (atomic) int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
-@property (nonatomic,strong) NSNumber *stashedPriv;
 //@property (nonatomic) BOOL openUrlLock;
 //@property (nonatomic,retain) NSURL *inputURL;
 @property (nonatomic) BOOL readingFile;
@@ -66,12 +67,12 @@
 - (void) refreshToolBar:(BOOL)animated;
 - (void) refreshEditBtn;
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname;
-- (BOOL) exceedsPrivacy:(int)tid;
-- (void) openTracker:(int)tid rejectable:(BOOL)rejectable;
+- (BOOL) exceedsPrivacy:(NSInteger)tid;
+- (void) openTracker:(NSInteger)tid rejectable:(BOOL)rejectable;
 - (void) doOpenTracker:(NSNumber*)nsnTid;
 
-- (void) jumpMaxPriv;
-- (void) restorePriv;
+//- (void) jumpMaxPriv;
+//- (void) restorePriv;
 
 - (void) startRvcActivityIndicator;
 - (void) finishRvcActivityIndicator;

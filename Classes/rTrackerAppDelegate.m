@@ -6,6 +6,8 @@
 //  Copyright Robert T. Miller 2010. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
 #import "useTrackerController.h"
@@ -80,12 +82,22 @@
     //DBGLog(@"rt app delegate: app did finish launching");
 
     [rTracker_resource initHasAmPm];
+
+    // ios 8.1 must register for notifications
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
+    
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+
+    }
     
     // for when actually not running, not just in background:
     UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     if (nil != notification) {
         DBGLog(@"responding to local notification with msg : %@",notification.alertBody);
         //[rTracker_resource alert:@"launched with locNotification" msg:notification.alertBody];
+        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        [sud synchronize];
+        [rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]];
 
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
@@ -216,6 +228,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
 	//DBGLog(@"rt app delegate: app will terminate");
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -236,6 +249,7 @@
         }
     }
     application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
+    //[rTracker_resource disableOrientationData];
 }
 
 /*
@@ -251,6 +265,8 @@
     
 	DBGLog(@"rt app delegate: app did become active");
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
+
+    //[rTracker_resource enableOrientationData];
 
     [self.navigationController.visibleViewController viewDidAppear:YES];
 }

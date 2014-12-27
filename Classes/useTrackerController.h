@@ -23,7 +23,8 @@
 
 
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
-//UITableViewController 
+//@interface useTrackerController : UITableViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+//UITableViewController
 /*
  {
 	trackerObj *tracker;
@@ -61,13 +62,17 @@
 @property (nonatomic) int saveTargD;
 @property (nonatomic,strong) trackerCalViewController *tsCalVC;
 
+@property (nonatomic,strong) NSArray *searchSet;
+
 // UI element properties 
 
-@property (nonatomic, strong) IBOutlet UITableView *table;
+//@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIBarButtonItem *prevDateBtn;
 @property (nonatomic, strong) UIBarButtonItem *postDateBtn;
 @property (nonatomic, strong) UIBarButtonItem *currDateBtn;
 @property (nonatomic, strong) UIBarButtonItem *calBtn;
+@property (nonatomic, strong) UIBarButtonItem *searchBtn;
 @property (nonatomic, strong) UIBarButtonItem *delBtn;
 @property (nonatomic, strong) UIBarButtonItem *skip2EndBtn;
 @property (nonatomic, strong) UIBarButtonItem *flexibleSpaceButtonItem;

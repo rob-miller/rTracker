@@ -44,6 +44,34 @@ static int privacyValue=PRIVDFLT;
 	//[self.pvc.tableView reloadData ];
 }
 
+static NSNumber *stashedPriv=nil;
+
++ (void) jumpMaxPriv {
+    if (nil == stashedPriv) {
+        stashedPriv = @([privacyV getPrivacyValue]);
+        DBGLog(@"stashed priv %@",stashedPriv);
+    }
+    
+    //[self.privacyObj setPrivacyValue:MAXPRIV];  // temporary max privacy level so see all
+    privacyValue = MAXPRIV;
+    DBGLog(@"priv jump!");
+}
+
++ (void) restorePriv {
+    if (nil == stashedPriv) {
+        return;
+    }
+    //if (YES == self.openUrlLock) {
+    //    return;
+    //}
+    DBGLog(@"restore priv to %@",stashedPriv);
+    //[self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
+    privacyValue = (int) [stashedPriv integerValue];
+    stashedPriv = nil;
+    
+}
+
+
 - (int) lockDown {
     DBGLog(@"privObj: lockdown");
     int currP = privacyValue;
@@ -78,7 +106,9 @@ static int privacyValue=PRIVDFLT;
 
 - (id)initWithParentView:(UIView *)pv  {
     DBGLog(@"privV enter parent= x=%f y=%f w=%f h=%f",pv.frame.origin.x,pv.frame.origin.y,pv.frame.size.width, pv.frame.size.height);
-    CGRect frame = CGRectMake(0.0f, pv.frame.size.height,pv.frame.size.width,(pv.frame.size.height * PVH));
+    //CGRect frame = CGRectMake(0.0f, pv.frame.size.height,pv.frame.size.width,(pv.frame.size.height * PVH));
+    // like this but need to re-calc button positions too :-( CGRect frame = CGRectMake(pv.frame.size.width-320.0, pv.frame.size.height,320.0,171.0);
+    CGRect frame = CGRectMake(0.0, pv.frame.size.height,320.0,171.0);
 	DBGLog(@"privacyV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
@@ -88,9 +118,12 @@ static int privacyValue=PRIVDFLT;
         } else {
             //self.backgroundColor = [UIColor whiteColor];
             // set graph paper background
-            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+            // /*
+            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
             [self addSubview:bg];
             [self sendSubviewToBack:bg];
+             // */
+            //self.backgroundColor = [UIColor greenColor];
         }
         self.layer.cornerRadius = 8;
 		self.showing = PVNOSHOW;
@@ -262,6 +295,7 @@ static NSTimeInterval lastShow=0;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (0 == buttonIndex) {
         self.pwState = PWNEEDPASS;
+        //self.showing = PVSTARTUP;
         self.showing = PVQUERY;
     }
 }
@@ -278,11 +312,11 @@ static NSTimeInterval lastShow=0;
 	// (showing == newState)
 	//	return;
 	
-	if (PVNOSHOW != newState && PWNEEDPRIVOK == self.pwState) {  // first time if no password set, better warn not secure
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Private but not secure"
-                                                        message:@"Privacy: This feature can hide trackers and values from display, but the data will not be secure from a determined attacker."
+	if (PVNOSHOW != newState && PWNEEDPRIVOK == self.pwState) {  // first time if no password set, give some instructions
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy"
+                                                        message:@"This feature is for hiding trackers and values from display, with up to 99 filter levels.\nThe first step is to set a configuration password, then associate patterns with privacy levels as desired.\nThe password can be reset in System Preferences."
                                                            delegate:self 
-                                                  cancelButtonTitle:@"I'll remember" 
+                                                  cancelButtonTitle:@"Let's go"
                                                   otherButtonTitles:@"Skip for now",nil];
         [alert show]; 
         
@@ -301,6 +335,7 @@ static NSTimeInterval lastShow=0;
 			[self showPVQ:TRUE];
 			//[self.ppwv hidePPWVAnimated:TRUE];  // don't hide and re-show
             // crash[(RootViewController*) self.parentView refreshToolBar:YES];
+            //self.showing = PVCONFIG;
 		} else {
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:kAnimationDuration];
@@ -315,7 +350,12 @@ static NSTimeInterval lastShow=0;
 			
             [UIView commitAnimations];	
 		}
-		_showing = PVQUERY;
+        if (PVNEEDPASS == _showing) {
+            _showing = PVQUERY;
+            self.showing = PVCONFIG;
+            return;
+        }
+        _showing = PVQUERY;
 
 	} else if (PVNOSHOW == newState) {
 		[UIView beginAnimations:nil context:NULL];
@@ -451,9 +491,9 @@ static NSTimeInterval lastShow=0;
 	UIButton *rbtn = [UIButton buttonWithType:UIButtonTypeRoundedRect ];
     CGRect bframe;
     if (kIS_LESS_THAN_IOS7) {
-        bframe = (CGRect) {borg, [btitle sizeWithFont:[UIFont systemFontOfSize:18]]};
+        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}]};
     } else {
-        bframe = (CGRect) {borg, [btitle sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]]};
+        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
     }
 	bframe.origin.x -= bframe.size.width/2.0f;  // center now we know btn title size
 	rbtn.frame = bframe;
@@ -534,7 +574,7 @@ static NSTimeInterval lastShow=0;
 	if (_ssValLab == nil) {
 		CGRect lframe = (CGRect) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 			self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC)), // y = same as saveBtn
-			[@"100" sizeWithFont:[UIFont systemFontOfSize:18]]};
+            [@"100" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}]};
 		lframe.origin.x -= lframe.size.width/2.0f;
 		_ssValLab = [[UILabel alloc] initWithFrame:lframe];
         _ssValLab.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;

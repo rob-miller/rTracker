@@ -48,10 +48,10 @@
 #define DBGTLIST(tl) { \
     NSUInteger c = [tl.topLayoutNames count]; \
     NSUInteger i; \
-    DBGLog(@"tlist: %d items  privacy= %d",c,[privacyV getPrivacyValue]); \
+    DBGLog(@"tlist: %lu items  privacy= %d",(unsigned long)c,[privacyV getPrivacyValue]); \
     NSLog(@"n  id  priv   name (tlist)"); \
     for (i=0;i<c;i++) { \
-        NSLog(@" %d  %@  %@   %@",i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
+        NSLog(@" %lu  %@  %@   %@",(unsigned long)i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
     } \
     tl.sql=@"select rank, id, priv, name from toplevel order by rank"; \
     [tl toQry2Log]; \

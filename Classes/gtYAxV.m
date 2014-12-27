@@ -144,12 +144,17 @@
                 break;
                 
         }
-        CGSize vh = [vstr sizeWithFont:self.myFont];
-        [vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withFont:self.myFont];
+        //CGSize vh = [vstr sizeWithFont:self.myFont];
+        //[vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withFont:self.myFont];
+        
+        CGSize vh = [vstr sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
+        [vstr drawAtPoint:(CGPoint) {(x2 - vh.width ),(y - (vh.height/1.5f))} withAttributes:@{NSFontAttributeName:self.myFont, NSForegroundColorAttributeName:[UIColor whiteColor]}];
+        
 	}
     
-    [[self.vogd myGraphColor] set];
-    [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withFont:self.myFont];
+    //[[self.vogd myGraphColor] set];
+    [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName: [self.vogd myGraphColor]}];
+    //[self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withFont:self.myFont];
     [[UIColor whiteColor] set];
     
 	Stroke;
@@ -181,8 +186,8 @@
 #if DEBUGLOG
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    return [NSString stringWithFormat:@"touch at %f, %f.  taps= %d  numTouches= %d",
-            touchPoint.x, touchPoint.y, [touch tapCount], [touches count]];
+    return [NSString stringWithFormat:@"touch at %f, %f.  taps= %lu  numTouches= %lu",
+            touchPoint.x, touchPoint.y, (unsigned long)[touch tapCount], (unsigned long)[touches count]];
 #endif
     return @"";
     

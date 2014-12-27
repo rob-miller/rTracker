@@ -31,8 +31,8 @@
 - (void) deleteTDb;
 - (void) closeTDb ;
 
-- (int) getUnique;
-- (void) minUniquev:(int) minU;
+- (NSInteger) getUnique;
+- (void) minUniquev:(NSInteger) minU;
 
 - (void) toQry2AryS : (NSMutableArray *) inAry;
 - (void) toQry2AryIS : (NSMutableArray *) i1 s1: (NSMutableArray *) s1;
@@ -53,7 +53,7 @@
 
 - (int) toQry2Int;
 - (void) toQry2IntInt:(int*)i1 i2:(int*)i2;
-- (void) toQry2IntIntInt:(int*)i1 i2:(int*)i2 i3:(int*)i3;
+- (void) toQry2IntIntInt:(NSInteger*)i1 i2:(NSInteger*)i2 i3:(NSInteger*)i3;
 - (NSString *) toQry2Str;
 - (NSString *) toQry2I12aS1:(int *)arr;
 - (float) toQry2Float;

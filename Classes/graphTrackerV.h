@@ -28,6 +28,7 @@
 @property(nonatomic) BOOL doDrawGraph;
 @property(nonatomic) CGFloat xMark;
 @property(nonatomic,strong) id parentGTVC;
+@property(nonatomic,strong) NSArray *searchXpoints;
 
 //- (void)setTransform:(CGAffineTransform)newValue;
 

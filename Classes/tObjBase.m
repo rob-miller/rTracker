@@ -53,7 +53,7 @@
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
-	DBGLog(@"tObjBase: app will terminate: toid= %d",self.toid);
+	DBGLog(@"tObjBase: app will terminate: toid= %ld",(long)self.toid);
 	[self closeTDb];
 }
 
@@ -101,8 +101,12 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	//DBGLog(@"getTDb dbName= %@ id=%d",self.dbName,self.toid);
 	dbgNSAssert(self.dbName, @"getTDb called with no dbName set");
 	
-	if (sqlite3_open([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String], &_tDb) != SQLITE_OK) {
-		sqlite3_close(self.tDb);
+	//if (sqlite3_open([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String], &_tDb) != SQLITE_OK) {
+	if (sqlite3_open_v2([[rTracker_resource ioFilePath:self.dbName access:DBACCESS] UTF8String],
+                        &_tDb,
+                        SQLITE_OPEN_FILEPROTECTION_COMPLETE|SQLITE_OPEN_CREATE|SQLITE_OPEN_READWRITE,
+                        nil) != SQLITE_OK) {
+        sqlite3_close(self.tDb);
 		dbgNSAssert(0, @"error opening rTracker database");
 	} else {
 		//DBGLog(@"opened tDb %@",self.dbName);
@@ -152,7 +156,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 */
 
 - (void) deleteTDb {
-	DBGLog(@"deleteTDb dbName= %@ id=%d",self.dbName,self.toid);
+	DBGLog(@"deleteTDb dbName= %@ id=%ld",self.dbName,(long)self.toid);
 	dbgNSAssert(self.dbName, @"deleteTDb called with no dbName set");
 	sqlite3_close(self.tDb);
 	self.tDb = nil;
@@ -177,8 +181,8 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 #pragma mark -
 #pragma mark tObject support utilities
 
-- (int) getUnique {
-	int i;
+- (NSInteger) getUnique {
+	NSInteger i;
 	if (self.tDb == nil) {
 		++self.tuniq;
 		i = -self.tuniq;
@@ -186,20 +190,20 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	} else {
 		self.sql = @"select value from uniquev where id=0;";
 		i = [self toQry2Int];
-		DBGLog(@"id %d getUnique got %d",self.toid,i);
-		self.sql = [NSString stringWithFormat:@"update uniquev set value = %d where id=0;",i+1];
+		DBGLog(@"id %ld getUnique got %ld",(long)self.toid,(long)i);
+		self.sql = [NSString stringWithFormat:@"update uniquev set value = %ld where id=0;",(long)i+1];
 		[self toExecSql];
 		self.sql = nil;
 	}
 	return i;
 }
 
-- (void) minUniquev:(int) minU {
-    int i;
+- (void) minUniquev:(NSInteger) minU {
+    NSInteger i;
     self.sql = @"select value from uniquev where id=0;";
     i = [self toQry2Int];
     if (i <= minU) {
-		self.sql = [NSString stringWithFormat:@"update uniquev set value = %d where id=0;",minU+1];
+		self.sql = [NSString stringWithFormat:@"update uniquev set value = %ld where id=0;",(long)minU+1];
 		[self toExecSql];
 		self.sql = nil;
     }
@@ -214,17 +218,17 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 #pragma mark sql db errors
 
 - (void) tobPrepError {
-    DBGErr(@"tob error preparing -> %@ <- : %s toid %d dbName %@", self.sql, sqlite3_errmsg(self.tDb), self.toid, self.dbName);
+    DBGErr(@"tob error preparing -> %@ <- : %s toid %ld dbName %@", self.sql, sqlite3_errmsg(self.tDb), (long)self.toid, self.dbName);
 }
 
 - (void) tobDoneCheck:(int)rslt {
     if (rslt != SQLITE_DONE) {
-        DBGErr(@"tob error not SQL_DONE (%d) -> %@ <- : %s toid %d dbName %@", rslt, self.sql, sqlite3_errmsg(self.tDb), self.toid, self.dbName);
+        DBGErr(@"tob error not SQL_DONE (%d) -> %@ <- : %s toid %ld dbName %@", rslt, self.sql, sqlite3_errmsg(self.tDb), (long)self.toid, self.dbName);
     }
 }
 
 - (void) tobExecError {
-    DBGErr(@"tob error executing -> %@ <- : %s toid %d dbName %@", self.sql, sqlite3_errmsg(self.tDb), self.toid, self.dbName);
+    DBGErr(@"tob error executing -> %@ <- : %s toid %ld dbName %@", self.sql, sqlite3_errmsg(self.tDb), (long)self.toid, self.dbName);
 }
 
 #pragma mark -
@@ -511,7 +515,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 	SQLDbg(@"  returns %d %d",*i1,*i2);
 }
 
-- (void) toQry2IntIntInt:(int *)i1 i2:(int*)i2 i3:(int*)i3 {
+- (void) toQry2IntIntInt:(NSInteger *)i1 i2:(NSInteger*)i2 i3:(NSInteger*)i3 {
 	
 	SQLDbg(@"toQry2IntIntInt: %@ => _%@_",self.dbName,self.sql);
 	dbgNSAssert(_tDb,@"toQry2IntIntInt called with no tDb");

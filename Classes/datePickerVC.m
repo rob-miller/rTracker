@@ -12,7 +12,9 @@
 
 @implementation datePickerVC
 
-@synthesize myTitle=_myTitle, /*date,action,*/ dpr=_dpr, dateSetBtn=_dateSetBtn,entryNewBtn=_entryNewBtn,dateGotoBtn=_dateGotoBtn,navBar=_navBar,toolBar=_toolBar,datePicker=_datePicker;
+@synthesize myTitle=_myTitle, /*date,action,*/ dpr=_dpr, dateSetBtn=_dateSetBtn,entryNewBtn=_entryNewBtn,dateGotoBtn=_dateGotoBtn,navBar=_navBar,
+//toolBar=_toolBar,
+datePicker=_datePicker;
 
 - (IBAction) btnCancel:(UIButton*)btn
 {
@@ -25,23 +27,29 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	[[self.navBar.items lastObject] setTitle:self.myTitle];
+    //CGRect f = self.view.frame;
+    //f.size.width = [rTracker_resource getKeyWindowWidth];
+    //self.view.frame = f;
+    
     [super viewDidLoad];
-
+    /*f.origin.y= 416;
+    f.size.height = 44;
+    UIToolbar *tb = [ [UIToolbar alloc]initWithFrame:f ];
+    self.toolBar = tb;
+     */
+    /*
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
 								initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
 								target:self
 								action:@selector(btnCancel:)];
+    //[self setToolbarItems:@[cancelBtn]];
 	self.toolBar.items = @[cancelBtn];
-	
-    if (![rTracker_resource getSeparateDateTimePicker]) {
-        self.dtSegmentedControl.hidden = YES;
-        self.datePicker.datePickerMode = UIDatePickerModeDateAndTime;
-    }
+    */
     
-	self.datePicker.locale = [NSLocale currentLocale];
+	//self.datePicker.locale = [NSLocale currentLocale];
 	self.datePicker.maximumDate = [NSDate date];
 	self.datePicker.date = self.dpr.date;
-	self.datePicker.minuteInterval = 2;
+	//self.datePicker.minuteInterval = 2;
 	
 }
 
@@ -76,6 +84,9 @@
 #pragma mark -
 #pragma mark button actions
 
+- (IBAction)cancelEvent:(id)sender {
+}
+
 - (IBAction) entryNewBtnAction
 {
 	self.dpr.date = self.datePicker.date;
@@ -98,6 +109,7 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
+/*
 - (IBAction) dateModeChoice:(id)sender
 {
 	self.datePicker.maximumDate = [NSDate date];
@@ -115,7 +127,7 @@
 			break;
 	}
 }
-
+*/
 
 
 @end

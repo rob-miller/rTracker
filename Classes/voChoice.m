@@ -44,15 +44,15 @@
     NSUInteger segNdx = [self.segmentedControl selectedSegmentIndex];
     if (UISegmentedControlNoSegment != segNdx) {
 
-        NSString *val = (self.vo.optDict)[[NSString stringWithFormat:@"cv%d",segNdx]];
+        NSString *val = (self.vo.optDict)[[NSString stringWithFormat:@"cv%lu",(unsigned long)segNdx]];
         if (nil == val) {
-            rslt = [NSString stringWithFormat:@"%d",segNdx+1];
+            rslt = [NSString stringWithFormat:@"%lu",(unsigned long)segNdx+1];
         } else {
             rslt = val;
         }
 #if DEBUGLOG
         NSString *chTitle = [self.segmentedControl titleForSegmentAtIndex:segNdx];
-        DBGLog(@"get v for seg title %@ ndx %d rslt %@",chTitle,segNdx,rslt);  // why tf not just return fn on segNdx?
+        DBGLog(@"get v for seg title %@ ndx %lu rslt %@",chTitle,(unsigned long)segNdx,rslt);  // why tf not just return fn on segNdx?
 #endif
 /*
         for (i=0; i<CHOICES;i++) {
@@ -107,7 +107,7 @@
 {
     if (([sender selectedSegmentIndex] == [self getSegmentIndexForValue]) && self.vo.useVO) // check useVO in case programmed value is same as index 
         return;
-	DBGLog(@"segmentAction: selected segment = %d", [sender selectedSegmentIndex]);
+	DBGLog(@"segmentAction: selected segment = %ld", (long)[sender selectedSegmentIndex]);
 	[self.vo.value setString:[self getValueForSegmentChoice]];
     //TODO: vo.value setter should do enable/disable ?
     if (! self.vo.useVO) {
@@ -124,6 +124,8 @@
 }
 
 - (UISegmentedControl*) segmentedControl {
+    if (_segmentedControl && _segmentedControl.frame.size.width != self.vosFrame.size.width) _segmentedControl=nil;  // first time around thinks size is 320, handle larger devices
+
     if (nil == _segmentedControl) {
         //NSArray *segmentTextContent = [NSArray arrayWithObjects: @"0", @"one", @"two", @"three", @"four", nil];
         
@@ -139,12 +141,12 @@
         
         //CGRect frame = bounds;
         _segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
-        _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
+        //_segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
         if ([(NSString*) (self.vo.optDict)[@"shrinkb"] isEqualToString:@"1"]) {  
             int j=0;
             for (NSString *s in segmentTextContent) {
-                CGSize siz = [s sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+                CGSize siz = [s sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
                 [_segmentedControl setWidth:siz.width forSegmentAtIndex:j];
                 DBGLog(@"set width for seg %d to %f", j, siz.width);
                 j++;
@@ -184,7 +186,7 @@
     } else {
         int segNdx = [self getSegmentIndexForValue];
         if (self.segmentedControl.selectedSegmentIndex != segNdx) {
-            DBGLog(@"segmentedControl set value int: %d str: %@ segNdx: %d", [self.vo.value integerValue], self.vo.value,segNdx);
+            DBGLog(@"segmentedControl set value int: %ld str: %@ segNdx: %d", (long)[self.vo.value integerValue], self.vo.value,segNdx);
             // during loadCSV, not matching the string will cause a new c%d dict entry, so can be > CHOICES
             if (CHOICES > segNdx) {
                 // normal case
@@ -199,7 +201,7 @@
         }
     }
     //[self.segmentedControl sendActionsForControlEvents:UIControlEventValueChanged];
-    DBGLog(@"segmentedControl voDisplay: index %d", self.segmentedControl.selectedSegmentIndex);
+    DBGLog(@"segmentedControl voDisplay: index %ld", (long)self.segmentedControl.selectedSegmentIndex);
     
 	return self.segmentedControl;
 }
@@ -356,8 +358,8 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-    CGFloat tfvWidth = [@"999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
-	CGFloat tfWidth = [@"9999999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -493,10 +495,10 @@
         return inCsv;
     }
     int ndx;
-    int count = [optDict count];
+    NSUInteger count = [optDict count];
     int maxc=-1;
     int firstBlank = -1;
-    int lastColor=-1;
+    NSInteger lastColor=-1;
     DBGLog(@"inCsv= %@",inCsv);
     for (ndx=0; ndx <count;ndx++) {
         NSString *key = [NSString stringWithFormat:@"c%d",ndx];
@@ -542,7 +544,7 @@
     
     optDict[[NSString stringWithFormat:@"cc%d",maxc]] = @(lastColor);
 
-    DBGLog(@"created choice %@ choice c%d color %d",inCsv,maxc,lastColor);
+    DBGLog(@"created choice %@ choice c%d color %ld",inCsv,maxc,(long)lastColor);
     
     maxc++;  // +1 because value not 0-based, while c%d key is
     

@@ -92,8 +92,8 @@
 
     DBGLog(@"%@",self);
     to.sql = [NSString stringWithFormat:
-                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg, soundFileName) values (%d, %d, %d, %d,%d, %d, %d, %d, %d, %d, %d, %d, '%@', '%@')",
-                   self.rid,self.monthDays,self.weekDays,self.everyMode,self.everyVal,self.start, self.until, self.times, flags, self.tid,self.vid, self.saveDate, self.msg, self.soundFileName];
+                   @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg, soundFileName) values (%ld, %d, %d, %d,%ld, %ld, %ld, %ld, %d, %ld, %ld, %ld, '%@', '%@')",
+                   (long)self.rid,self.monthDays,self.weekDays,self.everyMode,(long)self.everyVal,(long)self.start, (long)self.until, (long)self.times, flags, (long)self.tid,(long)self.vid, (long)self.saveDate, self.msg, self.soundFileName];
     DBGLog(@"save sql= %@",to.sql);
     [to toExecSql];
     to.sql = nil;
@@ -248,25 +248,25 @@
     //self.saveDate=0;  // need to keep if set
 }
 
--(int) hrVal:(int)val {
+-(NSInteger) hrVal:(NSInteger)val {
     return val/60;
 }
 
--(int) mnVal:(int)val {
+-(NSInteger) mnVal:(NSInteger)val {
     return val % 60;
 }
 
 
 
--(NSString*)timeStr:(int)val {
+-(NSString*)timeStr:(NSInteger)val {
     if (-1 == val) {
         return @"-";
     }
-    return [NSString stringWithFormat:@"%02d:%02d",[self hrVal:val],[self mnVal:val]];
+    return [NSString stringWithFormat:@"%02ld:%02ld",(long)[self hrVal:val],(long)[self mnVal:val]];
 }
 
 - (NSString*) description {
-    NSString *desc = [NSString stringWithFormat:@"nr:%d ",self.rid];
+    NSString *desc = [NSString stringWithFormat:@"nr:%ld ",(long)self.rid];
 
     if (self.start > -1) {
         desc = [desc stringByAppendingString:[NSString stringWithFormat:@"start %@ ",[self timeStr:self.start]]];
@@ -290,27 +290,27 @@
 
         switch (self.everyMode) {
             case EV_HOURS:
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Hours ",self.everyVal]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %ld Hours ",(long)self.everyVal]];
                 break;
             case EV_DAYS:
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Days ",self.everyVal]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %ld Days ",(long)self.everyVal]];
                 break;
             case EV_WEEKS:
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Weeks ",self.everyVal]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %ld Weeks ",(long)self.everyVal]];
                 break;
             case EV_MONTHS:
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Months ",self.everyVal]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %ld Months ",(long)self.everyVal]];
                 break;
             default:   // EV_MINUTES
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %d Minutes ",self.everyVal]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"every %ld Minutes ",(long)self.everyVal]];
                 break;
         }
         
         if (self.fromLast) {
             if (self.vid) {
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last vid:%d ",self.vid]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last vid:%ld ",(long)self.vid]];
             } else {
-                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last tracker:%d ",self.tid]];
+                desc = [desc stringByAppendingString:[NSString stringWithFormat:@"from last tracker:%ld ",(long)self.tid]];
             }
         }
 

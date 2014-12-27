@@ -31,6 +31,7 @@
 #define PVQUERY		((unsigned int) (1<<1))
 #define PVCHECKPASS ((unsigned int) (1<<2))
 #define PVCONFIG	((unsigned int) (1<<3))
+#define PVSTARTUP	((unsigned int) (1<<4))
 
 
 @interface privacyV : UIView <UIActionSheetDelegate>
@@ -75,5 +76,8 @@
 
 + (int)getPrivacyValue;
 - (void)setPrivacyValue:(int)priv;
+
++ (void) jumpMaxPriv;
++ (void) restorePriv;
 
 @end

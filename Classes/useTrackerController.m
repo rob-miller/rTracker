@@ -27,8 +27,11 @@
 @synthesize tracker=_tracker;
 
 @synthesize prevDateBtn=_prevDateBtn, postDateBtn=_postDateBtn, currDateBtn=_currDateBtn, delBtn=_delBtn, calBtn=_calBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, fixed1SpaceButtonItem=_fixed1SpaceButtonItem;
-@synthesize table=_table, dpvc=_dpvc, dpr=_dpr, needSave=_needSave, didSave=_didSave, saveFrame=_saveFrame, fwdRotations=_fwdRotations, rejectable=_rejectable, viewDisappearing=_viewDisappearing, tlist=_tlist;
-@synthesize saveBtn=_saveBtn, menuBtn=_menuBtn, alertResponse=_alertResponse, saveTargD=_saveTargD,tsCalVC=_tsCalVC;
+@synthesize tableView=_tableView;
+
+@synthesize dpvc=_dpvc, dpr=_dpr, needSave=_needSave, didSave=_didSave, saveFrame=_saveFrame, fwdRotations=_fwdRotations, rejectable=_rejectable, viewDisappearing=_viewDisappearing, tlist=_tlist;
+@synthesize saveBtn=_saveBtn, menuBtn=_menuBtn, alertResponse=_alertResponse, saveTargD=_saveTargD,tsCalVC=_tsCalVC, searchSet=_searchSet;
+@synthesize searchBtn=_searchBtn;
 
 //BOOL keyboardIsShown=NO;
 
@@ -64,10 +67,9 @@
         n++;
 	}
     // n.b. we hardcode we hardcode number of sections in a tracker tableview here
-    [self.table reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
     
 }
-
 
 // handle rtTrackerUpdatedNotification
 
@@ -83,7 +85,20 @@
     [self updateTableCells:vo];
     self.needSave=YES;
 	[self showSaveBtn];
+    
+    // write temp tracker here
+    [self.tracker saveTempTrackerData];
+    
+    // delete on save or cancel button
+    // load if present in viewdidload [?]
+    // delete all on program start    [?]
+
 }
+-(void)loadView {
+    // Ensure that we don't load an .xib file for this viewcontroller
+    self.view = [UIView new];
+}
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -97,11 +112,26 @@
 	//for (valueObj *vo in self.tracker.valObjTable) {
 	//	[vo display];
 	//}
-	
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
-    self.table.backgroundView = bg;
-    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
     
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+
+    //CGRect tableFrame = bg.frame;
+    //tableFrame.size.height = [self get_visible_size].height;
+    //self.tableView = [[UITableView alloc]initWithFrame: tableFrame style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc]initWithFrame: bg.frame style:UITableViewStylePlain];  // because getLaunchImageName worked out size! //self.saveFrame
+                      
+                      //self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    //TODO: fix background view here
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+
+    self.tableView.backgroundView = bg;
+    //self.tableView.backgroundColor= [UIColor redColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.separatorColor = [UIColor clearColor];
+    [self.view addSubview:self.tableView];
     
 	[self updateToolBar];
 	keyboardIsShown = NO;
@@ -111,7 +141,7 @@
     self.alertResponse=0;
     self.saveTargD=0;
 
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"< rTracker"
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"< rTracker"  // rTracker ... tracks ?
                                                                    style:UIBarButtonItemStyleBordered
                                                                   target:self
                                                                   action:@selector(btnCancel)];
@@ -125,6 +155,19 @@
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
     [self.view addGestureRecognizer:swipe];
 
+    /*
+     * cannot seem to work alongside tableview swipe
+     *
+    swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeUp:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionUp];
+    [self.view addGestureRecognizer:swipe];
+    */
+    //load temp tracker data here if available
+    if ([self.tracker loadTempTrackerData]) {
+        self.needSave=YES;
+        [self showSaveBtn];
+    }
+    
     [super viewDidLoad];
 }
 
@@ -185,7 +228,7 @@
         }
     }
     //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
-    [self.table reloadData];
+    [self.tableView reloadData];
     self.didSave=NO;
     
     if (![rTracker_resource getToldAboutSwipe]) { // if not yet told
@@ -203,101 +246,117 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     //DBGLog(@"utc: view will appear");
-
+    
     self.viewDisappearing=NO;
-
-	if (self.dpr) {
-		switch (self.dpr.action) {
-			case DPA_NEW:
-				[self.tracker resetData];
-                //[self updateTrackerTableView];  // moved below
-				self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpr.date timeIntervalSince1970]]];
-				[self updateToolBar];
-				break;
-			case DPA_SET:
-			{
-				if ([self.tracker hasData]) {
-					[self.tracker changeDate:self.dpr.date];
-                    self.needSave = YES;
-				} else {
-                    self.tracker.trackerDate = self.dpr.date;
-                }
-				[self updateToolBar];
-				break;
-			}
-			case DPA_GOTO:
-			{
-                int targD = 0;
-                if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
-                    targD = (int) [self.dpr.date timeIntervalSince1970];
-                    if (! [self.tracker loadData:targD]) {
+    
+    CGRect f = self.view.frame;
+    
+    if (f.size.width > f.size.height) {  // already in landscape view
+        [self doGT];
+    } else {
+        if (f.size.width != self.tableView.frame.size.width) {
+            f.origin.x = 0.0; f.origin.y = 0.0;
+            self.tableView.frame = f;
+            self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+            [self.tracker rescanMaxLabel];
+            [self.tableView reloadData];
+        }
+        
+        if (self.dpr) {
+            switch (self.dpr.action) {
+                case DPA_NEW:
+                    [self.tracker resetData];
+                    //[self updateTrackerTableView];  // moved below
+                    self.tracker.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[self.tracker noCollideDate:(int)[self.dpr.date timeIntervalSince1970]]];
+                    //[self updateToolBar];
+                    break;
+                case DPA_SET:
+                {
+                    if ([self.tracker hasData]) {
+                        [self.tracker changeDate:self.dpr.date];
+                        self.needSave = YES;
+                    } else {
                         self.tracker.trackerDate = self.dpr.date;
-                        targD = [self.tracker prevDate];
-                        if (!targD) 
-                            targD = [self.tracker postDate];
                     }
+                    //[self updateToolBar];
+                    break;
                 }
-				[self setTrackerDate:targD];
-				break;
-			}
-			case DPA_GOTO_POST:  // for TimesSquare calendar which gives date with time=midnight (= beginning of day)
-			{
-                int targD = 0;
-                if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
-                    targD = (int) [self.dpr.date timeIntervalSince1970];
-                    if (! [self.tracker loadData:targD]) {
-                        self.tracker.trackerDate = self.dpr.date;
-                        targD = [self.tracker postDate];
-                        if (!targD)
-                            targD = 0;  // if no post date, must mean today so new tracker
+                case DPA_GOTO:
+                {
+                    int targD = 0;
+                    if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
+                        targD = (int) [self.dpr.date timeIntervalSince1970];
+                        if (! [self.tracker loadData:targD]) {
+                            self.tracker.trackerDate = self.dpr.date;
+                            targD = (int) [self.tracker prevDate];
+                            if (!targD)
+                                targD = (int) [self.tracker postDate];
+                        }
+                    }
+                    [self setTrackerDate:targD];
+                    break;
+                }
+                case DPA_GOTO_POST:  // for TimesSquare calendar which gives date with time=midnight (= beginning of day)
+                {
+                    int targD = 0;
+                    if (nil != self.dpr.date) {  // set to nil to cause reset tracker, ready for new
+                        targD = (int) [self.dpr.date timeIntervalSince1970];
+                        if (! [self.tracker loadData:targD]) {
+                            self.tracker.trackerDate = self.dpr.date;
+                            targD = (int) [self.tracker postDate];
+                            if (!targD)
+                                targD = 0;  // if no post date, must mean today so new tracker
                             //targD = [self.tracker prevDate];
+                        }
                     }
+                    [self setTrackerDate:targD];
+                    break;
                 }
-				[self setTrackerDate:targD];
-				break;
-			}
-			case DPA_CANCEL:
-				break;
-			default:
-				dbgNSAssert(0,@"failed to determine dpr action");
-				break;
-		}
-		self.dpr.date = nil;
-		self.dpvc = nil;
-        self.dpr = nil;
-	}
+                case DPA_CANCEL:
+                    break;
+                default:
+                    dbgNSAssert(0,@"failed to determine dpr action");
+                    break;
+            }
+            self.dpr.date = nil;
+            self.dpvc = nil;
+            self.dpr = nil;
+        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self.tracker
+                                                 selector:@selector(trackerUpdated:)
+                                                     name:rtValueUpdatedNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateUTC:)
+                                                     name:rtTrackerUpdatedNotification
+                                                   object:self.tracker];
+        
+        
+        //DBGLog(@"add kybd will show notifcation");
+        keyboardIsShown = NO;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillShow:)
+                                                     name:UIKeyboardWillShowNotification
+                                                   object:self.view.window];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillHide:)
+                                                     name:UIKeyboardWillHideNotification
+                                                   object:self.view.window];
+        
+        
+        [self showSaveBtn];
+        [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable
+        
+        [self.navigationController setToolbarHidden:NO animated:NO];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self.tracker 
-                                             selector:@selector(trackerUpdated:) 
-                                                 name:rtValueUpdatedNotification 
-                                               object:nil];
+        [self updateToolBar];
+    }
     
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(updateUTC:) 
-												 name:rtTrackerUpdatedNotification 
-											   object:self.tracker];
-	
-
-    //DBGLog(@"add kybd will show notifcation");
-	keyboardIsShown = NO;
-    
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillShow:) 
-												 name:UIKeyboardWillShowNotification 
-											   object:self.view.window];
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillHide:) 
-												 name:UIKeyboardWillHideNotification 
-											   object:self.view.window];
-	
-
-    [self showSaveBtn];
-    [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable 
-
-    [self.navigationController setToolbarHidden:NO animated:NO];
-
     [super viewWillAppear:animated];
-	
+    
 }
 
 - (void) viewWillDisappear :(BOOL)animated
@@ -310,7 +369,7 @@
     }
  */
     
-    //DBGLog(@"utc view disappearing");
+    DBGLog(@"utc view disappearing");
     //already done [self.tracker.activeControl resignFirstResponder];
 
     // unregister this tracker for value updated notifications
@@ -343,10 +402,10 @@
 */
 
 - (void) rejectTracker {
-    DBGLog(@"rejecting input tracker %d %@  prevTID= %d", self.tracker.toid,self.tracker.trackerName, self.tracker.prevTID);
-    [self.tlist updateTLtid:self.tracker.toid new:self.tracker.prevTID];  // revert topLevel to before
+    DBGLog(@"rejecting input tracker %ld %@  prevTID= %ld", (long)self.tracker.toid,self.tracker.trackerName, (long)self.tracker.prevTID);
+    [self.tlist updateTLtid:(int)self.tracker.toid new:(int)self.tracker.prevTID];  // revert topLevel to before
     [self.tracker deleteTrackerDB];
-    [rTracker_resource unStashTracker:self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID    
+    [rTracker_resource unStashTracker:(int)self.tracker.prevTID];  // this view and tracker going away now so dont need to clear rejectable or prevTID
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
@@ -401,13 +460,14 @@
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc did rotate from interface orientation portrait");
             ///*
-            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
+            //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
                 [self doGT];
-            }
+            //}
              //*/
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc did rotate from interface orientation portrait upside down");
+            [self doGT];
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc did rotate from interface orientation landscape left");
@@ -564,7 +624,7 @@
 {
     DBGLog(@"UTC keyboardwillshow");
     
-	CGPoint coff = self.table.contentOffset;
+	CGPoint coff = self.tableView.contentOffset;
 	//DBGLog(@"coff x=%f y=%f",coff.x,coff.y);
     //DBGLog(@"k will show, y= %f",viewFrame.origin.y);
     
@@ -766,7 +826,7 @@
             vo.display = nil;  // always redisplay
 	}
 	
-    [self.table reloadData];
+    [self.tableView reloadData];
     
     
 	//[(UITableView *) self.view reloadData];
@@ -778,9 +838,9 @@
     
 	NSMutableArray *tbi=[[NSMutableArray alloc] init];
 	
-	int prevD = [self.tracker prevDate];
-	int postD = [self.tracker postDate];
-	int lastD = [self.tracker lastDate];
+	int prevD = (int)[self.tracker prevDate];
+	int postD = (int)[self.tracker postDate];
+	int lastD = (int)[self.tracker lastDate];
 	int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
 /*
 	DBGLog(@"prevD = %d %@",prevD,[NSDate dateWithTimeIntervalSince1970:prevD]);
@@ -805,6 +865,14 @@
         [tbi addObject:self.calBtn];
 	} else {
         [tbi addObject:self.fixed1SpaceButtonItem];
+    }
+    [tbi addObject:self.flexibleSpaceButtonItem];
+    
+    if (nil != self.searchSet) {
+        [tbi addObject:self.searchBtn];
+    } else {
+        [tbi addObject:self.fixed1SpaceButtonItem];
+        
     }
     [tbi addObject:self.flexibleSpaceButtonItem];
     
@@ -898,6 +966,7 @@ else do btnCancel/btnSave
 }
 
 - (void)leaveTracker {
+    [self.tracker removeTempTrackerData];
     if (self.didSave) {
         [self.tracker setReminders];  // saved data may change reminder action so wipe and set again
         self.didSave=NO;
@@ -922,7 +991,7 @@ else do btnCancel/btnSave
 - (void) saveActions {
     if (self.rejectable) {
         if (self.tracker.prevTID) {
-            [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+            [rTracker_resource rmStashedTracker:(int)self.tracker.prevTID];
             self.tracker.prevTID=0;
         }
         self.rejectable=NO;
@@ -937,6 +1006,12 @@ else do btnCancel/btnSave
 	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
     [self saveActions];
 
+    if (nil != self.searchSet) {
+        self.needSave=NO;
+		[self showSaveBtn];
+        return;
+    }
+    
 	if ([(self.tracker.optDict)[@"savertn"] isEqualToString:@"0"]) {  // default:1
         // do not return to tracker list after save, so generate clear form
 		if (![self.toolbarItems containsObject:self.postDateBtn])
@@ -945,9 +1020,17 @@ else do btnCancel/btnSave
 		[self updateTrackerTableView];
         self.needSave=NO;
 		[self showSaveBtn];
-	} else {
+    } else {
         [self leaveTracker];
 	}
+}
+
+- (void)handleViewSwipeUp:(UISwipeGestureRecognizer *)gesture {
+    if (self.needSave) {
+        [self btnSave];
+    } else {
+        [self btnCancel];
+    }
 }
 
 - (void) doPlistExport {
@@ -999,12 +1082,12 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     NSString *msg;
     if (vpm > tpriv) {
         if (tpriv > PRIVDFLT) {
-            msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker, and greater than %d to see all items in it",tpriv,self.tracker.trackerName, vpm];
+            msg = [NSString stringWithFormat:@"Set a privacy level greater than %ld to see the %@ tracker, and greater than %ld to see all items in it",(long)tpriv,self.tracker.trackerName, (long)vpm];
         } else {
-            msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see all items in the %@ tracker",vpm, self.tracker.trackerName];
+            msg = [NSString stringWithFormat:@"Set a privacy level greater than %ld to see all items in the %@ tracker",(long)vpm, self.tracker.trackerName];
         }
     } else {
-        msg = [NSString stringWithFormat:@"Set a privacy level greater than %d to see the %@ tracker",tpriv,self.tracker.trackerName];
+        msg = [NSString stringWithFormat:@"Set a privacy level greater than %ld to see the %@ tracker",(long)tpriv,self.tracker.trackerName];
     }
     [rTracker_resource alert:@"Privacy alert" msg:msg];    
 }
@@ -1029,7 +1112,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (IBAction)btnAccept {
     DBGLog(@"accepting tracker");
     if (self.tracker.prevTID) {
-        [rTracker_resource rmStashedTracker:self.tracker.prevTID];
+        [rTracker_resource rmStashedTracker:(int)self.tracker.prevTID];
         self.tracker.prevTID=0;
     }
     self.rejectable=NO;
@@ -1039,21 +1122,21 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 }
 
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
-	int targD = [self.tracker prevDate];
+	int targD = (int)[self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
 	} 
 	[self setTrackerDate:targD];
 
     if (targD >0)
-        [self.table reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationRight)];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationRight)];
 }
 
 - (void)handleViewSwipeLeft:(UISwipeGestureRecognizer *)gesture {
-    int targD = [self.tracker postDate];
+    int targD = (int)[self.tracker postDate];
 	[self setTrackerDate:targD];
     if (targD >0)
-        [self.table reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationLeft)];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:(UITableViewRowAnimationLeft)];
     
 }
 
@@ -1082,6 +1165,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
 	self.dpr.date = self.tracker.trackerDate;
     self.dpvc.dpr = self.dpr;
+    //CGRect f = self.view.frame;
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
@@ -1171,6 +1255,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	self.dpr.date = self.tracker.trackerDate;
     self.tsCalVC.dpr = self.dpr;
     self.tsCalVC.tracker = self.tracker;
+    self.tsCalVC.parentUTC = self;
     
 	self.tsCalVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
@@ -1264,7 +1349,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (UIBarButtonItem *) calBtn {
 	if (_calBtn == nil) {
 		_calBtn = [[UIBarButtonItem alloc]
-				  initWithTitle:@"\u2630" //@"Cal"
+                   initWithTitle:@"📆" // @"\u2630" //@"Cal"
 				  style:UIBarButtonItemStyleBordered
 				  target:self
 				  action:@selector(btnCal)];
@@ -1277,6 +1362,28 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 	}
 	
 	return _calBtn;
+}
+
+- (UIBarButtonItem *) searchBtn {
+    if (_searchBtn == nil) {
+        _searchBtn = [[UIBarButtonItem alloc]
+                   initWithTitle:@"🔍" //@"Cal"
+                   style:UIBarButtonItemStyleBordered
+                   target:self
+                   action:@selector(btnSearch)];
+        _searchBtn.tintColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.8 alpha:1.0];
+        //_searchBtn.tintColor = [UIColor greenColor];
+        [_searchBtn setTitleTextAttributes:@{
+                                          NSFontAttributeName: [UIFont systemFontOfSize:28.0]
+                                          //,NSForegroundColorAttributeName: [UIColor greenColor]
+                                          } forState:UIControlStateNormal];
+    }
+    
+    return _searchBtn;
+}
+
+-(void) btnSearch {
+    [rTracker_resource alert:@"Search results" msg:[NSString stringWithFormat:@"%ld entries highlighted in calendar and graph views",(long)[self.searchSet count]]];
 }
 
 - (UIBarButtonItem *) delBtn {
@@ -1423,12 +1530,12 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if ([actionSheet.title hasPrefix:@"Really"]) {
-        DBGLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
+        DBGLog(@"checkTrackerDelete buttonIndex= %ld",(long)buttonIndex);
 	
         if (buttonIndex == actionSheet.destructiveButtonIndex) {
-            int targD = [self.tracker prevDate];
+            int targD = (int)[self.tracker prevDate];
             if (!targD) {
-                targD = [self.tracker postDate];
+                targD = (int)[self.tracker postDate];
             }
             [self.tracker deleteCurrEntry];
             [self setTrackerDate: targD];
@@ -1511,7 +1618,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 #if DEBUGLOG
 	NSUInteger row = [indexPath row];
 	//valueObj *vo = (valueObj *) [self.tracker.valObjTable  objectAtIndex:row];
-	DBGLog(@"selected row %d : %@", row, vo.valueName);
+	DBGLog(@"selected row %lu : %@", (unsigned long)row, vo.valueName);
 #endif
 
     if (VOT_INFO == vo.vtype) {

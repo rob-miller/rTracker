@@ -83,7 +83,7 @@
 @property (nonatomic) int changedDateFrom;
 @property (nonatomic,strong) NSMutableDictionary *csvHeaderDict;
 
-- (id) init:(int) tid;
+- (id) init:(NSInteger) tid;
 - (id) initWithDict:(NSDictionary*)dict;
 
 - (void) confirmTOdict:(NSDictionary*)dict;
@@ -104,6 +104,11 @@
 - (int) getDateCount;
 - (BOOL) loadData:(NSInteger)iDate;
 - (void) saveData;
+
+- (void) saveTempTrackerData;
+- (BOOL) loadTempTrackerData;
+- (void) removeTempTrackerData;
+
 - (void) resetData;
 - (void) deleteTrackerDB;
 - (void) deleteCurrEntry;
@@ -126,7 +131,7 @@
 - (int) enabledReminderCount;
 - (void) clearScheduledReminders;
 
-- (NSInteger) dateNearest:(int)targ;
+- (NSInteger) dateNearest:(NSInteger)targ;
 - (NSInteger) prevDate;
 - (NSInteger) postDate;
 - (NSInteger) lastDate;

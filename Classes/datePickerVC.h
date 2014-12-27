@@ -37,12 +37,14 @@
 @property (nonatomic,strong) IBOutlet UIButton *entryNewBtn;
 @property (nonatomic,strong) IBOutlet UIButton *dateSetBtn;
 @property (nonatomic,strong) IBOutlet UIButton *dateGotoBtn;
-@property (nonatomic,strong) IBOutlet UISegmentedControl *dtSegmentedControl;
+//@property (nonatomic,strong) IBOutlet UISegmentedControl *dtSegmentedControl;
+@property (nonatomic,strong) IBOutlet UIBarButtonItem *cancelBtn;
+- (IBAction) btnCancel:(UIButton*)btn;
 
 - (IBAction) entryNewBtnAction;
 - (IBAction) dateSetBtnAction;
 - (IBAction) dateGotoBtnAction;
-- (IBAction) dateModeChoice:(id)sender;
+//- (IBAction) dateModeChoice:(id)sender;
 
 
 @end

@@ -97,7 +97,7 @@
 	[self saveFnArray];
 	
 	for (i=0;i<2;i++) {
-		NSString *key = [NSString stringWithFormat:@"frep%d",i];
+		NSString *key = [NSString stringWithFormat:@"frep%lu",(unsigned long)i];
 		NSNumber *nep = (self.vo.optDict)[key];
 		NSInteger ep = [nep integerValue];
 		if (ep == oldVID) {
@@ -258,7 +258,8 @@
 }
 
 
-- (int) getEpDate:(int)ndx maxdate:(int)maxdate {
+- (NSInteger) getEpDate:(int)ndx maxdate:(NSInteger
+                                          )maxdate {
 
 	NSString *key = [NSString stringWithFormat:@"frep%d",ndx];
 	NSNumber *nep = (self.vo.optDict)[key];
@@ -268,12 +269,12 @@
 	
 	if (nep == nil || ep == FREPENTRY) {  // also FREPDFLT  -- no value specified
 		// use last entry
-		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d order by date desc limit 1;",maxdate];
+		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %ld order by date desc limit 1;",(long)maxdate];
 		epDate = [to toQry2Int];
 		DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
 	} else if (ep >= 0) {
 		// ep is vid
-		to.sql = [NSString stringWithFormat:@"select date from voData where id=%d and date < %d and val <> 0 and val <> '' order by date desc limit 1;",ep,maxdate]; // add val<>0,<>"" 5.vii.12
+		to.sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
 #if DEBUGFUNCTION
         DBGLog(@"get ep qry: %@",to.sql);
 #endif
@@ -305,7 +306,7 @@
 			case FREPCWEEKS :
                 ival += (ndx ? 0 : 1);
             case FREPWEEKS :
-                [offsetComponents setWeek:ival];
+                [offsetComponents setWeekOfYear:ival];
 				//vt = @"weeks";
 				break;
 			case FREPCMONTHS :
@@ -321,7 +322,7 @@
 				[offsetComponents setYear:ival];
 				break;
 			default:
-				dbgNSAssert1(0,@"getEpDate: failed to identify ep %d",ep);
+				dbgNSAssert1(0,@"getEpDate: failed to identify ep %ld",(long)ep);
 				break;
 		}
 	
@@ -391,20 +392,20 @@
 					if (epd1 == 0) {
 						v1 = [[to getValObj:vid].value doubleValue];
 					} else {	
-						to.sql = [NSString stringWithFormat:@"select val from voData where vid=%d and date=%d;",vid,epd1];
+						to.sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd1];
 						v1 = [to toQry2Double];
 					}
-					to.sql = [NSString stringWithFormat:@"select val from voData where vid=%d and date=%d;",vid,epd0];
+					to.sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd0];
 					v0 = [to toQry2Double];
 					result = v1 - v0;
 					break;
 				case FN1ARGAVG :
 					if (epd1 == 0) {
 						v1 = [[to getValObj:vid].value doubleValue];
-						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%d and date >=%d;",vid,epd0];
+						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d;",(long)vid,epd0];
 						result = [to toQry2Float] + v1;
 					} else {
-						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%d and date >=%d and date <=%d;",vid,epd0,epd1];
+						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d and date <=%d;",(long)vid,epd0,epd1];
 						result = [to toQry2Float];
 					}
 					break;
@@ -427,7 +428,7 @@
 }
 
 // supplied with previous endpoint (endpoint 0), calculate function to current tracker
-- (NSNumber *) calcFunctionValueWithCurrent:(int)epd0 {
+- (NSNumber *) calcFunctionValueWithCurrent:(NSInteger)epd0 {
 	
 	NSInteger maxc = [self.fnArray count];
 	NSInteger vid=0;
@@ -464,7 +465,7 @@
             NSString *sv1 = [to getValObj:vid].value;
             BOOL nullV1 = (nil == sv1 || [@"" isEqualToString:sv1]);
             double v1 = [sv1 doubleValue];
-            to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",vid,epd0,epd1];
+            to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",(long)vid,(long)epd0,epd1];
             int ci= [to toQry2Int];
 #if DEBUGFUNCTION
             DBGLog(@"v1= %f nullV1=%d", v1, nullV1);
@@ -478,11 +479,11 @@
                     //to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
                     // with per calendar date calcs, epd0 may not match a datapoint
                     // - so get val coming into this time segment or skip for beginning - rtm 17.iii.13
-                    to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%d and date<=%d;",vid,epd0];
+                    to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date<=%ld;",(long)vid,(long)epd0];
                     ci= [to toQry2Int]; // slightly different for delta
                     if (0 == ci)
                         return nil; // skip for beginning
-                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date<=%d order by date desc limit 1;",vid,epd0];
+                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<=%ld order by date desc limit 1;",(long)vid,(long)epd0];
                     
                     double v0 = [to toQry2Double];
 #if DEBUGFUNCTION
@@ -501,16 +502,16 @@
                     double c = [(self.vo.optDict)[@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
                     // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
                     if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
-                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and val <> '' and date >=%d and date <%d;",
-                                  vid,epd0,epd1];
+                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and val <> '' and date >=%ld and date <%d;",
+                                  (long)vid,(long)epd0,epd1];
                         c = [to toQry2Float] + (nullV1 ? 0.0f : 1.0f);  // +1 for current on screen
                     }
                     
                     if (c == 0.0f) {
                         return nil;
                     }
-                    to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%d and date >=%d and date <%d;",
-                              vid,epd0,epd1];
+                    to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%ld and date >=%ld and date <%d;",
+                              (long)vid,(long)epd0,epd1];
                     double v =  [to toQry2Float];
                     result = (v + v1) / c ;
 #if DEBUGFUNCTION
@@ -525,8 +526,8 @@
                     } else if (0 == ci) {
                         result = v1;
                     } else {
-                        to.sql = [NSString stringWithFormat:@"select min(val) from voData where id=%d and date >=%d and date <%d;",
-                              vid,epd0,epd1];
+                        to.sql = [NSString stringWithFormat:@"select min(val) from voData where id=%ld and date >=%ld and date <%d;",
+                              (long)vid,(long)epd0,epd1];
                         result = [to toQry2Float];
                         if (!nullV1 && v1 < result) {
                             result = v1;
@@ -545,8 +546,8 @@
                     } else if (0 == ci) {
                         result = v1;
                     } else {
-                        to.sql = [NSString stringWithFormat:@"select max(val) from voData where id=%d and date >=%d and date <%d;",
-                              vid,epd0,epd1];
+                        to.sql = [NSString stringWithFormat:@"select max(val) from voData where id=%ld and date >=%ld and date <%d;",
+                              (long)vid,(long)epd0,epd1];
                         result = [to toQry2Float];
                         if (!nullV1 && v1>result) {
                             result = v1;
@@ -559,8 +560,8 @@
                 }
                 case FN1ARGCOUNT :
                 {
-                    to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%d and date >=%d and date <%d;",
-                              vid,epd0,epd1];
+                    to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",
+                              (long)vid,(long)epd0,epd1];
                     result = [to toQry2Float];
                     if (!nullV1) {
                         result += 1.0f;
@@ -586,15 +587,15 @@
 #endif
                         case FN1ARGSUM :
                             // (date<%d) because add in v1 below
-                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
-                                      vid,epd0,epd1];
+                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >=%ld and date <%d;",
+                                      (long)vid,(long)epd0,epd1];
 #if DEBUGFUNCTION
                             DBGLog(@"sum: set sql");
 #endif
                             break;
                         case FN1ARGPOSTSUM :
                             // (date<%d) because add in v1 below
-                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >%d and date <%d;",vid,epd0,epd1];
+                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%ld and date <%d;",(long)vid,(long)epd0,epd1];
 #if DEBUGFUNCTION
                             DBGLog(@"postsum: set sql");
 #endif
@@ -748,8 +749,8 @@
     
 
     // search back for start endpoint that is ok
-    int ep0start = (int)[MyTracker.trackerDate timeIntervalSince1970];
-	int ep0date = [self getEpDate:0 maxdate:ep0start];  // start with immed prev to curr record set
+    NSInteger ep0start = [MyTracker.trackerDate timeIntervalSince1970];
+	NSInteger ep0date = [self getEpDate:0 maxdate:ep0start];  // start with immed prev to curr record set
 /*
     if (ep0date != 0) {
         [MyTracker loadData:ep0date];   // set values for initial checkEP test
@@ -784,6 +785,8 @@
 }
 
 - (UILabel*) rlab {
+    if (_rlab && _rlab.frame.size.width != self.vosFrame.size.width) _rlab = nil;
+    
     if (nil == _rlab) {
         _rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
         _rlab.textAlignment = NSTextAlignmentRight; // ios6 UITextAlignmentRight;
@@ -832,21 +835,21 @@
 //     rows n...:  other epTitles entries
 
 - (NSInteger) epToRow:(NSInteger)component {
-	NSString *key = [NSString stringWithFormat:@"frep%d",component];
+	NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
 	NSNumber *n = (self.vo.optDict)[key];
 	NSInteger ep = [n integerValue];
-    DBGLog(@"comp= %d ep= %d n= %@ ",component,ep,n);
+    DBGLog(@"comp= %ld ep= %ld n= %@ ",(long)component,(long)ep,n);
 	if (n == nil || ep == FREPDFLT) {// no endpoint defined, so default row 0
         DBGLog(@" returning 0");
 		return 0;
     }
 	if (ep >= 0  || ep <= -TMPUNIQSTART)  {// ep defined and saved, or ep not saved and has tmp vid, so return ndx in vo table
 		//return [MyTracker.valObjTable indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
-        DBGLog(@" returning %d",([self.votWoSelf indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1));
+        DBGLog(@" returning %lu",(unsigned long)([self.votWoSelf indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1));
         return [self.votWoSelf indexOfObjectIdenticalTo:[MyTracker getValObj:ep]] +1;
 		//return ep+1;
 	}
-    DBGLog(@" returning %d",((ep * -1) + [self.votWoSelf count] -1));
+    DBGLog(@" returning %lu",(unsigned long) ((ep * -1) + [self.votWoSelf count] -1));
 	return (ep * -1) + [self.votWoSelf count] -1;  // ep is offset into hours, months list
     //return (ep * -1) + [MyTracker.valObjTable count] -1;  // ep is offset into hours, months list
 }
@@ -873,11 +876,11 @@
 	NSInteger votc = [self.votWoSelf count];   //[MyTracker.valObjTable count];
 	
 	if (row > votc) {
-		NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
-		NSString *key = [NSString stringWithFormat:@"frep%d",component];
-		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
-		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
-		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
+		NSString *vkey = [NSString stringWithFormat:@"frv%ld",(long)component];
+		NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
+		NSString *vtfkey = [NSString stringWithFormat:@"fr%ldTF",(long)component];
+		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%ldvLab",(long)component];
+		NSString *post_vkey = [NSString stringWithFormat:@"frpost%ldvLab",(long)component];
 		
 		UITextField *vtf= (self.ctvovcp.wDict)[vtfkey];
 		vtf.text = (self.vo.optDict)[vkey];
@@ -929,9 +932,9 @@
 	frame = [self.ctvovcp configPicker:frame key:@"frPkr" caller:self];
 	UIPickerView *pkr = (self.ctvovcp.wDict)[@"frPkr"];
 	
-    DBGLog(@"pkr component 0 selectRow %d",[self epToRow:0]);
+    DBGLog(@"pkr component 0 selectRow %ld",(long)[self epToRow:0]);
 	[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
-    DBGLog(@"pkr component 1 selectRow %d",[self epToRow:1]);
+    DBGLog(@"pkr component 1 selectRow %ld",(long)[self epToRow:1]);
 	[pkr selectRow:[self epToRow:1] inComponent:1 animated:NO];
 	
 	frame.origin.y += frame.size.height + MARGIN;
@@ -943,7 +946,7 @@
 						   addsv:NO ];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [@"9999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1133,7 +1136,7 @@
 	frame.origin.x = -1.0f;
 	[self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)]; 
     
-    frame.origin.x = [@"Add" sizeWithFont:[UIFont systemFontOfSize:18]].width + 3*MARGIN;
+    frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width + 3*MARGIN;
     //frame.origin.y += frame.size.height + MARGIN;
     labframe = [self.ctvovcp configLabel:@"Constant value:" 
                                    frame:frame
@@ -1141,7 +1144,7 @@
                                    addsv:NO ];
     
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [@"9999.99" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"9999.99" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1165,8 +1168,8 @@
 //
 
 - (NSString*) voEpStr:(NSInteger)component {
-	NSString *key = [NSString stringWithFormat:@"frep%d",component];
-	NSString *vkey = [NSString stringWithFormat:@"frv%d",component];
+	NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
+	NSString *vkey = [NSString stringWithFormat:@"frv%ld",(long)component];
 	NSString *pre = component ? @"current" : @"previous";
 	
 	NSNumber *n = (self.vo.optDict)[key];
@@ -1225,7 +1228,7 @@
 	labframe = [self.ctvovcp configLabel:@"Display result decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-	CGFloat tfWidth = [@"999" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+    CGFloat tfWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -1292,7 +1295,7 @@
 		//[segmentTextContent release];
 		
 		[segmentedControl addTarget:self action:@selector(fnSegmentAction:) forControlEvents:UIControlEventValueChanged];
-		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+		//segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 		segmentedControl.selectedSegmentIndex = self.fnSegNdx ; //= 0;
 		UIBarButtonItem *scButtonItem = [[UIBarButtonItem alloc]
 										 initWithCustomView:segmentedControl];
@@ -1511,10 +1514,10 @@
 	if (otherVal < -1) {
  */ // only allow time offset for previous side of range
 	if (component == 1) {
-        DBGLog(@" returning %d",([self.votWoSelf count]+1));
+        DBGLog(@" returning %lu",(unsigned long)([self.votWoSelf count]+1));
         return [self.votWoSelf count]+1;  // [MyTracker.valObjTable count]+1;  // count all +1 for 'current entry'
 	} else {
-        DBGLog(@" returning %d",([self.votWoSelf count]+MAXFREP));
+        DBGLog(@" returning %lu",(unsigned long)([self.votWoSelf count]+MAXFREP));
 		return [self.votWoSelf count] + MAXFREP; //[MyTracker.valObjTable count] + MAXFREP;
 	}
 }
@@ -1570,10 +1573,10 @@
 	if (self.fnSegNdx == FNSEGNDX_RANGEBLD) {
 		NSInteger votc = [self.votWoSelf count]; //[MyTracker.valObjTable count];
 		
-		NSString *key = [NSString stringWithFormat:@"frep%d",component];
-		NSString *vtfkey = [NSString stringWithFormat:@"fr%dTF",component];
-		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%dvLab",component];
-		NSString *post_vkey = [NSString stringWithFormat:@"frpost%dvLab",component];
+		NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
+		NSString *vtfkey = [NSString stringWithFormat:@"fr%ldTF",(long)component];
+		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%ldvLab",(long)component];
+		NSString *post_vkey = [NSString stringWithFormat:@"frpost%ldvLab",(long)component];
         
 		[((UIView*) (self.ctvovcp.wDict)[pre_vkey]) removeFromSuperview];
 		[((UIView*) (self.ctvovcp.wDict)[vtfkey]) removeFromSuperview];
@@ -1589,7 +1592,7 @@
 			(self.vo.optDict)[key] = @(((row - votc) +1) * -1);
 			[self updateValTF:row component:component];
 		}
-		DBGLog(@"picker sel row %d %@ now= %d", row, key, [[self.vo.optDict objectForKey:key] integerValue] );
+		DBGLog(@"picker sel row %ld %@ now= %ld", (long)row, key, (long)[[self.vo.optDict objectForKey:key] integerValue] );
 	} else if (self.fnSegNdx == FNSEGNDX_FUNCTBLD) {
         //DBGLog(@"fn build row %d= %@",row,[self fndRowTitle:row]);
         if ([FNCONSTANT_TITLE isEqualToString:[self fndRowTitle:row]]) {
@@ -1608,7 +1611,7 @@
 #pragma mark fn value results for graphing
 
 - (void) trimFnVals:(NSInteger)frep0 {
-    DBGLog(@"ep= %d",frep0);
+    DBGLog(@"ep= %ld",(long)frep0);
     
     NSInteger ival = [(self.vo.optDict)[@"frv0"] integerValue] *  -1 ; // negative offset if ep0
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -1622,7 +1625,7 @@
             break;
         case FREPCWEEKS :
             ival += 1;
-            [offsetComponents setWeek:ival];
+            [offsetComponents setWeekOfYear:ival];
             //vt = @"weeks";
             break;
         case FREPCMONTHS :
@@ -1636,13 +1639,13 @@
             [offsetComponents setYear:ival];
             break;
         default:
-            dbgNSAssert1(0,@"trimFnVals: failed to identify ep %d",frep0);
+            dbgNSAssert1(0,@"trimFnVals: failed to identify ep %ld",(long)frep0);
             break;
     }
     
     NSInteger epDate=-1;
     
-    MyTracker.sql = [NSString stringWithFormat:@"select date from voData where id = %d order by date desc",self.vo.vid];
+    MyTracker.sql = [NSString stringWithFormat:@"select date from voData where id = %ld order by date desc",(long)self.vo.vid];
     NSMutableArray *dates = [[NSMutableArray alloc] init];
     [MyTracker toQry2AryI:dates];
     for (NSNumber *d in dates) {
@@ -1677,7 +1680,7 @@
         
         NSInteger currD = [targ timeIntervalSince1970];
         if (epDate == currD) {
-            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d",self.vo.vid,[d intValue]];
+            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d",(long)self.vo.vid,[d intValue]];
             [MyTracker toExecSql];
         } else {
             epDate = currD;
@@ -1691,10 +1694,10 @@
 
 -(void) setFnVals:(int)tDate {
     if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do?
-        MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, tDate];
+        MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)self.vo.vid, tDate];
     } else {
-        MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
-                         self.vo.vid, tDate, [rTracker_resource toSqlStr:self.vo.value]];
+        MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
+                         (long)self.vo.vid, tDate, [rTracker_resource toSqlStr:self.vo.value]];
     }
     [MyTracker toExecSql];
 }

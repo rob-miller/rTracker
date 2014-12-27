@@ -65,6 +65,7 @@
 #define SHRINKBDFLT     NO 
 #define EXPORTVALBDFLT  NO
 #define INTEGERSTEPSBDFLT  NO
+#define DEFAULTENABLEDBDFLT  NO
 #define TBNLDFLT        NO
 #define TBNIDFLT        YES
 #define TBHIDFLT        NO

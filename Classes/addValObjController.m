@@ -28,6 +28,7 @@
 // setting to _foo breaks size calc for picker, think because is iboutlet?
 @synthesize labelField=_labelField;
 @synthesize votPicker= _votPicker;
+@synthesize infoBtn=_infoBtn;
 
 @synthesize tmpVtype = _tmpVtype;
 @synthesize tmpVcolor = _tmpVcolor;
@@ -83,14 +84,16 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//[self.navigationController setToolbarHidden:YES animated:YES];
 	
     //UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    /*
     UIButton *infoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     [infoBtn setTitle:@"\u2699" forState:UIControlStateNormal];   // @"⚙"
-    infoBtn.titleLabel.font = [UIFont systemFontOfSize:28.0];
-
+     */
+    self.infoBtn.titleLabel.font = [UIFont systemFontOfSize:28.0];
+    /*
     [infoBtn addTarget:self action:@selector(btnSetup) forControlEvents:UIControlEventTouchUpInside];
     infoBtn.frame = CGRectMake(0, 0, 44, 44);
     UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc] initWithCustomView:infoBtn];
-
+     */
 	/*
      UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc]
 								initWithTitle:@"Setup"
@@ -99,7 +102,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 								action:@selector(btnSetup)];
     */
     
-	self.toolbarItems = @[setupBtn];
+	//self.toolbarItems = @[setupBtn];
 	
 	
 	sizeVOTLabel = [addValObjController maxLabelFromArray:self.parentTrackerObj.votArray];
@@ -140,25 +143,37 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
         }
 	}
 
-	self.title = @"Item";
-	if (kIS_LESS_THAN_IOS7) {
-        self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-    } else {
+	self.title = @"Configure Item";
+	//if (kIS_LESS_THAN_IOS7) {
+    //    self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+    //} else {
         self.labelField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    }
+    //}
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
-	[self.labelField addTarget:self
-				  action:@selector(labelFieldDone:)
-		forControlEvents:UIControlEventEditingDidEndOnExit];
+	//[self.labelField addTarget:self
+	//			  action:@selector(labelFieldDone:)
+	//	forControlEvents:UIControlEventEditingDidEndOnExit];
 //	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
 // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    //*
+    self.view.backgroundColor=nil;
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-
+     //*/
+    
+    //[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]]];
+    self.toolbar.hidden = NO;
+    self.navigationController.toolbarHidden=YES;
+    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+    
+    
 	[super viewDidLoad];
 }
 
@@ -206,8 +221,13 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		self.graphTypes = [self.tempValObj.vos voGraphSet];
 		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
 	}
-    [self.navigationController setToolbarHidden:NO animated:NO];
-
+    //[self.navigationController setToolbarHidden:NO animated:NO];
+/*
+    self.view.backgroundColor=nil;
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+*/
     [super viewWillAppear:animated];
 }
 
@@ -244,7 +264,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//DBGLog(@"addVObjC: btnSave was pressed!");
     
     if ([self.labelField.text length] == 0) {
-        [rTracker_resource alert:@"save Item" msg:@"Please set a name for this item to save"];
+        [rTracker_resource alert:@"Save Item" msg:@"Please set a name for this value to save"];
         return;
     
     }
@@ -306,7 +326,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     
 #if DEBUGLOG	
 	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
-	DBGLog(@"save label: %@ id: %d row: %d = %@",self.tempValObj.valueName,self.tempValObj.vid, row,selected);
+	DBGLog(@"save label: %@ id: %ld row: %lu = %@",self.tempValObj.valueName,(long)self.tempValObj.vid, (unsigned long)row,selected);
 #endif
 	
 	[self.parentTrackerObj addValObj:self.tempValObj];
@@ -316,7 +336,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//[parent.tableView reloadData];
 }
 
-- (void) btnSetup {
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self btnSave];
+}
+
+- (IBAction) btnSetup:(id)sender {
 	//DBGLog(@"addVObjC: config was pressed!");
 	
 	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
@@ -352,11 +376,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//while ( s = (NSString *) [e nextObject]) {
 	for (NSString *s in arr) {
 		CGSize tsize;
-        if (kIS_LESS_THAN_IOS7) {
-            tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
-        } else {
-            tsize = [s sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]];
-        }
+        //if (kIS_LESS_THAN_IOS7) {
+        //    tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
+        //} else {
+            tsize = [s sizeWithAttributes:@{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+        //}
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
 		}

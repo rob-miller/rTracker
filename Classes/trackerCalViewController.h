@@ -14,6 +14,7 @@
 #import "TimesSquare/TSQCalendarView.h"
 
 
+
 @interface trackerCalViewController : UIViewController <TSQCalendarViewDelegate>
 /*
  {
@@ -30,6 +31,8 @@
 @property (nonatomic,strong) NSMutableDictionary *dateSelDict;
 
 @property (nonatomic) BOOL SpecDate;
+
+@property (nonatomic,unsafe_unretained) id parentUTC;
 
 - (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date;
 

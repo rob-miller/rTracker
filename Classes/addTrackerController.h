@@ -21,16 +21,20 @@
 
 // UI element properties 
 @property (nonatomic, strong) IBOutlet UITableView *table;
-@property (nonatomic, strong) UITextField *nameField;
-@property (nonatomic, strong) UIBarButtonItem *copyBtn;
+@property (nonatomic, strong) IBOutlet UIButton *infoBtn;
+@property (nonatomic, strong) IBOutlet UITextField *nameField;
+@property (nonatomic, strong) IBOutlet UIButton *itemCopyBtn;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 
 @property (nonatomic,strong) NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 @property (nonatomic,strong) NSMutableArray *deleteVOs;    // VOs to be deleted on save
 
 //@property (nonatomic,retain) UIActivityIndicatorView *spinner;
+- (IBAction) toggleEdit:(id)sender;
+- (IBAction) btnSetup:(id)sender;
+- (IBAction) btnCopy:(id)sender;
 
-
-- (void)configureToolbarItems;
+//- (void)configureToolbarItems;
 
 - (IBAction) nameFieldDone:(id)sender;
 

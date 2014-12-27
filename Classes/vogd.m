@@ -34,7 +34,7 @@
     }
     trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
     togd *myTOGD = myTracker.togd;
-    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%d and val != '' and date >= %d and date <= %d;",targ,self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%ld and val != '' and date >= %d and date <= %d;",targ,(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
     return [myTracker toQry2Double];
 }
 
@@ -128,7 +128,7 @@
         
         //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
         // 6.ii.2013 implement maxGraphDays
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
 
         [myTracker toQry2AryID:i1 d1:d1];
         myTracker.sql=nil;
@@ -191,7 +191,7 @@
         //[myTracker toQry2AryIS:i1 s1:s1];
         //NSEnumerator *e = [s1 objectEnumerator];
 
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         [myTracker toQry2AryI:i1];
         myTracker.sql=nil;
         
@@ -283,7 +283,7 @@
         NSMutableArray *s1 = [[NSMutableArray alloc] init];
         NSMutableArray *i2 = [[NSMutableArray alloc] init];
         
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         [myTracker toQry2AryIS:i1 s1:s1];
         myTracker.sql=nil;
         

@@ -28,7 +28,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
 + (BOOL) deleteFileAtPath:(NSString*)fp;
 
-+ (unsigned int) countLines:(NSString*)str;
++ (NSUInteger) countLines:(NSString*)str;
 + (void) initHasAmPm;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg;
@@ -77,6 +77,13 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) willHideKeyboard;
 
 + (void) playSound:(NSString*) soundFileName;
+
+//+(void)enableOrientationData;
+//+(void)disableOrientationData;
+
++(BOOL)isDeviceiPhone4;
++(CGFloat) getKeyWindowWidth;
++ (NSString*)getLaunchImageName;
 
 @end
 

@@ -18,6 +18,7 @@
 #import "valueObj.h"
 #import "rTracker-resource.h"
 
+#import "useTrackerController.h"
 
 @interface trackerCalViewController ()
 
@@ -35,7 +36,7 @@
 
 @implementation trackerCalViewController
 
-@synthesize tracker=_tracker,dpr=_dpr;
+@synthesize tracker=_tracker,dpr=_dpr,parentUTC=_parentUTC;
 
 
 - (void)loadView;
@@ -59,9 +60,14 @@
 
     NSArray *colorSet = [rTracker_resource colorSet];
     int pv = [privacyV getPrivacyValue];
-    NSMutableArray *dates = [[NSMutableArray alloc]init];
-    self.tracker.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc;",pv];
-    [self.tracker toQry2AryI:dates];
+    NSMutableArray *dates;
+    if (nil == ((useTrackerController*)self.parentUTC).searchSet) {
+        dates = [[NSMutableArray alloc]init];
+        self.tracker.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc;",pv];
+        [self.tracker toQry2AryI:dates];
+    } else {
+        dates = [NSMutableArray arrayWithArray:((useTrackerController*)self.parentUTC).searchSet];
+    }
     
     NSMutableArray *vidSet = [[NSMutableArray alloc]init];
     
@@ -141,6 +147,21 @@
     calendarView.delegate=self;
     [calendarView scrollToDate:self.dpr.date animated:NO];
     self.view = calendarView;
+    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+    
+    
+}
+- (void) leaveCalendar {
+    self.dpr.date = nil;
+    self.dpr.action = DPA_CANCEL;
+    //[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self leaveCalendar];
 }
 
 /*

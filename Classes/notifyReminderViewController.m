@@ -124,11 +124,19 @@
                                                     NSFontAttributeName: [UIFont systemFontOfSize:28.0]
                                                     //,NSForegroundColorAttributeName: [UIColor greenColor]
                                                     } forState:UIControlStateNormal];
+    
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
+    [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.view addGestureRecognizer:swipe];
+    
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
 
-
+- (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    [self btnDone:nil];
+}
 
 - (BOOL)leaveNR {
     if ([self nullNRguiState]) {
@@ -283,7 +291,7 @@
     if (self.nr.untilEnabled) {
         [self.enableFinishButton setSelected:YES];
         self.finishSlider.value = self.nr.until;
-        self.repeatTimes.text = [NSString stringWithFormat:@"%d",self.nr.times];
+        self.repeatTimes.text = [NSString stringWithFormat:@"%ld",(long)self.nr.times];
         [self.intervalButton setTitle:(self.nr.timesRandom ? @"random" : @"interval") forState:UIControlStateNormal];
         [self sliderUpdate:(int)self.finishSlider.value hrtf:self.finishHr mntf:self.finishMin ampml:self.finishTimeAmPm];
     } else {
@@ -309,13 +317,13 @@
         //self.weekMonthEvery.selectedSegmentIndex=SEGEVERY;
         [self setDelayDaysButtonTitle:0];
         [self doDelayDaysButtonState];
-        self.everyTF.text = [NSString stringWithFormat:@"%d",self.nr.everyVal];
+        self.everyTF.text = [NSString stringWithFormat:@"%ld",(long)self.nr.everyVal];
         self.everyMode = self.nr.everyMode;
         [self everyBtnStateUpdate];
         if (self.nr.fromLast) {
             self.fromLastButton.selected = YES;
             if (self.nr.vid) {
-                int c = [self.tracker.valObjTable count];
+                NSUInteger c = [self.tracker.valObjTable count];
                 for (i=0; i< c; i++) {
                     if (self.nr.vid == ((valueObj*)(self.tracker.valObjTable)[i]).vid) {
                         self.everyTrackerNdx = i+1;
@@ -921,8 +929,8 @@
 }
 
 -(void)sliderUpdate:(int)val hrtf:(UITextField*)hrtf mntf:(UITextField*)mntf ampml:(UILabel*)ampml {
-    int hrVal = [self.nr hrVal:val];
-    int mnVal = [self.nr mnVal:val];
+    NSInteger hrVal = [self.nr hrVal:val];
+    NSInteger mnVal = [self.nr mnVal:val];
     
     if (hasAmPm) {
         if (hrVal >= 12) {
@@ -938,8 +946,8 @@
         }
     }
     //DBGLog(@"val %d hrVal %d mnVal %d",val,hrVal,mnVal);
-    hrtf.text = [NSString stringWithFormat:@"%02d",hrVal];
-    mntf.text = [NSString stringWithFormat:@"%02d",mnVal];
+    hrtf.text = [NSString stringWithFormat:@"%02ld",(long)hrVal];
+    mntf.text = [NSString stringWithFormat:@"%02ld",(long)mnVal];
     
     [self updateEnabledButton];
 }

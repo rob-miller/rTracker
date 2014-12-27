@@ -10,6 +10,7 @@
 
 #import "voDataEdit.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voDataEdit
 
@@ -31,6 +32,11 @@
 	
     [super viewDidLoad];
 	
+    CGRect f = self.view.frame;
+    f.size.width = [rTracker_resource getKeyWindowWidth];
+    self.view.frame = f;
+    
+
 	DBGLog(@"vde view did load");
 	self.title = self.vo.valueName;
 	[self.vo.vos dataEditVDidLoad:self];

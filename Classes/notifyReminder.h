@@ -79,16 +79,16 @@
 }*/
 
 
-@property (nonatomic) int rid;
+@property (nonatomic) NSInteger rid;
 
 @property (nonatomic) uint32_t monthDays;
 @property (nonatomic) uint8_t weekDays;
 @property (nonatomic) uint8_t everyMode;
 
-@property (nonatomic) int everyVal;
-@property (nonatomic) int start;
-@property (nonatomic) int until;
-@property (nonatomic) int times;
+@property (nonatomic) NSInteger everyVal;
+@property (nonatomic) NSInteger start;
+@property (nonatomic) NSInteger until;
+@property (nonatomic) NSInteger times;
 
 @property (nonatomic) NSInteger tid;
 @property (nonatomic) NSInteger vid;
@@ -100,7 +100,7 @@
 @property (nonatomic) BOOL reminderEnabled;
 @property (nonatomic) BOOL untilEnabled;
 @property (nonatomic) BOOL fromLast;
-@property (nonatomic) int saveDate;
+@property (nonatomic) NSInteger saveDate;
 
 @property (nonatomic,strong) UILocalNotification *localNotif;
 
@@ -118,10 +118,10 @@
 - (void) loadRid:(NSString*)sqlWhere to:(id)to;
 - (NSDictionary*) dictFromNR;
 
--(int) hrVal:(int)val;
--(int) mnVal:(int)val;
+-(NSInteger) hrVal:(NSInteger)val;
+-(NSInteger) mnVal:(NSInteger)val;
 
--(NSString*)timeStr:(int)val;
+-(NSString*)timeStr:(NSInteger)val;
 -(NSString*) description;
 
 -(void) create;

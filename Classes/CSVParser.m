@@ -246,12 +246,12 @@
 		}
 		else
 		{
-			fieldName = [NSString stringWithFormat:@"FIELD_%d", fieldCount + 1];
+			fieldName = [NSString stringWithFormat:@"FIELD_%ld", (long)fieldCount + 1];
 			[fieldNames addObject:fieldName];
 			fieldNamesCount++;
 		}
 		
-		record[[fieldName stringByAppendingFormat:@":%d",fieldCount]] = field;
+		record[[fieldName stringByAppendingFormat:@":%ld",(long)fieldCount]] = field;
         
 		fieldCount++;
 
