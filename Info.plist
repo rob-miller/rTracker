@@ -10,17 +10,38 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFile</key>
-			<string>icon120.png</string>
+			<string>icon512x512.png</string>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon512x512</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>rTracker Document</string>
+			<string>rTracker rtrk Document</string>
 			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtrk</string>
-				<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtcsv</string>
+				<string>com.realidata.rTracker.rtrk</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>Icon512x512.png</string>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon512x512</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>rTracker rtcsv Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.realidata.rTracker.rtcsv</string>
 			</array>
 		</dict>
 	</array>
@@ -41,7 +62,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4338</string>
+	<string>4473</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -65,7 +86,11 @@
 			<key>UTTypeDescription</key>
 			<string>rTracker Document</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtrk</string>
+			<string>com.realidata.rTracker.rtrk</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>Icon512x512</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>icon120</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -80,9 +105,13 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>rTracker Document</string>
+			<string>rTracker Document rtCSV</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.realidata.${PRODUCT_NAME:rfc1034identifier}.rtcsv</string>
+			<string>com.realidata.rTracker.rtcsv</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>Icon512x512</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>icon120</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -90,6 +119,53 @@
 				<key>public.mime-type</key>
 				<string>application/rTracker</string>
 			</dict>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UITypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rtrk</string>
+					<string>RTRK</string>
+				</array>
+			</dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>rTracker rtrk Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.realidata.rTracker.rtrk</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>Icon512x512</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>icon120</string>
+		</dict>
+		<dict>
+			<key>UITypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rtcsv</string>
+					<string>RTCSV</string>
+				</array>
+			</dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>rTracker rtcsv Document</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.realidata.rTracker.rtcsv</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>Icon512x512</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>icon120</string>
 		</dict>
 	</array>
 </dict>

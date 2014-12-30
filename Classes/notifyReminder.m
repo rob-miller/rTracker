@@ -91,20 +91,20 @@
     unsigned int flags= [self getFlags];
 
     DBGLog(@"%@",self);
-    to.sql = [NSString stringWithFormat:
+    NSString *sql = [NSString stringWithFormat:
                    @"insert or replace into reminders (rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg, soundFileName) values (%ld, %d, %d, %d,%ld, %ld, %ld, %ld, %d, %ld, %ld, %ld, '%@', '%@')",
                    (long)self.rid,self.monthDays,self.weekDays,self.everyMode,(long)self.everyVal,(long)self.start, (long)self.until, (long)self.times, flags, (long)self.tid,(long)self.vid, (long)self.saveDate, self.msg, self.soundFileName];
-    DBGLog(@"save sql= %@",to.sql);
-    [to toExecSql];
-    to.sql = nil;
+    DBGLog(@"save sql= %@",sql);
+    [to toExecSql:sql];
+  //sql = nil;
 }
 /*
  // not used - db updates only on tracker saveConfig
 - (void) delete:(trackerObj*)to {
     if (!self.rid) return;
-    to.sql = [NSString stringWithFormat:@"delete from reminders where rid=%d",self.rid];
-    [to toExecSql];
-    to.sql = nil;
+   sql = [NSString stringWithFormat:@"delete from reminders where rid=%d",self.rid];
+    [to toExecSql:sql];
+  //sql = nil;
 }
 */
 - (unsigned int) getFlags {
@@ -124,11 +124,10 @@
 }
 
 - (void) loadRid:(NSString*)sqlWhere to:(trackerObj*)to {
-
-    to.sql = [NSString stringWithFormat:@"select rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg from reminders where %@",sqlWhere];
+    NSString *sql = [NSString stringWithFormat:@"select rid, monthDays, weekDays, everyMode, everyVal, start, until, times, flags, tid, vid, saveDate, msg from reminders where %@",sqlWhere];
     int arr[12];
     unsigned int flags=0;
-    NSString *tmp = [to toQry2I12aS1:arr];
+    NSString *tmp = [to toQry2I12aS1:arr sql:sql];
     //DBGLog(@"read msg: %@",tmp);
     if (0 != arr[0]) {   // && (arr[0] != self.rid)) {
         self.rid = arr[0];
@@ -147,9 +146,8 @@
         [self putFlags:flags];
         
         self.msg = tmp;
-
-        to.sql = [NSString stringWithFormat:@"select soundFileName from reminders where %@",sqlWhere];
-        self.soundFileName = [to toQry2Str];
+        sql = [NSString stringWithFormat:@"select soundFileName from reminders where %@",sqlWhere];
+        self.soundFileName = [to toQry2Str:sql];
         if ([@"(null)" isEqualToString:self.soundFileName]) {
             self.soundFileName=nil;
         }
@@ -161,8 +159,8 @@
         self.msg = to.trackerName;
         self.tid = to.toid;
     }
-    
-    to.sql=nil;
+  
+    //sql = nil;
 
     DBGLog(@"%@",self);
 }
@@ -192,7 +190,7 @@
     [self loadRid:[NSString stringWithFormat:@"rid %c %d order by rid limit 1", test, self.rid]];
     
     //self.to.sql = @"select count(*) from reminders;";
-    //int c = [self.to toQry2Int];
+    //int c = [self.to toQry2Int:sql];
     //DBGLog(@"c= %d",c);
 
 }
@@ -207,9 +205,9 @@
 }
 
 - (BOOL) neighbourTest:(char)test {
-    self.to.sql = [NSString stringWithFormat:@"select count(*) from reminders where rid %c %d",test,self.rid];
-    int rslt = [self.to toQry2Int];
-    self.to.sql=nil;
+   sql = [NSString stringWithFormat:@"select count(*) from reminders where rid %c %d",test,self.rid];
+    int rslt = [self.to toQry2Int:sql];
+   sql=nil;
     return (rslt>0);
 }
 

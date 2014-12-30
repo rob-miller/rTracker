@@ -1639,6 +1639,30 @@ TODO: regen all .rtrks on website
    
 ---commit ---
 
+27 dec 2014
+   - graph y-axis labels format without decimals if step > 2
+   - fixed various width problems for vo config fields
+   - remove back button spec for utc, so says "<name>'s tracks" -- iOS changes to 'Back' if insufficient space
+   -- oops, makes it so cannot specify action - catch in viewWillDisappear
+   - fix choice button width for shrinkbutton=true
+   - enabled cells now use dynamic font like other cells
+
+28 dec 2014
+   - changes to make db access thread safe:
+   -- recalculateFns now has testAndSet lock
+   -- trackerObj.sql removed, local NSString *sql everywhere and as argument to all tObjBase db routines
+   -- @synchronized(self) around all tObjBase db routines
+   - tweaked mimetypes, now can open in google drive and dropbox but convoluted - may have worked before but rTracker not 'top level' choice
+   - tweaked fn defn windows for bigger devices
+   - added optional decimal places to voNumber, -1 for 'auto'
+   - added demo tracker load and versioning support - not tested, demo tracker not done
+   - demo tracker links to app store for review, realidata comments page done.
+
+29 dec 2014
+   - implementing load demoTracker with versioning
+   - fixed: default value not returned correctly from voInfo
+   - load demoTracker rtrk (including data) with versioning works
+   
    
 + check mail func as changing present view controller calls (ios6)
 

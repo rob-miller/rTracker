@@ -159,33 +159,37 @@ static NSNumber *stashedPriv=nil;
 #pragma mark key value db interaction
 
 - (int) dbTestKey:(int)try {
-	self.tob.sql = [NSString stringWithFormat: @"select lvl from priv1 where key=%d;",try];
-	return [self.tob toQry2Int];
+	NSString *sql = [NSString stringWithFormat: @"select lvl from priv1 where key=%d;",try];
+	return [self.tob toQry2Int:sql];
 }
 
 - (void) dbSetKey:(int) key level:(int) lvl{
+    NSString *sql;
+
 	if (key != 0) {  
-		self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv1 (key,lvl) values ('%d','%d');",key,lvl];
+        sql = [NSString stringWithFormat:@"insert or replace into priv1 (key,lvl) values ('%d','%d');",key,lvl];
 	} else {
-		self.tob.sql = [NSString stringWithFormat:@"delete from priv1 where lvl=%d;",lvl];
+        sql = [NSString stringWithFormat:@"delete from priv1 where lvl=%d;",lvl];
 	}
-	[self.tob toExecSql];
+	[self.tob toExecSql:sql];
 
 }
 
 - (unsigned int) dbGetKey:(int)lvl {
-    self.tob.sql = [NSString stringWithFormat:@"select key from priv1 where lvl=%d;",lvl];
-    return [self.tob toQry2Int];
+    NSString *sql = [NSString stringWithFormat:@"select key from priv1 where lvl=%d;",lvl];
+    return [self.tob toQry2Int:sql];
 }
 
 - (unsigned int) dbGetAdjacentKey:(int*)lvl nxt:(BOOL)nxt {
 	int rkey;
+    NSString *sql;
+
 	if (nxt)
-		self.tob.sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl>%d order by lvl asc limit 1;",*lvl];
+        sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl>%d order by lvl asc limit 1;",*lvl];
 	else
-		self.tob.sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl<%d order by lvl desc limit 1;",*lvl]; 
+	sql = [NSString stringWithFormat:@"select key, lvl from priv1 where lvl<%d order by lvl desc limit 1;",*lvl]; 
     DBGLog(@"getAdjacentVal: next=%d in lvl=%d",nxt,*lvl);
-	[self.tob toQry2IntInt:&rkey i2:lvl];
+	[self.tob toQry2IntInt:&rkey i2:lvl sql:sql];
     DBGLog(@"getAdjacentVal: rtn lvl=%d  key=%d",*lvl,rkey);
 	return (unsigned int) rkey;
 }
@@ -491,7 +495,7 @@ static NSTimeInterval lastShow=0;
 	UIButton *rbtn = [UIButton buttonWithType:UIButtonTypeRoundedRect ];
     CGRect bframe;
     if (kIS_LESS_THAN_IOS7) {
-        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}]};
+        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
     } else {
         bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
     }
@@ -574,7 +578,7 @@ static NSTimeInterval lastShow=0;
 	if (_ssValLab == nil) {
 		CGRect lframe = (CGRect) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 			self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC)), // y = same as saveBtn
-            [@"100" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}]};
+            [@"100" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
 		lframe.origin.x -= lframe.size.width/2.0f;
 		_ssValLab = [[UILabel alloc] initWithFrame:lframe];
         _ssValLab.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;

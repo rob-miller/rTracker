@@ -106,20 +106,20 @@ in_vpriv:(NSInteger)in_vpriv
 		self.parentTracker = parentTO;
 		self.vid = in_vid ;
         
-        parentTO.sql = [NSString stringWithFormat:@"select type, color, graphtype from voConfig where id=%ld",(long)in_vid];
+        NSString *sql = [NSString stringWithFormat:@"select type, color, graphtype from voConfig where id=%ld",(long)in_vid];
         
         NSInteger in_vtype;
         NSInteger in_vcolor;
         NSInteger in_vgraphtype;
         
-        [parentTO toQry2IntIntInt:&in_vtype i2:&in_vcolor i3:&in_vgraphtype];
+        [parentTO toQry2IntIntInt:&in_vtype i2:&in_vcolor i3:&in_vgraphtype sql:sql];
         
 		self.vtype = in_vtype;  // sets useVO
         self.vcolor = in_vcolor;
 		self.vGraphType = in_vgraphtype;
         
-        parentTO.sql = [NSString stringWithFormat:@"select name from voConfig where id==%ld",(long)in_vid];
-        self.valueName = [parentTO toQry2Str];
+        sql = [NSString stringWithFormat:@"select name from voConfig where id==%ld",(long)in_vid];
+        self.valueName = [parentTO toQry2Str:sql];
 	}
 	
 	return self;

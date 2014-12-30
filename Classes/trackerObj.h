@@ -167,6 +167,7 @@
 //- (NSDictionary *) genRtrk:(BOOL)withData;
 
 - (void) loadDataDict:(NSDictionary*)dataDict;
+@property (atomic)     int32_t recalcFnLock;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

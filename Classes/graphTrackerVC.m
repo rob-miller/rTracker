@@ -6,7 +6,7 @@
 //  Copyright 2010 Robert T. Miller. All rights reserved.
 //
 
-#import <libkern/OSAtomic.h>
+//#import <libkern/OSAtomic.h>
 
 #import "graphTrackerVC.h"
 #import "togd.h"
@@ -27,7 +27,8 @@
 
 @implementation graphTrackerVC
 
-@synthesize tracker=_tracker, currVO=_currVO, myFont=_myFont, scrollView=_scrollView,gtv=_gtv,titleView=_titleView,voNameView=_voNameView,xAV=_xAV,yAV=_yAV,dpr=_dpr,parentUTC=_parentUTC,shakeLock=_shakeLock;
+@synthesize tracker=_tracker, currVO=_currVO, myFont=_myFont, scrollView=_scrollView,gtv=_gtv,titleView=_titleView,voNameView=_voNameView,xAV=_xAV,yAV=_yAV,dpr=_dpr,parentUTC=_parentUTC;
+//,shakeLock=_shakeLock;
 
 /*
  - (void) loadView {
@@ -45,7 +46,9 @@
 */
 
 - (void) buildView {
-    self.shakeLock = 0;
+    //self.shakeLock = 0;
+    //if (0 != self.shakeLock) return;
+    //if (self.tracker.recalcFnLock) return;
     
     self.view.backgroundColor = [UIColor blackColor];
     //[[self view] setBackgroundColor:[UIColor blueColor]];
@@ -267,12 +270,13 @@
         [self.gtv setNeedsDisplay];
         [self.yAV setNeedsDisplay];
         
-        self.shakeLock = 0; // release lock
+        //self.shakeLock = 0; // release lock
     }
     
 }
 
 - (void) fireRecalculateFns {
+    if (self.tracker.recalcFnLock) return;  // already running
     [rTracker_resource startProgressBar:self.scrollView navItem:nil disable:NO yloc:20.0f];
     [NSThread detachNewThreadSelector:@selector(doRecalculateFns) toTarget:self withObject:nil];
 }
@@ -298,10 +302,12 @@
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (event.type == UIEventSubtypeMotionShake) {
         // It has shake d
+        /*
         if (0 != OSAtomicTestAndSet(0, &(_shakeLock))) {
             // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
             return;
         }
+         */
         if (self.tracker.goRecalculate) {
             // recalculate is already running
             return;
@@ -558,8 +564,8 @@
 #pragma mark handle taps in subviews
 
 - (void) yavTap {
-    if (0 != self.shakeLock)
-        return;
+    //if (0 != self.shakeLock) return;
+    if (self.tracker.recalcFnLock) return;
     //DBGLog(@"yav tapped!");
     [self nextVO];
     self.yAV.vogd = (vogd*) self.currVO.vogd;
@@ -569,8 +575,8 @@
 }
 
 - (void) gtvTap:(NSSet *)touches {
-    if (0 != self.shakeLock)
-        return;
+    //if (0 != self.shakeLock) return;
+    if (self.tracker.recalcFnLock) return;
     //DBGLog(@"gtv tapped!");
     //int xMarkSecs;
     UITouch *touch = [touches anyObject];
@@ -622,10 +628,10 @@
                         maxw = [self testDblWidth:[(vo.optDict)[@"gmin"] doubleValue] max:maxw];
                         maxw = [self testDblWidth:[(vo.optDict)[@"gmax"] doubleValue] max:maxw];
                     } else {
-                        self.tracker.sql = [NSString stringWithFormat:@"select min(val collate BINARY) from voData where id=%ld;",(long)vo.vid];  // CMPSTRDBL
-                        maxw = [self testDblWidth:[self.tracker toQry2Double] max:maxw];
-                        self.tracker.sql = [NSString stringWithFormat:@"select max(val collate BINARY) from voData where id=%ld;",(long)vo.vid]; // CMPSTRDBL
-                        maxw = [self testDblWidth:[self.tracker toQry2Double] max:maxw];
+                       NSString *sql = [NSString stringWithFormat:@"select min(val collate BINARY) from voData where id=%ld;",(long)vo.vid];  // CMPSTRDBL
+                        maxw = [self testDblWidth:[self.tracker toQry2Double:sql] max:maxw];
+                       sql = [NSString stringWithFormat:@"select max(val collate BINARY) from voData where id=%ld;",(long)vo.vid]; // CMPSTRDBL
+                        maxw = [self testDblWidth:[self.tracker toQry2Double:sql] max:maxw];
                     }
                     break;
                 case VOT_SLIDER: {
@@ -657,8 +663,8 @@
         }
         
     }
-    
-    self.tracker.sql = nil;
+   
+    //sql = nil;
     
     return maxw;
 }

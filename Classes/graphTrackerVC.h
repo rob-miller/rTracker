@@ -62,7 +62,7 @@
 @property(nonatomic,strong) dpRslt *dpr;
 @property(nonatomic,strong) useTrackerController *parentUTC;
 
-@property (atomic)     int32_t shakeLock;
+//@property (atomic)     int32_t shakeLock;
 
 - (void) yavTap;
 - (void) gtvTap:(NSSet *)touches;

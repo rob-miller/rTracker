@@ -25,7 +25,7 @@
 
 #define RELEASE     1
 
-#define DEBUGLOG    0
+#define DEBUGLOG    1
 
 // report scheduled notification fire dates in dbInfo() 
 
@@ -53,8 +53,8 @@
     for (i=0;i<c;i++) { \
         NSLog(@" %lu  %@  %@   %@",(unsigned long)i+1,[tl.topLayoutIDs objectAtIndex:i], [tl.topLayoutPriv objectAtIndex:i],[tl.topLayoutNames objectAtIndex:i]); \
     } \
-    tl.sql=@"select rank, id, priv, name from toplevel order by rank"; \
-    [tl toQry2Log]; \
+    NSString *sql=@"select rank, id, priv, name from toplevel order by rank"; \
+    [tl toQry2Log:sql]; \
 }
 
 #else

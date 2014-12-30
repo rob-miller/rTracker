@@ -58,6 +58,7 @@ static int plistLoadCount;
 static int csvReadCount;
 static int plistReadCount;
 static BOOL InstallSamples;
+static BOOL InstallDemo;
 
 //
 // original code:
@@ -360,6 +361,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return newTIDi;
 }
 
+#pragma mark -
 #pragma mark load .plists and .rtrks for input trackers
 
 - (int) handleOpenFileURL:(NSURL*)url tname:(NSString*)tname {
@@ -605,6 +607,11 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void) doLoadInputfiles {
     @autoreleasepool {
     
+        if (InstallDemo) {
+            [self loadDemos:YES];
+            InstallDemo = NO;
+        }
+        
         if (InstallSamples) {
             [self loadSamples:YES];
             InstallSamples = NO;
@@ -666,7 +673,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         
         if (InstallSamples)
             plistLoadCount += [self loadSamples:NO];
-        
+        if (InstallDemo)
+            plistLoadCount += [self loadDemos:NO];
+    
         // set rvc:static numerators for progress bars
         csvReadCount=1;
         plistReadCount=1;
@@ -691,24 +700,29 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return;
 }
 
-- (int) loadSamples:(BOOL)doLoad {
-    // called when handlePrefs decides is needed, copies plist files to documents dir
-    // also called with doLoad=NO to just count
-    // returns count
+#define SUPPLY_DEMOS 0
+#define SUPPLY_SAMPLES 1
+
+-(int) loadSuppliedTrackers:(BOOL)doLoad set:(NSInteger)set {
     NSBundle *bundle = [NSBundle mainBundle];
-    NSArray *paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
+    NSArray *paths;
+    if (SUPPLY_DEMOS == set) {
+        paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"demoTrackers"];
+    } else {
+        paths = [bundle pathsForResourcesOfType:@"plist" inDirectory:@"sampleTrackers"];
+    }
     int count=0;
     
     /* copy plists over version
-    NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
-    NSFileManager *dfltManager = [NSFileManager defaultManager];
-    */
+     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
+     NSFileManager *dfltManager = [NSFileManager defaultManager];
+     */
     
     //DBGLog(@"paths %@",paths  );
-
-        
+    
+    
     for (NSString *p in paths) {
-
+        
         if (doLoad) {
             
             /*
@@ -717,24 +731,25 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
              NSString *dest = [docsDir stringByAppendingFormat:@"/%@",fname];
              NSError *err = [[NSError alloc] init];
              if (!([dfltManager copyItemAtPath:p toPath:dest error:&err])) {
-                DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
-                DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
+             DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
+             DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
              }
              */
             // /*
+
             // load now into trackerObj - needs progressBar
             NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
             [self.tlist fixDictTID:tdict];
             trackerObj *newTracker = [[trackerObj alloc] initWithDict:tdict];
-        
-            [self.tlist deConflict:newTracker];  // add _n to trackerName so we don't overwrite .. TODO: shouldn't we just merge now?
-        
+            
+            [self.tlist deConflict:newTracker];  // add _n to trackerName so we don't overwrite user's existing if any .. could just merge now?
+            
             [newTracker saveConfig];
             [self.tlist addToTopLayoutTable:newTracker];
             
-            [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];                    
+            [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];
             plistReadCount++;
-            
+
             // */
             
             DBGLog(@"finished loadSample on %@",p);
@@ -743,12 +758,56 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     }
     
     if (doLoad) {
-        self.tlist.sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
-        [self.tlist toExecSql];
-        self.tlist.sql = nil;
+        NSString *sql;
+        if (SUPPLY_DEMOS == set) {
+            sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'demos_version')",DEMOS_VERSION];
+        } else {
+            sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
+        }
+        [self.tlist toExecSql:sql];
     }
     
     return(count);
+    
+}
+
+- (int) loadSamples:(BOOL)doLoad {
+    // called when handlePrefs decides is needed, copies plist files to documents dir
+    // also called with doLoad=NO to just count
+    // returns count
+    
+    return [self loadSuppliedTrackers:doLoad set:SUPPLY_SAMPLES];
+}
+
+- (int) loadDemos:(BOOL)doLoad {
+    
+    //return [self loadSuppliedTrackers:doLoad set:SUPPLY_DEMOS];
+
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSArray *paths = [bundle pathsForResourcesOfType:@"rtrk" inDirectory:@"demoTrackers"];
+    NSError *err;
+    NSString *newp = [rTracker_resource ioFilePath:@"Inbox" access:YES];
+    if  (![[NSFileManager defaultManager] createDirectoryAtPath:newp withIntermediateDirectories:YES attributes:nil error:&err] ) {
+        DBGErr(@"Error creating dir : %@ error: %@", newp,  err);
+    }
+    
+    
+    for (NSString *p in paths) {
+        NSString *np = [NSString stringWithString:p]; //[p stringByReplacingOccurrencesOfString:@" " withString:@"\\ "];
+        newp = [np stringByReplacingOccurrencesOfString:@"rTracker.app/demoTrackers" withString:@"Documents/Inbox"];
+        if  (![[NSFileManager defaultManager] copyItemAtPath:np toPath:newp error:&err] ) {
+            DBGErr(@"Error copying file: %@ to %@ error: %@", np, newp,  err);
+        }
+        [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
+        [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
+    }
+    if (doLoad) {
+        NSString *sql;
+        sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'demos_version')",DEMOS_VERSION];
+        [self.tlist toExecSql:sql];
+    }
+    
+    return 0;
 }
 
 
@@ -817,8 +876,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     
 
     if ((nil == name)
+#if RELEASE
         || ([name isEqualToString:@"iPhone"])
         || ([name isEqualToString:@"iPad"])
+#endif
         || (0 == [name length])
 #if NONAME
         || YES
@@ -924,6 +985,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void)viewDidLoad {
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
+    InstallDemo = NO;
+    
     self.refreshLock = 0;
     
     if (kIS_LESS_THAN_IOS7) {
@@ -1066,8 +1129,13 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 }
 
 - (BOOL) samplesNeeded {
-    self.tlist.sql = @"select val from info where name = 'samples_version'";
-    return (SAMPLES_VERSION != [self.tlist toQry2Int]);
+    NSString *sql = @"select val from info where name = 'samples_version'";
+    return (SAMPLES_VERSION != [self.tlist toQry2Int:sql]);
+}
+
+- (BOOL) demoNeeded {
+    NSString *sql = @"select val from info where name = 'demos_version'";
+    return (DEMOS_VERSION != [self.tlist toQry2Int:sql]);
 }
 
 - (void) handlePrefs {
@@ -1117,11 +1185,16 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         (self.initialPrefsLoad && [self samplesNeeded]) 
         ) { 
         InstallSamples = YES;
-    } else {
-        //InstallSamples = NO;
+    }
+
+    if (reloadSamplesPref
+        ||
+        (self.initialPrefsLoad && [self demoNeeded])
+        ) {
+        InstallDemo = YES;
     }
     
-    if (resetPassPref) 
+    if (resetPassPref)
         [sud setBool:NO forKey:@"reset_password_pref"];
     if (reloadSamplesPref)
         [sud setBool:NO forKey:@"reload_sample_trackers_pref"];

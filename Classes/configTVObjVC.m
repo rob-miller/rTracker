@@ -92,7 +92,8 @@
 	self.LFHeight = 31.0f; 
 	//LFHeight = ((addValObjController *) [self parentViewController]).labelField.frame.size.height;
 	
-	self.lasty = self.navBar.frame.size.height + MARGIN;
+	self.lasty = self.navBar.frame.origin.y + self.navBar.frame.size.height + MARGIN;
+    
 	if (self.vo == nil) {
 		[self addTOFields];
 	} else {
@@ -484,6 +485,9 @@
 	} else if ( tf == (self.wDict)[@"fnddpTF"] ) {
 		okey = @"fnddp";
 		nkey = nil;
+    } else if ( tf == (self.wDict)[@"numddpTF"] ) {
+        okey = @"numddp";
+        nkey = nil;
 	} else if ( tf == (self.wDict)[@"bvalTF"] ) {
 		okey = @"boolval";
 		nkey = nil;
@@ -554,6 +558,7 @@
 - (CGRect) configPicker:(CGRect)frame key:(NSString*)key caller:(id)caller {
 	UIPickerView *myPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
 	frame.size = [myPickerView sizeThatFits:CGSizeZero];;
+    frame.size.width = self.view.frame.size.width - (2*MARGIN);
 	myPickerView.frame = frame;
 	
 	myPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -623,7 +628,7 @@
 	labframe = [self configLabel:@"min:" frame:frame key:@"nminLab" addsv:NO];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -685,16 +690,16 @@
 - (void) recoverValuesBtn {
     int recoverCount=0;
     NSMutableArray *Ids = [[NSMutableArray alloc]init];
-    self.to.sql = @"select distinct id from voData order by id";
-    [self.to toQry2AryI:Ids];
+    NSString *sql = @"select distinct id from voData order by id";
+    [self.to toQry2AryI:Ids sql:sql];
     for (NSNumber *ni in Ids) {
         int i = [ni intValue];
-        self.to.sql = [NSString stringWithFormat:@"select id from voConfig where id=%d",i];
-        if (i != [self.to toQry2Int]) {
+       sql = [NSString stringWithFormat:@"select id from voConfig where id=%d",i];
+        if (i != [self.to toQry2Int:sql]) {
             NSString *recoverName = [NSString stringWithFormat:@"recover%d",i];
-            self.to.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
+           sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%d, %d, %d, '%@', %d, %d, %d);",
                            i, 0, VOT_NUMBER, recoverName, 0, VOG_DOTS, PRIVDFLT];
-            [self.to toExecSql];
+            [self.to toExecSql:sql];
             recoverCount++;
         }
     }
@@ -724,27 +729,27 @@
 
 - (void) dbInfoBtn {
     NSString *titleStr;
-    
-    self.to.sql = @"select count(*) from trkrData";
-    int dateEntries = [self.to toQry2Int];
-    self.to.sql = @"select count(*) from voData";
-    int dataPoints = [self.to toQry2Int];
-    self.to.sql = @"select count(*) from voConfig";
-    int itemCount = [self.to toQry2Int];
+   
+    NSString *sql = @"select count(*) from trkrData";
+    int dateEntries = [self.to toQry2Int:sql];
+    sql = @"select count(*) from voData";
+    int dataPoints = [self.to toQry2Int:sql];
+    sql = @"select count(*) from voConfig";
+    int itemCount = [self.to toQry2Int:sql];
     
     titleStr = [NSString stringWithFormat:@"tracker number %ld\n%d items\n%d date entries\n%d data points",
                 (long)self.to.toid, itemCount, dateEntries,dataPoints];
-    
-    self.to.sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
-    int orphanDatapoints = [self.to toQry2Int];
+   
+    sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
+    int orphanDatapoints = [self.to toQry2Int:sql];
     
     if (0 < orphanDatapoints) {
         titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
     }
 
 //#if !RELEASE
-    self.to.sql = @"select count(*) from reminders";
-    int reminderCount = [self.to toQry2Int];
+   sql = @"select count(*) from reminders";
+    int reminderCount = [self.to toQry2Int:sql];
 
     UIApplication *app = [UIApplication sharedApplication];
     NSArray *eventArray = [app scheduledLocalNotifications];
@@ -841,7 +846,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -870,7 +875,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-    tfWidth = [@"999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    tfWidth = [@"999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -906,7 +911,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	//tfWidth = [@"" sizeWithFont:[UIFont systemFontOfSize:18]].width;
+	//tfWidth = [@"" sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]].width;
 	frame.size.width = self.view.frame.size.width - (2*SPACE) - labframe.size.width - MARGIN;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -977,7 +982,7 @@
 		[(UIView *) [self.wDict valueForKey:key] removeFromSuperview];
 	}
 	[self.wDict removeAllObjects];
-	self.lasty = self.navBar.frame.size.height + MARGIN;	
+	self.lasty = self.navBar.frame.origin.y + self.navBar.frame.size.height + MARGIN;
 }
 
 

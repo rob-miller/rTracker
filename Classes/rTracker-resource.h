@@ -83,6 +83,7 @@ NSUInteger DeviceSystemMajorVersion();
 
 +(BOOL)isDeviceiPhone4;
 +(CGFloat) getKeyWindowWidth;
++(CGFloat) getScreenMaxDim;
 + (NSString*)getLaunchImageName;
 
 @end

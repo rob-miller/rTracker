@@ -465,9 +465,11 @@ static int lastStashedTid=0;
     return outstr;
 }
 
+#pragma mark -
 
 + (UITextField*) rrConfigTextField:(CGRect)frame key:(NSString*)key target:(id)target delegate:(id)delegate action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text
 {
+    DBGLog(@" frame x %f y %f w %f h %f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
 	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
 	rtf.clearsOnBeginEditing = NO;
     
@@ -684,13 +686,17 @@ static BOOL getOrientEnabled=false;
 #define MAXDIM_6 667
 #define MAXDIM_6P 736
 
++(CGFloat) getScreenMaxDim {
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    return (size.width > size.height ? size.width : size.height);
+}
+
 #define CHOOSE(x,y) [mb URLForResource:x withExtension:nil] ? x : y
 +(NSString*)getLaunchImageName
 {
     NSBundle* mb = [NSBundle mainBundle];
     CGSize size = [[UIScreen mainScreen] bounds].size;
-    
-    CGFloat maxDim = size.width > size.height ? size.width : size.height;
+    CGFloat maxDim = [self getScreenMaxDim];
     NSString *retStr;
     
     DBGLog(@"width %f  height %f",size.width, size.height);

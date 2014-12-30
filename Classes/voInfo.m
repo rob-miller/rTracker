@@ -117,16 +117,20 @@
 }
 
 - (NSString*) update:(NSString*)instr {
-    return (self.vo.optDict)[@"infoval"];
+    NSString *retval = (self.vo.optDict)[@"infoval"];
+    if (retval) return retval;
+    return INFOVALDFLTSTR;
 }
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
+    
+    DBGLog(@"ctvovc frame x %f y %f w %f h %f",ctvovc.view.frame.origin.x,ctvovc.view.frame.origin.y,ctvovc.view.frame.size.width,ctvovc.view.frame.size.height );
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	
 	CGRect labframe = [ctvovc configLabel:@"stored value:" frame:frame key:@"ivLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight;
 	
@@ -147,12 +151,12 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
     frame.size.width = ctvovc.view.frame.size.width - (2*MARGIN);
-    
+
     [ctvovc configTextField:frame
                         key:@"iurlTF"
                      target:nil
                      action:nil
-                        num:YES
+                        num:NO
                       place:INFOURLDFLTSTR
                        text:(self.vo.optDict)[@"infourl"]
                       addsv:YES ];

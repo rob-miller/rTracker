@@ -134,7 +134,7 @@
 	//-- privacy level textfield
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -230,7 +230,8 @@
     }
 	UILabel *label = [[UILabel alloc] initWithFrame:bounds];
 	label.tag=kViewTag;
-	label.font = [UIFont boldSystemFontOfSize:18.0];
+	//label.font = [UIFont boldSystemFontOfSize:18.0];
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     label.textColor = [UIColor blackColor];
     label.alpha = 1.0;
     label.backgroundColor = [UIColor clearColor];
@@ -251,7 +252,8 @@
         bounds.size.width -= (2.0*MARGIN);
         label = [[UILabel alloc] initWithFrame:bounds];
         label.tag=kViewTag;
-        label.font = [UIFont boldSystemFontOfSize:18.0];
+        //label.font = [UIFont boldSystemFontOfSize:18.0];
+        label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
         label.textColor = [UIColor blackColor];
         label.alpha = 1.0;
         label.backgroundColor = [UIColor clearColor];
@@ -423,10 +425,10 @@
 		minVal = d(0);
 		maxVal = CHOICES+1;
 	} else {
-		myTracker.sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
-		minVal = [myTracker toQry2Double];
-		myTracker.sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
-		maxVal = [myTracker toQry2Double];
+	sql = [NSString stringWithFormat:@"select min(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
+		minVal = [myTracker toQry2Double:sql];
+	sql = [NSString stringWithFormat:@"select max(val collate CMPSTRDBL) from voData where id=%d;",self.vo.vid];
+		maxVal = [myTracker toQry2Double:sql];
 	}
 	
 	if (minVal == maxVal) {

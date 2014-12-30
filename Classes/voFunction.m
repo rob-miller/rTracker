@@ -258,27 +258,26 @@
 }
 
 
-- (NSInteger) getEpDate:(int)ndx maxdate:(NSInteger
-                                          )maxdate {
-
+- (NSInteger) getEpDate:(int)ndx maxdate:(NSInteger)maxdate {
 	NSString *key = [NSString stringWithFormat:@"frep%d",ndx];
 	NSNumber *nep = (self.vo.optDict)[key];
 	NSInteger ep = [nep integerValue];
 	NSInteger epDate;
 	trackerObj *to = MyTracker;
-	
+    NSString *sql;
+
 	if (nep == nil || ep == FREPENTRY) {  // also FREPDFLT  -- no value specified
 		// use last entry
-		to.sql = [NSString stringWithFormat:@"select date from trkrData where date < %ld order by date desc limit 1;",(long)maxdate];
-		epDate = [to toQry2Int];
+        sql = [NSString stringWithFormat:@"select date from trkrData where date < %ld order by date desc limit 1;",(long)maxdate];
+		epDate = [to toQry2Int:sql];
 		DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
 	} else if (ep >= 0) {
 		// ep is vid
-		to.sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
+        sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
 #if DEBUGFUNCTION
         DBGLog(@"get ep qry: %@",to.sql);
 #endif
-		epDate = [to toQry2Int];
+		epDate = [to toQry2Int:sql];
 #if DEBUGFUNCTION
 		DBGLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
 #endif
@@ -361,16 +360,15 @@
         DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
 #endif
 	}
-
-    to.sql = nil;
+   //sql = nil;
 
 	return epDate;
 }
 
 - (NSNumber *) calcFunctionValue:(NSArray*)datePair {  // TODO: finish this -- not used
-	if (datePair == nil) 
-		return nil;
-	
+	if (datePair == nil) return nil;
+    NSString *sql;
+    
 	int epd0 = [datePair[0] intValue];
 	int epd1 = [datePair[1] intValue];
 
@@ -392,21 +390,21 @@
 					if (epd1 == 0) {
 						v1 = [[to getValObj:vid].value doubleValue];
 					} else {	
-						to.sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd1];
-						v1 = [to toQry2Double];
+					sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd1];
+						v1 = [to toQry2Double:sql];
 					}
-					to.sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd0];
-					v0 = [to toQry2Double];
+                    sql = [NSString stringWithFormat:@"select val from voData where vid=%ld and date=%d;",(long)vid,epd0];
+					v0 = [to toQry2Double:sql];
 					result = v1 - v0;
 					break;
 				case FN1ARGAVG :
 					if (epd1 == 0) {
 						v1 = [[to getValObj:vid].value doubleValue];
-						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d;",(long)vid,epd0];
-						result = [to toQry2Float] + v1;
+                        sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d;",(long)vid,epd0];
+                        result = [to toQry2Float:sql] + v1;
 					} else {
-						to.sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d and date <=%d;",(long)vid,epd0,epd1];
-						result = [to toQry2Float];
+					sql = [NSString stringWithFormat:@"select avg(val) from voData where vid=%ld and date >=%d and date <=%d;",(long)vid,epd0,epd1];
+                        result = [to toQry2Float:sql];
 					}
 					break;
 				default:
@@ -433,6 +431,7 @@
 	NSInteger maxc = [self.fnArray count];
 	NSInteger vid=0;
 	trackerObj *to = MyTracker;
+    NSString *sql;
 
 #if DEBUGFUNCTION
     // print our complete function
@@ -465,8 +464,8 @@
             NSString *sv1 = [to getValObj:vid].value;
             BOOL nullV1 = (nil == sv1 || [@"" isEqualToString:sv1]);
             double v1 = [sv1 doubleValue];
-            to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",(long)vid,(long)epd0,epd1];
-            int ci= [to toQry2Int];
+            sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",(long)vid,(long)epd0,epd1];
+            int ci= [to toQry2Int:sql];
 #if DEBUGFUNCTION
             DBGLog(@"v1= %f nullV1=%d", v1, nullV1);
 #endif
@@ -479,13 +478,13 @@
                     //to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
                     // with per calendar date calcs, epd0 may not match a datapoint
                     // - so get val coming into this time segment or skip for beginning - rtm 17.iii.13
-                    to.sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date<=%ld;",(long)vid,(long)epd0];
-                    ci= [to toQry2Int]; // slightly different for delta
+                   sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date<=%ld;",(long)vid,(long)epd0];
+                    ci= [to toQry2Int:sql]; // slightly different for delta
                     if (0 == ci)
                         return nil; // skip for beginning
-                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<=%ld order by date desc limit 1;",(long)vid,(long)epd0];
+                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<=%ld order by date desc limit 1;",(long)vid,(long)epd0];
                     
-                    double v0 = [to toQry2Double];
+                    double v0 = [to toQry2Double:sql];
 #if DEBUGFUNCTION
                     DBGLog(@"delta: v0= %f", v0);
 #endif
@@ -497,22 +496,22 @@
                     // below (calculate via sqlite) works but need to include any current but unsaved value
                     //to.sql = [NSString stringWithFormat:@"select avg(val) from voData where id=%d and date >=%d and date <%d;",
                     //		  vid,epd0,epd1];
-                    //result = [to toQry2Float];  // --> + v1;
+                    //result = [to toQry2Float:sql];  // --> + v1;
                     
                     double c = [(self.vo.optDict)[@"frv0"] doubleValue];  // if ep has assoc value, then avg is over that num with date/time range already determined
                     // in other words, is it avg over 'frv' number of hours/days/weeks then that is our denominator
                     if (c == 0.0f) {  // else denom is number of entries between epd0 to epd1 
-                        to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and val <> '' and date >=%ld and date <%d;",
+                       sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and val <> '' and date >=%ld and date <%d;",
                                   (long)vid,(long)epd0,epd1];
-                        c = [to toQry2Float] + (nullV1 ? 0.0f : 1.0f);  // +1 for current on screen
+                        c = [to toQry2Float:sql] + (nullV1 ? 0.0f : 1.0f);  // +1 for current on screen
                     }
                     
                     if (c == 0.0f) {
                         return nil;
                     }
-                    to.sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%ld and date >=%ld and date <%d;",
+                   sql = [NSString stringWithFormat:@"select sum(val) from voData where id=%ld and date >=%ld and date <%d;",
                               (long)vid,(long)epd0,epd1];
-                    double v =  [to toQry2Float];
+                    double v =  [to toQry2Float:sql];
                     result = (v + v1) / c ;
 #if DEBUGFUNCTION
                     DBGLog(@"avg: v= %f v1= %f (v+v1)= %f c= %f rslt= %f ",v,v1,(v+v1),c,result);
@@ -526,9 +525,9 @@
                     } else if (0 == ci) {
                         result = v1;
                     } else {
-                        to.sql = [NSString stringWithFormat:@"select min(val) from voData where id=%ld and date >=%ld and date <%d;",
+                       sql = [NSString stringWithFormat:@"select min(val) from voData where id=%ld and date >=%ld and date <%d;",
                               (long)vid,(long)epd0,epd1];
-                        result = [to toQry2Float];
+                        result = [to toQry2Float:sql];
                         if (!nullV1 && v1 < result) {
                             result = v1;
                         
@@ -546,9 +545,9 @@
                     } else if (0 == ci) {
                         result = v1;
                     } else {
-                        to.sql = [NSString stringWithFormat:@"select max(val) from voData where id=%ld and date >=%ld and date <%d;",
+                       sql = [NSString stringWithFormat:@"select max(val) from voData where id=%ld and date >=%ld and date <%d;",
                               (long)vid,(long)epd0,epd1];
-                        result = [to toQry2Float];
+                        result = [to toQry2Float:sql];
                         if (!nullV1 && v1>result) {
                             result = v1;
                         }
@@ -560,9 +559,9 @@
                 }
                 case FN1ARGCOUNT :
                 {
-                    to.sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",
+                   sql = [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",
                               (long)vid,(long)epd0,epd1];
-                    result = [to toQry2Float];
+                    result = [to toQry2Float:sql];
                     if (!nullV1) {
                         result += 1.0f;
                     }
@@ -587,7 +586,7 @@
 #endif
                         case FN1ARGSUM :
                             // (date<%d) because add in v1 below
-                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >=%ld and date <%d;",
+                           sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >=%ld and date <%d;",
                                       (long)vid,(long)epd0,epd1];
 #if DEBUGFUNCTION
                             DBGLog(@"sum: set sql");
@@ -595,13 +594,13 @@
                             break;
                         case FN1ARGPOSTSUM :
                             // (date<%d) because add in v1 below
-                            to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%ld and date <%d;",(long)vid,(long)epd0,epd1];
+                           sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%ld and date <%d;",(long)vid,(long)epd0,epd1];
 #if DEBUGFUNCTION
                             DBGLog(@"postsum: set sql");
 #endif
                             break;
                     }
-                    result = [to toQry2Float];
+                    result = [to toQry2Float:sql];
                     if (currTok != FN1ARGPRESUM)
                         result += v1;
 #if DEBUGFUNCTION
@@ -915,13 +914,13 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-	/*labframe =*/ [self.ctvovcp configLabel:@"Previous" 
+	/*labframe =*/ [self.ctvovcp configLabel:@"Previous:"
 							   frame:frame
 								 key:@"frpLab" 
 							   addsv:YES ];
 	frame.origin.x = (self.ctvovcp.view.frame.size.width / 2.0) + MARGIN;
 	
-	labframe = [self.ctvovcp configLabel:@"Current" 
+	labframe = [self.ctvovcp configLabel:@"Current:"
 						   frame:frame
 							 key:@"frcLab" 
 						   addsv:YES ];
@@ -946,7 +945,7 @@
 						   addsv:NO ];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1116,12 +1115,22 @@
 	frame.origin.y += MARGIN + labframe.size.height;
 	frame.size.width = self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
 	frame.size.height = 2* self.ctvovcp.LFHeight;
-	
+
+    CGFloat maxDim = [rTracker_resource getScreenMaxDim];
+    if (maxDim > 480) {
+        if (maxDim <= 568) {  // iphone 5
+            frame.size.height = 4* self.ctvovcp.LFHeight;
+        } else if (maxDim <= 736) { // iphone 6, 6+
+            frame.size.height = 6* self.ctvovcp.LFHeight;
+        } else {
+            frame.size.height = 8* self.ctvovcp.LFHeight;
+        }
+    }
 	[self.ctvovcp configTextView:frame key:@"fdefnTV2" text:[self voFnDefnStr]];
 	
 	frame.origin.x = 0.0;
 	frame.origin.y += frame.size.height + MARGIN;
-	
+
 	frame = [self.ctvovcp configPicker:frame key:@"fdPkr" caller:self];
 	//UIPickerView *pkr = [self.ctvovcp.wDict objectForKey:@"fdPkr"];
 	
@@ -1136,7 +1145,7 @@
 	frame.origin.x = -1.0f;
 	[self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)]; 
     
-    frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width + 3*MARGIN;
+    frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width + 3*MARGIN;
     //frame.origin.y += frame.size.height + MARGIN;
     labframe = [self.ctvovcp configLabel:@"Constant value:" 
                                    frame:frame
@@ -1144,7 +1153,7 @@
                                    addsv:NO ];
     
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999.99" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"9999.99" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1199,10 +1208,11 @@
 	
 	//frame = (CGRect) {-1.0f, frame.origin.y, 0.0f,labframe.size.height};
 	//[self configActionBtn:frame key:@"frbBtn" label:@"Build" action:@selector(btnBuild:)]; 
-	
+	CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + labframe.size.height;
-	frame.size.width = self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
+    frame.size.width = screenSize.width - 2*MARGIN;  // seems always wrong on initial load // self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
 	frame.size.height = self.ctvovcp.LFHeight;
 	
 	[self.ctvovcp configTextView:frame key:@"frangeTV" text:[self voRangeStr]];
@@ -1218,17 +1228,28 @@
 	
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
-	frame.size.width = 300.0f;
-	frame.size.height = self.ctvovcp.LFHeight;
+	frame.size.width =  screenSize.width - 2*MARGIN;  // self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
+	frame.size.height = 2* self.ctvovcp.LFHeight;
 	
-	[self.ctvovcp configTextView:frame key:@"fdefnTV" text:[self voFnDefnStr]];
+    CGFloat maxDim = [rTracker_resource getScreenMaxDim];
+    if (maxDim > 480) {
+        if (maxDim <= 568) {  // iphone 5
+            frame.size.height = 3* self.ctvovcp.LFHeight;
+        } else if (maxDim <= 736) { // iphone 6, 6+
+            frame.size.height = 4* self.ctvovcp.LFHeight;
+        } else {
+            frame.size.height = 6* self.ctvovcp.LFHeight;
+        }
+    }
+
+    [self.ctvovcp configTextView:frame key:@"fdefnTV" text:[self voFnDefnStr]];
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	
 	labframe = [self.ctvovcp configLabel:@"Display result decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -1612,7 +1633,8 @@
 
 - (void) trimFnVals:(NSInteger)frep0 {
     DBGLog(@"ep= %ld",(long)frep0);
-    
+    NSString *sql;
+
     NSInteger ival = [(self.vo.optDict)[@"frv0"] integerValue] *  -1 ; // negative offset if ep0
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
@@ -1644,10 +1666,10 @@
     }
     
     NSInteger epDate=-1;
-    
-    MyTracker.sql = [NSString stringWithFormat:@"select date from voData where id = %ld order by date desc",(long)self.vo.vid];
+   
+    sql = [NSString stringWithFormat:@"select date from voData where id = %ld order by date desc",(long)self.vo.vid];
     NSMutableArray *dates = [[NSMutableArray alloc] init];
-    [MyTracker toQry2AryI:dates];
+    [MyTracker toQry2AryI:dates sql:sql];
     for (NSNumber *d in dates) {
         NSDate *targ = [gregorian dateByAddingComponents:offsetComponents
                                                   toDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)[d intValue]]
@@ -1680,8 +1702,8 @@
         
         NSInteger currD = [targ timeIntervalSince1970];
         if (epDate == currD) {
-            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d",(long)self.vo.vid,[d intValue]];
-            [MyTracker toExecSql];
+           sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d",(long)self.vo.vid,[d intValue]];
+            [MyTracker toExecSql:sql];
         } else {
             epDate = currD;
         }
@@ -1693,13 +1715,14 @@
 
 
 -(void) setFnVals:(int)tDate {
+    NSString *sql;
     if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do?
-        MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)self.vo.vid, tDate];
+       sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)self.vo.vid, tDate];
     } else {
-        MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
+       sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
                          (long)self.vo.vid, tDate, [rTracker_resource toSqlStr:self.vo.value]];
     }
-    [MyTracker toExecSql];
+    [MyTracker toExecSql:sql];
 }
 
 -(void) doTrimFnVals {
@@ -1734,12 +1757,12 @@
         [MyTracker loadData:nextDate];
         //DBGLog(@"sfv: %@ => %@",MyTracker.trackerDate, self.vo.value);
         if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do? 
-            MyTracker.sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
+           sql = [NSString stringWithFormat:@"delete from voData where id = %d and date = %d;",self.vo.vid, nextDate];
         } else {
-            MyTracker.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
+           sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d, %d,'%@');",
                         self.vo.vid, nextDate, [rTracker_resource toSqlStr:self.vo.value]];
         }
-        [MyTracker toExecSql];
+        [MyTracker toExecSql:sql];
         
         [rTracker_resource setProgressVal:(ndx/all)];
         ndx += 1.0;

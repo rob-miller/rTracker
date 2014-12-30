@@ -281,37 +281,37 @@
 #pragma mark password db interaction : password and key table creation as necessary 
 
 - (BOOL) dbExistsPass {
-	self.tob.sql = @"create table if not exists priv0 (key integer primary key, val text);";
-	[self.tob toExecSql];
-	self.tob.sql = @"select count(*) from priv0 where key=0;";
-	if ([self.tob toQry2Int]) {
+	NSString *sql = @"create table if not exists priv0 (key integer primary key, val text);";
+	[self.tob toExecSql:sql];
+	sql = @"select count(*) from priv0 where key=0;";
+	if ([self.tob toQry2Int:sql]) {
         DBGLog(@"password exists");
 		return TRUE;
 	} else {
         DBGLog(@"password does not exist");
-		self.tob.sql = @"create table if not exists priv1 (key integer primary key, lvl integer unique);";
-		[self.tob toExecSql];
+	sql = @"create table if not exists priv1 (key integer primary key, lvl integer unique);";
+		[self.tob toExecSql:sql];
 		
 		return FALSE;
 	}
 }
 
 - (BOOL) dbTestPass:(NSString*)try {
-	self.tob.sql = @"select val from priv0 where key=0;";
-	if ([try isEqualToString:[rTracker_resource fromSqlStr:[self.tob toQry2Str]]])
+	NSString *sql = @"select val from priv0 where key=0;";
+    if ([try isEqualToString:[rTracker_resource fromSqlStr:[self.tob toQry2Str:sql]]])
 		return TRUE;
 	else 
 		return FALSE;
 }
 
 - (void) dbSetPass:(NSString*)pass {
-	self.tob.sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[rTracker_resource toSqlStr:pass]];
-	[self.tob toExecSql];
+	NSString *sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[rTracker_resource toSqlStr:pass]];
+	[self.tob toExecSql:sql];
 }
 
 - (void) dbResetPass {
-	self.tob.sql = [NSString stringWithFormat:@"delete from priv0 where key=0;"];
-	[self.tob toExecSql];
+	NSString *sql = [NSString stringWithFormat:@"delete from priv0 where key=0;"];
+	[self.tob toExecSql:sql];
     DBGLog(@"password reset");
 }
 # pragma mark button Actions
@@ -363,7 +363,7 @@
 	f.origin.x = 0.05f * f.size.width;
 	f.origin.y = vert * f.size.height;
 	f.size.width *= 0.9f;
-    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].height;
+    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].height;
 	//DBGLog(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 	return f;
 }
@@ -408,7 +408,7 @@
 		CGRect f = CGRectZero;
 		f.origin.x = 0.4f * self.frame.size.width;
 		f.origin.y = 0.65f * self.frame.size.height;
-        f.size = [ttl sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}];
+        f.size = [ttl sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
 		_cancelBtn.frame = f;
 		//DBGLog(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 		[_cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];

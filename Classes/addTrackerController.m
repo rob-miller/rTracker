@@ -42,6 +42,7 @@
 # pragma mark -
 # pragma mark view support
 
+//#define TEMPFILE @"tempTrackerObj_plist"
 
 - (void) viewDidLoad {
 
@@ -109,10 +110,23 @@
 	DBGLog(@"atc: viewWillAppear, valObjTable count= %lu", (unsigned long)[self.tempTrackerObj.valObjTable count]);
 	
 	[self.table reloadData];
+
+    /*
+    //TODO: one day save temp tracker obj in case of crash while adding tracker
+    // issue is that code for loading from dictionary loads into db and trackerList
+
+    NSString *fname = TEMPFILE;
+    NSString *fpath = [rTracker_resource ioFilePath:fname access:NO];
+    if (! ([[self.tempTrackerObj dictFromTO] writeToFile:fpath atomically:YES])) {
+        DBGErr(@"problem writing file %@",fname);
+    }
+    */
+    
     //TODO: remove these lines ?
 	//if (self.navigationController.toolbarHidden)
 	//	[self.navigationController setToolbarHidden:NO animated:YES];
 	//[self.navigationController setToolbarHidden:YES animated:YES];  // must hide so one in xib is visible?
+    
     [super viewWillAppear:animated];
 }
 
@@ -295,10 +309,10 @@ DBGLog(@"btnAddValue was pressed!");
 
 - (void) delVOdb:(NSInteger)vid 
 {
-	self.tempTrackerObj.sql = [NSString stringWithFormat:@"delete from voData where id=%ld;",(long)vid];
-	[self.tempTrackerObj toExecSql];
-	self.tempTrackerObj.sql = [NSString stringWithFormat:@"delete from voConfig where id=%ld;",(long)vid];
-	[self.tempTrackerObj toExecSql];
+	NSString *sql = [NSString stringWithFormat:@"delete from voData where id=%ld;",(long)vid];
+	[self.tempTrackerObj toExecSql:sql];
+	sql = [NSString stringWithFormat:@"delete from voConfig where id=%ld;",(long)vid];
+	[self.tempTrackerObj toExecSql:sql];
 }
 
 

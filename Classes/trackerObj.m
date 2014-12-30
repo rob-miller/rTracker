@@ -9,6 +9,7 @@
 #import <string.h>
 //#import <stdlib.h>
 //#import <NSNotification.h>
+#import <libkern/OSAtomic.h>
 
 #import "trackerObj.h"
 #import "valueObj.h"
@@ -32,7 +33,7 @@
 @synthesize activeControl=_activeControl,vc=_vc, dateFormatter=_dateFormatter, dateOnlyFormatter=_dateOnlyFormatter, csvReadFlags=_cvsReadFlags, csvProblem=_cvsProblem, togd=_togd, goRecalculate=_goRecalculate, changedDateFrom=_changedDateFrom, csvHeaderDict=_csvHeaderDict; // prevTID  //
 
 @synthesize maxLabel=_maxLabel;
-
+@synthesize recalcFnLock=_recalcFnLock;
 
 #define f(x) ((CGFloat) (x))
 
@@ -66,6 +67,7 @@
  *    field='ngmin'     :  user specified Y-axis min for number graph
  *    field='ngmax'     :  user specified Y-axis max for number graph
  *    field='nswl'      : bool - number should start with last saved value
+ *    field='numddp'    : number display decimal pt: number of digits to show in output format
  *    field='shrinkb'   : bool - adjust width of choice buttons to match text in each
  *    field='exportvalb': bool - in csv, export value assigned to choice instead of button label
  *    field='tbnl'      : bool - use number of lines in textbox as number when graphing; add graph opts back to picker if set
@@ -151,25 +153,25 @@
 
 - (void) initTDb {
 	int c;
-	self.sql = @"create table if not exists trkrInfo (field text, val text, unique ( field ) on conflict replace);";
-	[self toExecSql];
-	self.sql = @"select count(*) from trkrInfo;";
-	c = [self toQry2Int];
+	NSString *sql = @"create table if not exists trkrInfo (field text, val text, unique ( field ) on conflict replace);";
+	[self toExecSql:sql];
+	sql = @"select count(*) from trkrInfo;";
+    c = [self toQry2Int:sql];
 	if (c == 0) {
 		// init clean db
-		self.sql = @"create table if not exists voConfig (id int, rank int, type int, name text, color int, graphtype int, priv int, unique (id) on conflict replace);";
-		[self toExecSql];
-		self.sql = @"create table if not exists voInfo (id int, field text, val text, unique(id, field) on conflict replace);";
-		[self toExecSql];
-		self.sql = @"create table if not exists voData (id int, date int, val text, unique(id, date) on conflict replace);";
-		[self toExecSql];
-		self.sql = @"create index if not exists vodndx on voData (date);";
-		[self toExecSql];
-		self.sql = @"create table if not exists trkrData (date int unique on conflict replace, minpriv int);";
-		[self toExecSql];
+		sql = @"create table if not exists voConfig (id int, rank int, type int, name text, color int, graphtype int, priv int, unique (id) on conflict replace);";
+		[self toExecSql:sql];
+		sql = @"create table if not exists voInfo (id int, field text, val text, unique(id, field) on conflict replace);";
+		[self toExecSql:sql];
+		sql = @"create table if not exists voData (id int, date int, val text, unique(id, date) on conflict replace);";
+		[self toExecSql:sql];
+		sql = @"create index if not exists vodndx on voData (date);";
+		[self toExecSql:sql];
+		sql = @"create table if not exists trkrData (date int unique on conflict replace, minpriv int);";
+		[self toExecSql:sql];
 		
 	}
-	self.sql = nil;
+	//self.sql = nil;
 }
 
 - (void) confirmDb {
@@ -529,10 +531,10 @@ if (addVO) {
  // use loadConfig instead
 - (void) reloadVOtable {
     [self.valObjTable removeAllObjects];
-    self.sql = @"select count(*) from voConfig";
-    int c = [self toQry2Int];
+   sql = @"select count(*) from voConfig";
+    int c = [self toQry2Int:sql];
     
-    self.sql =[NSString stringWithFormat:@"select id from voConfig where priv <= %i order by rank", [privacyV getPrivacyValue]];
+   sql =[NSString stringWithFormat:@"select id from voConfig where priv <= %i order by rank", [privacyV getPrivacyValue]];
     NSMutableArray *vida = [[NSMutableArray alloc] initWithCapacity:c];
     [self toQry2AryI:vida];
     for (NSNumber *nvid in vida) {
@@ -553,8 +555,8 @@ if (addVO) {
 	
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	NSMutableArray *s2 = [[NSMutableArray alloc] init];
-	self.sql = @"select field, val from trkrInfo;";
-	[self toQry2ArySS :s1 s2:s2];
+    NSString *sql = @"select field, val from trkrInfo;";
+	[self toQry2ArySS :s1 s2:s2 sql:sql];
 	//NSEnumerator *e1 = [s1 objectEnumerator];
 	NSEnumerator *e2 = [s2 objectEnumerator];
 	
@@ -583,9 +585,9 @@ if (addVO) {
 	NSMutableArray *i4 = [[NSMutableArray alloc] init];
 	NSMutableArray *i5 = [[NSMutableArray alloc] init];
 	//self.sql = @"select id, type, name, color, graphtype from voConfig order by rank;";
-	self.sql = [NSString stringWithFormat:@"select id, type, name, color, graphtype, priv from voConfig where priv <= %i order by rank;",
+    sql = [NSString stringWithFormat:@"select id, type, name, color, graphtype, priv from voConfig where priv <= %i order by rank;",
 				[privacyV getPrivacyValue]];
-	[self toQry2AryIISIII:i1 i2:i2 s1:s1 i3:i3 i4:i4 i5:i5];
+	[self toQry2AryIISIII:i1 i2:i2 s1:s1 i3:i3 i4:i4 i5:i5 sql:sql];
 	
 	NSEnumerator *e1 = [i1 objectEnumerator];
 	e2 = [i2 objectEnumerator];
@@ -611,8 +613,8 @@ if (addVO) {
 		[s1 removeAllObjects];
 		[s2 removeAllObjects];
 		
-		self.sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%ld;",(long)vo.vid];
-		[self toQry2ArySS :s1 s2:s2];
+        sql = [NSString stringWithFormat:@"select field, val from voInfo where id=%ld;",(long)vo.vid];
+		[self toQry2ArySS :s1 s2:s2 sql:sql];
 		//e1 = [s1 objectEnumerator];
 		e2 = [s2 objectEnumerator];
 		
@@ -632,10 +634,10 @@ if (addVO) {
 	//[self nextColor];  // inc safely past last used color
 	if (self.nextColor >= [[rTracker_resource colorSet] count])
 		self.nextColor=0;
-	
+
 
 	
-	self.sql=nil;
+//sql = nil;
 	
 	self.trackerDate = nil;
 	self.trackerDate = [[NSDate alloc] init];
@@ -690,8 +692,8 @@ if (addVO) {
 	//[self nextColor];  // inc safely past last used color
 	if (self.nextColor >= [[rTracker_resource colorSet] count])
 		self.nextColor=0;
-	
-	self.sql=nil;
+
+//sql = nil;
 	
 	self.trackerDate = nil;
 	self.trackerDate = [[NSDate alloc] init];
@@ -703,8 +705,8 @@ if (addVO) {
 - (void) clearVoOptDict:(valueObj *)vo
 {
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
-	self.sql = [NSString stringWithFormat:@"select field from voInfo where id=%ld;",(long)vo.vid];
-	[self toQry2AryS:s1];
+    NSString *sql = [NSString stringWithFormat:@"select field from voInfo where id=%ld;",(long)vo.vid];
+	[self toQry2AryS:s1 sql:sql];
     for (NSString *dk in vo.optDict) {
         if (! [s1 containsObject:dk]) {
             [s1 addObject:dk];
@@ -712,14 +714,14 @@ if (addVO) {
     }
 
 	for (NSString *key in s1) {
-		self.sql = [NSString stringWithFormat:@"delete from voInfo where id=%ld and field='%@';",(long)vo.vid,key];
+	sql = [NSString stringWithFormat:@"delete from voInfo where id=%ld and field='%@';",(long)vo.vid,key];
 
 		if (([vo.vos cleanOptDictDflts:key])) {
-			[self toExecSql];
+			[self toExecSql:sql];
 		}
 	}
-	
-	self.sql=nil;
+
+//sql = nil;
 }
 
 
@@ -756,29 +758,29 @@ if (addVO) {
 
 - (void) clearToOptDict {
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
-	self.sql = @"select field from trkrInfo;";
-	[self toQry2AryS:s1];
+    NSString *sql = @"select field from trkrInfo;";
+	[self toQry2AryS:s1 sql:sql];
 	
 	NSString *key, *val;
 	
 	for (key in s1) {
 		val = (self.optDict)[key];
-		self.sql = [NSString stringWithFormat:@"delete from trkrInfo where field='%@';",key];
+	sql = [NSString stringWithFormat:@"delete from trkrInfo where field='%@';",key];
 		
 		if (val == nil) {
-			[self toExecSql];
+			[self toExecSql:sql];
 		} else if (([key isEqualToString:@"savertn"] && [val isEqualToString:(SAVERTNDFLT ? @"1" : @"0")])
 				   ||
 				   ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))
                    ||
 				   ([key isEqualToString:@"graphMaxDays"] && ([val intValue] == GRAPHMAXDAYSDFLT))
                    ) {
-			[self toExecSql];
+			[self toExecSql:sql];
 			[self.optDict removeObjectForKey:key];
 		}
 	}
-	
-	self.sql=nil;
+
+//sql = nil;
 }
 
 - (void) saveToOptDict {
@@ -786,9 +788,9 @@ if (addVO) {
 	[self clearToOptDict];
 	
 	for (NSString *key in self.optDict) {
-		self.sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('%@', '%@');",
+	NSString *sql = [NSString stringWithFormat:@"insert or replace into trkrInfo (field, val) values ('%@', '%@');",
 					key, ([key isEqualToString:@"name"] ? [rTracker_resource toSqlStr:(self.optDict)[key]] : (self.optDict)[key])];
-		[self toExecSql];
+		[self toExecSql:sql];
 	}
 	
 }
@@ -802,11 +804,12 @@ if (addVO) {
 // create minimal valobj in db tables to handle column in CSV data that does not match existing valObj
 - (int) createVOinDb:(NSString*)name inVid:(int)inVid {
     NSInteger vid;
+    NSString *sql;
     if (0 != inVid) {
-        self.sql = [NSString stringWithFormat:@"select count(*) from voConfig where id=%d",inVid];
-        if (0 < [self toQry2Int]) {
-            self.sql = [NSString stringWithFormat:@"update voConfig set name='%@' where id=%d",name,inVid];
-            [self toExecSql];
+       sql = [NSString stringWithFormat:@"select count(*) from voConfig where id=%d",inVid];
+        if (0 < [self toQry2Int:sql]) {
+           sql = [NSString stringWithFormat:@"update voConfig set name='%@' where id=%d",name,inVid];
+            [self toExecSql:sql];
             return inVid;
         }
         vid = inVid;
@@ -814,13 +817,13 @@ if (addVO) {
     } else {
         vid = [self getUnique];
     }
-    self.sql = @"select max(rank) from voConfig";
+   sql = @"select max(rank) from voConfig";
     
-    NSInteger rank = [self toQry2Int] +1;
+    NSInteger rank = [self toQry2Int:sql] +1;
     
-    self.sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %ld, %d, '%@', %d, %d, %d);",
+   sql = [NSString stringWithFormat:@"insert into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %ld, %d, '%@', %d, %d, %d);",
                 (long)vid, (long)rank, 0, [rTracker_resource toSqlStr:name], 0, 0, MINPRIV];
-    [self toExecSql];
+    [self toExecSql:sql];
     
     return (int) vid;
 }
@@ -835,8 +838,8 @@ if (addVO) {
     
     //DBGLog(@"vot= %d",vot);
     
-    self.sql = [NSString stringWithFormat:@"update voConfig set type=%lu where id=%ld",(unsigned long)vot,(long)valObjID];
-    [self toExecSql];
+    NSString *sql = [NSString stringWithFormat:@"update voConfig set type=%lu where id=%ld",(unsigned long)vot,(long)valObjID];
+    [self toExecSql:sql];
     rslt=YES;
     DBGLog(@"vot= %lu",(unsigned long)vot);
     if (! vocs) return rslt;
@@ -851,25 +854,26 @@ if (addVO) {
 
     DBGLog(@"voc= %lu",(unsigned long)voc);
     
-    self.sql = [NSString stringWithFormat:@"update voConfig set color=%lu where id=%ld",(unsigned long)voc,(long)valObjID];
-    [self toExecSql];
+    sql = [NSString stringWithFormat:@"update voConfig set color=%lu where id=%ld",(unsigned long)voc,(long)valObjID];
+    [self toExecSql:sql];
     
     // rank only 0 for timestamp
-    self.sql = [NSString stringWithFormat:@"update voConfig set rank=%ld where id=%ld",(long)rank,(long)valObjID];
-    [self toExecSql];
+    sql = [NSString stringWithFormat:@"update voConfig set rank=%ld where id=%ld",(long)rank,(long)valObjID];
+    [self toExecSql:sql];
+   
     
-    
-    self.sql=nil;
+   //sql = nil;
     
     return rslt;
 }
 
 - (void) saveVoOptdict:(valueObj*) vo {
     [self clearVoOptDict:vo];
+    NSString *sql;
     for (NSString *key in vo.optDict) {
-        self.sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%ld, '%@', '%@');",
+       sql = [NSString stringWithFormat:@"insert or replace into voInfo (id, field, val) values (%ld, '%@', '%@');",
                     (long)vo.vid, key, (vo.optDict)[key]];
-        [self toExecSql];
+        [self toExecSql:sql];
     }
 }
 - (void) saveConfig {
@@ -893,15 +897,15 @@ if (addVO) {
 	}
 	
     // remove previous data - input rtrk may renumber and then some vids become obsolete -- if reading rtrk have done jumpMaxPriv
-    self.sql = [NSString stringWithFormat:@"delete from voConfig where priv <=%d and id not in (%@)",
+    NSString *sql = [NSString stringWithFormat:@"delete from voConfig where priv <=%d and id not in (%@)",
                 [privacyV getPrivacyValue],                 // 10.xii.2013 don't delete privacy hidden items
                 [vids componentsJoinedByString:@","]];      // 18.i.2014 don't wipe all in case user quits before we finish
     
     
-    [self toExecSql];
+    [self toExecSql:sql];
     
-    self.sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
-    [self toExecSql];
+    sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
+    [self toExecSql:sql];
     
 	// now save
     [UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -909,9 +913,9 @@ if (addVO) {
 	for (valueObj *vo in self.valObjTable) {
         
 		DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
-		self.sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
+        sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
 					(long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
-		[self toExecSql];
+		[self toExecSql:sql];
 		
 		[self saveVoOptdict:vo];
 	}
@@ -921,7 +925,7 @@ if (addVO) {
      
     [UIApplication sharedApplication].idleTimerDisabled = NO;
 	
-	self.sql = nil;
+	//self.sql = nil;
     
 }
 
@@ -963,14 +967,14 @@ if (addVO) {
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
     DBGLog(@"trackerObj loadData for date %@",qDate);
 	[self resetData];
-	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
-	int c = [self toQry2Int];
+    NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
+    int c = [self toQry2Int:sql];
 	if (c) {
 		self.trackerDate = qDate; // from convenience method above, so do the retain
 		NSMutableArray *i1 = [[NSMutableArray alloc] init];
 		NSMutableArray *s1 = [[NSMutableArray alloc] init];
-		self.sql = [NSString stringWithFormat:@"select id, val from voData where date = %ld;", (long)iDate];
-		[self toQry2AryIS :i1 s1:s1];
+        sql = [NSString stringWithFormat:@"select id, val from voData where date = %ld;", (long)iDate];
+		[self toQry2AryIS :i1 s1:s1 sql:sql];
 		
 		NSEnumerator *e1 = [i1 objectEnumerator];
 		NSEnumerator *e3 = [s1 objectEnumerator];
@@ -994,7 +998,7 @@ if (addVO) {
 			}
 		}
 		
-		self.sql = nil;
+		//self.sql = nil;
 		
 		return YES;
 	} else {
@@ -1005,15 +1009,15 @@ if (addVO) {
 
 
 - (void) saveData {
-
+    NSString *sql;
 	if (self.trackerDate == nil) {
 		self.trackerDate = [[NSDate alloc] init];
 	} else if (0 != self.changedDateFrom) {
         int ndi = [self.trackerDate timeIntervalSince1970];
-        self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,self.changedDateFrom];
-        [self toExecSql];
-        self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,self.changedDateFrom];
-        [self toExecSql];
+        sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,self.changedDateFrom];
+        [self toExecSql:sql];
+        sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,self.changedDateFrom];
+        [self toExecSql:sql];
         self.changedDateFrom=0;
     }
 	
@@ -1029,42 +1033,42 @@ if (addVO) {
 		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
         DBGLog(@"  vo %@  id %ld val %@", vo.valueName, (long)vo.vid, vo.value);
         if ([vo.value isEqualToString:@""]) {
-            self.sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)vo.vid, tdi];
+            sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)vo.vid, tdi];
         } else {
             haveData = YES;
             minPriv = MIN(vo.vpriv,minPriv);
-            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
+            sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
                         (long)vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
         }
-        [self toExecSql];
+        [self toExecSql:sql];
                         
 		//} 
 	}
 	
 	if (haveData) {
-		self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date,minpriv) values (%d,%ld);", tdi,(long)minPriv];
-		[self toExecSql];
+        sql = [NSString stringWithFormat:@"insert or replace into trkrData (date,minpriv) values (%d,%ld);", tdi,(long)minPriv];
+		[self toExecSql:sql];
 	} else {
-		self.sql = [NSString stringWithFormat:@"select count(*) from voData where date=%d;",tdi];
-		int r = [self toQry2Int];
+        sql = [NSString stringWithFormat:@"select count(*) from voData where date=%d;",tdi];
+		int r = [self toQry2Int:sql];
 		if (r==0) {
-			self.sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;",tdi];
-			[self toExecSql];
+            sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;",tdi];
+			[self toExecSql:sql];
 		}
 	}
 
     // cleanup empty values added 28 jan 2014
-    self.sql = @"select count(*) from voData where val=''";
-    int ndc = [self toQry2Int];
+   sql = @"select count(*) from voData where val=''";
+    int ndc = [self toQry2Int:sql];
     if (0<ndc) {
         DBGWarn(@"deleting %d empty values from tracker %ld",ndc,(long)self.toid);
-        self.sql = @"delete from voData where val=''";
-        [self toExecSql];
+       sql = @"delete from voData where val=''";
+        [self toExecSql:sql];
     }
 
     [self setReminders];
     
-	self.sql = nil;
+	//self.sql = nil;
 }
 
 #pragma mark -
@@ -1203,6 +1207,7 @@ if (addVO) {
 // import data for a tracker -- direct in db so privacy not observed
 - (void) loadDataDict:(NSDictionary*)dataDict {
     NSString *dateIntStr;
+    NSString *sql;
     [rTracker_resource stashProgressBarMax:(int)[dataDict count]];
     
     for (dateIntStr in dataDict) {
@@ -1216,16 +1221,16 @@ if (addVO) {
             valueObj *vo = [self getValObj:vid];
             //NSString *val = [vo.vos mapCsv2Value:[vdata objectForKey:vids]];
             NSString *val = vdata[vids];
-            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",
+           sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",
                         (long)vid,tdi,[rTracker_resource toSqlStr:val]];
-            [self toExecSql];
+            [self toExecSql:sql];
             
             if (vo.vpriv < mp) {
                 mp = vo.vpriv;
             }
         }
-        self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",tdi,(long)mp];
-        [self toExecSql];
+       sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",tdi,(long)mp];
+        [self toExecSql:sql];
         [rTracker_resource bumpProgressBar];
     }
 }
@@ -1288,9 +1293,9 @@ if (addVO) {
 }
 
 - (int) getDateCount {
-    self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where minpriv <= %d;",[privacyV getPrivacyValue]];
-    int rv = [self toQry2Int];
-    self.sql = nil;
+    NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where minpriv <= %d;",[privacyV getPrivacyValue]];
+    int rv = [self toQry2Int:sql];
+    //self.sql = nil;
     return rv;
 }
 
@@ -1392,6 +1397,7 @@ if (addVO) {
         self.csvReadFlags |= CSVNOTIMESTAMP;
         return;
     }
+    NSString *sql;
 
     NSDate *ts=nil;
     int its=0;
@@ -1436,9 +1442,9 @@ if (addVO) {
                 voName = [key substringToIndex:splitPos.location];
                 voRank = [[key substringFromIndex:(splitPos.location+splitPos.length)] integerValue];
                 
-                self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:voName]];
+               sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",[rTracker_resource toSqlStr:voName]];
                 
-                [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType];
+                [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjType sql:sql];
                 (self.csvHeaderDict)[key] = @[voName,
                                                @(voRank),
                                                @(valobjID),
@@ -1494,14 +1500,14 @@ if (addVO) {
                 }
                 if (its != 0) { // if have date - then not config data
                     if ([@"" isEqualToString:val2Store]) {
-                        self.sql = [NSString stringWithFormat:@"delete from voData where id=%ld and date=%d",(long)valobjID,its];  // added jan 2014
+                       sql = [NSString stringWithFormat:@"delete from voData where id=%ld and date=%d",(long)valobjID,its];  // added jan 2014
                     } else {
                         if (valobjPriv < mp)
                             mp = valobjPriv;   // only fields with data
                         gotData=YES;
-                        self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",(long)valobjID,its,val2Store];
+                       sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld,%d,'%@');",(long)valobjID,its,val2Store];
                     }
-                    [self toExecSql];
+                    [self toExecSql:sql];
                 
                     self.csvReadFlags |= CSVLOADRECORD;
                 }
@@ -1511,8 +1517,8 @@ if (addVO) {
     
     /*  replacing data for this date, minpriv is what we saw...
      
-    self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
-    int currMinPriv = [self toQry2Int];
+   sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
+    int currMinPriv = [self toQry2Int:sql];
     
     if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
         // assume not found, new entry minpriv is mp for this record
@@ -1524,11 +1530,11 @@ if (addVO) {
     
     if (its != 0) {
         if (gotData) {
-            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",its,(long)mp];
-            [self toExecSql];
+           sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",its,(long)mp];
+            [self toExecSql:sql];
 
             //} else {  // csv file might have fewer columns than tracker does
-        //    self.sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;"];
+        //   sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;"];
         }
     }
     
@@ -1568,7 +1574,7 @@ if (addVO) {
             //[self toQry2IntInt:&valobjID i2:&valobjPriv];
             //DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
 
-            self.sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
+           sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
             int valobjID,valobjPriv,valobjTyp;
             [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjTyp];
             DBGLog(@"name=%@ val=%@ id=%d priv=%d typ=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjTyp);
@@ -1593,13 +1599,13 @@ if (addVO) {
             //&& (nil != [aRecord objectForKey:key])) {    // accept fields without data if updating
 
             // update value data
-            self.sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
+           sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
                         [[idDict objectForKey:key] intValue],its,[rTracker_resource toSqlStr:[aRecord objectForKey:key]]];
-            [self toExecSql];
+            [self toExecSql:sql];
             
             // update trkrData - date easy, need minpriv
-            self.sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
-            int currMinPriv = [self toQry2Int];
+           sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
+            int currMinPriv = [self toQry2Int:sql];
             
             if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
                 // assume not found, new entry minpriv is mp for this record
@@ -1608,11 +1614,11 @@ if (addVO) {
             }
             // default mp < currMinPriv
             
-            self.sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
-            [self toExecSql];
+           sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
+            [self toExecSql:sql];
             
-           // self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
-           // int rslt= (NSInteger) [self toQry2Int];
+           //sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
+           // int rslt= (NSInteger) [self toQry2Int:sql];
             
         }
         
@@ -1761,21 +1767,21 @@ if (addVO) {
 }
 
 - (void) deleteTrackerRecordsOnly {
-    self.sql = @"delete from trkrData;";
-    [self toExecSql];
-    self.sql = @"delete from voData;";
-    [self toExecSql];
-	self.sql = nil;
+   NSString *sql = @"delete from trkrData;";
+    [self toExecSql:sql];
+   sql = @"delete from voData;";
+    [self toExecSql:sql];
+	//self.sql = nil;
 }
 
 - (void) deleteCurrEntry {
     int eDate = (int) [self.trackerDate timeIntervalSince1970];
-	self.sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;", eDate];
-	[self toExecSql];
-	self.sql = [NSString stringWithFormat:@"delete from voData where date = %d;", eDate];
-	[self toExecSql];
+    NSString *sql = [NSString stringWithFormat:@"delete from trkrData where date = %d;", eDate];
+	[self toExecSql:sql];
+    sql = [NSString stringWithFormat:@"delete from voData where date = %d;", eDate];
+	[self toExecSql:sql];
     
-	self.sql = nil;
+	//self.sql = nil;
 }
 
 #pragma mark -
@@ -1792,8 +1798,8 @@ if (addVO) {
 - (notifyReminder*) loadReminders {
     [self.reminders removeAllObjects];
     NSMutableArray *rids = [[NSMutableArray alloc] init];
-    self.sql = @"select rid from reminders order by rid";
-    [self toQry2AryI:rids];
+    NSString *sql = @"select rid from reminders order by rid";
+    [self toQry2AryI:rids sql:sql];
     if (0 < [rids count]) {
         for (NSNumber *rid in rids) {
             notifyReminder *tnr = [[notifyReminder alloc] init:rid to:self];
@@ -1808,15 +1814,15 @@ if (addVO) {
 }
 
 - (void) reminders2db {
-    self.sql = @"delete from reminders where rid not in (";
+    NSString *sql = @"delete from reminders where rid not in (";
     BOOL started=FALSE;
     for (notifyReminder *nr in self.reminders) {
         NSString *fmt = (started ? @",%d" : @"%d");
-        self.sql = [self.sql stringByAppendingFormat:fmt,nr.rid];
+       sql = [sql stringByAppendingFormat:fmt,nr.rid];
         started=TRUE;
     }
-    self.sql = [self.sql stringByAppendingString:@")"];
-    [self toExecSql];
+    sql = [sql stringByAppendingString:@")"];
+    [self toExecSql:sql];
     for (notifyReminder *nr in self.reminders) {
         [nr save:self];
     }
@@ -1900,13 +1906,13 @@ if (addVO) {
 }
 
 - (void) initReminderTable {
-    self.sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
-    [self toExecSql];
-    self.sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr];
-    self.sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr];
-    self.sql=nil;
+    NSString *sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
+    [self toExecSql:sql];
+    sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
+    [self toExecSqlIgnErr:sql];
+    sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
+    [self toExecSqlIgnErr:sql];
+  //sql = nil;
 }
 
 // from ios docs date and time programming guide - Determining Temporal Differences
@@ -1930,6 +1936,7 @@ if (addVO) {
 }
 
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
+    NSString *sql;
 
     NSDateComponents *todayComponents =
     [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
@@ -1962,11 +1969,11 @@ if (addVO) {
         if (nr.fromLast) {
             int lastInt;
             if (nr.vid) {
-                self.sql = [NSString stringWithFormat:@"select date from voData where id=%ld order by date desc limit 1", (long)nr.vid];
+               sql = [NSString stringWithFormat:@"select date from voData where id=%ld order by date desc limit 1", (long)nr.vid];
             } else {
-                self.sql = @"select date from voData order by date desc limit 1";
+               sql = @"select date from voData order by date desc limit 1";
             }
-            if ((lastInt = [self toQry2Int])) {
+            if ((lastInt = [self toQry2Int:sql])) {
                 lastEntryDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) lastInt];  // stay with when reminder created if no data stored for this tracker yet
             }
         }
@@ -2384,47 +2391,47 @@ if (addVO) {
 #pragma mark query tracker methods
 
 - (NSInteger) dateNearest:(NSInteger)targ {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date <= %ld and minpriv <= %d order by date desc limit 1;", 
+    NSString *sql = [NSString stringWithFormat:@"select date from trkrData where date <= %ld and minpriv <= %d order by date desc limit 1;",
                 (long)targ, (int) [privacyV getPrivacyValue] ];
-	int rslt= [self toQry2Int];
+	int rslt= [self toQry2Int:sql];
     if (0 == rslt) {
-        self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %ld and minpriv <= %d order by date desc limit 1;", 
+       sql = [NSString stringWithFormat:@"select date from trkrData where date > %ld and minpriv <= %d order by date desc limit 1;", 
                     (long)targ, (int) [privacyV getPrivacyValue] ];
-        rslt= [self toQry2Int];
+        rslt= [self toQry2Int:sql];
 
     }
-	self.sql = nil;
+	//self.sql = nil;
 	return rslt;
 }
 
 - (NSInteger) prevDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;", 
+    NSString *sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;",
 		   (int) [self.trackerDate timeIntervalSince1970], (int) [privacyV getPrivacyValue] ];
-	int rslt= [self toQry2Int];
-	self.sql = nil;
+	int rslt= [self toQry2Int:sql];
+	//self.sql = nil;
 	return rslt;
 }
 
 - (NSInteger) postDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date asc limit 1;", 
+    NSString *sql = [NSString stringWithFormat:@"select date from trkrData where date > %d and minpriv <= %d order by date asc limit 1;",
                 (int) [self.trackerDate timeIntervalSince1970],(int) [privacyV getPrivacyValue]  ];
-	NSInteger rslt= (NSInteger) [self toQry2Int];
-	self.sql = nil;
+	NSInteger rslt= (NSInteger) [self toQry2Int:sql];
+	//self.sql = nil;
 	return rslt;
 }
 
 - (NSInteger) lastDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
-	NSInteger rslt= (NSInteger) [self toQry2Int];
-	self.sql = nil;
+    NSString *sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
+	NSInteger rslt= (NSInteger) [self toQry2Int:sql];
+	//self.sql = nil;
 	return rslt;
 }
 
 - (NSInteger) firstDate {
-	self.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc limit 1;",(int) [privacyV getPrivacyValue]];
+    NSString *sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc limit 1;",(int) [privacyV getPrivacyValue]];
 	NSInteger
-    rslt= (NSInteger) [self toQry2Int];
-	self.sql = nil;
+    rslt= (NSInteger) [self toQry2Int:sql];
+	//self.sql = nil;
 	return rslt;
 }
 
@@ -2470,8 +2477,8 @@ if (addVO) {
             (vo.optDict)[@"func"] = fnstr;
 
             
-            self.sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%ld and field='func'",fnstr,(long)vo.vid]; // keep consistent
-            [self toExecSql];
+            NSString *sql = [NSString stringWithFormat:@"update voInfo set val='%@' where id=%ld and field='func'",fnstr,(long)vo.vid]; // keep consistent
+            [self toExecSql:sql];
             
         }
 
@@ -2499,16 +2506,16 @@ if (addVO) {
     }
 
     // need to update at least voData, will write voInfo, voConfing out later but lets stay consistent
-    self.sql= [NSString stringWithFormat: @"update voData set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
-    [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voInfo set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
-    [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update voConfig set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
-    [self toExecSql];
-    self.sql= [NSString stringWithFormat: @"update reminders set vid=%ld where vid=%ld", (long)newVID, (long)vo.vid];
-    [self toExecSql];
+    NSString *sql= [NSString stringWithFormat: @"update voData set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
+    [self toExecSql:sql];
+    sql= [NSString stringWithFormat: @"update voInfo set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
+    [self toExecSql:sql];
+    sql= [NSString stringWithFormat: @"update voConfig set id=%ld where id=%ld", (long)newVID, (long)vo.vid];
+    [self toExecSql:sql];
+    sql= [NSString stringWithFormat: @"update reminders set vid=%ld where vid=%ld", (long)newVID, (long)vo.vid];
+    [self toExecSql:sql];
 
-    self.sql = nil;
+    //self.sql = nil;
     
     
     [self updateVIDinFns:vo.vid new:newVID];
@@ -2519,9 +2526,9 @@ if (addVO) {
 
 - (BOOL) voHasData:(NSInteger) vid
 {
-	self.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d;", (int) vid];
-	NSInteger rslt= (NSInteger) [self toQry2Int];
-	self.sql = nil;
+    NSString *sql = [NSString stringWithFormat:@"select count(*) from voData where id=%d;", (int) vid];
+	NSInteger rslt= (NSInteger) [self toQry2Int:sql];
+	//self.sql = nil;
 
 	if (rslt == 0)
 		return NO;
@@ -2537,30 +2544,31 @@ if (addVO) {
 }
 
 - (BOOL) hasData {  // is there a date entry in trkrData matching current trackerDate ?
-	self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",(int) [self.trackerDate timeIntervalSince1970]];
-	int r = [self toQry2Int];
-	self.sql = nil;
+    NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",(int) [self.trackerDate timeIntervalSince1970]];
+	int r = [self toQry2Int:sql];
+	//self.sql = nil;
 	return (r!=0);
 }
 
 - (int) countEntries {
-	self.sql = @"select count(*) from trkrData;";
-	int r = [self toQry2Int];
-	self.sql = nil;
+    NSString *sql = @"select count(*) from trkrData;";
+	int r = [self toQry2Int:sql];
+	//self.sql = nil;
 	return (r);
 }
 
 - (int) noCollideDate:(int)testDate {
 	BOOL going=YES;
-	
+    NSString *sql;
+
 	while (going) {
-		self.sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",testDate];
-		if ([self toQry2Int] == 0)
+        sql = [NSString stringWithFormat:@"select count(*) from trkrData where date=%d",testDate];
+		if ([self toQry2Int:sql] == 0)
 			going=NO;
 		else 
 			testDate++;
 	}
-	self.sql = nil;
+	//self.sql = nil;
 	return testDate;
 }
 	
@@ -2571,9 +2579,9 @@ if (addVO) {
 	int ndi = (int) [self noCollideDate:[newDate timeIntervalSince1970]];
 	//int odi = (int) [self.trackerDate timeIntervalSince1970];
 	//self.sql = [NSString stringWithFormat:@"update trkrData set date=%d where date=%d;",ndi,odi];
-	//[self toExecSql];
+	//[self toExecSql:sql];
 	//self.sql = [NSString stringWithFormat:@"update voData set date=%d where date=%d;",ndi,odi];
-	//[self toExecSql];
+	//[self toExecSql:sql];
 	//self.sql=nil;
 	self.trackerDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)ndi]; // might have changed to avoid collision
 }
@@ -2675,6 +2683,11 @@ if (addVO) {
 }
 
 - (void) recalculateFns {
+    if (0 != OSAtomicTestAndSet(0, &(_recalcFnLock))) {
+        // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
+        return;
+    }
+
 	DBGLog(@"tracker id %ld name %@ dbname %@ recalculateFns", (long)self.toid, self.trackerName, self.dbName);
 
     [rTracker_resource setProgressVal:0.0f];
@@ -2692,13 +2705,14 @@ if (addVO) {
     
     if (self.goRecalculate) {
         [self.optDict removeObjectForKey:@"dirtyFns"];
-        self.sql = @"delete from trkrInfo where field='dirtyFns';";
-        [self toExecSql];
-        self.sql = nil;
+        NSString *sql = @"delete from trkrInfo where field='dirtyFns';";
+        [self toExecSql:sql];
+        //self.sql = nil;
         
         self.goRecalculate = NO;
     }
-    
+   
+    self.recalcFnLock=0; // release lock
 }
 
 - (NSInteger) nextColor

@@ -47,24 +47,24 @@
     _dateSelDict = [[NSMutableDictionary alloc]init];
     
     NSMutableDictionary *idColors = [[NSMutableDictionary alloc]init];
-    self.tracker.sql = @"select id,color from voConfig where id not in  (select id from voInfo where field='graph' and val=0)";
-    [self.tracker toQry2DictII:idColors];
+    NSString *sql = @"select id,color from voConfig where id not in  (select id from voInfo where field='graph' and val=0)";
+    [self.tracker toQry2DictII:idColors sql:sql];
     
     NSMutableSet *fnIds = [[NSMutableSet alloc] init];
-    self.tracker.sql = @"select id from voConfig where type=6"; // VOT_FUNC hard-coded!
-    [self.tracker toQry2SetI:fnIds];
+   sql = @"select id from voConfig where type=6"; // VOT_FUNC hard-coded!
+    [self.tracker toQry2SetI:fnIds sql:sql];
 
     NSMutableSet *noGraphIds = [[NSMutableSet alloc] init];
-    self.tracker.sql = @"select id from voInfo where field='graph' and val=0";
-    [self.tracker toQry2SetI:noGraphIds];
+   sql = @"select id from voInfo where field='graph' and val=0";
+    [self.tracker toQry2SetI:noGraphIds sql:sql];
 
     NSArray *colorSet = [rTracker_resource colorSet];
     int pv = [privacyV getPrivacyValue];
     NSMutableArray *dates;
     if (nil == ((useTrackerController*)self.parentUTC).searchSet) {
         dates = [[NSMutableArray alloc]init];
-        self.tracker.sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc;",pv];
-        [self.tracker toQry2AryI:dates];
+       sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date asc;",pv];
+        [self.tracker toQry2AryI:dates sql:sql];
     } else {
         dates = [NSMutableArray arrayWithArray:((useTrackerController*)self.parentUTC).searchSet];
     }
@@ -81,12 +81,12 @@
             DBGLog(@"date 2014 june = %@",date);
         }
         // get array of vids in date range
-        self.tracker.sql = [NSString stringWithFormat:
+       sql = [NSString stringWithFormat:
                             @"select t1.id from voData t0, voConfig t1 where t0.id=t1.id and t0.date >= %d and t0.date <= %d and t1.priv <= %d and t1.type != %d order by t1.rank asc",
                             dayStart,dayStart+(24*60*60)-1,pv, VOT_INFO];
 
         [vidSet removeAllObjects];
-        [self.tracker toQry2AryI:vidSet];
+        [self.tracker toQry2AryI:vidSet sql:sql];
         BOOL haveNoGraphNoFn = false;
         int graphFnVid = 0;
         int targVid = 0;

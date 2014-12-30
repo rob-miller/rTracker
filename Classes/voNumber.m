@@ -105,13 +105,13 @@
         if ([self.vo.value isEqualToString:@""]) {
             if ([(self.vo.optDict)[@"nswl"] isEqualToString:@"1"] /* && ![to hasData] */) {  // only if new entry
                 trackerObj *to = (trackerObj*)self.vo.parentTracker;
-                to.sql = [NSString stringWithFormat:@"select count(*) from voData where id=%ld and date<%d",
+                NSString *sql = [NSString stringWithFormat:@"select count(*) from voData where id=%ld and date<%d",
                           (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
-                int v = [to toQry2Int];
+                int v = [to toQry2Int:sql];
                 if (v>0) {
-                    to.sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
+                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
                               (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
-                    NSString *r = [to toQry2Str];
+                    NSString *r = [to toQry2Str:sql];
                     if (SYSTEM_VERSION_LESS_THAN(@"5.0")) {
                         self.dtf.textColor = [UIColor lightGrayColor];
                     } else {
@@ -120,7 +120,7 @@
                     self.dtf.backgroundColor = [UIColor darkGrayColor];
                     self.dtf.text = r;
                 }
-                to.sql = nil;
+              //sql = nil;
             } else {
                 self.dtf.text = @"";
                 //DBGLog(@"reset dtf.txt to empty");
@@ -164,6 +164,9 @@
     if (nil == (self.vo.optDict)[@"autoscale"]) 
         (self.vo.optDict)[@"autoscale"] = (AUTOSCALEDFLT ? @"1" : @"0");
 
+    if (nil == (self.vo.optDict)[@"numddp"])
+        (self.vo.optDict)[@"numddp"] = [NSString stringWithFormat:@"%d", NUMDDPDFLT];
+
     return [super setOptDictDflts];
 }
 
@@ -176,6 +179,8 @@
     if (([key isEqualToString:@"nswl"] && [val isEqualToString:(NSWLDFLT ? @"1" : @"0")])
         ||
         ([key isEqualToString:@"autoscale"] && [val isEqualToString:(AUTOSCALEDFLT ? @"1" : @"0")])
+        ||
+        ([key isEqualToString:@"numddp"] && ([val intValue] == NUMDDPDFLT))
         ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
@@ -197,13 +202,32 @@
     ];
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
-	
+    
 	frame = [ctvovc yAutoscale:frame];
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	frame.origin.x = MARGIN;
-	
-	//-- title label
+    
+    labframe = [ctvovc configLabel:@"graph decimal places (-1 auto):" frame:frame key:@"numddpLab" addsv:YES];
+    
+    frame.origin.x += labframe.size.width + SPACE;
+    CGFloat tfWidth = [@"99999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    frame.size.width = tfWidth;
+    frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+    
+    [ctvovc configTextField:frame
+                              key:@"numddpTF"
+                           target:nil
+                           action:nil
+                              num:YES
+                            place:[NSString stringWithFormat:@"%d",NUMDDPDFLT]
+                             text:(self.vo.optDict)[@"numddp"]
+                            addsv:YES ];
+
+    
+	frame.origin.x = MARGIN;
+	frame.origin.y += MARGIN + frame.size.height;
+    //-- title label
 	
 	labframe = [ctvovc configLabel:@"Other options:" frame:frame key:@"noLab" addsv:YES];
 	

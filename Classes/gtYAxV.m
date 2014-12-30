@@ -133,7 +133,21 @@
                 } else if (vtype == VOT_TEXTB) {
                     fmt = @"%0.1f";
                 } else {
-                    fmt = @"%0.2f";
+                    //figure out sig figs for input data and set format here accordingly?
+                    //fmt = @"%0.2f";
+                    int numddp = [(self.vogd.vo.optDict)[@"numddp"] intValue];
+                    if (-1 == numddp) {
+                        if (step < 1.0) {
+                            fmt = @"%0.2f";
+                        } else if (step < 2.0) {
+                            fmt = @"%0.1f";
+                        } else {
+                            fmt = @"%0.0f";
+                        }
+                    } else {
+                        fmt = [NSString stringWithFormat:@"%%0.%df",numddp];
+                    }
+
                 }
                 vstr = [NSString stringWithFormat:fmt,val];
                 //if ([vstr isEqualToString:vsCopy])

@@ -144,6 +144,7 @@
         //_segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // resets segment widths to 0
         
         if ([(NSString*) (self.vo.optDict)[@"shrinkb"] isEqualToString:@"1"]) {  
+            /*
             int j=0;
             for (NSString *s in segmentTextContent) {
                 CGSize siz = [s sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
@@ -153,6 +154,8 @@
             }
             
             // TODO: need to center control in subview for this
+            // */
+            _segmentedControl.apportionsSegmentWidthsByContent=YES;
         }
 
         _segmentedControl.frame = self.vosFrame;
@@ -358,8 +361,8 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
-    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}].width;
+    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
 
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	

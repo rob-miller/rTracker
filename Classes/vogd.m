@@ -34,8 +34,8 @@
     }
     trackerObj *myTracker = (trackerObj*) self.vo.parentTracker;
     togd *myTOGD = myTracker.togd;
-    myTracker.sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%ld and val != '' and date >= %d and date <= %d;",targ,(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
-    return [myTracker toQry2Double];
+    NSString *sql = [NSString stringWithFormat:@"select %@(val collate CMPSTRDBL) from voData where id=%ld and val != '' and date >= %d and date <= %d;",targ,(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+    return [myTracker toQry2Double:sql];
 }
 
 - (id) initAsNum:(valueObj*)inVO {
@@ -128,10 +128,10 @@
         
         //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
         // 6.ii.2013 implement maxGraphDays
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        NSString *sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
 
-        [myTracker toQry2AryID:i1 d1:d1];
-        myTracker.sql=nil;
+        [myTracker toQry2AryID:i1 d1:d1 sql:sql];
+      //sql = nil;
         
         NSEnumerator *e = [d1 objectEnumerator];
         
@@ -190,10 +190,9 @@
         //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val not NULL and val != '' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         //[myTracker toQry2AryIS:i1 s1:s1];
         //NSEnumerator *e = [s1 objectEnumerator];
-
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
-        [myTracker toQry2AryI:i1];
-        myTracker.sql=nil;
+        NSString *sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        [myTracker toQry2AryI:i1 sql:sql];
+      //sql = nil;
         
         for (NSNumber *ni in i1) {
             
@@ -236,9 +235,9 @@
         //NSMutableArray *mydat = [[NSMutableArray alloc] init];
         
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
-        myTracker.sql = [NSString stringWithFormat:@"select date from voData where id=%d and val !='' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+       sql = [NSString stringWithFormat:@"select date from voData where id=%d and val !='' and date >= %d and date <= %d order by date;",self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
         [myTracker toQry2AryI:i1];
-        myTracker.sql=nil;
+      //sql = nil;
         
         for (NSNumber *ni in i1) {
             
@@ -282,10 +281,10 @@
         NSMutableArray *i1 = [[NSMutableArray alloc] init];
         NSMutableArray *s1 = [[NSMutableArray alloc] init];
         NSMutableArray *i2 = [[NSMutableArray alloc] init];
-        
-        myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
-        [myTracker toQry2AryIS:i1 s1:s1];
-        myTracker.sql=nil;
+       
+        NSString *sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val not NULL and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+        [myTracker toQry2AryIS:i1 s1:s1 sql:sql];
+      //sql = nil;
         
         // TODO: nicer to cache tbox linecounts somehow 
         for (NSString *s in s1) {

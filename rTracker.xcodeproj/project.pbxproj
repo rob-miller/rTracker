@@ -40,8 +40,10 @@
 		D457D8AF1955B256004526CF /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8AD1955B256004526CF /* ping.caf */; };
 		D4588ADC1177497200AD2106 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
 		D4620057182C046E00F6F2C2 /* notifyReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4620056182C046E00F6F2C2 /* notifyReminder.m */; };
+		D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B51A50FDB40009E20B /* Icon512x512.png */; };
+		D464C8B81A5100450009E20B /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B71A5100450009E20B /* icon120.png */; };
 		D469CEBB1A2BAC3800B8F48B /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */; };
-		D469CEBD1A2BAC4E00B8F48B /* MainWindow 19-45-22-194.xib in Resources */ = {isa = PBXBuildFile; fileRef = D469CEBC1A2BAC4E00B8F48B /* MainWindow 19-45-22-194.xib */; };
+		D4735FF91A51E81C006F12FC /* demoTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4735FF81A51E81C006F12FC /* demoTrackers */; };
 		D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
 		D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */; };
 		D473ED4019571F8A00B4702C /* CalendarRow.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3619571F8A00B4702C /* CalendarRow.png */; };
@@ -152,25 +154,6 @@
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
-		D431F3061488396700E2608A /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = "Resources-iPad/Resources/xib/addTrackerController.xib"; sourceTree = "<group>"; };
-		D431F3071488396700E2608A /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = "Resources-iPad/Resources/xib/MainWindow.xib"; sourceTree = "<group>"; };
-		D431F3081488396700E2608A /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = "Resources-iPad/Resources/xib/configTlistController.xib"; sourceTree = "<group>"; };
-		D431F3091488396700E2608A /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = "Resources-iPad/Resources/xib/addValObjController.xib"; sourceTree = "<group>"; };
-		D431F30A1488396700E2608A /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = "Resources-iPad/Resources/xib/useTrackerController.xib"; sourceTree = "<group>"; };
-		D431F30B1488396700E2608A /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = "Resources-iPad/Resources/xib/graphTracker.xib"; sourceTree = "<group>"; };
-		D431F30C1488396700E2608A /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = "Resources-iPad/Resources/xib/configTVObjVC.xib"; sourceTree = "<group>"; };
-		D431F30D1488396700E2608A /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = "Resources-iPad/Resources/xib/datePickerVC.xib"; sourceTree = "<group>"; };
-		D431F30E1488396700E2608A /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = "Resources-iPad/Resources/xib/voDataEdit.xib"; sourceTree = "<group>"; };
-		D431F30F1488396700E2608A /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = "Resources-iPad/Resources/xib/voTBacc.xib"; sourceTree = "<group>"; };
-		D431F3BC14883A7E00E2608A /* addTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addTrackerController.xib; path = "Resources-iPad/Resources/xib/addTrackerController.xib"; sourceTree = "<group>"; };
-		D431F3BE14883A7E00E2608A /* configTlistController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTlistController.xib; path = "Resources-iPad/Resources/xib/configTlistController.xib"; sourceTree = "<group>"; };
-		D431F3BF14883A7E00E2608A /* addValObjController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = addValObjController.xib; path = "Resources-iPad/Resources/xib/addValObjController.xib"; sourceTree = "<group>"; };
-		D431F3C014883A7E00E2608A /* useTrackerController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = useTrackerController.xib; path = "Resources-iPad/Resources/xib/useTrackerController.xib"; sourceTree = "<group>"; };
-		D431F3C114883A7E00E2608A /* graphTracker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = graphTracker.xib; path = "Resources-iPad/Resources/xib/graphTracker.xib"; sourceTree = "<group>"; };
-		D431F3C214883A7E00E2608A /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = "Resources-iPad/Resources/xib/configTVObjVC.xib"; sourceTree = "<group>"; };
-		D431F3C314883A7E00E2608A /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = "Resources-iPad/Resources/xib/datePickerVC.xib"; sourceTree = "<group>"; };
-		D431F3C414883A7E00E2608A /* voDataEdit.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voDataEdit.xib; path = "Resources-iPad/Resources/xib/voDataEdit.xib"; sourceTree = "<group>"; };
-		D431F3C514883A7E00E2608A /* voTBacc.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = voTBacc.xib; path = "Resources-iPad/Resources/xib/voTBacc.xib"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
 		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		D43EE367133CBF8D00737E76 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
@@ -186,11 +169,13 @@
 		D457D8AC1955B256004526CF /* ping 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ping 2.caf"; sourceTree = "<group>"; };
 		D457D8AD1955B256004526CF /* ping.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ping.caf; sourceTree = "<group>"; };
 		D4588ADA1177497200AD2106 /* addTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addTrackerController.h; sourceTree = "<group>"; };
-		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addTrackerController.m; sourceTree = "<group>"; };
+		D4588ADB1177497200AD2106 /* addTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = addTrackerController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4620055182C046E00F6F2C2 /* notifyReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminder.h; sourceTree = "<group>"; };
-		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminder.m; sourceTree = "<group>"; };
+		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = notifyReminder.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		D464C8B51A50FDB40009E20B /* Icon512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon512x512.png; sourceTree = "<group>"; };
+		D464C8B71A5100450009E20B /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon120.png; path = Resources/png/icon120.png; sourceTree = "<group>"; };
 		D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/xib/MainWindow.xib; sourceTree = "<group>"; };
-		D469CEBC1A2BAC4E00B8F48B /* MainWindow 19-45-22-194.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "MainWindow 19-45-22-194.xib"; path = "Resources-iPad/Resources/xib/MainWindow 19-45-22-194.xib"; sourceTree = "<group>"; };
+		D4735FF81A51E81C006F12FC /* demoTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = demoTrackers; sourceTree = "<group>"; };
 		D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarPreviousMonth.png; path = Resources/png/CalendarPreviousMonth.png; sourceTree = "<group>"; };
 		D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarPreviousMonth@2x.png"; path = "Resources/png/CalendarPreviousMonth@2x.png"; sourceTree = "<group>"; };
 		D473ED3619571F8A00B4702C /* CalendarRow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarRow.png; path = Resources/png/CalendarRow.png; sourceTree = "<group>"; };
@@ -203,7 +188,7 @@
 		D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarTodaysDate@2x.png"; path = "Resources/png/CalendarTodaysDate@2x.png"; sourceTree = "<group>"; };
 		D473F25919050136000B0FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D47B564319411739002B0CCA /* trackerCalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalViewController.h; sourceTree = "<group>"; };
-		D47B564419411739002B0CCA /* trackerCalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerCalViewController.m; sourceTree = "<group>"; };
+		D47B564419411739002B0CCA /* trackerCalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = trackerCalViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D47B5646194118D5002B0CCA /* trackerCalCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalCalendarRowCell.h; sourceTree = "<group>"; };
 		D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerCalCalendarRowCell.m; sourceTree = "<group>"; };
 		D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderVC2.xib; sourceTree = "<group>"; };
@@ -227,11 +212,11 @@
 		D481089919E056D600B422A8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = rTracker/Images.xcassets; sourceTree = "<group>"; };
 		D482D1FE114F7E8900CE6BC8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		D482D270114FEB5E00CE6BC8 /* trackerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerList.h; sourceTree = "<group>"; };
-		D482D271114FEB5E00CE6BC8 /* trackerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerList.m; sourceTree = "<group>"; };
+		D482D271114FEB5E00CE6BC8 /* trackerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = trackerList.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D482D274114FEB7500CE6BC8 /* trackerObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerObj.h; sourceTree = "<group>"; };
-		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = trackerObj.m; sourceTree = "<group>"; };
+		D482D275114FEB7500CE6BC8 /* trackerObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = trackerObj.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D487D7711260A77800298C1D /* configTVObjVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTVObjVC.h; sourceTree = "<group>"; };
-		D487D7721260A77800298C1D /* configTVObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTVObjVC.m; sourceTree = "<group>"; };
+		D487D7721260A77800298C1D /* configTVObjVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = configTVObjVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D487D7731260A77800298C1D /* configTVObjVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = configTVObjVC.xib; path = ../Resources/xib/configTVObjVC.xib; sourceTree = "<group>"; };
 		D48F9E7D119AA02A00B37C93 /* valueObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = valueObj.h; sourceTree = "<group>"; };
 		D48F9E7E119AA02A00B37C93 /* valueObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = valueObj.m; sourceTree = "<group>"; };
@@ -240,13 +225,13 @@
 		D49854AD12312A400009E458 /* useTrackerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = useTrackerController.h; sourceTree = "<group>"; };
 		D49854AE12312A400009E458 /* useTrackerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = useTrackerController.m; sourceTree = "<group>"; };
 		D4A314A81189BB6A00F062AC /* tObjBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tObjBase.h; sourceTree = "<group>"; };
-		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tObjBase.m; sourceTree = "<group>"; };
+		D4A314A91189BB6A00F062AC /* tObjBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = tObjBase.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4A317B11192B7C800F062AC /* configTlistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configTlistController.h; sourceTree = "<group>"; };
 		D4A317B21192B7C800F062AC /* configTlistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configTlistController.m; sourceTree = "<group>"; };
 		D4A700CB13798874005E0E23 /* togd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = togd.h; sourceTree = "<group>"; };
-		D4A700CC13798874005E0E23 /* togd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = togd.m; sourceTree = "<group>"; };
+		D4A700CC13798874005E0E23 /* togd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = togd.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4A700CE1379928D005E0E23 /* vogd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vogd.h; sourceTree = "<group>"; };
-		D4A700CF1379928D005E0E23 /* vogd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = vogd.m; sourceTree = "<group>"; };
+		D4A700CF1379928D005E0E23 /* vogd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = vogd.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4A7B00512FCC28500ABC266 /* privDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privDefs.h; sourceTree = "<group>"; };
 		D4A8D07A14F114EC0028AD03 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D4A9E4361A412FF300BD15B5 /* addTrackerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addTrackerController.xib; sourceTree = "<group>"; };
@@ -255,11 +240,11 @@
 		D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderViewController.m; sourceTree = "<group>"; };
 		D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = notifyReminderViewController.xib; sourceTree = "<group>"; };
 		D4B6AE66127EC33500C036ED /* voNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voNumber.h; sourceTree = "<group>"; };
-		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voNumber.m; sourceTree = "<group>"; };
+		D4B6AE67127EC33500C036ED /* voNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = voNumber.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4B6AE6B127EC34D00C036ED /* voText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voText.h; sourceTree = "<group>"; };
 		D4B6AE6C127EC34D00C036ED /* voText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voText.m; sourceTree = "<group>"; };
 		D4B6AE70127EC35E00C036ED /* voTextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voTextBox.h; sourceTree = "<group>"; };
-		D4B6AE71127EC35E00C036ED /* voTextBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voTextBox.m; sourceTree = "<group>"; };
+		D4B6AE71127EC35E00C036ED /* voTextBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = voTextBox.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4B6AE75127EC36E00C036ED /* voSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voSlider.h; sourceTree = "<group>"; };
 		D4B6AE76127EC36E00C036ED /* voSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voSlider.m; sourceTree = "<group>"; };
 		D4B6AE7A127EC38300C036ED /* voChoice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voChoice.h; sourceTree = "<group>"; };
@@ -269,9 +254,9 @@
 		D4B6AE88127EC3AA00C036ED /* voImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voImage.h; sourceTree = "<group>"; };
 		D4B6AE89127EC3AA00C036ED /* voImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voImage.m; sourceTree = "<group>"; };
 		D4B6AE8D127EC3BE00C036ED /* voFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voFunction.h; sourceTree = "<group>"; };
-		D4B6AE8E127EC3BE00C036ED /* voFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voFunction.m; sourceTree = "<group>"; };
+		D4B6AE8E127EC3BE00C036ED /* voFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = voFunction.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4B6AEB4127EE24D00C036ED /* voState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voState.h; sourceTree = "<group>"; };
-		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voState.m; sourceTree = "<group>"; };
+		D4B6AEB5127EE24D00C036ED /* voState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = voState.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = ../Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
@@ -290,15 +275,15 @@
 		D4DC23FE138404140086E5F3 /* dpRslt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dpRslt.m; sourceTree = "<group>"; };
 		D4E069A61343C4D7002B42C8 /* dbg-defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dbg-defs.h"; sourceTree = "<group>"; };
 		D4E5FDD5125283B1004BB4EC /* graphTrackerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerVC.h; sourceTree = "<group>"; };
-		D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerVC.m; sourceTree = "<group>"; };
+		D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = graphTrackerVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4E5FE4412529300004BB4EC /* graphTrackerV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graphTrackerV.h; sourceTree = "<group>"; };
 		D4E5FE4512529300004BB4EC /* graphTrackerV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = graphTrackerV.m; sourceTree = "<group>"; };
 		D4E8F8FF12E8682100A2526B /* privacyV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privacyV.h; sourceTree = "<group>"; };
-		D4E8F90012E8682100A2526B /* privacyV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = privacyV.m; sourceTree = "<group>"; };
+		D4E8F90012E8682100A2526B /* privacyV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = privacyV.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4E8F90212E868A300A2526B /* tictacV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tictacV.h; sourceTree = "<group>"; };
 		D4E8F90312E868A300A2526B /* tictacV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = tictacV.m; sourceTree = "<group>"; };
 		D4E8F90512E868B700A2526B /* ppwV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ppwV.h; sourceTree = "<group>"; };
-		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ppwV.m; sourceTree = "<group>"; };
+		D4E8F90612E868B700A2526B /* ppwV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ppwV.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D4F02396137BFF7F0097AC16 /* gtTitleV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtTitleV.h; sourceTree = "<group>"; };
 		D4F02397137BFF7F0097AC16 /* gtTitleV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtTitleV.m; sourceTree = "<group>"; };
 		D4F02399137BFFA10097AC16 /* gtXAxV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtXAxV.h; sourceTree = "<group>"; };
@@ -368,7 +353,6 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				D431F3051488395D00E2608A /* Resources-iPad */,
 				D40AB40516D428D2008174D3 /* rTrackerTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -389,6 +373,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D464C8B71A5100450009E20B /* icon120.png */,
+				D464C8B51A50FDB40009E20B /* Icon512x512.png */,
 				D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */,
 				D481089919E056D600B422A8 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -400,8 +386,9 @@
 				D4C52109123F9DF700554627 /* blueButton.png */,
 				D481089419E0550800B422A8 /* Sounds */,
 				D481089819E055AB00B422A8 /* icon */,
-				D481089719E0559800B422A8 /* Privacy Button */,
 				D481089319E054EE00B422A8 /* Calendar */,
+				D481089719E0559800B422A8 /* Privacy Button */,
+				D4735FF81A51E81C006F12FC /* demoTrackers */,
 				D4B3009215A9B51A0042319D /* sampleTrackers */,
 			);
 			name = Resources;
@@ -440,33 +427,6 @@
 				D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		D431F3051488395D00E2608A /* Resources-iPad */ = {
-			isa = PBXGroup;
-			children = (
-				D469CEBC1A2BAC4E00B8F48B /* MainWindow 19-45-22-194.xib */,
-				D431F3BC14883A7E00E2608A /* addTrackerController.xib */,
-				D431F3BE14883A7E00E2608A /* configTlistController.xib */,
-				D431F3BF14883A7E00E2608A /* addValObjController.xib */,
-				D431F3C014883A7E00E2608A /* useTrackerController.xib */,
-				D431F3C114883A7E00E2608A /* graphTracker.xib */,
-				D431F3C214883A7E00E2608A /* configTVObjVC.xib */,
-				D431F3C314883A7E00E2608A /* datePickerVC.xib */,
-				D431F3C414883A7E00E2608A /* voDataEdit.xib */,
-				D431F3C514883A7E00E2608A /* voTBacc.xib */,
-				D431F3061488396700E2608A /* addTrackerController.xib */,
-				D431F3071488396700E2608A /* MainWindow.xib */,
-				D431F3081488396700E2608A /* configTlistController.xib */,
-				D431F3091488396700E2608A /* addValObjController.xib */,
-				D431F30A1488396700E2608A /* useTrackerController.xib */,
-				D431F30B1488396700E2608A /* graphTracker.xib */,
-				D431F30C1488396700E2608A /* configTVObjVC.xib */,
-				D431F30D1488396700E2608A /* datePickerVC.xib */,
-				D431F30E1488396700E2608A /* voDataEdit.xib */,
-				D431F30F1488396700E2608A /* voTBacc.xib */,
-			);
-			name = "Resources-iPad";
 			sourceTree = "<group>";
 		};
 		D43EE365133CBF4100737E76 /* csv support */ = {
@@ -756,10 +716,12 @@
 				D40607E217D7CB5A00C05A38 /* closedview-button-blue-7@2x.png in Resources */,
 				D40607E317D7CB5A00C05A38 /* fullview-button-blue-7.png in Resources */,
 				D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */,
+				D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */,
 				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
 				D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */,
 				D4FF224812304E050047518A /* rt-types.plist in Resources */,
+				D464C8B81A5100450009E20B /* icon120.png in Resources */,
 				D44695C517D6894A00BB5A38 /* configTlistController.xib in Resources */,
 				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
 				D40607E517D7CB5A00C05A38 /* shadeview-button-7.png in Resources */,
@@ -773,6 +735,7 @@
 				D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */,
 				D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */,
 				D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */,
+				D4735FF91A51E81C006F12FC /* demoTrackers in Resources */,
 				D40607E817D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png in Resources */,
 				D40607DF17D7CB5A00C05A38 /* closedview-button-7.png in Resources */,
 				D481089A19E056D600B422A8 /* Images.xcassets in Resources */,
@@ -785,7 +748,6 @@
 				D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */,
 				D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */,
 				D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */,
-				D469CEBD1A2BAC4E00B8F48B /* MainWindow 19-45-22-194.xib in Resources */,
 				D40607E017D7CB5A00C05A38 /* closedview-button-7@2x.png in Resources */,
 				D40607E117D7CB5A00C05A38 /* closedview-button-blue-7.png in Resources */,
 				D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */,

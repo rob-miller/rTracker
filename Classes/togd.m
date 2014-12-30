@@ -21,25 +21,27 @@
 }
 
 - (id) initWithData:(trackerObj*)pTracker rect:(CGRect) inRect {
+    NSString *sql;
+
     if ((self = [super init])) {
         self.pto = pTracker;
         self.rect = inRect;
         self.bbox = inRect;
-        
-        self.pto.sql = @"select max(date) from voData;";
-        self.lastDate =  [self.pto toQry2Int];
+       
+        sql = @"select max(date) from voData;";
+        self.lastDate =  [self.pto toQry2Int:sql];
         
         int gmd = [[self.pto.optDict valueForKey:@"graphMaxDays"] intValue];
         if (0 != gmd) {
             int tFirstDate;
             gmd *= 60*60*24; // secs per day
             tFirstDate = self.lastDate - gmd;
-            self.pto.sql = [NSString stringWithFormat:@"select min(date) from voData where date >= %d;",tFirstDate];
+           sql = [NSString stringWithFormat:@"select min(date) from voData where date >= %d;",tFirstDate];
         } else {
-            self.pto.sql = @"select min(date) from voData;";
+           sql = @"select min(date) from voData;";
         }
-        self.firstDate = [self.pto toQry2Int];
-        self.pto.sql = nil;
+        self.firstDate = [self.pto toQry2Int:sql];
+       sql = nil;
         
         if (self.firstDate == self.lastDate) {
             self.firstDate -= 60*60*24; // secs per day -- single data point so arbitrarily set scale to 1 day

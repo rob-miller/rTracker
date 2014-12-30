@@ -35,32 +35,32 @@
 	self.dbName=@"topLevel.sqlite3";
 	[self getTDb];
 	
-	self.sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer, remindercount integer);";
-	[self toExecSql];
-    self.sql = @"alter table toplevel add column remindercount int";  // new column added for reminders
-    [self toExecSqlIgnErr];
+	NSString *sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer, remindercount integer);";
+    [self toExecSql:sql];
+    sql = @"alter table toplevel add column remindercount int";  // new column added for reminders
+    [self toExecSqlIgnErr:sql];
     
 	//self.sql = @"select count(*) from toplevel;";
-	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int]);
+	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int:sql]);
 
-	self.sql = @"create table if not exists info (val integer, name text);";
-	[self toExecSql];
+	sql = @"create table if not exists info (val integer, name text);";
+    [self toExecSql:sql];
 
-    self.sql = @"select count(*) from info where name='rtdb_version'";
-    if (0 == [self toQry2Int]) {
+    sql = @"select count(*) from info where name='rtdb_version'";
+    if (0 == [self toQry2Int:sql]) {
         DBGLog(@"rtdb_version not set");
-        self.sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];
-        [self toExecSql];
+        sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];
+        [self toExecSql:sql];
 /*
 #if DEBUGLOG
     } else {
-        self.sql = @"select val from info where name='rtdb_version'";
-        DBGLog(@"rtdb_version= %d",[self toQry2Int]);
+       sql = @"select val from info where name='rtdb_version'";
+        DBGLog(@"rtdb_version= %d",[self toQry2Int:sql]);
 #endif
  */
     }
     
-	self.sql = nil;	
+	//self.sql = nil;
 }	
 
 - (id) init {
@@ -91,9 +91,9 @@
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
 	
-	self.sql = [NSString stringWithFormat:@"select id, name, priv, remindercount from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
-	[self toQry2AryISII:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv i3:self.topLayoutReminderCount];
-	self.sql = nil;
+	NSString *sql = [NSString stringWithFormat:@"select id, name, priv, remindercount from toplevel where priv <= %i order by rank;",[privacyV getPrivacyValue]];
+	[self toQry2AryISII:self.topLayoutIDs s1:self.topLayoutNames i2:self.topLayoutPriv i3:self.topLayoutReminderCount sql:sql];
+	//self.sql = nil;
 	DBGLog(@"loadTopLayoutTable finished, priv=%i tlt= %@",[privacyV getPrivacyValue],self.topLayoutNames);
     //DBGTLIST(self);
 }
@@ -114,13 +114,13 @@
 	//[self toQry2Log];
     //DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
 	//DBGTLIST(self);
-	self.sql = [NSString stringWithFormat:@"select rank from toplevel where id=%ld;",(long)tObj.toid];
-	NSInteger rank = [self toQry2Int];  // returns 0 if not found
+	NSString *sql = [NSString stringWithFormat:@"select rank from toplevel where id=%ld;",(long)tObj.toid];
+    NSInteger rank = [self toQry2Int:sql];  // returns 0 if not found
 	if (rank == 0) {
         DBGLog(@"rank not found");
 	} else {
-        self.sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%li and priv <= %i;",(long)rank,[privacyV getPrivacyValue]];
-        if (1 < [self toQry2Int]) {
+        sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%li and priv <= %i;",(long)rank,[privacyV getPrivacyValue]];
+        if (1 < [self toQry2Int:sql]) {
             DBGLog(@"too many at rank %li",(long)rank);
             rank = 0;
         }
@@ -133,10 +133,10 @@
     dbgNSAssert(tObj.toid,@"confirmTLE: toid=0");
     int privVal = [[tObj.optDict valueForKey:@"privacy"] intValue];
     privVal = (privVal ? privVal : PRIVDFLT);  // default is 1 not 0;
-	self.sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%li, %li, \"%@\", %i, %i);",
+	sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%li, %li, \"%@\", %i, %i);",
 				(long)rank, (long)tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal,[tObj enabledReminderCount]];
-	[self toExecSql];
-	self.sql = nil;
+    [self toExecSql:sql];
+	//self.sql = nil;
 	
 	// call loadTopLayoutTable before using:  [topLayoutTable insertObject:name atIndex:rank];
 }
@@ -146,28 +146,28 @@
 	int nrank=0;
 	for (NSString *tracker in self.topLayoutNames) {
 		//DBGLog(@" %@ to rank %d",tracker,nrank);
-		self.sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ rTracker_resource toSqlStr:tracker]];
-		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
+		NSString *sql = [NSString stringWithFormat :@"update toplevel set rank = %d where name = \"%@\";",nrank+1,[ rTracker_resource toSqlStr:tracker]];
+        [self toExecSql:sql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
-	self.sql = nil;
+	//self.sql = nil;
     //DBGTLIST(self);
 }
 
 - (void) reloadFromTLT {
     //DBGTLIST(self);
 	int nrank=0;
-	self.sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
-	[self toExecSql];
+	NSString *sql = [NSString stringWithFormat:@"delete from toplevel where priv <= %d;",[privacyV getPrivacyValue] ];
+    [self toExecSql:sql];
 	for (NSString *tracker in self.topLayoutNames) {
 		NSInteger tid = [(self.topLayoutIDs)[nrank] intValue];
 		NSInteger priv = [(self.topLayoutPriv)[nrank] intValue];
 		NSInteger rc = [(self.topLayoutReminderCount)[nrank] intValue];
         
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
-		self.sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %ld, \"%@\", %ld, %ld);",nrank+1,(long)tid,[rTracker_resource toSqlStr:tracker], (long)priv,(long)rc];  // rank in db always non-0
-		[self toExecSql];  // better if used bind vars, but this keeps access in tObjBase
-		self.sql = nil;
+		sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %ld, \"%@\", %ld, %ld);",nrank+1,(long)tid,[rTracker_resource toSqlStr:tracker], (long)priv,(long)rc];  // rank in db always non-0
+        [self toExecSql:sql];  // better if used bind vars, but this keeps access in tObjBase
+		//self.sql = nil;
 		nrank++;
 	}
 }
@@ -188,8 +188,8 @@
 }
 
 - (BOOL) checkTIDexists:(NSNumber*)tid {
-    self.sql = [NSString stringWithFormat:@"select id from toplevel where id=%d",[tid intValue]];
-    int rslt = [self toQry2Int];
+    NSString *sql =[NSString stringWithFormat:@"select id from toplevel where id=%d",[tid intValue]];
+    int rslt = [self toQry2Int:sql];
     return (0 != rslt);
 }
 
@@ -207,8 +207,8 @@
 // return aaray of TIDs which match name, order by rank
 - (NSArray*) getTIDFromNameDb:(NSString*)str {
     NSMutableArray *i1 = [[NSMutableArray alloc] init];
-    self.sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[rTracker_resource toSqlStr:str]];
-    [self toQry2AryI:i1];
+    NSString *sql=[NSString stringWithFormat:@"select id from toplevel where name=\"%@\" order by rank",[rTracker_resource toSqlStr:str]];
+    [self toQry2AryI:i1 sql:sql];
     NSArray *ra = [NSArray arrayWithArray:i1];
     return ra;
 }
@@ -230,15 +230,16 @@
 }
 
 - (void) updateTLtid:(NSInteger)old new:(NSInteger)new {
+    NSString *sql;
     if (-1 == new) {
-        self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%ld",(long)old];
+        sql = [NSString stringWithFormat:@"delete from toplevel where id=%ld",(long)old];
     } else if (old == new) {
         return;
     } else {
-        self.sql = [NSString stringWithFormat:@"update toplevel set id=%ld where id=%ld",(long)new, (long)old ];
+        sql = [NSString stringWithFormat:@"update toplevel set id=%ld where id=%ld",(long)new, (long)old ];
     }
-    [self toExecSql];  
-    self.sql = nil;
+    [self toExecSql:sql];  
+    //self.sql = nil;
     
     [self loadTopLayoutTable];
     
@@ -359,9 +360,9 @@
     float ndx=1.0;
     [privacyV jumpMaxPriv];  // reasonable to do this now with default encryption enabled
     
-    self.sql = @"select id from toplevel";  // ignore current (self) list because subject to privacy  
+    NSString *sql = @"select id from toplevel";  // ignore current (self) list because subject to privacy
     NSMutableArray *idSet = [[NSMutableArray alloc] init];
-    [self toQry2AryI:idSet];
+    [self toQry2AryI:idSet sql:sql];
     float all = [idSet count];
     
     for (NSNumber *tid in idSet) {
@@ -397,10 +398,10 @@
 }
 
 - (void) wipeOrphans {
-    self.sql = @"select id, name from toplevel order by id";
+    NSString *sql = @"select id, name from toplevel order by id";
     NSMutableArray *i1 = [[NSMutableArray alloc]init];
     NSMutableArray *s1 = [[NSMutableArray alloc]init];
-    [self toQry2AryIS:i1 s1:s1];
+    [self toQry2AryIS:i1 s1:s1 sql:sql];
     NSMutableDictionary *dictTid2Ndx = [[NSMutableDictionary alloc]init];
     NSUInteger c = [i1 count];
     NSUInteger i;
@@ -448,14 +449,14 @@
             } else {
                 NSString *tname = s1[i];
                 DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
-                self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
-                [self toExecSql];
+                NSString *sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
+                [self toExecSql:sql];
             }
             i++;
         }
     }
     
-    self.sql = nil;
+    //self.sql = nil;
     
 }
 
@@ -498,10 +499,10 @@
 
 - (BOOL) recoverOrphans {
     BOOL didRecover=NO;
-    self.sql = @"select id, name from toplevel order by id";
+    NSString *sql = @"select id, name from toplevel order by id";
     NSMutableArray *i1 = [[NSMutableArray alloc]init];
     NSMutableArray *s1 = [[NSMutableArray alloc]init];
-    [self toQry2AryIS:i1 s1:s1];
+    [self toQry2AryIS:i1 s1:s1 sql:sql];
     NSMutableDictionary *dictTid2Ndx = [[NSMutableDictionary alloc]init];
     NSUInteger c = [i1 count];
     NSUInteger i;
@@ -557,14 +558,14 @@
             } else {
                 NSString *tname = s1[i];
                 DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);
-                self.sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
-                [self toExecSql];
+                NSString *sql = [NSString stringWithFormat:@"delete from toplevel where id=%@ and name='%@'",tlTid, tname];
+                [self toExecSql:sql];
             }
             i++;
         }
     }
     
-    self.sql = nil;
+    //self.sql = nil;
     
     return didRecover;
 }

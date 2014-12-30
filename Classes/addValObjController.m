@@ -343,7 +343,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (IBAction) btnSetup:(id)sender {
 	//DBGLog(@"addVObjC: config was pressed!");
 	
-	configTVObjVC *ctvovc = [[configTVObjVC alloc] init];
+	configTVObjVC *ctvovc = [[configTVObjVC alloc] initWithNibName:@"configTVObjVC" bundle:nil];
 	ctvovc.to = self.parentTrackerObj;
 	//[parentTrackerObj retain];
 	ctvovc.vo = self.tempValObj;

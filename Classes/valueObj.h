@@ -84,10 +84,10 @@
 #define BOOLVALDFLT     1.0
 #define BOOLVALDFLTSTR  @"1"
 #define INFOVALDFLT     1.0
-#define INFOVALDFLTSTR  @"0"
+#define INFOVALDFLTSTR  @"1.0"
 #define INFOURLDFLTSTR  @""
 
-
+#define NUMDDPDFLT		-1
 
 
 @protocol voProtocol

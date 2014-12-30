@@ -327,10 +327,10 @@
         }
         
         if(![sql hasSuffix:@"("]) {  // if ends with '(' then did not add any search terms
-            self.parentUTC.tracker.sql = [sql stringByAppendingString:@")"];
-            DBGLog(@"sql= %@",self.parentUTC.tracker.sql);
+            sql = [sql stringByAppendingString:@")"];
+            DBGLog(@"sql= %@",sql);
             NSMutableArray *searchDates = [[NSMutableArray alloc] init];
-            [self.parentUTC.tracker toQry2AryI:searchDates];
+            [self.parentUTC.tracker toQry2AryI:searchDates sql:sql];
             if (0 < [searchDates count])
                 self.parentUTC.searchSet = [NSArray arrayWithArray:searchDates];
             else
@@ -363,6 +363,9 @@
         // After setting the accessory view for the text view, we no longer need a reference to the accessory view.
         self.accessoryView = nil;
 		self.addButton.hidden = YES;
+        CGFloat fsize = 20.0;
+        [self.segControl setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:fsize]} forState:UIControlStateNormal];
+        [self.setSearchSeg setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:fsize]} forState:UIControlStateNormal];
     }
 	
     return YES;
@@ -578,12 +581,13 @@
 }
 
 - (NSArray*) historyArray {
+    NSString *sql;
 	if (nil == _historyArray) {
 		//NSMutableArray *his1 = [[NSMutableArray alloc] init];
 		NSMutableSet *s0 = [[NSMutableSet alloc] init];
-		MyTracker.sql = [NSString stringWithFormat:@"select val from voData where id = %ld and val != '';",(long)self.vo.vid];
+	sql = [NSString stringWithFormat:@"select val from voData where id = %ld and val != '';",(long)self.vo.vid];
 		NSMutableArray *his0 = [[NSMutableArray alloc] init];
-		[MyTracker toQry2AryS:his0];
+		[MyTracker toQry2AryS:his0 sql:sql];
 		for (NSString *s in his0) {
             NSString *s1 = [s stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
 #if DEBUGLOG
@@ -593,7 +597,7 @@
 #endif
 			[s0 addObjectsFromArray:[s1 componentsSeparatedByString:@"\n"]];
 		}
-		MyTracker.sql = nil;
+	sql = nil;
 		[s0 filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
 		_historyArray = [[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		

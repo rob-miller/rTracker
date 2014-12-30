@@ -140,13 +140,13 @@
 	
     self.alertResponse=0;
     self.saveTargD=0;
-
+/*
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"< rTracker"  // rTracker ... tracks ?
                                                                    style:UIBarButtonItemStyleBordered
                                                                   target:self
                                                                   action:@selector(btnCancel)];
     self.navigationItem.leftBarButtonItem = backButton;
-
+*/
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeLeft:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionLeft];
     [self.view addGestureRecognizer:swipe];
@@ -170,7 +170,6 @@
     
     [super viewDidLoad];
 }
-
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -361,6 +360,13 @@
 
 - (void) viewWillDisappear :(BOOL)animated
 {
+    
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        // back button was pressed.  We know this is true because self is no longer
+        // in the navigation stack.
+        [self btnCancel];
+    }
+    
     self.viewDisappearing=YES;
 /*
  if (self.needSave) {
@@ -973,7 +979,8 @@ else do btnCancel/btnSave
     } else {
         [self.tracker confirmReminders];  // else just confirm any enabled reminders have one scheduled
     }
-	[self.navigationController popViewControllerAnimated:YES];
+    // took out because need default 'back button' = "<name>'s tracks" but can't set action only for that button -- need to catch in viewWillDisappear
+	//[self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)btnCancel {   // back button
@@ -999,6 +1006,7 @@ else do btnCancel/btnSave
     }
     
 	[self.tracker saveData];
+    self.needSave=NO;
     
 }
     
@@ -1007,7 +1015,6 @@ else do btnCancel/btnSave
     [self saveActions];
 
     if (nil != self.searchSet) {
-        self.needSave=NO;
 		[self showSaveBtn];
         return;
     }
@@ -1022,6 +1029,8 @@ else do btnCancel/btnSave
 		[self showSaveBtn];
     } else {
         [self leaveTracker];
+        // added here after removing from leaveTracker
+        [self.navigationController popViewControllerAnimated:YES];
 	}
 }
 
