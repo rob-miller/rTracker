@@ -388,7 +388,7 @@
         _tbButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         _tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];
-        //tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+        _tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
          // rtm 06 feb 2012
     }
     return _tbButton;
@@ -402,7 +402,9 @@
 	} else {
 		[self.tbButton setTitle:self.vo.value forState:UIControlStateNormal];
 	}
-	
+    // does not help ! [[self.tbButton superview] setNeedsDisplay];
+    // does not help ! [self.tbButton setNeedsDisplay];
+    [self.tbButton setNeedsLayout];
     DBGLog(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
 	return self.tbButton;
 	
@@ -455,7 +457,7 @@
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	CGRect labframe = [ctvovc configLabel:@"Text box options:" frame:frame key:@"tboLab" addsv:YES];
 	frame.origin.y += labframe.size.height + MARGIN;
-	labframe = [ctvovc configLabel:@"Use number of lines for graph:" frame:frame key:@"tbnlLab" addsv:YES];
+	labframe = [ctvovc configLabel:@"Use number of lines for value:" frame:frame key:@"tbnlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	[ctvovc configCheckButton:frame 
                           key:@"tbnlBtn"

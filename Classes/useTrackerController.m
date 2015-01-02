@@ -32,6 +32,7 @@
 @synthesize dpvc=_dpvc, dpr=_dpr, needSave=_needSave, didSave=_didSave, saveFrame=_saveFrame, fwdRotations=_fwdRotations, rejectable=_rejectable, viewDisappearing=_viewDisappearing, tlist=_tlist;
 @synthesize saveBtn=_saveBtn, menuBtn=_menuBtn, alertResponse=_alertResponse, saveTargD=_saveTargD,tsCalVC=_tsCalVC, searchSet=_searchSet;
 @synthesize searchBtn=_searchBtn;
+@synthesize rvcTitle=_rvcTitle;
 
 //BOOL keyboardIsShown=NO;
 
@@ -140,13 +141,13 @@
 	
     self.alertResponse=0;
     self.saveTargD=0;
-/*
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"< rTracker"  // rTracker ... tracks ?
+///*
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"< %@",self.rvcTitle] //@"< rTracker"  // rTracker ... tracks ?
                                                                    style:UIBarButtonItemStyleBordered
                                                                   target:self
                                                                   action:@selector(btnCancel)];
     self.navigationItem.leftBarButtonItem = backButton;
-*/
+//*/
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeLeft:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionLeft];
     [self.view addGestureRecognizer:swipe];
@@ -361,11 +362,6 @@
 - (void) viewWillDisappear :(BOOL)animated
 {
     
-    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
-        // back button was pressed.  We know this is true because self is no longer
-        // in the navigation stack.
-        [self btnCancel];
-    }
     
     self.viewDisappearing=YES;
 /*
@@ -398,12 +394,31 @@
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];  
     
+    /* 
+     // failed effort to use default back button
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        // back button was pressed.  We know this is true because self is no longer
+        // in the navigation stack.
+    }
+     */
+    
     [super viewWillDisappear:animated];
 }
 
 /*
+ // failed effort to use default back button
  - (void)willMoveToParentViewController:(UIViewController *)parent {
-    DBGLog(@"will move to parent view controller");
+     if (parent == nil) {
+         DBGLog(@"will move to parent view controller");
+         if (self.needSave) {
+             self.alertResponse=CSLEAVE;
+             [self alertLeaving];
+             return; // don't disappear yet...
+         } else {
+             [self leaveTracker];
+         }
+         
+     }
 }
 */
 
@@ -916,6 +931,12 @@
         } else if (CSSHOWCAL==self.alertResponse) {
             self.alertResponse=0;
             [self btnCal];
+        /* 
+         // failed effort to use default back button
+        } else if (CSLEAVE==self.alertResponse) {
+            [self leaveTracker];
+            //[super viewWillDisappear:YES];
+         */
         }
     }
 }
@@ -940,6 +961,23 @@ else do btnCancel/btnSave
     [alert show];
 
 }
+
+/*
+ // failed effort to use default back button
+- (void) alertLeaving {
+    
+    UIAlertView *alert;
+    alert = [[UIAlertView alloc]
+             initWithTitle:[self.tracker.trackerName stringByAppendingString:@" modified"]
+             message:@"Save this record before leaving?"
+             delegate:self
+             cancelButtonTitle:@"Discard"
+             otherButtonTitles: @"Save",nil];
+    
+    [alert show];
+    
+}
+*/
 
 - (void) setTrackerDate:(int) targD {
 	
@@ -979,8 +1017,8 @@ else do btnCancel/btnSave
     } else {
         [self.tracker confirmReminders];  // else just confirm any enabled reminders have one scheduled
     }
-    // took out because need default 'back button' = "<name>'s tracks" but can't set action only for that button -- need to catch in viewWillDisappear
-	//[self.navigationController popViewControllerAnimated:YES];
+    // took out because need default 'back button' = "<name>'s tracks" but can't set action only for that button -- need to catch in viewWillDisappear  -- FAILED
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)btnCancel {   // back button
@@ -1014,8 +1052,8 @@ else do btnCancel/btnSave
 	//DBGLog(@"btnSave was pressed! tracker name= %@ toid= %d",self.tracker.trackerName, self.tracker.toid);
     [self saveActions];
 
-    if (nil != self.searchSet) {
-		[self showSaveBtn];
+    if (nil != self.searchSet) {  // don't leave if have search set, just update save button to indicate save not needed
+		[self showSaveBtn];  // also don't clear form as below
         return;
     }
     
@@ -1030,7 +1068,8 @@ else do btnCancel/btnSave
     } else {
         [self leaveTracker];
         // added here after removing from leaveTracker
-        [self.navigationController popViewControllerAnimated:YES];
+        // but FAILED
+        // [self.navigationController popViewControllerAnimated:YES];
 	}
 }
 

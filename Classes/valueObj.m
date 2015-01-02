@@ -463,21 +463,41 @@ in_vpriv:(NSInteger)in_vpriv
 // specific to VOT_CHOICE with optional values - seach dictionary for value, return index
 - (int) getChoiceIndexForValue:(NSString *)val {
     //DBGLog(@"gciv val=%@",val);
+    CGFloat inValF = [val floatValue];
+    CGFloat minValF = 0.0;
+    CGFloat maxValF = 0.0;
+    //CGFloat closestValF = 99999999999.9F;
+    int closestNdx = -1;
+    CGFloat closestDistanceF = 99999999999.9F;
+    
     NSString *inVal = [NSString stringWithFormat:@"%f",[val floatValue]];
     for (int i=0; i<CHOICES; i++) {
         NSString *key = [NSString stringWithFormat:@"cv%d",i];
         NSString *tstVal = [self.optDict valueForKey:key];
-        if (nil == tstVal) {
-            tstVal = [NSString stringWithFormat:@"%f",(float)i+1];  // added 7.iv.2013 - need default value
-        } else {
-            tstVal = [NSString stringWithFormat:@"%f",[tstVal floatValue]];  
-        }
-        //DBGLog(@"gciv test against %d: %@",i,tstVal);
-        if ([tstVal isEqualToString:inVal]) {
-            return i;
+        if (tstVal) {
+            if (nil == tstVal) {
+                tstVal = [NSString stringWithFormat:@"%f",(float)i+1];  // added 7.iv.2013 - need default value
+            } else {
+                tstVal = [NSString stringWithFormat:@"%f",[tstVal floatValue]];
+            }
+            //DBGLog(@"gciv test against %d: %@",i,tstVal);
+            if ([tstVal isEqualToString:inVal]) {
+                return i;
+            }
+            
+            CGFloat tstValF = [tstVal floatValue];
+            if (minValF > tstValF) minValF = tstValF;
+            if (maxValF < tstValF) maxValF = tstValF;
+            CGFloat testDistanceF = fabs(tstValF - inValF);
+            if (testDistanceF < closestDistanceF) {
+                closestDistanceF = testDistanceF;
+                closestNdx = i;
+            }
         }
     }
+    
     //DBGLog(@"gciv: no match");
+    if ((-1 != closestNdx) && (inValF > minValF) && (inValF < maxValF)) return closestNdx;
     return CHOICES;
     
 }

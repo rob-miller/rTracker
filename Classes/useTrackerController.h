@@ -47,6 +47,8 @@
 #define CSCANCEL    1
 #define CSSETDATE   2
 #define CSSHOWCAL   3
+//#define CSLEAVE     4
+
 
 @property(nonatomic,strong) trackerObj *tracker;
 @property (nonatomic, strong) datePickerVC *dpvc;
@@ -63,6 +65,7 @@
 @property (nonatomic,strong) trackerCalViewController *tsCalVC;
 
 @property (nonatomic,strong) NSArray *searchSet;
+@property (nonatomic,strong) NSString *rvcTitle;
 
 // UI element properties 
 

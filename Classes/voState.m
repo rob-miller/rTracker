@@ -302,6 +302,12 @@
         //DBGLog(@"new cell");
 	} else {
 		// the cell is being recycled, remove old embedded controls
+        /*
+        NSArray *subviews = [cell.contentView subviews];
+        for (UIView *sv in subviews) {
+            [sv removeFromSuperview];
+        }
+        */
         
 		UIView *viewToRemove = nil;
 		while ((viewToRemove = [cell.contentView viewWithTag:kViewTag])) {
@@ -309,9 +315,14 @@
 			[viewToRemove removeFromSuperview];
         }
         
+        // removes too much [cell.contentView removeFromSuperview];
+        
         //DBGLog(@"recycled cell");
 	}
+#if DEBUGLOG
     CGFloat cellWidth = cell.bounds.size.width;
+#endif
+    
     DBGLog(@"cell width= %f",cellWidth);
     DBGLog(@"kw width= %f",[rTracker_resource getKeyWindowWidth]);
     
@@ -325,9 +336,12 @@
     
     //TODO: re-work here to put vo field right-justified in any size cell
     
+    //CGSize screenSize = [[UIScreen mainScreen] bounds].size;
 	bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
+    //bounds.origin.x = cell.frame.origin.x + (cell.frame.size.width )
 	bounds.origin.y = maxLabel.height - (MARGIN);
 	bounds.size.width = [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;// cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
+    //bounds.size.width = screenSize.width - maxLabel.width - LMARGIN - RMARGIN;
 	bounds.size.height = maxLabel.height + MARGIN;
 	
 	//DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);

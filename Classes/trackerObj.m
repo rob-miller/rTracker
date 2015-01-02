@@ -1729,6 +1729,10 @@ if (addVO) {
 	//valueObj *vo;
 	//while ( vo = (valueObj *) [enumer nextObject]) {
 	for (valueObj *vo in self.valObjTable) {
+        if ((VOT_INFO != vo.vtype)
+            && (VOT_CHOICE != vo.vtype)
+            && (VOT_SLIDER != vo.vtype)
+            ) {
         CGSize tsize = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
         //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
 		if (tsize.width > lsize.width) {
@@ -1738,9 +1742,15 @@ if (addVO) {
                 lsize.height = 18.0f;
             }
         }
+        }
 	}
     CGFloat kww5 = ceilf( [rTracker_resource getKeyWindowWidth]/4.0 );
     if (lsize.width < kww5) lsize.width = kww5;
+
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat maxWidth = screenSize.width - (2*MARGIN) - [@"<enter number>" sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20.0]}].width;
+    if (lsize.width > maxWidth) lsize.width = maxWidth;
+    DBGLog(@"lsize.width %f maxWidth %f ss.width %f",lsize.width,maxWidth,screenSize.width);
     
 	DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
 	//[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];

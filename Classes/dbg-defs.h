@@ -25,7 +25,7 @@
 
 #define RELEASE     1
 
-#define DEBUGLOG    1
+#define DEBUGLOG    0
 
 // report scheduled notification fire dates in dbInfo() 
 

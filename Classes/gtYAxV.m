@@ -48,8 +48,48 @@
     [((UIColor *) [rTracker_resource colorSet][col]) set];
 }
 
+NSInteger intSort(id num1, id num2, void *context)
+{
+    int v1 = [num1 intValue];
+    int v2 = [num2 intValue];
+    if (v1 < v2)
+        return NSOrderedAscending;
+    else if (v1 > v2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
+}
 
-- (void) drawYAxis:(CGContextRef)context 
+
+NSInteger choiceCompare(id ndx0, id ndx1, void *context)
+{
+    int c0 = [ndx0 intValue];
+    int c1 = [ndx1 intValue];
+    
+    gtYAxV *self = (__bridge gtYAxV *)(context);
+    
+    NSString *cv0 = [NSString stringWithFormat:@"cv%d", c0];
+    NSString *cv1 = [NSString stringWithFormat:@"cv%d", c1];
+    
+    NSString *v0s = (self.vogd.vo.optDict)[cv0];
+    NSString *v1s = (self.vogd.vo.optDict)[cv1];
+    
+    if ((nil == v0s) || (nil==v1s)) {    // push not-set choices to top of graph
+        if (v1s) return NSOrderedDescending;
+        else if (v0s) return NSOrderedAscending;
+        else return NSOrderedSame;
+    }
+    
+    CGFloat val0 = [ v0s floatValue ] ;
+    CGFloat val1 = [ v1s floatValue ] ;
+    DBGLog(@"c0 %d c1 %d v0s %@ v1s %@ val0 %f val1 %f",c0,c1,v0s,v1s,val0,val1);
+    // need results descending, so reverse test outcome
+    if (val0  < val1) return NSOrderedAscending;
+    else if (val0 > val1) return NSOrderedDescending;
+    else return NSOrderedSame;
+}
+
+- (void) drawYAxis:(CGContextRef)context
 {
 	int i;
     CGFloat svHeight = [self.graphSV contentSize].height;
@@ -65,6 +105,8 @@
     
     //CGFloat len = self.bounds.size.height - (CGFloat) (2*BORDER);
 	CGFloat step = self.scaleHeightY / YTICKS;
+    
+    DBGLog(@" %f %f %f",self.scaleHeightY, YTICKS, step);
 	CGFloat x0 = self.bounds.size.width;
     CGFloat x1 = x0-TICKLEN;
     CGFloat x2 = x1-3.0f;
@@ -72,9 +114,15 @@
     NSInteger vtype = self.vogd.vo.vtype;
     NSString *fmt = @"%0.2f";
     
+    NSArray *choiceMap;
+
+    if (VOT_CHOICE == vtype) {
+        choiceMap = [CHOICEARR sortedArrayUsingFunction:choiceCompare context:(void*)self];
+    }
+
     //NSString *vsCopy = nil;
     
-	for (i=YTICKS; i>=1; i--) {
+    for (i=YTICKS; i>=1; i--) {
 		CGFloat y = f(i) * step;
 		MoveTo(x0,y);
 		AddLineTo(x1,y);
@@ -85,10 +133,21 @@
         switch (vtype) {
             case VOT_CHOICE:
             {
-                int choice = (int)(YTICKS-i)-1;
-                [self vtChoiceSetColor:context ndx:choice];
-                NSString *ch = [NSString stringWithFormat:@"c%d",choice];
-                vstr = (self.vogd.vo.optDict)[ch];
+                if (YTICKS == i) {
+                    vstr = @"";
+                } else {
+                    //DBGLog(@"choiceMap: %@",choiceMap);
+                    //NSUInteger ndx = (YTICKS-i)-1;
+                    
+                    //DBGLog(@"i= %d ndx= %lu",i, (unsigned long) ndx);
+                    //DBGLog(@"obj= %@",[choiceMap objectAtIndex:ndx]);
+                    //DBGLog(@"choice= %d", [ [choiceMap objectAtIndex:ndx] intValue ]);
+                    //int choice = [ [choiceMap objectAtIndex:ndx] intValue ];
+                    int choice = [self.vogd.vo getChoiceIndexForValue:[NSString stringWithFormat:@"%f",val]];
+                    [self vtChoiceSetColor:context ndx:choice];
+                    NSString *ch = [NSString stringWithFormat:@"c%d",choice];
+                    vstr = (self.vogd.vo.optDict)[ch];
+                }
                 break;
             }
             case VOT_BOOLEAN:
@@ -135,11 +194,12 @@
                 } else {
                     //figure out sig figs for input data and set format here accordingly?
                     //fmt = @"%0.2f";
-                    int numddp = [(self.vogd.vo.optDict)[@"numddp"] intValue];
-                    if (-1 == numddp) {
-                        if (step < 1.0) {
+                    NSString *numddps = (self.vogd.vo.optDict)[@"numddp"];
+                    int numddp = [numddps intValue];
+                    if ((nil == numddps) || (-1 == numddp)) {
+                        if (unitStep < 1.0) {
                             fmt = @"%0.2f";
-                        } else if (step < 2.0) {
+                        } else if (unitStep < 2.0) {
                             fmt = @"%0.1f";
                         } else {
                             fmt = @"%0.0f";

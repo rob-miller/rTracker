@@ -73,18 +73,33 @@
         } else if (self.vo.vtype == VOT_CHOICE) {
             self.minVal=d(0);
             self.maxVal=d(0);
+            int c=0;
             for (int i=0; i<CHOICES; i++) {
                 NSString *key = [NSString stringWithFormat:@"cv%d",i];
                 NSString *tstVal = [self.vo.optDict valueForKey:key];
-                if (nil == tstVal) {
-                    tstVal = [NSString stringWithFormat:@"%f",(float)i+1]; 
+                if (nil != tstVal) { // only do specified choices
+                    c++;
+                    double tval = [tstVal doubleValue];
+                    if (self.minVal > tval)
+                        self.minVal = tval;
+                    if (self.maxVal < tval)
+                        self.maxVal = tval;
                 }
-                double tval = [tstVal doubleValue];
-                if (self.minVal > tval)
-                    self.minVal = tval;
-                if (self.maxVal < tval)
-                    self.maxVal = tval;
             }
+            if (self.minVal == self.maxVal) {  // if no values set above, default to choice numbers
+                self.minVal = d(1);
+                self.maxVal = d(CHOICES);
+            }
+
+            DBGLog(@"minVal= %lf maxVal= %lf",self.minVal,self.maxVal);
+            
+            double step = (self.maxVal - self.minVal) / c;  //  CHOICES;
+            self.minVal -= step ; //( d( YTICKS - CHOICES ) /2.0 ) * step;   // YTICKS=7, CHOICES=6, so need blank positions at top and bottom
+            self.maxVal += step * d(YTICKS - c) ;  // step ; //( d( YTICKS - CHOICES ) /2.0 ) * step;
+            DBGLog(@"minVal= %lf maxVal= %lf",self.minVal,self.maxVal);
+            DBGLog(@"Foo");
+            
+            
         } else {  // number or function with autoscale
             
             self.minVal = [self getMinMax:@"min" alt:nil];
@@ -106,12 +121,13 @@
             self.maxVal = 1.0f;
         }
 
+        if (VOT_CHOICE != self.vo.vtype) {
         double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
         if (nil == (self.vo.optDict)[@"gmax"])
             self.maxVal += yScaleExpand;   // +5% each way for visibility unless specified
         if (nil == (self.vo.optDict)[@"gmin"])
             self.minVal -= yScaleExpand;
-        
+        }
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
         
         //double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);

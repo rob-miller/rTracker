@@ -58,7 +58,7 @@ static int plistLoadCount;
 static int csvReadCount;
 static int plistReadCount;
 static BOOL InstallSamples;
-static BOOL InstallDemo;
+static BOOL InstallDemos;
 
 //
 // original code:
@@ -607,9 +607,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void) doLoadInputfiles {
     @autoreleasepool {
     
-        if (InstallDemo) {
+        if (InstallDemos) {
             [self loadDemos:YES];
-            InstallDemo = NO;
+            InstallDemos = NO;
         }
         
         if (InstallSamples) {
@@ -673,7 +673,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         
         if (InstallSamples)
             plistLoadCount += [self loadSamples:NO];
-        if (InstallDemo)
+        if (InstallDemos)
             plistLoadCount += [self loadDemos:NO];
     
         // set rvc:static numerators for progress bars
@@ -782,32 +782,45 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (int) loadDemos:(BOOL)doLoad {
     
     //return [self loadSuppliedTrackers:doLoad set:SUPPLY_DEMOS];
-
+    NSString *newp;
+    NSError *err;
     NSBundle *bundle = [NSBundle mainBundle];
     NSArray *paths = [bundle pathsForResourcesOfType:@"rtrk" inDirectory:@"demoTrackers"];
-    NSError *err;
-    NSString *newp = [rTracker_resource ioFilePath:@"Inbox" access:YES];
-    if  (![[NSFileManager defaultManager] createDirectoryAtPath:newp withIntermediateDirectories:YES attributes:nil error:&err] ) {
-        DBGErr(@"Error creating dir : %@ error: %@", newp,  err);
-    }
+    int count=0;
     
-    
-    for (NSString *p in paths) {
-        NSString *np = [NSString stringWithString:p]; //[p stringByReplacingOccurrencesOfString:@" " withString:@"\\ "];
-        newp = [np stringByReplacingOccurrencesOfString:@"rTracker.app/demoTrackers" withString:@"Documents/Inbox"];
-        if  (![[NSFileManager defaultManager] copyItemAtPath:np toPath:newp error:&err] ) {
-            DBGErr(@"Error copying file: %@ to %@ error: %@", np, newp,  err);
+    /*
+     // just doesn't like touching inbox
+    if (doLoad) { // confirm Inbox exists
+        newp = [rTracker_resource ioFilePath:@"Inbox" access:YES];
+        if  (![[NSFileManager defaultManager] createDirectoryAtPath:newp withIntermediateDirectories:YES attributes:nil error:&err] ) {
+            DBGErr(@"Error creating dir : %@ error: %@", newp,  err);
+        } else {
+            DBGLog(@"created dir %@",newp);
         }
-        [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
-        [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
     }
-    if (doLoad) {
+    */
+    for (NSString *p in paths) {
+        if (doLoad) {
+            NSString *file = [p lastPathComponent];
+            //newp = [rTracker_resource ioFilePath:[NSString stringWithFormat:@"Inbox/%@",file] access:YES];
+            newp = [rTracker_resource ioFilePath:[NSString stringWithFormat:@"%@",file] access:YES];
+            if  (![[NSFileManager defaultManager] copyItemAtPath:p toPath:newp error:&err] ) {
+                DBGErr(@"Error copying file: %@ to %@ error: %@", p, newp,  err);
+                count--;
+            } else {
+                [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
+                [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
+            }
+        }
+        count++;
+    }
+    if (doLoad && count) {
         NSString *sql;
         sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'demos_version')",DEMOS_VERSION];
         [self.tlist toExecSql:sql];
     }
     
-    return 0;
+    return count;
 }
 
 
@@ -985,7 +998,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void)viewDidLoad {
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
-    InstallDemo = NO;
+    InstallDemos = NO;
     
     self.refreshLock = 0;
     
@@ -1133,7 +1146,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return (SAMPLES_VERSION != [self.tlist toQry2Int:sql]);
 }
 
-- (BOOL) demoNeeded {
+- (BOOL) demosNeeded {
     NSString *sql = @"select val from info where name = 'demos_version'";
     return (DEMOS_VERSION != [self.tlist toQry2Int:sql]);
 }
@@ -1189,9 +1202,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
     if (reloadSamplesPref
         ||
-        (self.initialPrefsLoad && [self demoNeeded])
+        //(self.initialPrefsLoad && [self demosNeeded])
+        [self demosNeeded]
         ) {
-        InstallDemo = YES;
+        InstallDemos = YES;
     }
     
     if (resetPassPref)
@@ -1804,6 +1818,7 @@ BOOL stashAnimated;
     utc.rejectable = rejectable;
     utc.tlist = self.tlist;  // required so reject can fix topLevel list
     utc.saveFrame = self.view.frame; // self.tableView.frame; //  view.frame;
+    utc.rvcTitle = self.title;
     
     //if (rejectable) {
     //    [self.navigationController pushViewController:utc animated:NO];

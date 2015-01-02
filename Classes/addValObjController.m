@@ -386,7 +386,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		}
 	}
 	
-	return rsize;
+    return rsize;
 }
 
 

@@ -161,7 +161,7 @@
         _segmentedControl.frame = self.vosFrame;
         [_segmentedControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
         
-        //segmentedControl.tag = kViewTag;
+        _segmentedControl.tag = kViewTag;
         
 //        if ([self.vo.value isEqualToString:@""]) {
 //            self.segmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
@@ -231,7 +231,8 @@
 	
 	DBGLog(@"set choice %d: %@",i, tf.text);
 	(self.vo.optDict)[[NSString stringWithFormat:@"c%d",i]] = tf.text;
-	NSString *cc = [NSString stringWithFormat:@"cc%d",i];
+    NSString *cc = [NSString stringWithFormat:@"cc%d",i];
+    
 	UIButton *b = (self.ctvovcp.wDict)[[NSString stringWithFormat:@"%dbtn",i]];
 	if ([tf.text isEqualToString:@""]) {
 		b.backgroundColor = [UIColor clearColor];

@@ -1662,8 +1662,25 @@ TODO: regen all .rtrks on website
    - implementing load demoTracker with versioning
    - fixed: default value not returned correctly from voInfo
    - load demoTracker rtrk (including data) with versioning works
+
+30 dec 2014
+   - had to give up on default back button, instead grab title from rvc (else can't catch and offer to save)
+   - maxLabel problems - trying to get number field to handle '<enter number>' in 4s
+
+31 dec 2014
+   - improve axis for choice valObj to match specified values
+   - setNeedsLayout to et textbox button title to redisplay/change !
+   - fixed 'actionSheet display from toolbar' problem for ios 7+ -- kept from deleting valObjs
+   - further tweaks to demo tracker
+   - can't copy .rtrk to Documents/Inbox, copy to Documents instead
+
+01 jan 2015
+   - test on ipad1, ipad mini, iphone 5
+   - ready for 2.0 release
    
-   
+---commit ---
+
+
 + check mail func as changing present view controller calls (ios6)
 
 + crash on turn back to portrait while re-calculating graph (deleted miles per us gal from car tracker)

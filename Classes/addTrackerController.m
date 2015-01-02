@@ -638,14 +638,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		} else {
 			UIActionSheet *checkValObjDelete = [[UIActionSheet alloc] 
 												initWithTitle:[NSString stringWithFormat:
-															   @"Value %@ has stored data, which will be removed when you 'Save' this page.",
+															   @"Value %@ has stored data, which will be removed when you Save this page.",
 															   vo.valueName]
 												delegate:self 
 												cancelButtonTitle:@"Cancel"
 												destructiveButtonTitle:@"Yes, delete"
 												otherButtonTitles:nil];
 			//[checkTrackerDelete showInView:self.view];
-			[checkValObjDelete showFromToolbar:self.navigationController.toolbar ];
+            //[checkValObjDelete showFromToolbar:self.navigationController.toolbar ];
+            [checkValObjDelete showInView:[[[[UIApplication sharedApplication] keyWindow] subviews] lastObject] ];
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %lu ",(unsigned long)row);
