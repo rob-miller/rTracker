@@ -1694,7 +1694,14 @@ TODO: regen all .rtrks on website
    - set NSFileProtectionComplete flag after all file writes -- oops not needed
    - enable data protection in capabilities in xcode, entitlements on dev portal for both(?) app IDs -- seems to activate data protection app-wide, so all files protected automatically
    - add lines to demo tracker re: delete sample trackers and reload in system settings
-   
+
+--- commit ---
+
+    - tweaks to bundle for app store submission
+    - submitted as 2.0.0
+
+--- commit ---
+
    
 + check mail func as changing present view controller calls (ios6)
 
