@@ -27,7 +27,7 @@
 - (void)drawRect:(CGRect)rect
 {
     //CGContextRef context = UIGraphicsGetCurrentContext();
-	[[UIColor whiteColor] set];
+	//[[UIColor whiteColor] set];
     
     CGSize tsize = [self.tracker.trackerName sizeWithAttributes:@{NSFontAttributeName:self.myFont}];
     CGPoint tpos = { (self.bounds.size.width - tsize.width)/2.0f,(self.bounds.size.height - tsize.height)/2.0f };  
@@ -41,7 +41,7 @@
 	//CGContextConcatCTM(context,tm);
     
 	//[self.tracker.trackerName NSFontAttributeName:self.myFont];
-    [self.tracker.trackerName drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    [self.tracker.trackerName drawAtPoint:tpos withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName:[UIColor whiteColor],NSBackgroundColorAttributeName:[UIColor blackColor]}];
     //[self flipCTM];
 	//tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
 	////CGContextConcatCTM(context,tm);

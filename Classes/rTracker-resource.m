@@ -64,6 +64,22 @@ NSUInteger DeviceSystemMajorVersion() {
         return YES;
     }
 }
++ (BOOL) protectFile:(NSString*)fp {
+    // not needed because NSFileProtectionComplete enabled at app level
+
+    NSError *err;
+    /*
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:NSFileProtectionComplete forKey:NSFileProtectionKey];
+    if (![[NSFileManager defaultManager] setAttributes:dict ofItemAtPath:fp error:&err]) {
+    */
+    
+    if (![[NSFileManager defaultManager] setAttributes:@{NSFileProtectionKey:NSFileProtectionComplete} ofItemAtPath:fp error:&err]) {
+        DBGErr(@"Error protecting file: %@ error: %@", fp, err);
+            return NO;
+    }
+    return YES;
+}
 
 //---------------------------
 BOOL hasAmPm=NO;
@@ -662,11 +678,16 @@ static BOOL getOrientEnabled=false;
     return FALSE;
 }
 
-+(UIDeviceOrientation) getOrientationFromWindow
++(CGRect) getKeyWindowFrame
 {
     UIWindow* window = [UIApplication sharedApplication].keyWindow;
     if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    CGRect f = window.frame;
+    return window.frame;
+}
+
++(UIDeviceOrientation) getOrientationFromWindow
+{
+    CGRect f = [rTracker_resource getKeyWindowFrame];
     DBGLog(@"window : width %f   height %f ", f.size.width , f.size.height);
     if (f.size.height > f.size.width) return UIDeviceOrientationPortrait;
     if (f.size.width > f.size.height) return UIDeviceOrientationLandscapeLeft; // could go further here
@@ -675,9 +696,7 @@ static BOOL getOrientEnabled=false;
 
 +(CGFloat) getKeyWindowWidth
 {
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    return window.frame.size.width;
+    return [rTracker_resource getKeyWindowFrame].size.width;
 }
 
 

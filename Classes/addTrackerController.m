@@ -27,7 +27,7 @@
 @synthesize saving=_saving;
 @synthesize deleteIndexPath=_deleteIndexPath;
 @synthesize deleteVOs=_deleteVOs;
-
+@synthesize segcEditTrackerEditItems=_segcEditTrackerEditItems;
 
 #pragma mark -
 #pragma mark core object methods and support
@@ -110,6 +110,7 @@
 	DBGLog(@"atc: viewWillAppear, valObjTable count= %lu", (unsigned long)[self.tempTrackerObj.valObjTable count]);
 	
 	[self.table reloadData];
+    [self toggleEdit:self.segcEditTrackerEditItems];
 
     /*
     //TODO: one day save temp tracker obj in case of crash while adding tracker
@@ -119,7 +120,9 @@
     NSString *fpath = [rTracker_resource ioFilePath:fname access:NO];
     if (! ([[self.tempTrackerObj dictFromTO] writeToFile:fpath atomically:YES])) {
         DBGErr(@"problem writing file %@",fname);
-    }
+    } else {
+        //[rTracker_resource protectFile:fp];
+     }
     */
     
     //TODO: remove these lines ?
@@ -553,6 +556,12 @@ DBGLog(@"btnAddValue was pressed!");
 			cell.textLabel.text = vo.valueName; 
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			//cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
+            /*
+            DBGLog(@"vtype %@",(self.tempTrackerObj.votArray)[vo.vtype]);
+            DBGLog(@"gtype %@",(vo.vos.voGraphSet)[vo.vGraphType]);
+            DBGLog(@"color %@",[rTracker_resource colorNames][vo.vcolor]);
+            */
+            
             if ([@"0" isEqualToString:(vo.optDict)[@"graph"]])
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", (self.tempTrackerObj.votArray)[vo.vtype]];
             else if (VOT_CHOICE == vo.vtype)  // vColor = -1

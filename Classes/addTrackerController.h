@@ -26,6 +26,7 @@
 @property (nonatomic, strong) IBOutlet UIButton *itemCopyBtn;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segcEditTrackerEditItems;
 @property (nonatomic,strong) NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 @property (nonatomic,strong) NSMutableArray *deleteVOs;    // VOs to be deleted on save
 

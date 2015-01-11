@@ -249,7 +249,7 @@
     
     self.viewDisappearing=NO;
     
-    CGRect f = self.view.frame;
+    CGRect f = [rTracker_resource getKeyWindowFrame];
     
     if (f.size.width > f.size.height) {  // already in landscape view
         [self doGT];
@@ -559,6 +559,10 @@
 
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
+    CGRect frame = [rTracker_resource getKeyWindowFrame];
+    frame.size.height -= 22.0f;
+    //gt.view.frame = frame;
+    
     gt.tracker = self.tracker;
     if ([self.tracker hasData]) {
         self.dpr.date = self.tracker.trackerDate;

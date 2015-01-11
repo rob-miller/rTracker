@@ -614,8 +614,8 @@
 				D47D169019028FBE006563B9 /* notifyReminderVC2.m */,
 				D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */,
 				D47B564319411739002B0CCA /* trackerCalViewController.h */,
-				D47B564419411739002B0CCA /* trackerCalViewController.m */,
 				D47B5646194118D5002B0CCA /* trackerCalCalendarRowCell.h */,
+				D47B564419411739002B0CCA /* trackerCalViewController.m */,
 				D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */,
 				D4956B2112E0717400B0BB9B /* graphing */,
 				D4956B2312E076E100B0BB9B /* date picker */,
@@ -683,6 +683,11 @@
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = DM8S4B24P4;
+						SystemCapabilities = {
+							com.apple.DataProtection = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

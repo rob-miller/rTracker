@@ -9,6 +9,7 @@
             <connections>
                 <outlet property="infoBtn" destination="kEQ-7V-i6C" id="xGi-Qg-2An"/>
                 <outlet property="itemCopyBtn" destination="nx8-xo-d9x" id="GTb-gQ-wwv"/>
+                <outlet property="segcEditTrackerEditItems" destination="DhU-EG-a8M" id="N9d-dj-0IW"/>
                 <outlet property="table" destination="0iX-Di-6MG" id="Yyi-sv-PW8"/>
                 <outlet property="toolbar" destination="bbp-An-je1" id="eQb-Bz-sZd"/>
                 <outlet property="view" destination="iN0-l3-epB" id="i1S-sk-CTi"/>

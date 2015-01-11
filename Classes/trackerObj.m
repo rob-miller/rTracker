@@ -1145,8 +1145,10 @@ if (addVO) {
     if(! ([rtrkDict writeToFile:fp atomically:YES])) {
         DBGErr(@"problem writing file %@",fp);
         result=NO;
+    } else {
+        //[rTracker_resource protectFile:fp];
     }
-
+    
     /* // analyze says this not appropriate
     for (NSString *k in tData) {
         NSDictionary *vData = [tData objectForKey:k];
@@ -1178,6 +1180,8 @@ if (addVO) {
     if (! ([[self dictFromTO] writeToFile:fpath atomically:YES])) {
         DBGErr(@"problem writing file %@",fname);
         result=NO;
+    } else {
+        //[rTracker_resource protectFile:fpath];
     }
     
 	//[nsfh release];
@@ -1643,6 +1647,8 @@ if (addVO) {
     NSString *fp = [self getPath:TmpTrkrData];
     if(! ([saveData writeToFile:fp atomically:YES])) {
         DBGErr(@"problem writing file %@",fp);
+    } else {
+        //[rTracker_resource protectFile:fp];
     }
 
     NSMutableArray *saveNames = [[NSMutableArray alloc]init];
@@ -1654,6 +1660,8 @@ if (addVO) {
     fp = [self getPath:TmpTrkrNames];
     if(! ([saveNames writeToFile:fp atomically:YES])) {
         DBGErr(@"problem writing file %@",fp);
+    } else {
+        //[rTracker_resource protectFile:fp];
     }
 }
 

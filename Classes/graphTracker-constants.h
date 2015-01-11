@@ -15,10 +15,16 @@
 //#define DEFAULT_PT (BORDER + 5.0f)
 
 #define STD_LINE_WIDTH 1.0f
-#define DBL_LINE_WIDTH 2.0f
+#define DBL_LINE_WIDTH 5.0f
+#define SRCH_LINE_WIDTH 3.0f
 #define BAR_LINE_WIDTH 6.0f
+#define BAR_LINE_WIDTH_SEL 8.0f
 #define STD_ALPHA 1.0f
 #define BAR_ALPHA 0.5f
 
 #define FONTNAME "Helvetica-Bold"
 #define FONTSIZE 11
+
+//gross but pre iOS 8.1.2 get bleed through from status bar
+#define G_TITLE_OFFSET 160.0f
+

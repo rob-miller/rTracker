@@ -58,6 +58,7 @@
     // get our own frame
     
     CGRect srect = [[self view] bounds];
+    
     /*
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") && SYSTEM_VERSION_LESS_THAN(@"6.0")) {
         srect.size.width -= 5;
@@ -89,8 +90,10 @@
     CGRect rect;
     rect.origin.y =  0.0f;
     rect.size.height = labelHeight;
-    rect.origin.x = 0.0f;
-    rect.size.width = srect.size.width; // /2.0f;
+    //rect.origin.x = 60.0f;  // this works
+    //rect.origin.x = 0.0f;
+    rect.origin.x = G_TITLE_OFFSET;  // avoid pre-iOS 8.1.1 bleed through of status bar
+    rect.size.width = srect.size.width - G_TITLE_OFFSET; // /2.0f;
     
     gtTitleV *ttv = [[gtTitleV alloc] initWithFrame:rect];
     self.titleView = ttv;
@@ -210,7 +213,11 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-
+    /*
+    CGRect frame = self.view.frame;
+    frame.size.height -= 22.0f;
+    self.view.frame = frame;
+     */
     [super viewDidLoad];
 
     //if ( SYSTEM_VERSION_LESS_THAN(@"6.0") ) {

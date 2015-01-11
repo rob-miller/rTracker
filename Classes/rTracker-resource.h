@@ -27,6 +27,7 @@ NSUInteger DeviceSystemMajorVersion();
 
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
 + (BOOL) deleteFileAtPath:(NSString*)fp;
++ (BOOL) protectFile:(NSString*)fp;
 
 + (NSUInteger) countLines:(NSString*)str;
 + (void) initHasAmPm;
@@ -82,6 +83,7 @@ NSUInteger DeviceSystemMajorVersion();
 //+(void)disableOrientationData;
 
 +(BOOL)isDeviceiPhone4;
++(CGRect) getKeyWindowFrame;
 +(CGFloat) getKeyWindowWidth;
 +(CGFloat) getScreenMaxDim;
 + (NSString*)getLaunchImageName;

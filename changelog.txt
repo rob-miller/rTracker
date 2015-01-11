@@ -1525,7 +1525,7 @@ TODO: regen all .rtrks on website
    - add launch screens for different devices
    
 09 oct 2014
-   - enable file encryption on databases
+   - enable file encryption on databases  SQLITE_OPEN_FILEPROTECTION_COMPLETE
 
 15 oct 2014
    - fill out icons for different devices (universal app)
@@ -1535,7 +1535,7 @@ TODO: regen all .rtrks on website
    - implemented 'temp tracker data' file save, load, remove -- hopefully solve problem of losing unsaved data when leave/return to app
 
 02 nov 2014
-   - add safety 'temp tracker names' file parallel with 'temp traker data' -- names array must match valueNames, or delete files and return false
+   - add safety 'temp tracker names' file parallel with 'temp tracker data' -- names array must match valueNames, or delete files and return false
    - highlight voTVEnabledCell and voTVCell where need to work on to set cell width for different hardware screens
    
 27 nov 2014
@@ -1558,10 +1558,10 @@ TODO: regen all .rtrks on website
    - tested on Sam iPhone 5 with iOS 8.1.1, does not allow / suggest notifications as user reported
    
 12 dec 2014
-`- added code to enable notifications under 8.1.1 -- not yet tested on Sam's phone but expect ok
-  - Database info reports if all notifications disabled in System Preferences
-  - work on LaunchImage code BUT at startup ios7.1 orientation unknown, when is known cannot seem to refresh tableView background
-  - progressing on useTrackerController display full width, but have crash now in ios 7 but not 8 -- utc viewDidLoad
+   - added code to enable notifications under 8.1.1 -- not yet tested on Sam's phone but expect ok
+   - Database info reports if all notifications disabled in System Preferences
+   - work on LaunchImage code BUT at startup ios7.1 orientation unknown, when is known cannot seem to refresh tableView background
+   - progressing on useTrackerController display full width, but have crash now in ios 7 but not 8 -- utc viewDidLoad
 
 13 dec 2014
    - fixed ios 7 crash -- setting maxLabel to 1/3 screen for bigger screens reulted in non-int coordinate somewhere, set to int and no crash
@@ -1573,7 +1573,7 @@ TODO: regen all .rtrks on website
 14 dec 2014
    - concluded will not support earlier iOS versions, current minimum will go to 7 (or maybe 8 if can't sort current 7.1 problem)
    - got it! add -(void)loadView {  self.view = [UIView new]; }      // Ensure that we don't load an .xib file for this viewcontroller  [ after changing from .xib to programmatic view ]
-   - figured out problems with xibs resizing - rmove red 'fix' bars, don't add them
+   - figured out problems with xibs resizing - remove red 'fix' bars, don't add them
    - worked out main problem with seeing ppw view, need to re-work geometries
 
 15 dec 2014
@@ -1613,7 +1613,7 @@ TODO: regen all .rtrks on website
 
 20 dec 2014
    - yes on withAttributes:NSForegroundColorAttributeName, corrected above, corrected throughout
-   - status bar showing through graph title appears to be ios7 bug, not there in ios8
+   - status bar showing through graph title appears to be ios7 bug, not there in ios8 .. except for iPads
    
 23 dec 2014
    - have working fix for privacy views; not pretty, but same size for all devices. will fail on large keyboards....
@@ -1669,7 +1669,7 @@ TODO: regen all .rtrks on website
 
 31 dec 2014
    - improve axis for choice valObj to match specified values
-   - setNeedsLayout to et textbox button title to redisplay/change !
+   - setNeedsLayout to set textbox button title to redisplay/change !
    - fixed 'actionSheet display from toolbar' problem for ios 7+ -- kept from deleting valObjs
    - further tweaks to demo tracker
    - can't copy .rtrk to Documents/Inbox, copy to Documents instead
@@ -1680,25 +1680,27 @@ TODO: regen all .rtrks on website
    
 ---commit ---
 
+08 jan 2015
+   - addTrackerController call toggleEdit:segcEditTrackerEditItems to confirm table editing and segmented control in agreement
 
+10 jan 2015
+   - cancel from addValObjController wiping vo.optDict by overwriting with voStashDict - but stashDict only created if edit dict; fixed, only noticed if saved or causes crash for textbox with linecount opt because graphTypes array different
+   - make 'search position' lines in graph dashed
+   - make current vo line,bar in graph wider
+   - add emojis to titles for sample trackers
+   - shift graph title 140 units to right to avoid status bar bleed through on pre-iOS 8.1.1
+
+11 jan 2015
+   - set NSFileProtectionComplete flag after all file writes -- oops not needed
+   - enable data protection in capabilities in xcode, entitlements on dev portal for both(?) app IDs -- seems to activate data protection app-wide, so all files protected automatically
+   - add lines to demo tracker re: delete sample trackers and reload in system settings
+   
+   
 + check mail func as changing present view controller calls (ios6)
-
-+ crash on turn back to portrait while re-calculating graph (deleted miles per us gal from car tracker)
-+ crash on import .rtrk into simulator - progress bar -- but not consistent
-
-
-
- 
-
-
-
-
 
 + add -[n] entries thing
 + add entry_count as a fn piece -- count of entries over range, so avg could be sum()/entry_count
 
-+ make graph bars brighter / less opaque when selected ?
-+ add track it all to with various functions to default trackers
 
 
 

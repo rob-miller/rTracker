@@ -255,8 +255,10 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (IBAction)btnCancel {
 	//DBGLog(@"addVObjC: btnCancel was pressed!");
     [self retrieveVals];
-    self.tempValObj.optDict = [[NSMutableDictionary alloc] initWithDictionary:self.voOptDictStash copyItems:YES];
-    self.voOptDictStash=nil;
+    if (self.voOptDictStash) {
+        self.tempValObj.optDict = [[NSMutableDictionary alloc] initWithDictionary:self.voOptDictStash copyItems:YES];
+        self.voOptDictStash=nil;
+    }
 	[self leave];
 }
 

@@ -343,8 +343,14 @@
 
 - (void) plotVO_bar:(vogd *)vogd context:(CGContextRef)context barCount:(int)barCount
 {
-	CGContextSetAlpha(context, BAR_ALPHA);
-	CGContextSetLineWidth(context, BAR_LINE_WIDTH);
+    if (vogd.vo == self.gtvCurrVO) {
+        CGContextSetAlpha(context, STD_ALPHA);
+        CGContextSetLineWidth(context, BAR_LINE_WIDTH_SEL);
+    } else {
+        CGContextSetAlpha(context, BAR_ALPHA);
+        CGContextSetLineWidth(context, BAR_LINE_WIDTH);
+    }
+
 	
     CGFloat barStep = BAR_LINE_WIDTH * (CGFloat) barCount;
     
@@ -367,7 +373,7 @@
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,0.0f);
             AddLineTo(x,y);
-            AddCircle(x,y);
+            //AddCircle(x,y);
             if (vogd.vo.vtype == VOT_CHOICE)
                 Stroke;
             if (x > maxX)
@@ -379,14 +385,14 @@
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
                 MoveTo(lastX,0.0f);
                 AddLineTo(lastX,lastY);
-                AddCircle(lastX,lastY);
+                //AddCircle(lastX,lastY);
                 if (vogd.vo.vtype == VOT_CHOICE)
                     Stroke;
             }
             going=YES;    // going, show current
             MoveTo(x,0.0f);
             AddLineTo(x,y);
-            AddCircle(x,y);
+            //AddCircle(x,y);
             if (vogd.vo.vtype == VOT_CHOICE)
                 Stroke;
         }  
@@ -517,11 +523,18 @@
         UIColor *smColor = [UIColor colorWithRed:1.0 green:0.1 blue:0.1 alpha:1.0];
         CGContextSetFillColorWithColor(context,smColor.CGColor);
         CGContextSetStrokeColorWithColor(context,smColor.CGColor);
+        
+        CGContextSetLineWidth(context,SRCH_LINE_WIDTH);
+        CGFloat lengths[2] = { 3.0f, 3.0f };
+        CGContextSetLineDash(context,0.0f,lengths,2);
+        
         for (NSNumber *xm in self.searchXpoints) {
             MoveTo([xm floatValue], 0.0f);
             AddLineTo([xm floatValue],self.frame.size.height);
             Stroke;
         }
+        
+        CGContextSetLineDash(context,0.0f,NULL,0);
     }
 }
 
