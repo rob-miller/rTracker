@@ -665,20 +665,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
         }
         
-		addValObjController *avc;
-        if (kIS_LESS_THAN_IOS7) {
-            avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
-        } else {
-            avc = [[addValObjController alloc] initWithNibName:@"addValObjController7" bundle:nil ];
-        }
-		avc.parentTrackerObj = self.tempTrackerObj;
-		[self.navigationController pushViewController:avc animated:YES];
-		
+        [self addValObj:nil];
 		
 	} // else ??
 }
 
-- (void) addValObj:(NSUInteger) row {
+- (void) addValObj:(valueObj*) vo {
 	addValObjController *avc;
     //if (kIS_LESS_THAN_IOS7) {
     //    avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];
@@ -686,14 +678,21 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         avc = [[addValObjController alloc] initWithNibName:@"addValObjController7" bundle:nil ];
     //}
 	avc.parentTrackerObj = self.tempTrackerObj;
-    if (0 < [self.tempTrackerObj.valObjTable count])
-        avc.tempValObj = (self.tempTrackerObj.valObjTable)[row];
-    else
-        avc.tempValObj = nil;
+    avc.tempValObj = vo;
 	[avc stashVals];
-    
+
 	[self.navigationController pushViewController:avc animated:YES];
 }
+
+- (void) addValObjR:(NSUInteger) row {
+    DBGLog(@"row= %d count= %d",row,[self.tempTrackerObj.valObjTable count]);
+    if (row < [self.tempTrackerObj.valObjTable count]) {
+        [self addValObj:(self.tempTrackerObj.valObjTable)[row]];
+    } else {
+        [self addValObj:nil];
+    }
+}
+
 ///*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -702,7 +701,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	//DBGLog(@"selected section %d row %d ", section, row);
 
-    [self addValObj:row];
+    [self addValObjR:row];
 }
 //*/
 
@@ -715,7 +714,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	//DBGLog(@"accessory button tapped for section %d row %d ", section, row);
     
-    [self addValObj:row];
+    [self addValObjR:row];
 	
 }
 

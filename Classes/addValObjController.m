@@ -16,6 +16,7 @@
 @property (nonatomic) NSInteger tmpVtype;
 @property (nonatomic) NSInteger tmpVcolor;
 @property (nonatomic) NSInteger tmpVGraphType;
+@property (nonatomic,strong) NSString *tmpVname;
 @end
 
 @implementation addValObjController
@@ -33,6 +34,7 @@
 @synthesize tmpVtype = _tmpVtype;
 @synthesize tmpVcolor = _tmpVcolor;
 @synthesize tmpVGraphType = _tmpVGraphType;
+@synthesize tmpVname = _tmpVname;
 
 CGSize sizeVOTLabel;
 CGSize sizeGTLabel;
@@ -244,12 +246,14 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     self.tmpVtype = self.tempValObj.vtype;
     self.tmpVcolor = self.tempValObj.vcolor;
     self.tmpVGraphType = self.tempValObj.vGraphType;
+    self.tmpVname = self.tempValObj.valueName;
 }
 
 - (void) retrieveVals {
     self.tempValObj.vtype = self.tmpVtype;
     self.tempValObj.vcolor = self.tmpVcolor;
     self.tempValObj.vGraphType = self.tmpVGraphType;
+    self.tempValObj.valueName = self.tmpVname;
 }
 
 - (IBAction)btnCancel {

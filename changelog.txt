@@ -1702,6 +1702,18 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+18 jan 2015
+   - bugfix: skipping e.g. choice in maxLabel resulted in maxLabel.height not set, needed for choice and slider (cell presented as single line)
+   - bugfix: not setting values for choices led to NaN for graph yZero setting and crash when drawing graph
+   - added alert to explain why privacy value reset if user tries to set tracker/value to privacy below 1 or above current privacy level
+   - remove emoji from 'Edit this tracker to see how it works' in demo tracker
+   - refactored call to setup of addValObj controller
+   - bugfix: Maciej problem - handle row out of bounds for addvalobj from didSelectRowAtIndexPath -- green '+' does not go this way, but does if select 'add another item to track' bottom row
+   + should disable select row to edit valobj but seems convenient - just makes edit items redundant
+   
+   
+   
+   
    
 + check mail func as changing present view controller calls (ios6)
 

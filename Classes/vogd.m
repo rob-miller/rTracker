@@ -77,6 +77,8 @@
             for (int i=0; i<CHOICES; i++) {
                 NSString *key = [NSString stringWithFormat:@"cv%d",i];
                 NSString *tstVal = [self.vo.optDict valueForKey:key];
+                NSString *skey = [NSString stringWithFormat:@"c%d",i];
+                NSString *tstStr = [self.vo.optDict valueForKey:skey];
                 if (nil != tstVal) { // only do specified choices
                     c++;
                     double tval = [tstVal doubleValue];
@@ -84,9 +86,11 @@
                         self.minVal = tval;
                     if (self.maxVal < tval)
                         self.maxVal = tval;
+                } else if (nil != tstStr) {
+                    c++;
                 }
             }
-            if (self.minVal == self.maxVal) {  // if no values set above, default to choice numbers
+            if (self.minVal == self.maxVal) {  // if no cv values set above, default to choice numbers
                 self.minVal = d(1);
                 self.maxVal = d(CHOICES);
             }
@@ -122,11 +126,11 @@
         }
 
         if (VOT_CHOICE != self.vo.vtype) {
-        double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
-        if (nil == (self.vo.optDict)[@"gmax"])
-            self.maxVal += yScaleExpand;   // +5% each way for visibility unless specified
-        if (nil == (self.vo.optDict)[@"gmin"])
-            self.minVal -= yScaleExpand;
+            double yScaleExpand = (self.maxVal - self.minVal) * GRAPHSCALE;
+            if (nil == (self.vo.optDict)[@"gmax"])
+                self.maxVal += yScaleExpand;   // +5% each way for visibility unless specified
+            if (nil == (self.vo.optDict)[@"gmin"])
+                self.minVal -= yScaleExpand;
         }
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
         

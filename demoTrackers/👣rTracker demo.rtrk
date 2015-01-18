@@ -27,7 +27,7 @@
 			<key>savertn</key>
 			<string>1</string>
 			<key>width</key>
-			<real>165.02199999999999</real>
+			<real>80</real>
 		</dict>
 		<key>reminders</key>
 		<array/>
@@ -48,7 +48,7 @@
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>Edit 📝 this tracker to see how it works</string>
+				<string>Edit this tracker to see how it works</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>

@@ -464,10 +464,14 @@
         if (newPriv > currPriv) {
             //newPriv = currPriv;
             tf.text = [NSString stringWithFormat:@"%d",currPriv];
+            NSString *msg = [NSString stringWithFormat:@"rTracker's privacy level is currently set to %d.  Setting an item to a higher privacy level than the current setting is disallowed.",currPriv];
+            [rTracker_resource alert:@"Privacy higher than current" msg:msg];
         }
         newPriv = [tf.text intValue];
         if (newPriv < PRIVDFLT) {
             tf.text = [NSString stringWithFormat:@"%d",PRIVDFLT];
+            NSString *msg = [NSString stringWithFormat:@"Setting a privacy level below %d is disallowed.",PRIVDFLT];
+            [rTracker_resource alert:@"Privacy setting too low" msg:msg];
         }
         
 	} else if ( tf == (self.wDict)[@"gmdTF"] ) {
