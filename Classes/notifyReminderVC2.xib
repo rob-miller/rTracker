@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
@@ -25,15 +25,23 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Date:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tuu-EB-uSs">
-                    <rect key="frame" x="10" y="63.5" width="82.5" height="20.5"/>
+                    <rect key="frame" x="10" y="63" width="82.5" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ARu-3J-MtR">
+                <datePicker contentMode="scaleToFill" verticalCompressionResistancePriority="500" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ARu-3J-MtR">
                     <rect key="frame" x="10" y="89" width="580" height="162"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="130" id="JVJ-9W-7bl"/>
+                    </constraints>
                     <date key="date" timeIntervalSinceReferenceDate="419598353.383775">
                         <!--2014-04-19 11:05:53 +0000-->
                     </date>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="JVJ-9W-7bl"/>
+                        </mask>
+                    </variation>
                 </datePicker>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oA9-IG-h2k" userLabel="vspacer2">
                     <rect key="frame" x="0.0" y="251" width="600" height="41"/>
@@ -45,15 +53,15 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZOi-vZ-ifs">
-                    <rect key="frame" x="10" y="317.5" width="580" height="162"/>
+                <pickerView contentMode="scaleToFill" verticalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="ZOi-vZ-ifs">
+                    <rect key="frame" x="10" y="317" width="580" height="162"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="NKz-2V-R4A"/>
                         <outlet property="delegate" destination="-1" id="7Ap-oy-Gjk"/>
                     </connections>
                 </pickerView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ptc-mh-Pkl">
-                    <rect key="frame" x="274" y="484.5" width="52" height="30"/>
+                    <rect key="frame" x="274" y="484" width="52" height="30"/>
                     <state key="normal" title="Sample">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -78,7 +86,7 @@
                     </items>
                 </toolbar>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qLq-kN-BUA" userLabel="vspacer3">
-                    <rect key="frame" x="0.0" y="514.5" width="600" height="41.5"/>
+                    <rect key="frame" x="0.0" y="514" width="600" height="41.5"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
@@ -93,6 +101,7 @@
                 <constraint firstAttribute="centerX" secondItem="ptc-mh-Pkl" secondAttribute="centerX" id="Cc3-Wq-aMV"/>
                 <constraint firstAttribute="trailing" secondItem="ARu-3J-MtR" secondAttribute="trailing" constant="10" id="GGw-mD-Bs3"/>
                 <constraint firstItem="qLq-kN-BUA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="H5p-X6-FdT"/>
+                <constraint firstItem="ZOi-vZ-ifs" firstAttribute="height" secondItem="ARu-3J-MtR" secondAttribute="height" id="HY4-88-3K6"/>
                 <constraint firstItem="sxv-Cu-qT8" firstAttribute="top" secondItem="qLq-kN-BUA" secondAttribute="bottom" id="Hdn-nH-N8K"/>
                 <constraint firstItem="oA9-IG-h2k" firstAttribute="top" secondItem="ARu-3J-MtR" secondAttribute="bottom" id="HfQ-HY-mLe"/>
                 <constraint firstItem="qLq-kN-BUA" firstAttribute="height" secondItem="tZf-R2-zl1" secondAttribute="height" id="NMu-ZH-RyJ"/>

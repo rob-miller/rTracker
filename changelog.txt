@@ -1710,10 +1710,15 @@ TODO: regen all .rtrks on website
    - refactored call to setup of addValObj controller
    - bugfix: Maciej problem - handle row out of bounds for addvalobj from didSelectRowAtIndexPath -- green '+' does not go this way, but does if select 'add another item to track' bottom row
    + should disable select row to edit valobj but seems convenient - just makes edit items redundant
+   - release as 2.0.1
    
-   
-   
-   
+08 feb 2015
+   - bugfix: reduce vertical content compression priority for notifyReminderVC2 datepicker and sound picker, make equal height - iPhone 4s could not access 'sample' button or toolbar buttons
+   - bugfix: count reminders in rvc viewDidLoad so '>' do not appear briefly for reminded trackers at startup
+   - change to 'red arrow' for activated reminded tracker
+   - ready to release as 2.0.2
+
+--- commit ---
    
 + check mail func as changing present view controller calls (ios6)
 

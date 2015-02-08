@@ -1052,6 +1052,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     //CGRect f = self.view.frame;
     //CGRect f2 = bg.frame;
 //*
+    
+    [self countScheduledReminders];
+
 
     CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
     CGFloat statusBarHeight = statusBarFrame.size.height;
@@ -1765,18 +1768,26 @@ BOOL stashAnimated;
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
     NSNumber *tid = (self.tlist.topLayoutIDs)[row];
+    NSMutableAttributedString *cellLabel = [[NSMutableAttributedString alloc] init];
+
     int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
     int src = [(self.scheduledReminderCounts)[tid] intValue];
-    //DBGLog(@"src: %d  erc:  %d",src,erc);
-    NSString *formatString = @"%@";
+    DBGLog(@"src: %d  erc:  %d",src,erc);
+    //NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
-        formatString = @"> %@";
+        //formatString = @"> %@";
         //bg = [UIColor redColor];
+        [cellLabel appendAttributedString:
+         [[NSAttributedString alloc] initWithString:@"➜ " attributes:@{NSForegroundColorAttributeName: [UIColor redColor],
+                                                                       NSFontAttributeName: [UIFont boldSystemFontOfSize:[UIFont labelFontSize]]} ]];
+        
     }
     //DBGLog(@"erc= %d  src= %d",erc,src);
+    [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]];
+    cell.textLabel.attributedText = cellLabel;
     
-	cell.textLabel.text = [NSString stringWithFormat:formatString,(self.tlist.topLayoutNames)[row]];  // gross but simplest offset option
+	//cell.textLabel.text = [NSString stringWithFormat:formatString,(self.tlist.topLayoutNames)[row]];  // gross but simplest offset option
     //cell.textLabel.backgroundColor = bg;
     //cell.textLabel.backgroundColor = [UIColor clearColor];
     /*

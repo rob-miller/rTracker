@@ -685,7 +685,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) addValObjR:(NSUInteger) row {
-    DBGLog(@"row= %d count= %d",row,[self.tempTrackerObj.valObjTable count]);
+    DBGLog(@"row= %lu count= %lu",(unsigned long)row,(unsigned long)[self.tempTrackerObj.valObjTable count]);
     if (row < [self.tempTrackerObj.valObjTable count]) {
         [self addValObj:(self.tempTrackerObj.valObjTable)[row]];
     } else {
