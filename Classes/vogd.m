@@ -197,7 +197,7 @@
         trackerObj *myTracker = self.vo.parentTracker;
         togd * myTOGD = myTracker.togd;
         
-        self.vScale = d(myTOGD.rect.size.height) / d(1.0 + GRAPHSCALE) ;  // (self.maxVal - self.minVal);
+        self.vScale = d(myTOGD.rect.size.height) / d(1.1 + GRAPHSCALE) ;  // (self.maxVal - self.minVal);
         //self.vScale = d(myTOGD.rect.size.height); // / d(1.05) ;  // (self.maxVal - self.minVal);
         
         NSMutableArray *mxdat = [[NSMutableArray alloc] init];

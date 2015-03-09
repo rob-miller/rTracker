@@ -474,7 +474,7 @@ in_vpriv:(NSInteger)in_vpriv
     for (int i=0; i<CHOICES; i++) {
         NSString *key = [NSString stringWithFormat:@"cv%d",i];
         NSString *tstVal = [self.optDict valueForKey:key];
-        if (tstVal) {
+        //if (tstVal) { // bug - don't get to handling default value below - introduced jan/feb, removed 8 mar 2015
             if (nil == tstVal) {
                 tstVal = [NSString stringWithFormat:@"%f",(float)i+1];  // added 7.iv.2013 - need default value
             } else {
@@ -493,7 +493,7 @@ in_vpriv:(NSInteger)in_vpriv
                 closestDistanceF = testDistanceF;
                 closestNdx = i;
             }
-        }
+        //}
     }
     
     //DBGLog(@"gciv: no match");

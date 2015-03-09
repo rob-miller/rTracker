@@ -1719,7 +1719,22 @@ TODO: regen all .rtrks on website
    - ready to release as 2.0.2
 
 --- commit ---
-   
+
+21 feb 2015
+   - add GSTouches code so can see finger touches for creating preview video for app store
+   -- SHOWTOUCHES in dbg-defs.h (gens issue: Application windows are expected to have a root view controller at the end of application launch)
+   - make selected row in tracker list highlight before leaving view
+   - make note scale max 1.12 instead of 1.02 - so can make notes be eyes in smiley face graph
+    
+08 mar 2015
+   - found bug in voChoice:voDisplay causing default values not handled to display selected choice; blanks data for csv for choice as well
+
+09 mar 2015
+   - build for release as 2.0.3
+
+--- commit ---
+
+
 + check mail func as changing present view controller calls (ios6)
 
 + add -[n] entries thing

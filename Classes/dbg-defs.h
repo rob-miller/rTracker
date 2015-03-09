@@ -27,6 +27,8 @@
 
 #define DEBUGLOG    0
 
+#define SHOWTOUCHES 0
+
 
 // report scheduled notification fire dates in dbInfo() 
 

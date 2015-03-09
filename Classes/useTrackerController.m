@@ -1573,6 +1573,7 @@ NSString *emItunesExport = @"save for PC (iTunes)";
     }
     // Remove the mail view
     [self dismissViewControllerAnimated:YES completion:NULL ];
+    // some say this way but don't think so: [controller dismissViewControllerAnimated:YES completion:NULL ];
     //[self dismissModalViewControllerAnimated:YES];
 }
 

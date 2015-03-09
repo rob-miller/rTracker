@@ -25,6 +25,9 @@
 		D40607E717D7CB5A00C05A38 /* shadeview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DD17D7CB5A00C05A38 /* shadeview-button-blue-7.png */; };
 		D40607E817D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DE17D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png */; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
+		D415C6DF1A988B2F005BD8BE /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D415C6DC1A988B2F005BD8BE /* GSTouchesShowingWindow.m */; };
+		D415C6E01A988B2F005BD8BE /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D415C6DD1A988B2F005BD8BE /* GSTouchImage.png */; };
+		D415C6E11A988B2F005BD8BE /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D415C6DE1A988B2F005BD8BE /* GSTouchImage@2x.png */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
@@ -152,6 +155,10 @@
 		D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "rTrackerTests-Prefix.pch"; sourceTree = "<group>"; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
+		D415C6DB1A988B2F005BD8BE /* GSTouchesShowingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSTouchesShowingWindow.h; sourceTree = "<group>"; };
+		D415C6DC1A988B2F005BD8BE /* GSTouchesShowingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSTouchesShowingWindow.m; sourceTree = "<group>"; };
+		D415C6DD1A988B2F005BD8BE /* GSTouchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GSTouchImage.png; sourceTree = "<group>"; };
+		D415C6DE1A988B2F005BD8BE /* GSTouchImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GSTouchImage@2x.png"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-constants.h"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
@@ -363,6 +370,10 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D415C6DB1A988B2F005BD8BE /* GSTouchesShowingWindow.h */,
+				D415C6DC1A988B2F005BD8BE /* GSTouchesShowingWindow.m */,
+				D415C6DD1A988B2F005BD8BE /* GSTouchImage.png */,
+				D415C6DE1A988B2F005BD8BE /* GSTouchImage@2x.png */,
 				28A0AAE50D9B0CCF005BE974 /* rTracker_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				D47ECFEF19411BE600DCCF12 /* TimesSquare */,
@@ -678,7 +689,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0600;
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Robert T. Miller";
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
@@ -718,9 +729,11 @@
 			files = (
 				D473ED4719571F8A00B4702C /* CalendarTodaysDate@2x.png in Resources */,
 				D473ED4319571F8A00B4702C /* CalendarRowBottom@2x.png in Resources */,
+				D415C6E11A988B2F005BD8BE /* GSTouchImage@2x.png in Resources */,
 				D40607E217D7CB5A00C05A38 /* closedview-button-blue-7@2x.png in Resources */,
 				D40607E317D7CB5A00C05A38 /* fullview-button-blue-7.png in Resources */,
 				D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */,
+				D415C6E01A988B2F005BD8BE /* GSTouchImage.png in Resources */,
 				D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */,
 				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
@@ -829,6 +842,7 @@
 				D4C18740128A971000A612C4 /* voDataEdit.m in Sources */,
 				D4E8F90112E8682100A2526B /* privacyV.m in Sources */,
 				D4E8F90412E868A300A2526B /* tictacV.m in Sources */,
+				D415C6DF1A988B2F005BD8BE /* GSTouchesShowingWindow.m in Sources */,
 				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
 				D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */,
 				D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */,
@@ -950,6 +964,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -983,6 +998,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1015,6 +1031,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

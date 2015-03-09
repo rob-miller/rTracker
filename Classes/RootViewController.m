@@ -1762,7 +1762,7 @@ BOOL stashAnimated;
         //separatorLineView.backgroundColor =[UIColor redColor];
         //[cell.contentView addSubview:separatorLineView];
 
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        //cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
 	// Configure the cell.
@@ -1850,7 +1850,7 @@ BOOL stashAnimated;
     
 	//NSUInteger row = [indexPath row];
 	//DBGLog(@"selected row %d : %@", row, [self.tlist.topLayoutNames objectAtIndex:row]);
-	
+    [tableView cellForRowAtIndexPath:indexPath].selected=NO;
     [self openTracker:[self.tlist getTIDfromIndex:[indexPath row]] rejectable:NO];
 	
 }

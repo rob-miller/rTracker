@@ -16,12 +16,25 @@
 #import "rTracker-resource.h"
 #import "privacyV.h"
 
+#if SHOWTOUCHES
+#import "GSTouchesShowingWindow.h"
+#endif
+
 @implementation rTrackerAppDelegate
 
 @synthesize window=_window;
 @synthesize navigationController=_navigationController;
 @synthesize pendingTid=_pendingTid;
 
+#if SHOWTOUCHES
+- (GSTouchesShowingWindow *)window {
+    static GSTouchesShowingWindow *window = nil;
+    if (!window) {
+        window = [[GSTouchesShowingWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    }
+    return window;
+}
+#endif
 
 #pragma mark -
 #pragma mark Application lifecycle
