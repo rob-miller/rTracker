@@ -24,10 +24,10 @@
 //********       vvvvvv //
 
 #define RELEASE     1
-
-#define DEBUGLOG    0
-
+#define DEBUGLOG    1
 #define SHOWTOUCHES 0
+
+#define ADVERSION   1
 
 
 // report scheduled notification fire dates in dbInfo() 

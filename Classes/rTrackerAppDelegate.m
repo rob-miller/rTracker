@@ -79,14 +79,25 @@
     [self.window setRootViewController:self.navigationController];
     [self.window makeKeyAndVisible];
 
-    DBGLog(@" rTracker version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
+    DBGLog(@"product %@ version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
+           [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"],
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"],
            RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
            );
     
+    if ([@"rTrackerA" isEqualToString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"]]) {
+#if !ADVERSION 
+        [rTracker_resource alert:@"rTrackerA version error" msg:@"bundle rTrackerA but ADVERSION not set"];
+        DBGErr(@"bundle rTrackerA but ADVERSION not set");
+#endif
+    } else {
+#if ADVERSION
+        [rTracker_resource alert:@"rTracker version error" msg:@"bundle not rTrackerA but ADVERSION is set"];
+        DBGErr(@"bundle not rTrackerA but ADVERSION is set");
+#endif
+    }
     //NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
-    // rtm here
     // docs say app openURL below is called anyway, so don't do here which is only if app not already open
     //
     // if (url != nil && [url isFileURL]) {

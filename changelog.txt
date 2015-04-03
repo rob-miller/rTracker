@@ -1734,6 +1734,26 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+15 mar 2015
+   - add rTrackerA target for add supported version
+   - detect with [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"]
+
+22 mar 2015
+   - add ADVERSION symbol, alert + DbgErr + breakpoints if mismatch to bundle name
+   - request apple approve iAd network contract ('pending banking')
+   - Vera agreed I can point Realidata address to Wandella
+
+24 mar 2015
+   - starting ADVERSION code
+   - seem to have initial functionality in place...
+
+03 apr 2015
+   - moved adversion to separate class, working state
+
+--- commit ---
+
++++ check rvc viewDidAppear / restart behaviour with adversion changes
+
 
 + check mail func as changing present view controller calls (ios6)
 

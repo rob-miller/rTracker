@@ -21,8 +21,14 @@
 
 #import "trackerCalViewController.h"
 
+#import "dbg-defs.h"
 
+#if ADVERSION
+#import "adSupport.h"
+@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, ADBannerViewDelegate>
+#else
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+#endif
 //@interface useTrackerController : UITableViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 //UITableViewController
 /*
@@ -66,6 +72,10 @@
 
 @property (nonatomic,strong) NSArray *searchSet;
 @property (nonatomic,strong) NSString *rvcTitle;
+
+#if ADVERSION
+@property (nonatomic,strong) adSupport *adSupport;
+#endif
 
 // UI element properties 
 

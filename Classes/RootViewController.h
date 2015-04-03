@@ -18,10 +18,16 @@
 //
 
 #import "trackerList.h"
-//#import "privacyV.h"
+#import "dbg-defs.h"
+
 @class privacyV;
 
-@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> 
+#if ADVERSION
+#import "adSupport.h"
+@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate>
+#else
+@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+#endif
 /*
  {
 
@@ -56,6 +62,10 @@
 @property (nonatomic, strong) UIBarButtonItem *addBtn;
 @property (nonatomic, strong) UIBarButtonItem *editBtn;
 @property (nonatomic, strong) UIBarButtonItem *flexibleSpaceButtonItem;
+
+#if ADVERSION
+@property (nonatomic,strong) adSupport *adSupport;
+#endif
 
 //@property (nonatomic, retain) UIBarButtonItem *multiGraphBtn;
 //@property (nonatomic, retain) UIBarButtonItem *payBtn;

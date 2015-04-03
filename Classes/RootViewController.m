@@ -21,12 +21,20 @@
 #import "CSVParser.h"
 
 #import "dbg-defs.h"
+#if ADVERSION
+#import "adSupport.h"
+#endif
 
 @implementation RootViewController
 
 @synthesize tableView=_tableView;
 @synthesize tlist=_tlist, refreshLock=_refreshLock;
 @synthesize privateBtn=_privateBtn, helpBtn=_helpBtn, privacyObj=_privacyObj, addBtn=_addBtn, editBtn=_editBtn, flexibleSpaceButtonItem=_flexibleSpaceButtonItem, initialPrefsLoad=_initialPrefsLoad, readingFile=_readingFile, stashedTIDs=_stashedTIDs, scheduledReminderCounts=_scheduledReminderCounts;
+
+#if ADVERSION
+@synthesize adSupport=_adSupport;
+//ADBannerView *_bannerView;
+#endif
 
 //openUrlLock, inputURL,
 
@@ -994,8 +1002,159 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return result;
 }
 
+#if ADVERSION
+/*
+-(ADBannerView*) bannerView
+{
+    if (_bannerView == nil) {
+        // On iOS 6 ADBannerView introduces a new initializer, use it when available.
+        if ([ADBannerView instancesRespondToSelector:@selector(initWithAdType:)]) {
+            _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
+        } else {
+            _bannerView = [[ADBannerView alloc] init];
+        }
+    }
+    return _bannerView;
+}
+*/
+/*
+-(void)initBannerView
+{
+    
+    self.adSupport.bannerView.delegate = self;
+}
+*/
+/*
+-(void) initBannerView
+{
+    if (_bannerView == nil) {
+        // On iOS 6 ADBannerView introduces a new initializer, use it when available.
+        if ([ADBannerView instancesRespondToSelector:@selector(initWithAdType:)]) {
+            _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
+        } else {
+            _bannerView = [[ADBannerView alloc] init];
+        }
+        _bannerView.delegate = self;
+    }
+    
+}
+ */
+
+- (void)viewDidLayoutSubviews
+{
+    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+    //[self layoutAnimated:[UIView areAnimationsEnabled]];
+}
+
+- (void)bannerViewDidLoadAd:(ADBannerView *)banner
+{
+    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:YES];
+    //[self layoutAnimated:YES];
+}
+
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:YES];
+    //[self layoutAnimated:YES];
+}
+
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
+{
+    [self.adSupport stopTimer];
+    return YES;
+}
+
+- (void)bannerViewActionDidFinish:(ADBannerView *)banner
+{
+    [self.adSupport startTimer];
+}
+
+
+- (adSupport*) adSupport
+{
+    if (_adSupport == nil) {
+        _adSupport = [[adSupport alloc] init];
+    }
+    return _adSupport;
+}
+
+/*
+-(void)layoutAnimated:(BOOL)animated
+{
+    // As of iOS 6.0, the banner will automatically resize itself based on its width.
+    // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
+    
+    CGRect contentFrame = self.view.bounds;
+ 
+    // if (contentFrame.size.width < contentFrame.size.height) {
+    // self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
+    // } else {
+    // self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
+    // }
+ 
+    
+    CGRect bannerFrame = self.adSupport.bannerView.frame;
+    if (self.adSupport.bannerView.bannerLoaded) {
+        contentFrame.size.height -= self.adSupport.bannerView.frame.size.height;
+        bannerFrame.origin.y = contentFrame.size.height;
+    } else {
+        bannerFrame.origin.y = contentFrame.size.height;
+    }
+    
+    [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
+        //_contentView.frame = contentFrame;
+        //[_contentView layoutIfNeeded];
+        self.tableView.frame = contentFrame;
+        [self.view layoutIfNeeded];
+        self.adSupport.bannerView.frame = bannerFrame;
+    }];
+}
+*/
+/*
+-(void)layoutAnimated:(BOOL)animated
+{
+    // As of iOS 6.0, the banner will automatically resize itself based on its width.
+    // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
+    
+    CGRect contentFrame = self.view.bounds;
+ 
+     //if (contentFrame.size.width < contentFrame.size.height) {
+     //self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
+     //} else {
+     //self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
+     //}
+ 
+    
+    CGRect bannerFrame = _bannerView.frame;
+    if (_bannerView.bannerLoaded) {
+        contentFrame.size.height -= _bannerView.frame.size.height;
+        bannerFrame.origin.y = contentFrame.size.height;
+    } else {
+        bannerFrame.origin.y = contentFrame.size.height;
+    }
+    
+    [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
+        //_contentView.frame = contentFrame;
+        //[_contentView layoutIfNeeded];
+        self.tableView.frame = contentFrame;
+        //[self.view layoutIfNeeded];
+        [self.tableView layoutIfNeeded];
+        _bannerView.frame = bannerFrame;
+    }];
+}
+*/
+
+#endif
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+#if ADVERSION
+    [self.adSupport initBannerView:self];
+    [self.view addSubview:self.adSupport.bannerView];
+    //[self initBannerView];
+    //[self.view addSubview:_bannerView];
+#endif
+    
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
     InstallDemos = NO;
@@ -1059,7 +1218,11 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
     CGFloat statusBarHeight = statusBarFrame.size.height;
     CGRect tableFrame = bg.frame;
-    tableFrame.size.height = [self get_visible_size].height - ( 2 * statusBarHeight );
+    tableFrame.size.height = [self get_visible_size].height - ( 2 * statusBarHeight ) ;
+#if ADVERSION
+    tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
+    //tableFrame.size.height -= _bannerView.frame.size.height;
+#endif
     self.tableView = [[UITableView alloc]initWithFrame: tableFrame style:UITableViewStylePlain];
     
     //self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStylePlain];
@@ -1082,7 +1245,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     //self.tableView.tableFooterView = tfv;
     
     [self.view addSubview:self.tableView];
-  //*/
+
+    //*/
     
 	//[payBtn release];
 	//[multiGraphBtn release];
@@ -1111,7 +1275,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 	 */
 
     //[self scrollState];
-	[super viewDidLoad];
+	//[super viewDidLoad];
     
     //[self.privacyObj initLocation];
 	
@@ -1326,6 +1490,11 @@ BOOL stashAnimated;
 - (void) viewDidAppearRestart {
 	[self refreshView];
     [super viewDidAppear:stashAnimated];
+#if ADVERSION
+    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:NO];
+    //[self layoutAnimated:NO];
+    [self.adSupport startTimer];
+#endif
 }
 
 - (void) doOpenTrackerRejectable:(NSNumber*)nsnTid {
@@ -1392,6 +1561,7 @@ BOOL stashAnimated;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    
 	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
     /*
     if (self.inputURL && !self.openUrlLock) {
@@ -1442,6 +1612,13 @@ BOOL stashAnimated;
 }
 */
 
+#if ADVERSION
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.adSupport stopTimer];
+}
+#endif
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
