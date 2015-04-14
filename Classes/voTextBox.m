@@ -530,12 +530,19 @@
 - (NSArray*) namesArray {
     if (! self.accessAddressBook) return nil;
 	if (nil == _namesArray) {
+
+        if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
+            //    [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            //CFRelease(addressBook);
+            return nil;
+        }
+        
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);
         // ios6  ABAddressBookRef addressBook = ABAddressBookCreate();
         __block BOOL accessGranted = NO;
         
         if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
-            if (ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
+            if (&ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
                 dispatch_semaphore_t sema = dispatch_semaphore_create(0);
                 ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);  // ios6 ABAddressBookCreate();
                 ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
@@ -552,11 +559,6 @@
             }
         }
         
-        if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
-        //    [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
-            //CFRelease(addressBook);
-            return nil;
-        }
         
 		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
 		// /*

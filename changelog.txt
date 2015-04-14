@@ -1752,6 +1752,13 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+06 apr 2015
+   - got iAd working on both rvc and utc views - use get_visible_size in adSupport layoutAnimated
+
+14 apr 2015
+   - add requester to buy rTracker on reaching limit of 8 trackers or 8 items
+   - fix tracker name not saved when addTrackerObj view disappears (previously only saved on green '+' insert button, holdover from 18 jan 2015 bugfix)
+   
 +++ check rvc viewDidAppear / restart behaviour with adversion changes
 
 

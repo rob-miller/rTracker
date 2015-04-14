@@ -29,6 +29,10 @@
 	return [super voTVEnabledCell:tableView];
 }
 
+-(CGFloat)voTVCellHeight {
+    return CELL_HEIGHT_TALL;
+}
+
 - (void)sliderAction:(UISlider *)sender
 { 
     DBGLog(@"slider action value = %f", ((UISlider *)sender).value);

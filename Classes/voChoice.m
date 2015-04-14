@@ -38,6 +38,11 @@
 	//return [super voTVCell:tableView];
 }
 
+-(CGFloat)voTVCellHeight {
+    return CELL_HEIGHT_TALL;
+}
+
+
 - (NSString*) getValueForSegmentChoice {
     //int i;
     NSString *rslt = @"";

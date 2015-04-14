@@ -7,13 +7,12 @@
 //
 
 #import "adSupport.h"
+#import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation adSupport
 
 @synthesize bannerView=_bannerView;
-@synthesize timer=_timer;
-@synthesize ticks=_ticks;
-
 
 -(ADBannerView*) bannerView
 {
@@ -32,12 +31,17 @@
     self.bannerView.delegate = delegate;
 }
 
--(void)layoutAnimated:(UIView*)view tableview:(UITableView*)tableview animated:(BOOL)animated
+-(void)layoutAnimated:(UIViewController*)vc tableview:(UITableView*)tableview animated:(BOOL)animated
 {
     // As of iOS 6.0, the banner will automatically resize itself based on its width.
     // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
     
-    CGRect contentFrame = view.bounds;
+    //CGRect contentFrame = view.bounds;
+    CGRect contentFrame = vc.view.bounds;
+    contentFrame.size = [rTracker_resource get_visible_size:vc];
+    
+    DBGLog(@"cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
+    
     /*
     if (contentFrame.size.width < contentFrame.size.height) {
         self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
@@ -47,13 +51,17 @@
     */
     
     CGRect bannerFrame = self.bannerView.frame;
+    DBGLog(@"bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
     if (self.bannerView.bannerLoaded) {
         contentFrame.size.height -= self.bannerView.frame.size.height;
         bannerFrame.origin.y = contentFrame.size.height;
+        DBGLog(@"banner is loaded");
     } else {
         bannerFrame.origin.y = contentFrame.size.height;
     }
-    
+    DBGLog(@"cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
+    DBGLog(@"bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
+    //DBGLog(@"foo");
     [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
         //_contentView.frame = contentFrame;
         //[_contentView layoutIfNeeded];
@@ -62,34 +70,5 @@
         self.bannerView.frame = bannerFrame;
     }];
 }
-
-
--(void)startTimer
-{
-    if (self.timer == nil) {
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerTick:) userInfo:nil repeats:YES];
-    }
-}
-
--(void)stopTimer
-{
-    [self.timer invalidate];
-    self.timer = nil;
-}
-
--(void)timerTick:(NSTimer *)timer
-{
-    // Timers are not guaranteed to tick at the nominal rate specified, so this isn't technically accurate.
-    // However, this is just an example to demonstrate how to stop some ongoing activity, so we can live with that inaccuracy.
-    
-    self.ticks += 0.1;
-    /*
-     double seconds = fmod(_ticks, 60.0);
-     double minutes = fmod(trunc(_ticks / 60.0), 60.0);
-     double hours = trunc(_ticks / 3600.0);
-     self.timerLabel.text = [NSString stringWithFormat:@"%02.0f:%02.0f:%04.1f", hours, minutes, seconds];
-     */
-}
-
 
 @end

@@ -352,6 +352,10 @@
 	return cell;
 }
 
+-(CGFloat)voTVCellHeight {
+    return CELL_HEIGHT_NORMAL;
+}
+
 - (void) dataEditVDidLoad:(UIViewController*)vc {
 }
 - (void) dataEditVWAppear:(UIViewController*)vc {

@@ -175,6 +175,7 @@
     self.SpecDate=true;
     ((TSQCalendarView*)self.view).selectedDate = self.dpr.date;
     self.SpecDate=false;
+    [super viewWillAppear:animated];
 }
 
 - (void)setCalendar:(NSCalendar *)calendar;
@@ -203,6 +204,7 @@
 {
     [self.timer invalidate];
     self.timer = nil;
+    [super viewWillDisappear:animated];
 }
 
 - (void)scroll;

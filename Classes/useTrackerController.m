@@ -15,6 +15,10 @@
 #import "dbg-defs.h"
 #import "voState.h"
 
+#if ADVERSION
+#import "adSupport.h"
+#endif
+
 //#import "trackerCalViewController.h"
 
 @interface useTrackerController ()
@@ -33,6 +37,10 @@
 @synthesize saveBtn=_saveBtn, menuBtn=_menuBtn, alertResponse=_alertResponse, saveTargD=_saveTargD,tsCalVC=_tsCalVC, searchSet=_searchSet;
 @synthesize searchBtn=_searchBtn;
 @synthesize rvcTitle=_rvcTitle;
+
+#if ADVERSION
+@synthesize adSupport=_adSupport;
+#endif
 
 //BOOL keyboardIsShown=NO;
 
@@ -95,6 +103,48 @@
     // delete all on program start    [?]
 
 }
+
+
+#if ADVERSION
+
+- (void)viewDidLayoutSubviews
+{
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+}
+
+- (void)bannerViewDidLoadAd:(ADBannerView *)banner
+{
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
+}
+
+- (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
+}
+
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
+{
+    //[self.adSupport stopTimer];
+    return YES;
+}
+/*
+ - (void)bannerViewActionDidFinish:(ADBannerView *)banner
+ {
+ //[self.adSupport startTimer];
+ }
+ */
+
+- (adSupport*) adSupport
+{
+    if (_adSupport == nil) {
+        _adSupport = [[adSupport alloc] init];
+    }
+    return _adSupport;
+}
+
+#endif
+
+
 -(void)loadView {
     // Ensure that we don't load an .xib file for this viewcontroller
     self.view = [UIView new];
@@ -103,51 +153,60 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	self.fwdRotations = YES;
+    
+    [super viewDidLoad];
     
 	//DBGLog(@"utc: viewDidLoad dpvc=%d", (self.dpvc == nil ? 0 : 1));
-	
-	self.title = self.tracker.trackerName;
-	self.needSave = NO;
+    self.fwdRotations = YES;
+    self.needSave = NO;
     
-	//for (valueObj *vo in self.tracker.valObjTable) {
-	//	[vo display];
-	//}
-    
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    //for (valueObj *vo in self.tracker.valObjTable) {
+    //	[vo display];
+    //}
 
-    //CGRect tableFrame = bg.frame;
-    //tableFrame.size.height = [self get_visible_size].height;
-    //self.tableView = [[UITableView alloc]initWithFrame: tableFrame style:UITableViewStylePlain];
-    self.tableView = [[UITableView alloc]initWithFrame: bg.frame style:UITableViewStylePlain];  // because getLaunchImageName worked out size! //self.saveFrame
-                      
-                      //self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    
-    //TODO: fix background view here
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
+    keyboardIsShown = NO;
 
-    self.tableView.backgroundView = bg;
-    //self.tableView.backgroundColor= [UIColor redColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.separatorColor = [UIColor clearColor];
-    [self.view addSubview:self.tableView];
-    
-	[self updateToolBar];
-	keyboardIsShown = NO;
-	
-	self.tracker.vc = self;
-	
-    self.alertResponse=0;
-    self.saveTargD=0;
-///*
+    // navigationbar setup
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"< %@",self.rvcTitle] //@"< rTracker"  // rTracker ... tracks ?
                                                                    style:UIBarButtonItemStyleBordered
                                                                   target:self
                                                                   action:@selector(btnCancel)];
     self.navigationItem.leftBarButtonItem = backButton;
-//*/
+
+    // toolbar setup
+    [self updateToolBar];
+    
+    // title setup
+    self.title = self.tracker.trackerName;
+
+    // tableview setup
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+
+    //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
+    //CGFloat statusBarHeight = statusBarFrame.size.height;
+    
+    CGRect tableFrame = bg.frame;
+    tableFrame.size.height = [rTracker_resource get_visible_size:self].height; //- ( 2 * statusBarHeight ) ;
+    
+#if ADVERSION
+    tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
+    DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+#endif
+    
+    DBGLog(@"tvf origin x %f y %f size w %f h %f",tableFrame.origin.x,tableFrame.origin.y,tableFrame.size.width,tableFrame.size.height);
+    self.tableView = [[UITableView alloc]initWithFrame:tableFrame style:UITableViewStylePlain];  // because getLaunchImageName worked out size! //self.saveFrame
+    
+    //self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    self.tableView.backgroundView = bg;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    //self.tableView.separatorColor = [UIColor clearColor];
+    [self.view addSubview:self.tableView];
+
+    // swipe gesture recognizer
+    
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeLeft:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionLeft];
     [self.view addGestureRecognizer:swipe];
@@ -163,13 +222,17 @@
     [swipe setDirection:UISwipeGestureRecognizerDirectionUp];
     [self.view addGestureRecognizer:swipe];
     */
+    
+    self.tracker.vc = self;
+    self.alertResponse=0;
+    self.saveTargD=0;
+    
     //load temp tracker data here if available
     if ([self.tracker loadTempTrackerData]) {
         self.needSave=YES;
         [self showSaveBtn];
     }
     
-    [super viewDidLoad];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -213,35 +276,6 @@
 	[super viewDidUnload];
 }
 */
-- (void) viewDidAppear:(BOOL)animated {
-    //DBGLog(@"utc view did appear!");
-     // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
-    if ((nil != self.tracker)
-        && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
-            //[self.navigationController popViewControllerAnimated:YES];
-        [self.tracker.activeControl resignFirstResponder];
-        
-        if ([rTracker_resource getSavePrivate]) {
-            [self btnCancel];
-        } else {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }
-    //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
-    [self.tableView reloadData];
-    self.didSave=NO;
-    
-    if (![rTracker_resource getToldAboutSwipe]) { // if not yet told
-        if (0 != [self.tracker prevDate]) {  //  and have previous data
-            [rTracker_resource alert:@"Swipe control" msg:@"Swipe for earlier entries"];
-            [rTracker_resource setToldAboutSwipe:true];
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutSwipe"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-    }
-    
-    [super viewDidAppear:animated];
-}
 
 - (void) viewWillAppear:(BOOL)animated
 {
@@ -353,11 +387,54 @@
         [self.navigationController setToolbarHidden:NO animated:NO];
 
         [self updateToolBar];
+         
     }
+
+#if ADVERSION
+    [self.adSupport initBannerView:self];
+    [self.view addSubview:self.adSupport.bannerView];
+    //[self.adSupport layoutAnimated:self.view tableview:self.tableView animated:NO];
+#endif
     
     [super viewWillAppear:animated];
     
 }
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    //DBGLog(@"utc view did appear!");
+    // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
+    if ((nil != self.tracker)
+        && ([self.tracker getPrivacyValue] > [privacyV getPrivacyValue])) {
+        //[self.navigationController popViewControllerAnimated:YES];
+        [self.tracker.activeControl resignFirstResponder];
+        
+        if ([rTracker_resource getSavePrivate]) {
+            [self btnCancel];
+        } else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+    //[self updateTrackerTableView];  // need for ios5 after set date in graph and return
+    [self.tableView reloadData];
+    self.didSave=NO;
+    
+    if (![rTracker_resource getToldAboutSwipe]) { // if not yet told
+        if (0 != [self.tracker prevDate]) {  //  and have previous data
+            [rTracker_resource alert:@"Swipe control" msg:@"Swipe for earlier entries"];
+            [rTracker_resource setToldAboutSwipe:true];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutSwipe"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
+#if ADVERSION
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+#endif
+    
+    [super viewDidAppear:animated];
+}
+
 
 - (void) viewWillDisappear :(BOOL)animated
 {
@@ -1162,6 +1239,14 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 }
 
 - (IBAction)btnAccept {
+
+#if ADVERSION
+    if (ADVER_TRACKER_LIM < [self.tlist.topLayoutIDs count]) {
+        [rTracker_resource buy_rTrackerAlert];
+        return;
+    }
+#endif
+    
     DBGLog(@"accepting tracker");
     if (self.tracker.prevTID) {
         [rTracker_resource rmStashedTracker:(int)self.tracker.prevTID];
@@ -1626,9 +1711,6 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 
 //#define MARGIN 7.0f
 
-#define CELL_HEIGHT_NORMAL (self.tracker.maxLabel.height + (3.0*MARGIN))
-#define CELL_HEIGHT_TALL (2.0 * CELL_HEIGHT_NORMAL)
-
 #define CHECKBOX_WIDTH 40.0f
 
 
@@ -1651,10 +1733,15 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSUInteger row = [indexPath row];
+    valueObj *vo = (valueObj *) (self.tracker.valObjTable)[row];
+    return [vo.vos voTVCellHeight];
+    /*
 	NSInteger vt = ((valueObj*) (self.tracker.valObjTable)[[indexPath row]]).vtype;
 	if ( vt == VOT_CHOICE || vt == VOT_SLIDER )
 		return CELL_HEIGHT_TALL;
 	return CELL_HEIGHT_NORMAL;
+     */
 }
 
 

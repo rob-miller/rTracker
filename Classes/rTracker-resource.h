@@ -33,6 +33,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) initHasAmPm;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg;
++ (void) buy_rTrackerAlert;
 
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;
@@ -87,6 +88,8 @@ NSUInteger DeviceSystemMajorVersion();
 +(CGFloat) getKeyWindowWidth;
 +(CGFloat) getScreenMaxDim;
 + (NSString*)getLaunchImageName;
+
++ (CGSize)get_visible_size:(UIViewController*)uvc;
 
 @end
 

@@ -33,7 +33,6 @@
 
 #if ADVERSION
 @synthesize adSupport=_adSupport;
-//ADBannerView *_bannerView;
 #endif
 
 //openUrlLock, inputURL,
@@ -906,7 +905,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         || YES
 #endif
         ){
-        self.title = @"rTracker";
+        self.title = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"]; // @"rTracker";
     } else {
         CGFloat bw1=0.0f;
         CGFloat bw2=0.0f;
@@ -970,105 +969,35 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     }
 }
 
-// copied from http://www.creativepulse.gr/en/blog/2013/how-to-find-the-visible-width-and-height-in-an-ios-app
-- (CGSize)get_visible_size {
-    CGSize result;
-    
-    CGSize size = [[UIScreen mainScreen] bounds].size;
-    
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-        result.width = size.height;
-        result.height = size.width;
-    }
-    else {
-        result.width = size.width;
-        result.height = size.height;
-    }
-    
-    size = [[UIApplication sharedApplication] statusBarFrame].size;
-    result.height -= MIN(size.width, size.height);
-    
-    if (self.navigationController != nil) {
-        size = self.navigationController.navigationBar.frame.size;
-        result.height -= MIN(size.width, size.height);
-    }
-    
-    if (self.tabBarController != nil) {
-        size = self.tabBarController.tabBar.frame.size;
-        result.height -= MIN(size.width, size.height);
-    }
-    DBGLog(@"w= %f  h= %f",result.width, result.height);
-    
-    return result;
-}
 
 #if ADVERSION
-/*
--(ADBannerView*) bannerView
-{
-    if (_bannerView == nil) {
-        // On iOS 6 ADBannerView introduces a new initializer, use it when available.
-        if ([ADBannerView instancesRespondToSelector:@selector(initWithAdType:)]) {
-            _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
-        } else {
-            _bannerView = [[ADBannerView alloc] init];
-        }
-    }
-    return _bannerView;
-}
-*/
-/*
--(void)initBannerView
-{
-    
-    self.adSupport.bannerView.delegate = self;
-}
-*/
-/*
--(void) initBannerView
-{
-    if (_bannerView == nil) {
-        // On iOS 6 ADBannerView introduces a new initializer, use it when available.
-        if ([ADBannerView instancesRespondToSelector:@selector(initWithAdType:)]) {
-            _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
-        } else {
-            _bannerView = [[ADBannerView alloc] init];
-        }
-        _bannerView.delegate = self;
-    }
-    
-}
- */
 
 - (void)viewDidLayoutSubviews
 {
-    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:[UIView areAnimationsEnabled]];
-    //[self layoutAnimated:[UIView areAnimationsEnabled]];
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
 }
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:YES];
-    //[self layoutAnimated:YES];
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
 }
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:YES];
-    //[self layoutAnimated:YES];
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
 {
-    [self.adSupport stopTimer];
+    //[self.adSupport stopTimer];
     return YES;
 }
-
+/*
 - (void)bannerViewActionDidFinish:(ADBannerView *)banner
 {
-    [self.adSupport startTimer];
+    //[self.adSupport startTimer];
 }
-
+*/
 
 - (adSupport*) adSupport
 {
@@ -1078,207 +1007,83 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return _adSupport;
 }
 
-/*
--(void)layoutAnimated:(BOOL)animated
-{
-    // As of iOS 6.0, the banner will automatically resize itself based on its width.
-    // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
-    
-    CGRect contentFrame = self.view.bounds;
- 
-    // if (contentFrame.size.width < contentFrame.size.height) {
-    // self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
-    // } else {
-    // self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
-    // }
- 
-    
-    CGRect bannerFrame = self.adSupport.bannerView.frame;
-    if (self.adSupport.bannerView.bannerLoaded) {
-        contentFrame.size.height -= self.adSupport.bannerView.frame.size.height;
-        bannerFrame.origin.y = contentFrame.size.height;
-    } else {
-        bannerFrame.origin.y = contentFrame.size.height;
-    }
-    
-    [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
-        //_contentView.frame = contentFrame;
-        //[_contentView layoutIfNeeded];
-        self.tableView.frame = contentFrame;
-        [self.view layoutIfNeeded];
-        self.adSupport.bannerView.frame = bannerFrame;
-    }];
-}
-*/
-/*
--(void)layoutAnimated:(BOOL)animated
-{
-    // As of iOS 6.0, the banner will automatically resize itself based on its width.
-    // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
-    
-    CGRect contentFrame = self.view.bounds;
- 
-     //if (contentFrame.size.width < contentFrame.size.height) {
-     //self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
-     //} else {
-     //self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
-     //}
- 
-    
-    CGRect bannerFrame = _bannerView.frame;
-    if (_bannerView.bannerLoaded) {
-        contentFrame.size.height -= _bannerView.frame.size.height;
-        bannerFrame.origin.y = contentFrame.size.height;
-    } else {
-        bannerFrame.origin.y = contentFrame.size.height;
-    }
-    
-    [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
-        //_contentView.frame = contentFrame;
-        //[_contentView layoutIfNeeded];
-        self.tableView.frame = contentFrame;
-        //[self.view layoutIfNeeded];
-        [self.tableView layoutIfNeeded];
-        _bannerView.frame = bannerFrame;
-    }];
-}
-*/
-
 #endif
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+
 #if ADVERSION
     [self.adSupport initBannerView:self];
-    [self.view addSubview:self.adSupport.bannerView];
-    //[self initBannerView];
-    //[self.view addSubview:_bannerView];
+    //[self.view addSubview:self.adSupport.bannerView];
 #endif
     
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
     InstallSamples = NO;
     InstallDemos = NO;
-    
     self.refreshLock = 0;
-    
-    if (kIS_LESS_THAN_IOS7) {
-        self.navigationController.navigationBar.barStyle = UIBarStyleBlack;  //rm for ios7
-    } else {
-        //self.navigationController.navigationBar.translucent = YES;  // this makes buttons appear behind navbar
-        //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"] forBarMetrics:UIBarMetricsDefault];
-    }
-    self.navigationItem.rightBarButtonItem = self.addBtn;
-	//[self.addBtn release];
-	    
-    self.navigationItem.leftBarButtonItem = self.editBtn;
-    //self.navigationItem.backBarButtonItem = self.editBtn;
-	//[self.editBtn release];
-
-    [self refreshToolBar:NO];
-    
-    //self.stashedPriv = nil;
-    //self.openUrlLock = NO;
     self.readingFile=NO;
+    [self countScheduledReminders];
     
-    //DBGLog(@"dsmv= %@",[[UIDevice currentDevice] systemVersion] );
+    // navigationbar setup
+    self.navigationItem.rightBarButtonItem = self.addBtn;
+    self.navigationItem.leftBarButtonItem = self.editBtn;
     
-    //self.navigationController.toolbar.translucent = YES;
     //if (SYSTEM_VERSION_LESS_THAN(@"7.0")) {
     if (kIS_LESS_THAN_IOS7) {
         self.navigationController.toolbar.barStyle = UIBarStyleBlack;  // rm for ios7
     } else {
         self.navigationController.toolbar.translucent = YES;
-        ///*  // not really translucent -- cannot see list behind toolbar
-        //[self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]
-        //                                        forToolbarPosition:0
-        //                                        barMetrics:UIBarMetricsDefault];
-         //*/
         self.navigationController.toolbar.backgroundColor =[UIColor clearColor];
-
     }
 
+    // toolbar setup
+    [self refreshToolBar:NO];
+
+    // title setup
     [self initTitle];
+    
+    // tableview setup
     DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchImage"]];
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
-    //NSString *li = [rTracker_resource getLaunchImageName];
-    //[self.view addSubview:bg];
-    //[self.view sendSubviewToBack:bg];
+    //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
+    //CGFloat statusBarHeight = statusBarFrame.size.height;
     
-    //[self.view setBackgroundColor:[UIColor clearColor]];
-    //[self.view setBackgroundColor:[UIColor blueColor]];
-    //CGRect f = self.view.frame;
-    //CGRect f2 = bg.frame;
-//*
-    
-    [self countScheduledReminders];
-
-
-    CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
-    CGFloat statusBarHeight = statusBarFrame.size.height;
     CGRect tableFrame = bg.frame;
-    tableFrame.size.height = [self get_visible_size].height - ( 2 * statusBarHeight ) ;
+    tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
+
 #if ADVERSION
     tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
-    //tableFrame.size.height -= _bannerView.frame.size.height;
+    DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
 #endif
-    self.tableView = [[UITableView alloc]initWithFrame: tableFrame style:UITableViewStylePlain];
-    
-    //self.tableView = [[UITableView alloc]initWithFrame:self.view.frame style:UITableViewStylePlain];
-    //self.tableView = [[UITableView alloc]initWithFrame:bg.frame style:UITableViewStylePlain];
+
+    DBGLog(@"tvf origin x %f y %f size w %f h %f",tableFrame.origin.x,tableFrame.origin.y,tableFrame.size.width,tableFrame.size.height);
+    self.tableView = [[UITableView alloc]initWithFrame:tableFrame style:UITableViewStylePlain];
     
     //self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     self.tableView.backgroundView = bg;
-    //self.tableView.backgroundColor = [UIColor clearColor];
-    //self.tableView.backgroundColor = [UIColor redColor];
-
-    //TODO: get rid of lines for unused cells!!!!
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //self.tableView.separatorColor = [UIColor redColor];
+
     //UIView *tfv = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 10)];
     //tfv.backgroundColor = [UIColor yellowColor];
     //self.tableView.tableFooterView = tfv;
     
     [self.view addSubview:self.tableView];
-
-    //*/
     
-	//[payBtn release];
-	//[multiGraphBtn release];
-
+    
     trackerList *tmptlist = [[trackerList alloc] init];
 	self.tlist = tmptlist;
-    //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
-    //DBGLog(@"ttl rc= %d  s.tl rc= %d",[tmptlist retainCount],[self.tlist retainCount]);
-    
-    //[self.tlist release];  // rtm 05 feb 2012 +1 for alloc, +1 when put in self.tlist
-
     
     //[self.tlist wipeOrphans];        // added 30.vii.13
     if ([self.tlist recoverOrphans]) {     // added 07.viii.13
         [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed."];
     }
-    [self.tlist loadTopLayoutTable];  // was loadinputfiles
+    [self.tlist loadTopLayoutTable];
     
-	/*
-	UIApplication *app = [UIApplication sharedApplication];
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(applicationWillTerminate:) 
-												 name:UIApplicationWillTerminateNotification
-											   object:app];
-	
-	 */
-
-    //[self scrollState];
-	//[super viewDidLoad];
-    
-    //[self.privacyObj initLocation];
-	
 }
 
 - (void) refreshEditBtn {
@@ -1451,7 +1256,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         self.tableView.frame = f;
         self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     }
-
+#if ADVERSION
+    [self.adSupport initBannerView:self];
+    [self.view addSubview:self.adSupport.bannerView];
+#endif
     [super viewWillAppear:animated];
 }
 
@@ -1491,9 +1299,7 @@ BOOL stashAnimated;
 	[self refreshView];
     [super viewDidAppear:stashAnimated];
 #if ADVERSION
-    [self.adSupport layoutAnimated:self.view tableview:self.tableView animated:NO];
-    //[self layoutAnimated:NO];
-    [self.adSupport startTimer];
+    [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
 #endif
 }
 
@@ -1601,6 +1407,8 @@ BOOL stashAnimated;
     }
     stashAnimated = animated;
     [self viewDidAppearRestart];
+    
+    // [super viewDidApeear] called in [self viewDidAppearRestart]
 }
 
 /*
@@ -1612,13 +1420,15 @@ BOOL stashAnimated;
 }
 */
 
+/*
 #if ADVERSION
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [self.adSupport stopTimer];
+    //[self.adSupport stopTimer];
 }
 #endif
+*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -1841,6 +1651,12 @@ BOOL stashAnimated;
     if (PVNOSHOW != self.privacyObj.showing) {
         return;
     }
+#if ADVERSION
+    if (ADVER_TRACKER_LIM <= [self.tlist.topLayoutIDs count]) {
+        [rTracker_resource buy_rTrackerAlert];
+        return;
+    }
+#endif
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
 	atc.tlist = self.tlist;
 	[self.navigationController pushViewController:atc animated:YES];
@@ -1949,7 +1765,7 @@ BOOL stashAnimated;
 
     int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
     int src = [(self.scheduledReminderCounts)[tid] intValue];
-    DBGLog(@"src: %d  erc:  %d",src,erc);
+    //DBGLog(@"src: %d  erc:  %d",src,erc);
     //NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
@@ -2007,6 +1823,9 @@ BOOL stashAnimated;
     utc.tlist = self.tlist;  // required so reject can fix topLevel list
     utc.saveFrame = self.view.frame; // self.tableView.frame; //  view.frame;
     utc.rvcTitle = self.title;
+#if ADVERSION
+    utc.adSupport = self.adSupport;
+#endif
     
     //if (rejectable) {
     //    [self.navigationController pushViewController:utc animated:NO];

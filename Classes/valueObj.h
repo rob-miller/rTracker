@@ -96,6 +96,7 @@
 - (NSString*) update:(NSString*)instr;
 - (UIView*) voDisplay:(CGRect)bounds;
 - (UITableViewCell*) voTVCell:(UITableView *)tableView;
+- (CGFloat) voTVCellHeight;
 - (NSArray*) voGraphSet;
 - (void) voDrawOptions:(id)ctvovc;
 - (void) loadConfig;

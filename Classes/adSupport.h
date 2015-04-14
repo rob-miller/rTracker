@@ -12,12 +12,8 @@
 @interface adSupport : NSObject
 
 @property (nonatomic,strong) ADBannerView *bannerView;
-@property (nonatomic,strong) NSTimer *timer;
-@property (nonatomic) CFTimeInterval ticks;
 
 -(void)initBannerView:(id< ADBannerViewDelegate >)delegate;
--(void)layoutAnimated:(UIView*)view tableview:(UITableView*)tableview animated:(BOOL)animated;
--(void)startTimer;
--(void)stopTimer;
+-(void)layoutAnimated:(UIViewController*)vc tableview:(UITableView*)tableview animated:(BOOL)animated;
 
 @end

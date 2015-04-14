@@ -146,7 +146,12 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
 	DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
-	
+    
+    if ([self.nameField.text length] > 0) {
+        self.tempTrackerObj.trackerName = self.nameField.text;
+        DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
+    }
+    
 	[super viewWillDisappear:animated];
 }
 
@@ -345,6 +350,14 @@ DBGLog(@"btnAddValue was pressed!");
         return;
     }
     
+#if ADVERSION
+    // can trigger on editing an existing tracker with more than 8 items
+    if (ADVER_ITEM_LIM < [self.tempTrackerObj.valObjTable count]) {
+        [rTracker_resource buy_rTrackerAlert];
+        return;
+    }
+#endif
+
     self.saving = TRUE;
     
 	if (self.deleteVOs != nil) {
@@ -659,18 +672,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %lu ",(unsigned long)row);
-
-        if ([self.nameField.text length] > 0) {
-            self.tempTrackerObj.trackerName = self.nameField.text;
-            DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
-        }
-        
         [self addValObj:nil];
-		
 	} // else ??
 }
 
 - (void) addValObj:(valueObj*) vo {
+#if ADVERSION
+    if (!vo) {
+        if (ADVER_ITEM_LIM <= [self.tempTrackerObj.valObjTable count]) {
+            [rTracker_resource buy_rTrackerAlert];
+            return;
+        }
+    }
+#endif
 	addValObjController *avc;
     //if (kIS_LESS_THAN_IOS7) {
     //    avc = [[addValObjController alloc] initWithNibName:@"addValObjController" bundle:nil ];

@@ -114,12 +114,13 @@ NSInteger choiceCompare(id ndx0, id ndx1, void *context)
     NSInteger vtype = self.vogd.vo.vtype;
     NSString *fmt = @"%0.2f";
     
+    /*
     NSArray *choiceMap;
 
     if (VOT_CHOICE == vtype) {
         choiceMap = [CHOICEARR sortedArrayUsingFunction:choiceCompare context:(void*)self];
     }
-
+     */
     //NSString *vsCopy = nil;
     
     for (i=YTICKS; i>=1; i--) {

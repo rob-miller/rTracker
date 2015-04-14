@@ -62,3 +62,10 @@
 #define TmpTrkrData @".tdata"
 #define TmpTrkrNames @".tnames"
 
+#define CELL_HEIGHT_NORMAL ( ((trackerObj*)self.vo.parentTracker).maxLabel.height + (3.0*MARGIN))
+#define CELL_HEIGHT_TALL (2.0 * CELL_HEIGHT_NORMAL)
+
+#define ADVER_TRACKER_LIM   8
+#define ADVER_ITEM_LIM      8
+
+

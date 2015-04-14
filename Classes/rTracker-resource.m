@@ -115,6 +115,28 @@ BOOL hasAmPm=NO;
     [alert show];
 }
 
+#if ADVERSION
+
++ (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if( buttonIndex == 1 ) /* NO = 0, YES = 1 */
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/rtracker/id486541371"]];
+    }
+}
+
++ (void) buy_rTrackerAlert {
+    NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker to remove the advertisements and these limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
+    UIAlertView *_alert = [[UIAlertView alloc] initWithTitle:@"Upgrade to rTracker"
+                                                     message:msg
+                                                    delegate:self
+                                           cancelButtonTitle:@"Not now"
+                                           otherButtonTitles:@"Get rTracker",nil];
+    [_alert show];
+}
+
+#endif
+
 //---------------------------
 #pragma mark -
 #pragma mark navcontroller view transition
@@ -832,5 +854,56 @@ static BOOL getOrientEnabled=false;
 
  
  *************************/
+
+// copied from http://www.creativepulse.gr/en/blog/2013/how-to-find-the-visible-width-and-height-in-an-ios-app
++ (CGSize)get_visible_size:(UIViewController*)vc
+{
+    CGSize result;
+    
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    
+    if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
+        result.width = size.height;
+        result.height = size.width;
+    }
+    else {
+        result.width = size.width;
+        result.height = size.height;
+    }
+
+    DBGLog(@"gvs entry:  w= %f  h= %f",result.width, result.height);
+
+    UIViewController *rvc= (vc.navigationController.viewControllers)[0];
+    
+    if (vc == rvc) {
+        size = [[UIApplication sharedApplication] statusBarFrame].size;
+        result.height -= MIN(size.width, size.height);
+    
+        DBGLog(@"statusbar h= %f curr height= %f",size.height,result.height);
+    }
+    
+    if (vc.navigationController != nil) {
+        if (vc == rvc) {
+            size = vc.navigationController.navigationBar.frame.size;
+            result.height -= MIN(size.width, size.height);
+            DBGLog(@"navigationbar h= %f curr height= %f",size.height,result.height);
+        }
+        if (vc.navigationController.toolbar != nil) {
+            size = vc.navigationController.toolbar.frame.size;
+            result.height -= MIN(size.width, size.height);
+            DBGLog(@"toolbar h= %f curr height= %f",size.height,result.height);
+        }
+    }
+    
+    if (vc.tabBarController != nil) {
+        size = vc.tabBarController.tabBar.frame.size;
+        result.height -= MIN(size.width, size.height);
+        DBGLog(@"tabbar h= %f curr height= %f",size.height,result.height);
+    }
+    
+    DBGLog(@"gvs exit:  w= %f  h= %f",result.width, result.height);
+    
+    return result;
+}
 
 @end

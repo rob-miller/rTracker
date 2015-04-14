@@ -162,7 +162,9 @@
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:UIKeyboardWillHideNotification 
-                                                  object:nil];  
+                                                  object:nil];
+    
+    [super viewWillDisappear:animated];
 }
 
 
