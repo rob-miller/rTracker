@@ -263,6 +263,14 @@ static int selSegNdx=SegmentEdit;
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger row = [indexPath row];
+    NSString *tn = (self.tlist.topLayoutNames)[row];
+    CGSize tns = [tn sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    return tns.height + (2*MARGIN) ;
+}
+
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
 	return YES;
 }

@@ -363,7 +363,7 @@
 	f.origin.x = 0.05f * f.size.width;
 	f.origin.y = vert * f.size.height;
 	f.size.width *= 0.9f;
-    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].height;
+    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].height;
 	//DBGLog(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 	return f;
 }
@@ -408,7 +408,7 @@
 		CGRect f = CGRectZero;
 		f.origin.x = 0.4f * self.frame.size.width;
 		f.origin.y = 0.65f * self.frame.size.height;
-        f.size = [ttl sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+        f.size = [ttl sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
 		_cancelBtn.frame = f;
 		//DBGLog(@"cancel frame: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 		[_cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];

@@ -85,7 +85,8 @@
 	
 	[self.table setEditing:YES animated:YES];
 	self.table.allowsSelection = NO;  
-
+    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     // set graph paper background
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     //self.table.backgroundView = bg;
@@ -480,6 +481,25 @@ DBGLog(@"btnAddValue was pressed!");
      */
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger row = [indexPath row];
+    NSUInteger section = [indexPath section];
+    if (0==section) {
+        CGSize tns = [self.tempTrackerObj.trackerName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+        return tns.height + (2*MARGIN);
+    } else {
+        if (row == [self.tempTrackerObj.valObjTable count] ) {
+            CGSize vons = [@"add another thing to track" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+            return vons.height + (2*MARGIN);
+        } else {
+            valueObj *vo = (valueObj *) (self.tempTrackerObj.valObjTable)[row];
+            CGSize vons = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+            return vons.height + (2*MARGIN) + 6.0;
+        }
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *) indexPath {
 	UITableViewCell *cell;
 	
@@ -516,7 +536,7 @@ DBGLog(@"btnAddValue was pressed!");
 			[cell.contentView addSubview:self.nameField];
 			
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		
+            self.nameField.font = PrefBodyFont;
 			self.nameField.text = self.tempTrackerObj.trackerName;
 			self.nameField.placeholder = @"Name this Tracker";
         //DBGLog(@"loaded section 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);

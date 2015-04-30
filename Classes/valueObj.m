@@ -460,6 +460,14 @@ in_vpriv:(NSInteger)in_vpriv
     }
     
 }
+
+
+- (CGSize) getLabelSize {
+    return [self.valueName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    //return [self.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
+}
+
+
 // specific to VOT_CHOICE with optional values - seach dictionary for value, return index
 - (int) getChoiceIndexForValue:(NSString *)val {
     //DBGLog(@"gciv val=%@",val);

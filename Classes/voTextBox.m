@@ -12,6 +12,7 @@
 #import "voDataEdit.h"
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
+#import "rTracker-constants.h"
 
 #define SEGPEOPLE	0
 #define SEGHISTORY	1
@@ -75,7 +76,7 @@
     
 	self.textView = [[UITextView alloc] initWithFrame:vc.view.frame];
 	self.textView.textColor = [UIColor blackColor];
-	self.textView.font = [UIFont fontWithName:@"Arial" size:18];
+    self.textView.font = PrefBodyFont; // [UIFont fontWithName:@"Arial" size:18];
 	self.textView.delegate = self;
 	self.textView.backgroundColor = [UIColor whiteColor];
 	
@@ -389,6 +390,7 @@
         _tbButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_tbButton addTarget:self action:@selector(tbBtnAction:) forControlEvents:UIControlEventTouchDown];
         _tbButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
+        _tbButton.titleLabel.font = PrefBodyFont;
          // rtm 06 feb 2012
     }
     return _tbButton;
@@ -459,7 +461,7 @@
 	frame.origin.y += labframe.size.height + MARGIN;
 	labframe = [ctvovc configLabel:@"Use number of lines for value:" frame:frame key:@"tbnlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	[ctvovc configCheckButton:frame 
+	frame = [ctvovc configCheckButton:frame
                           key:@"tbnlBtn"
                         state:[(self.vo.optDict)[@"tbnl"] isEqualToString:@"1"] // default:0
                         addsv:YES
@@ -471,7 +473,7 @@
 	frame.origin.y += MARGIN + frame.size.height;
 	labframe = [ctvovc configLabel:@"Names index:" frame:frame key:@"tbniLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	[ctvovc configCheckButton:frame 
+	frame = [ctvovc configCheckButton:frame
 						key:@"tbniBtn" 
 					  state:(![(self.vo.optDict)[@"tbni"] isEqualToString:@"0"])  // default:1
                         addsv:YES
@@ -481,7 +483,7 @@
 	frame.origin.y += MARGIN + frame.size.height;
 	labframe = [ctvovc configLabel:@"History index:" frame:frame key:@"tbhiLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	[ctvovc configCheckButton:frame 
+	frame = [ctvovc configCheckButton:frame
 						key:@"tbhiBtn" 
 					  state:[(self.vo.optDict)[@"tbhi"] isEqualToString:@"1"]  // default:0
                         addsv:YES

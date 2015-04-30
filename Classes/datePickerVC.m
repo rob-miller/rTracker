@@ -9,6 +9,7 @@
 #import "datePickerVC.h"
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
+#import "rTracker-constants.h"
 
 @implementation datePickerVC
 
@@ -31,6 +32,12 @@ datePicker=_datePicker;
     //f.size.width = [rTracker_resource getKeyWindowWidth];
     //self.view.frame = f;
     
+    /*
+     // does not resize well -- need more work on xib
+    self.dateSetBtn.titleLabel.font = PrefBodyFont;
+    self.entryNewBtn.titleLabel.font = PrefBodyFont;
+    self.dateGotoBtn.titleLabel.font = PrefBodyFont;
+    */
     [super viewDidLoad];
     /*f.origin.y= 416;
     f.size.height = 44;

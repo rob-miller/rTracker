@@ -495,9 +495,9 @@ static NSTimeInterval lastShow=0;
 	UIButton *rbtn = [UIButton buttonWithType:UIButtonTypeRoundedRect ];
     CGRect bframe;
     if (kIS_LESS_THAN_IOS7) {
-        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
+        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
     } else {
-        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
+        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
     }
 	bframe.origin.x -= bframe.size.width/2.0f;  // center now we know btn title size
 	rbtn.frame = bframe;
@@ -578,7 +578,7 @@ static NSTimeInterval lastShow=0;
 	if (_ssValLab == nil) {
 		CGRect lframe = (CGRect) {self.frame.origin.x+(self.frame.size.width * (TICTACHRZFRAC/2.0f)), // x= same as clearBtn
 			self.frame.size.height * ((1.0f - TICTACVRTFRAC) - (1.0f - TICTACHGTFRAC)), // y = same as saveBtn
-            [@"100" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}]};
+            [@"100" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
 		lframe.origin.x -= lframe.size.width/2.0f;
 		_ssValLab = [[UILabel alloc] initWithFrame:lframe];
         _ssValLab.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;

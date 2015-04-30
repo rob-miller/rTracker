@@ -129,11 +129,11 @@
 	CGRect labframe = [ctvovc configLabel:@"stored value:" frame:frame key:@"bvLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight;
 	
-	[ctvovc configTextField:frame
+	frame = [ctvovc configTextField:frame
                         key:@"bvalTF"
                      target:nil
                      action:nil
@@ -153,7 +153,7 @@
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	[ctvovc configCheckButton:frame
+	frame = [ctvovc configCheckButton:frame
                           key:@"stdBtn"
                         state:[(self.vo.optDict)[@"setstrackerdate"] isEqualToString:@"1"] // default:0
                         addsv:YES

@@ -56,10 +56,10 @@
 - (void) removeSVFields;
 
 - (CGRect) configLabel:(NSString *)text frame:(CGRect)frame key:(NSString*)key addsv:(BOOL)addsv;
-- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv;
-- (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action;
-- (void) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv;
-- (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text;
+- (CGRect) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv;
+- (CGRect) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action;
+- (CGRect) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv;
+- (CGRect) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text;
 - (CGRect) configPicker:(CGRect)frame key:(NSString*)key caller:(id)caller;
 - (CGRect) yAutoscale:(CGRect)frame;
 - (void) tfDone:(UITextField *)tf;

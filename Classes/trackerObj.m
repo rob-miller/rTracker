@@ -1737,7 +1737,8 @@ if (addVO) {
     //valueObj *vo;
     //while ( vo = (valueObj *) [enumer nextObject]) {
     for (valueObj *vo in self.valObjTable) {
-        CGSize tsize = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
+        //CGSize tsize = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
+        CGSize tsize = [vo getLabelSize];
         //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
         if (tsize.width > lsize.width) {
             lsize = tsize;
@@ -1746,14 +1747,14 @@ if (addVO) {
                 lsize.height = 18.0f;
             }
         }
-        if ((VOT_INFO == vo.vtype)
+        if (   (VOT_INFO == vo.vtype)
             || (VOT_CHOICE == vo.vtype)
             || (VOT_SLIDER == vo.vtype)
             ) {
             lsize.width = 0.0;  // don't include info, choice, slider labels in maxWidth calculation
         }
     }
-    CGFloat kww5 = ceilf( [rTracker_resource getKeyWindowWidth]/4.0 );
+    CGFloat kww5 = ceilf( [rTracker_resource getKeyWindowWidth]/3.0 );
     if (lsize.width < kww5) lsize.width = kww5;
     
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;

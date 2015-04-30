@@ -1792,6 +1792,14 @@ BOOL stashAnimated;
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger row = [indexPath row];
+    NSString *tn = (self.tlist.topLayoutNames)[row];
+    CGSize tns = [tn sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    return tns.height + (2*MARGIN);
+}
+
 - (BOOL) exceedsPrivacy:(NSInteger)tid {
     return ([privacyV getPrivacyValue] < [self.tlist getPrivFromLoadedTID:tid]);
 }

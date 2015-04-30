@@ -39,7 +39,9 @@
 }
 
 -(CGFloat)voTVCellHeight {
-    return CELL_HEIGHT_TALL;
+    //return CELL_HEIGHT_TALL;
+    return self.segmentedControl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height;
+    
 }
 
 
@@ -367,8 +369,8 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
-    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
+    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -376,7 +378,7 @@
 	for (i=0; i<CHOICES; i++) {
         frame.size.width = tfvWidth;
 
-		[ctvovc configTextField:frame
+		frame = [ctvovc configTextField:frame
                             key:[NSString stringWithFormat:@"%dtfv",i]
                          target:self
                          action:@selector(ctfvDone:)
@@ -388,7 +390,7 @@
 		frame.origin.x += MARGIN + tfvWidth;
         frame.size.width = tfWidth;
 
-		[ctvovc configTextField:frame 
+		frame = [ctvovc configTextField:frame
 						  key:[NSString stringWithFormat:@"%dtf",i] 
 					   target:self
 					   action:@selector(ctfDone:) 
@@ -412,7 +414,9 @@
 		} else {
 			btn.backgroundColor = [rTracker_resource colorSet][[cc integerValue]];
 		}
-		
+        
+        btn.titleLabel.font = PrefBodyFont;
+        
 		[btn addTarget:self action:@selector(choiceColorButtonAction:) forControlEvents:UIControlEventTouchDown];
 		(ctvovc.wDict)[[NSString stringWithFormat:@"%dbtn",i]] = btn;
 		[ctvovc.view addSubview:btn];
@@ -438,7 +442,7 @@
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	[ctvovc configCheckButton:frame 
+	frame = [ctvovc configCheckButton:frame
                           key:@"csbBtn"
                         state:[(self.vo.optDict)[@"shrinkb"] isEqualToString:@"1"] // default:0
                         addsv:YES
@@ -453,7 +457,7 @@
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	[ctvovc configCheckButton:frame
+	frame = [ctvovc configCheckButton:frame
                           key:@"cevBtn"
                         state:[(self.vo.optDict)[@"exportvalb"] isEqualToString:@"1"] // default:0
                         addsv:YES

@@ -189,6 +189,8 @@
 - (void) resetData;
 - (void) validate;
 
+- (CGSize) getLabelSize;
+
 //+ (NSArray *) graphsForVOT:(NSInteger)vot;
 //- (NSArray *) graphsForVOT:(NSInteger)vot;
 + (NSArray*) allGraphs;

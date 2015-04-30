@@ -30,7 +30,8 @@
 }
 
 -(CGFloat)voTVCellHeight {
-    return CELL_HEIGHT_TALL;
+    //return CELL_HEIGHT_TALL;
+    return self.sliderCtl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height;
 }
 
 - (void)sliderAction:(UISlider *)sender
@@ -260,11 +261,11 @@
 	labframe = [ctvovc configLabel:@"min:" frame:frame key:@"sminLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; 
 	
-	[ctvovc configTextField:frame 
+	frame = [ctvovc configTextField:frame
 					  key:@"sminTF" 
 				   target:nil
 				   action:nil
@@ -280,7 +281,7 @@
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; 
 	
-	[ctvovc configTextField:frame 
+	frame = [ctvovc configTextField:frame
 					  key:@"smaxTF" 
 				   target:nil
 				   action:nil
@@ -298,7 +299,7 @@
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; 
 	
-	[ctvovc configTextField:frame 
+	frame = [ctvovc configTextField:frame
 					  key:@"sdfltTF" 
 				   target:nil
 				   action:nil
@@ -321,7 +322,7 @@
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
-	[ctvovc configCheckButton:frame
+	frame = [ctvovc configCheckButton:frame
                           key:@"sisBtn"
                         state:[(self.vo.optDict)[@"integerstepsb"] isEqualToString:@"1"] // default:0
                         addsv:YES
@@ -338,7 +339,7 @@
     
     frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
     
-    [ctvovc configCheckButton:frame
+    frame = [ctvovc configCheckButton:frame
                           key:@"sdeBtn"
                         state:[(self.vo.optDict)[@"defaultenabledb"] isEqualToString:@"1"] // default:0
                         addsv:YES

@@ -130,11 +130,11 @@
 	CGRect labframe = [ctvovc configLabel:@"stored value:" frame:frame key:@"ivLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight;
 	
-	[ctvovc configTextField:frame
+	frame = [ctvovc configTextField:frame
                         key:@"ivalTF"
                      target:nil
                      action:nil
@@ -152,7 +152,7 @@
 	frame.origin.y += labframe.size.height + MARGIN;
     frame.size.width = ctvovc.view.frame.size.width - (2*MARGIN);
 
-    [ctvovc configTextField:frame
+    frame = [ctvovc configTextField:frame
                         key:@"iurlTF"
                      target:nil
                      action:nil

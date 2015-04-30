@@ -134,7 +134,7 @@
 	//-- privacy level textfield
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -166,7 +166,7 @@
 	CGRect bounds;
 	UITableViewCell *cell;
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
-	DBGLog(@"votvenabledcell maxlabel= w= %f h= %f",maxLabel.width,maxLabel.height);
+	DBGLog(@"votvenabledcell maxLabel= w= %f h= %f",maxLabel.width,maxLabel.height);
     
 	static NSString *CellIdentifier = @"Cell1";
 	
@@ -231,7 +231,7 @@
 	UILabel *label = [[UILabel alloc] initWithFrame:bounds];
 	label.tag=kViewTag;
 	//label.font = [UIFont boldSystemFontOfSize:18.0];
-    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    label.font = PrefBodyFont;
     label.textColor = [UIColor blackColor];
     label.alpha = 1.0;
     label.backgroundColor = [UIColor clearColor];
@@ -253,7 +253,7 @@
         label = [[UILabel alloc] initWithFrame:bounds];
         label.tag=kViewTag;
         //label.font = [UIFont boldSystemFontOfSize:18.0];
-        label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        label.font = PrefBodyFont;
         label.textColor = [UIColor blackColor];
         label.alpha = 1.0;
         label.backgroundColor = [UIColor clearColor];
@@ -288,7 +288,8 @@
 	UITableViewCell *cell;
     
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
-	//DBGLog(@"votvcell maxlabel= w= %f h= %f",maxLabel.width,maxLabel.height);
+	//DBGLog(@"votvcell maxLabel= w= %f h= %f",maxLabel.width,maxLabel.height);
+    CGSize labelSize = [self.vo getLabelSize];
 	
 	static NSString *CellIdentifier = @"Cell2";
 	
@@ -319,33 +320,69 @@
         
         //DBGLog(@"recycled cell");
 	}
+
+    /*
 #if DEBUGLOG
     CGFloat cellWidth = cell.bounds.size.width;
+    //DBGLog(@"cell width= %f kw width= %f",cellWidth,[rTracker_resource getKeyWindowWidth]);
 #endif
+    */
     
-    DBGLog(@"cell width= %f",cellWidth);
-    DBGLog(@"kw width= %f",[rTracker_resource getKeyWindowWidth]);
-    
+    /*
 	cell.textLabel.text = self.vo.valueName;
     //DBGLog(@"text= %@",cell.textLabel.text);
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.backgroundColor = [UIColor clearColor];
-    cell.backgroundColor = [UIColor clearColor];
 	//cell.textLabel.tag = kViewTag;
+    */
+    cell.backgroundColor = [UIColor clearColor];
+
+    bounds.origin.x = MARGIN;
+    bounds.origin.y = labelSize.height - (MARGIN);
+
+    if (labelSize.width <= maxLabel.width) {
+        bounds.size.width = maxLabel.width;
+    } else {
+        bounds.size.width = [rTracker_resource getKeyWindowWidth] - MARGIN - RMARGIN;
+    }
+    bounds.size.height = labelSize.height;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:bounds];
+    label.tag=kViewTag;
+    label.font = PrefBodyFont;
+    label.textColor = [UIColor blackColor];
+    label.alpha = 1.0;
+    label.backgroundColor = [UIColor clearColor];
+    
+    label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
+    //don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
+    label.contentMode = UIViewContentModeTopLeft;
+    label.text = self.vo.valueName;
+    //label.enabled = YES;
+    
+    DBGLog(@"cell text= %@ label width= %f  maxLabel width= %f",label.text, labelSize.width, maxLabel.width);
     
     
-    //TODO: re-work here to put vo field right-justified in any size cell
+    [cell.contentView addSubview:label];
     
-    //CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-	bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
-    //bounds.origin.x = cell.frame.origin.x + (cell.frame.size.width )
-	bounds.origin.y = maxLabel.height - (MARGIN);
-	bounds.size.width = [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;// cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
-    //bounds.size.width = screenSize.width - maxLabel.width - LMARGIN - RMARGIN;
-	bounds.size.height = maxLabel.height + MARGIN;
-	
-	//DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
-	//bounds.origin.y = bounds.size.height;// - BMARGIN;
+    if (labelSize.width <= maxLabel.width) {
+        
+        //CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
+        //bounds.origin.x = cell.frame.origin.x + (cell.frame.size.width )
+        bounds.origin.y = maxLabel.height - (MARGIN*1.5);
+        bounds.size.width = [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;// cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
+        //bounds.size.width = screenSize.width - maxLabel.width - LMARGIN - RMARGIN;
+        bounds.size.height = maxLabel.height + MARGIN;
+        
+        //DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
+        //bounds.origin.y = bounds.size.height;// - BMARGIN;
+    } else {
+        bounds.origin.x = cell.frame.origin.x + MARGIN;
+        bounds.origin.y = maxLabel.height + (2*MARGIN);
+        bounds.size.width = [rTracker_resource getKeyWindowWidth] - MARGIN - RMARGIN;
+        bounds.size.height = maxLabel.height + MARGIN;
+    }
 	
 	//DBGLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[self.vo display:bounds]];
@@ -353,7 +390,16 @@
 }
 
 -(CGFloat)voTVCellHeight {
-    return CELL_HEIGHT_NORMAL;
+    CGSize labelSize = [self.vo getLabelSize];
+    CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
+    
+    if (labelSize.width <= maxLabel.width || VOT_INFO == self.vo.vtype)
+        //return CELL_HEIGHT_NORMAL;
+        return maxLabel.height + (2*MARGIN);
+    else
+        //return CELL_HEIGHT_TALL;
+         return (2* maxLabel.height) + (2*MARGIN);
+    
 }
 
 - (void) dataEditVDidLoad:(UIViewController*)vc {

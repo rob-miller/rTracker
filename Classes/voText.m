@@ -8,6 +8,7 @@
 
 #import "voText.h"
 #import "dbg-defs.h"
+#import "rTracker-constants.h"
 
 @implementation voText
 
@@ -57,7 +58,7 @@
         
         _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
         _dtf.textColor = [UIColor blackColor];
-        _dtf.font = [UIFont systemFontOfSize:17.0];
+        _dtf.font = PrefBodyFont;  //[UIFont systemFontOfSize:17.0];
         _dtf.backgroundColor = [UIColor whiteColor];
         _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         

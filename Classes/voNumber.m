@@ -64,7 +64,7 @@
         
         _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
         _dtf.textColor = [UIColor blackColor];
-        _dtf.font = [UIFont systemFontOfSize:17.0];
+        _dtf.font = PrefBodyFont; // [UIFont systemFontOfSize:17.0];
         _dtf.backgroundColor = [UIColor whiteColor];
         _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
@@ -195,7 +195,7 @@
 	
 	CGRect labframe = [ctvovc configLabel:@"Start with last saved value:" frame:frame key:@"swlLab" addsv:YES];
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	[ctvovc configCheckButton:frame 
+	frame = [ctvovc configCheckButton:frame
                           key:@"swlBtn"
                         state:([(self.vo.optDict)[@"nswl"] isEqualToString:@"1"])  // default:0
                         addsv:YES
@@ -211,11 +211,11 @@
     labframe = [ctvovc configLabel:@"graph decimal places (-1 auto):" frame:frame key:@"numddpLab" addsv:YES];
     
     frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"99999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"99999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
     frame.size.width = tfWidth;
     frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
     
-    [ctvovc configTextField:frame
+    frame = [ctvovc configTextField:frame
                               key:@"numddpTF"
                            target:nil
                            action:nil

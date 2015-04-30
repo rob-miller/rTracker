@@ -68,4 +68,6 @@
 #define ADVER_TRACKER_LIM   8
 #define ADVER_ITEM_LIM      8
 
+#define PrefBodyFont [UIFont preferredFontForTextStyle:UIFontTextStyleBody]
+
 

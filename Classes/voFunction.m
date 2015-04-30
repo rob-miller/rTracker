@@ -789,6 +789,7 @@
     if (nil == _rlab) {
         _rlab = [[UILabel alloc] initWithFrame:self.vosFrame];
         _rlab.textAlignment = NSTextAlignmentRight; // ios6 UITextAlignmentRight;
+        _rlab.font = PrefBodyFont;
     }
     return _rlab;
 }
@@ -945,7 +946,7 @@
 						   addsv:NO ];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1145,7 +1146,7 @@
 	frame.origin.x = -1.0f;
 	[self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)]; 
     
-    frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width + 3*MARGIN;
+    frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width + 3*MARGIN;
     //frame.origin.y += frame.size.height + MARGIN;
     labframe = [self.ctvovcp configLabel:@"Constant value:" 
                                    frame:frame
@@ -1153,7 +1154,7 @@
                                    addsv:NO ];
     
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"9999.99" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999.99" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; 
 	
@@ -1249,7 +1250,7 @@
 	labframe = [self.ctvovcp configLabel:@"Display result decimal places:" frame:frame key:@"fnddpLab" addsv:YES];
 	
 	frame.origin.x += labframe.size.width + SPACE;
-    CGFloat tfWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.ctvovcp.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	

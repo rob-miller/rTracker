@@ -127,7 +127,8 @@
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
     [self.view addGestureRecognizer:swipe];
-	   
+    
+    
     [super viewDidLoad];
 }
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
@@ -310,9 +311,11 @@
 
 - (CGRect) configLabel:(NSString *)text frame:(CGRect)frame key:(NSString*)key addsv:(BOOL)addsv
 {
-    frame.size = [text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont labelFontSize]]}];
+    //frame.size = [text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont labelFontSize]]}];
+    frame.size = [text sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
 	
 	UILabel *rlab = [[UILabel alloc] initWithFrame:frame];
+    rlab.font = PrefBodyFont;
 	rlab.text = text;
 	rlab.backgroundColor = [UIColor clearColor];
 
@@ -395,8 +398,13 @@
 	
 }
 
-- (void) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv
+- (CGRect) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv
 {
+    if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
+        frame.origin.x = MARGIN;
+        frame.origin.y += MARGIN + frame.size.height;
+    }
+    
 	UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	//imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
     imageButton.frame = frame; 
@@ -413,12 +421,20 @@
         [self.view addSubview:imageButton];
     }
     
+    return frame;
 }
 
-- (void) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action {
+- (CGRect) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action {
+
+    if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
+        frame.origin.x = MARGIN;
+        frame.origin.y += MARGIN + frame.size.height;
+    }
 
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    button.titleLabel.font = PrefBodyFont;
     frame.size.width = [label sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}].width + 4*SPACE;
+
 	if (frame.origin.x == -1.0f) {
 		frame.origin.x = self.view.frame.size.width - (frame.size.width + MARGIN); // right justify
 	}
@@ -434,6 +450,8 @@
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 	
 	[self.view addSubview:button];
+
+    return frame;
 }
 
 - (void) tfDone:(UITextField *)tf {
@@ -532,8 +550,13 @@
 }
 
 
-- (void) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
+- (CGRect) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
 {
+    if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
+        frame.origin.x = MARGIN;
+        frame.origin.y += MARGIN + frame.size.height;
+    }
+    
 	frame.origin.y -= TFXTRA;
 	UITextField *rtf = [rTracker_resource rrConfigTextField:frame
                                                         key:key target:(target ? target : self)
@@ -547,10 +570,16 @@
     if (addsv)
 		[self.view addSubview:rtf];
 
+    return frame;
 }
 
-- (void) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text {
+- (CGRect) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text {
 
+    if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
+        frame.origin.x = MARGIN;
+        frame.origin.y += MARGIN + frame.size.height;
+    }
+    
 	UITextView *rtv = [[UITextView alloc] initWithFrame:frame];
 	rtv.editable = NO;
 	(self.wDict)[key] = rtv;
@@ -558,6 +587,8 @@
 	rtv.text = text;
     //[rtv scrollRangeToVisible: (NSRange) { (NSUInteger) ([text length]-1), (NSUInteger)1 }];  // works 1st time but text is cached so doesn't work subsequently
 	[self.view addSubview:rtv];
+
+    return frame;
 }
 
 
@@ -634,7 +665,7 @@
 	labframe = [self configLabel:@"min:" frame:frame key:@"nminLab" addsv:NO];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
-    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -833,9 +864,14 @@
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
+    if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
+        frame.origin.x = MARGIN;
+        frame.origin.y += MARGIN + frame.size.height;
+    }
+    
 	//-- draw graphs button
 	
-	[self configCheckButton:frame 
+	frame = [self configCheckButton:frame
 						key:@"srBtn" 
 					  state:(![(self.to.optDict)[@"savertn"] isEqualToString:@"0"]) // default = @"1"
                       addsv:YES
@@ -846,17 +882,17 @@
 	frame.origin.x = MARGIN;
 	//frame.origin.x += frame.size.width + MARGIN + SPACE;
 	frame.origin.y += MARGIN + frame.size.height;
-	labframe = [self configLabel:@"Privacy level:" frame:frame key:@"gpLab" addsv:YES];
+    labframe = [self configLabel:@"Privacy level:" frame:frame key:@"gpLab" addsv:YES];
 	
 	//-- privacy level textfield
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    CGFloat tfWidth = [@"9999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
-	[self configTextField:frame 
+	frame = [self configTextField:frame
 					  key:@"gpTF" 
 				   target:nil
 				   action:nil
@@ -881,7 +917,7 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-    tfWidth = [@"999999" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
+    tfWidth = [@"999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 	frame.size.width = tfWidth;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -890,7 +926,7 @@
             gMaxDays = @"";
     }
     
-	[self configTextField:frame
+	frame = [self configTextField:frame
 					  key:@"gmdTF"
 				   target:nil
 				   action:nil
@@ -903,7 +939,7 @@
     
     frame.origin.x += tfWidth + SPACE;
     //labframe =
-    [self configLabel:@"days" frame:frame key:@"gl2Lab" addsv:YES];
+    frame = [self configLabel:@"days" frame:frame key:@"gl2Lab" addsv:YES];
     
 	
     //-- default email label
@@ -917,13 +953,13 @@
 	
 	frame.origin.x += labframe.size.width + SPACE;
 	
-	//tfWidth = [@"" sizeWithFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]].width;
+	//tfWidth = [@"" sizeWithFont:PrefBodyFont].width;
 	frame.size.width = self.view.frame.size.width - (2*SPACE) - labframe.size.width - MARGIN;
 	frame.size.height = self.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
     NSString *dfltEmail = (self.to.optDict)[@"dfltEmail"];
         
-	[self configTextField:frame
+	frame = [self configTextField:frame
 					  key:@"deTF"
 				   target:nil
 				   action:nil
@@ -943,7 +979,7 @@
             
             // reminder config button:
             
-            [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
+            frame = [self configActionBtn:frame key:nil label:@"Reminders" target:self action:@selector(notifyReminderView)];
             
             // dbInfo values button:
             
@@ -951,7 +987,7 @@
             //frame.origin.x += frame.size.width + MARGIN + SPACE;
             frame.origin.y += MARGIN + frame.size.height;
             
-            [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
+            frame = [self configActionBtn:frame key:nil label:@"database info" target:self action:@selector(dbInfoBtn)];
             
             // 'reset reminders' button
             
@@ -959,12 +995,12 @@
             //frame.origin.x += frame.size.width + MARGIN + SPACE;
             frame.origin.y += MARGIN + frame.size.height;
             
-            [self configActionBtn:frame key:nil label:@"set reminders" target:self action:@selector(setRemindersBtn)];
+            frame = [self configActionBtn:frame key:nil label:@"set reminders" target:self action:@selector(setRemindersBtn)];
         } else {
 
             frame.origin.y += MARGIN + frame.size.height;
             //labframe =
-            [self configLabel:@"(Save to enable reminders)" frame:frame key:@"erLab" addsv:YES];
+            frame = [self configLabel:@"(Save to enable reminders)" frame:frame key:@"erLab" addsv:YES];
             
         }
     }

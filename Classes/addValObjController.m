@@ -149,7 +149,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//if (kIS_LESS_THAN_IOS7) {
     //    self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
     //} else {
-        self.labelField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        self.labelField.font = PrefBodyFont;
     //}
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
@@ -385,7 +385,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
         //if (kIS_LESS_THAN_IOS7) {
         //    tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
         //} else {
-            tsize = [s sizeWithAttributes:@{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+            tsize = [s sizeWithAttributes:@{NSFontAttributeName: PrefBodyFont}];
         //}
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
