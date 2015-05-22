@@ -20,6 +20,10 @@
 #import "GSTouchesShowingWindow.h"
 #endif
 
+#if ADVERSION
+#import "rt_IAPHelper.h"
+#endif
+
 @implementation rTrackerAppDelegate
 
 @synthesize window=_window;
@@ -41,8 +45,21 @@
 
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    [sud synchronize];
+    
+#if ADVERSION
+    [rTracker_resource setPurchased:[sud boolForKey:RTA_prodid]];
+    if (![rTracker_resource getPurchased]) {
+        [rt_IAPHelper sharedInstance];
+    }
+#endif
+    
+
     RootViewController *rootController = (RootViewController *) (self.navigationController.viewControllers)[0];
-    if (nil == [[NSUserDefaults standardUserDefaults] objectForKey:@"reload_sample_trackers_pref"]) {
+    
+    if (nil == [sud objectForKey:@"reload_sample_trackers_pref"]) {
 
         //((RootViewController *) [self.navigationController.viewControllers objectAtIndex:0]).initialPrefsLoad = YES;
         rootController.initialPrefsLoad = YES;
@@ -66,8 +83,8 @@
              }
          }
          
-         [[NSUserDefaults standardUserDefaults] registerDefaults:registerableDictionary]; 
-         [[NSUserDefaults standardUserDefaults] synchronize]; 
+         [sud registerDefaults:registerableDictionary];
+         [sud synchronize];
     }
     
     // Override point for customization after app launch    
@@ -119,8 +136,8 @@
     if (nil != notification) {
         DBGLog(@"responding to local notification with msg : %@",notification.alertBody);
         //[rTracker_resource alert:@"launched with locNotification" msg:notification.alertBody];
-        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-        [sud synchronize];
+        //NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        //[sud synchronize];
         [rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]];
 
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];

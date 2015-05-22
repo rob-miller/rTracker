@@ -21,8 +21,10 @@
 #import "CSVParser.h"
 
 #import "dbg-defs.h"
+
 #if ADVERSION
 #import "adSupport.h"
+#import "rt_IAPHelper.h"
 #endif
 
 @implementation RootViewController
@@ -974,7 +976,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 - (void)viewDidLayoutSubviews
 {
-    [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+    }
 }
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
@@ -1001,8 +1005,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 - (adSupport*) adSupport
 {
-    if (_adSupport == nil) {
-        _adSupport = [[adSupport alloc] init];
+    if (![rTracker_resource getPurchased]) {
+        if (_adSupport == nil) {
+            _adSupport = [[adSupport alloc] init];
+        }
     }
     return _adSupport;
 }
@@ -1014,7 +1020,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [super viewDidLoad];
 
 #if ADVERSION
-    [self.adSupport initBannerView:self];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport initBannerView:self];
+    }
     //[self.view addSubview:self.adSupport.bannerView];
 #endif
     
@@ -1054,8 +1062,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
 
 #if ADVERSION
-    tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
-    DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+    if (![rTracker_resource getPurchased]) {
+        tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
+        DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+    }
 #endif
 
     DBGLog(@"tvf origin x %f y %f size w %f h %f",tableFrame.origin.x,tableFrame.origin.y,tableFrame.size.width,tableFrame.size.height);
@@ -1257,8 +1267,10 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     }
 #if ADVERSION
-    [self.adSupport initBannerView:self];
-    [self.view addSubview:self.adSupport.bannerView];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport initBannerView:self];
+        [self.view addSubview:self.adSupport.bannerView];
+    }
 #endif
     [super viewWillAppear:animated];
 }
@@ -1299,7 +1311,9 @@ BOOL stashAnimated;
 	[self refreshView];
     [super viewDidAppear:stashAnimated];
 #if ADVERSION
-    [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+    }
 #endif
 }
 
@@ -1652,9 +1666,11 @@ BOOL stashAnimated;
         return;
     }
 #if ADVERSION
-    if (ADVER_TRACKER_LIM <= [self.tlist.topLayoutIDs count]) {
-        [rTracker_resource buy_rTrackerAlert];
-        return;
+    if (![rTracker_resource getPurchased]) {
+        if (ADVER_TRACKER_LIM <= [self.tlist.topLayoutIDs count]) {
+            [rTracker_resource buy_rTrackerAlert];
+            return;
+        }
     }
 #endif
 	addTrackerController *atc = [[addTrackerController alloc] initWithNibName:@"addTrackerController" bundle:nil ];
@@ -1832,7 +1848,11 @@ BOOL stashAnimated;
     utc.saveFrame = self.view.frame; // self.tableView.frame; //  view.frame;
     utc.rvcTitle = self.title;
 #if ADVERSION
-    utc.adSupport = self.adSupport;
+    if (![rTracker_resource getPurchased]) {
+        utc.adSupport = self.adSupport;
+    } else {
+        utc.adSupport = nil;
+    }
 #endif
     
     //if (rejectable) {

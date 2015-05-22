@@ -8,23 +8,61 @@
 
 #import "voBoolean.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voBoolean
 
-@synthesize imageButton=_imageButton;
-
+@synthesize checkButton=_checkButton;
+//@synthesize checkedBtn=_checkedBtn, uncheckedBtn=_uncheckedBtn;
 
 // 25.i.14 allow assigned values so use default (10) size
 //- (int) getValCap {  // NSMutableString size for value
 //    return 1;
 //}
-
+/*
 - (UIImage *) boolBtnImage {
 	// default is not checked
-	return ( [self.vo.value isEqualToString:@""] ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"] );
+    return ( [self.vo.value isEqualToString:@""] ? [UIImage imageNamed:@"unchecked.png"] : [UIImage imageNamed:@"checked.png"] );
 }
+*/
+/*
+- (NSAttributedString*) checkedBtn {
+    if (nil == _checkedBtn) {
+        CGFloat psize = [PrefBodyFont pointSize];
+        if (psize < 28.0) psize = 28.0;
+        _checkedBtn = [[NSAttributedString alloc]
+                       initWithString:@"\u2714" //@"\u2611"
+                       attributes:@{NSFontAttributeName:[UIFont fontWithName:@"AppleColorEmoji" size:psize]
+                                    //,
+                                    //NSForegroundColorAttributeName:[UIColor greenColor],
+                                    //NSBackgroundColorAttributeName:[rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue]]
+                                    }];
+                                    //NSForegroundColorAttributeName:[rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue]] }];
+    }
+    return _checkedBtn;
+}
+- (NSAttributedString*) uncheckedBtn {
+    if (nil == _uncheckedBtn) {
+        CGFloat psize = [PrefBodyFont pointSize];
+        if (psize < 28.0) psize = 28.0;
+        _uncheckedBtn = [[NSAttributedString alloc]
+                       initWithString:@"\u2714" //@"\u2611"
+                       attributes:@{NSFontAttributeName:[UIFont fontWithName:@"AppleColorEmoji" size:psize]
+                                    //,
+                                    //NSForegroundColorAttributeName:[UIColor clearColor]
+                                    }];
+    }
+    return _uncheckedBtn;
+}
+*/
+/*
+-(UIColor*) boolBtnColor {
+	// default is not checked
+    return ( [self.vo.value isEqualToString:@""] ? [UIColor whiteColor] : [rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue] ]);
+}
+*/
 
-- (void)boolBtnAction:(UIButton *)imageButton
+- (void)boolBtnAction:(UIButton *)checkButton
 {  // default is unchecked or nil // 25.i.14 use assigned val // was "so only certain is if =1" ?
 	if ([self.vo.value isEqualToString:@""]) {
         NSString *bv = (self.vo.optDict)[@"boolval"];
@@ -33,41 +71,46 @@
             //[self.vo.optDict setObject:bv forKey:@"boolval"];
         //}
 		[self.vo.value setString:bv];
-		[self.imageButton setImage:[UIImage imageNamed:@"checked.png"] forState: UIControlStateNormal];
+        [rTracker_resource setCheckButton:self.checkButton colr:[rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue] ]];
         if ([@"1" isEqualToString:(self.vo.optDict)[@"setstrackerdate"]]) {
             [self.vo setTrackerDateToNow];
         }
 	} else {
 		[self.vo.value setString:@""];
-		[self.imageButton setImage:[UIImage imageNamed:@"unchecked.png"] forState: UIControlStateNormal];
+        [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
 	}
 
 	//self.vo.display = nil; // so will redraw this cell only
 	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
-- (UIButton*) imageButton {
-    if (_imageButton && _imageButton.frame.size.width != self.vosFrame.size.width) _imageButton=nil;  // first time around thinks size is 320, handle larger devices
+- (UIButton*) checkButton {
+    CGRect frame = self.vosFrame;
+    frame.size.height *= 1.1;
+    frame.origin.x = (frame.origin.x + frame.size.width) - (frame.size.height);
+    frame.size.width = frame.size.height ;
+    
+    if (_checkButton && _checkButton.frame.size.width != frame.size.width) _checkButton=nil;  // first time around thinks size is 320, handle larger devices
 
-	if (nil == _imageButton) {
-        _imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _imageButton.frame = self.vosFrame; //CGRectZero;
-        _imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        _imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight; //Center;
-        [_imageButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];
-        _imageButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
-          // rtm 06 feb 2012
+	if (nil == _checkButton) {
+        _checkButton = [rTracker_resource getCheckButton:frame];
+        [_checkButton addTarget:self action:@selector(boolBtnAction:) forControlEvents:UIControlEventTouchDown];
+        _checkButton.tag = kViewTag;	// tag this view for later so we can remove it from recycled table cells
 	}
-    return _imageButton;
+    return _checkButton;
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
     self.vosFrame = bounds;
-	[self.imageButton setImage:[self boolBtnImage] forState: UIControlStateNormal];
+
+    if ([self.vo.value isEqualToString:@""]) {
+        [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
+    } else {
+        [rTracker_resource setCheckButton:self.checkButton colr:[rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue] ]];
+    }
     
-    DBGLog(@"bool voDisplay: %d", ([self.imageButton imageForState:UIControlStateNormal] == [UIImage imageNamed:@"checked.png"] ? 1 : 0) );
     DBGLog(@"bool data= %@",self.vo.value);
-	return self.imageButton;
+	return self.checkButton;
 }
 
 - (NSArray*) voGraphSet {
@@ -102,6 +145,10 @@
     if ((nil == std) || ([@"" isEqualToString:std])) {
         (self.vo.optDict)[@"setstrackerdate"] = (SETSTRACKERDATEDFLT ? @"1" : @"0");
     }
+    NSString *bc = (self.vo.optDict)[@"btnColr"];
+    if ((nil == bc) || ([@"" isEqualToString:bc])) {
+        (self.vo.optDict)[@"btnColr"] = BOOLBTNCOLRDFLTSTR;
+    }
     return [super setOptDictDflts];
 }
 
@@ -113,6 +160,7 @@
     
     if (([key isEqualToString:@"boolval"] && ([val floatValue] == f(BOOLVALDFLT)))
         || ([key isEqualToString:@"setstrackerdate"] && ([val isEqualToString:(SETSTRACKERDATEDFLT ? @"1" : @"0")]))
+        || ([key isEqualToString:@"btnColr"] && ([val isEqualToString:BOOLBTNCOLRDFLTSTR]))
         ) {
         [self.vo.optDict removeObjectForKey:key];
         DBGLog(@"cleanDflt for bool: %@",key);
@@ -122,6 +170,15 @@
     return [super cleanOptDictDflts:key];
 }
 
+- (void) boolColorButtonAction:(UIButton *)btn
+{
+    NSNumber *bc = (self.vo.optDict)[@"btnColr"];
+    NSInteger col = [bc integerValue];
+    if (++col >= [[rTracker_resource colorSet] count])
+        col=0;
+    (self.vo.optDict)[@"btnColr"] = [NSString stringWithFormat:@"%ld",(long)col];
+    btn.backgroundColor = [rTracker_resource colorSet][col];
+}
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
@@ -159,7 +216,33 @@
                         addsv:YES
      ];
     
+    frame.origin.x = MARGIN;
+    frame.origin.y += labframe.size.height + MARGIN;
     
+    labframe = [ctvovc configLabel:@"Active color:" frame:frame key:@"btnColrLab" addsv:YES];
+    
+    frame.origin.x += labframe.size.width + MARGIN;
+    frame.size.width = frame.size.height;
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = frame;
+    [[btn layer] setCornerRadius:8.0f];
+    [[btn layer] setMasksToBounds:YES];
+    [[btn layer] setBorderWidth:1.0f];
+    NSString *bc = (self.vo.optDict)[@"btnColr"];
+    if (!bc) {
+        bc = BOOLBTNCOLRDFLTSTR;
+        (self.vo.optDict)[@"btnColr"] = BOOLBTNCOLRDFLTSTR;
+    }
+    btn.backgroundColor = [rTracker_resource colorSet][[bc integerValue]];
+    
+    btn.titleLabel.font = PrefBodyFont;
+    
+    [btn addTarget:self action:@selector(boolColorButtonAction:) forControlEvents:UIControlEventTouchDown];
+    (ctvovc.wDict)[@"boolColrBtn"] = btn;
+    //[ctvovc.view addSubview:btn];
+    [ctvovc.scroll addSubview:btn];
+
 
     //-----
     

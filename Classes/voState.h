@@ -27,6 +27,7 @@
 
 @property (nonatomic,unsafe_unretained) valueObj *vo;
 @property (nonatomic) CGRect vosFrame;
+@property (nonatomic,weak) UIViewController *vc;
 
 - (id) init;
 - (id) initWithVO:(valueObj*)valo;

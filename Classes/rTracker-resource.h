@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "dbg-defs.h"
 
 // make sqlite db files available from itunes? (perhaps prefs option later)
 #define DBACCESS NO
@@ -31,6 +32,10 @@ NSUInteger DeviceSystemMajorVersion();
 
 + (NSUInteger) countLines:(NSString*)str;
 + (void) initHasAmPm;
+
++ (UIButton*) getCheckButton:(CGRect)frame;
++ (void) setCheckButton:(UIButton*)cb colr:(UIColor*)colr;
++ (void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg;
 + (void) buy_rTrackerAlert;
@@ -64,7 +69,12 @@ NSUInteger DeviceSystemMajorVersion();
 
 + (BOOL)getToldAboutSwipe;
 + (void)setToldAboutSwipe:(BOOL)toldSwipe;
-    
+
+#if ADVERSION
++ (BOOL)getPurchased;
++ (void)setPurchased:(BOOL)inPurchased;
+#endif
+
     
 + (void) stashTracker:(int)tid;
 + (void) rmStashedTracker:(int)tid;

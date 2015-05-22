@@ -60,7 +60,7 @@
 //@property (nonatomic,retain) NSMutableDictionary *historyDictionary;
 
 @property (nonatomic, unsafe_unretained) voDataEdit *devc;
-@property (nonatomic) CGRect saveFrame;
+//@property (nonatomic) CGRect saveFrame;
 
 @property (nonatomic) BOOL showNdx;
 @property (nonatomic) BOOL accessAddressBook;
@@ -71,8 +71,9 @@
 
 - (IBAction) addPickerData:(id)sender;
 - (IBAction) segmentChanged:(id)sender;
-
+/*
 - (void)keyboardWillShow:(NSNotification *)aNotification;
 - (void)keyboardWillHide:(NSNotification *)aNotification;
+*/
 
 @end

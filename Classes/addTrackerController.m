@@ -16,7 +16,11 @@
 
 #import "voState.h"
 
-@implementation addTrackerController 
+#if ADVERSION
+#import "rt_IAPHelper.h"
+#endif
+
+@implementation addTrackerController
 
 @synthesize tlist=_tlist;
 @synthesize tempTrackerObj=_tempTrackerObj;
@@ -34,9 +38,6 @@
 
 - (void) dealloc {
 	DBGLog(@"atc: dealloc");
-    
-    
-	
 }
 
 # pragma mark -
@@ -47,7 +48,7 @@
 - (void) viewDidLoad {
 
 	DBGLog(@"atc: vdl tlist dbname= %@",_tlist.dbName); // use backing ivar because don't want dbg msg to instantiate
-	
+
 	// cancel / save buttons on top nav bar -- can't seem to do in IB
 
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
@@ -352,10 +353,12 @@ DBGLog(@"btnAddValue was pressed!");
     }
     
 #if ADVERSION
-    // can trigger on editing an existing tracker with more than 8 items
-    if (ADVER_ITEM_LIM < [self.tempTrackerObj.valObjTable count]) {
-        [rTracker_resource buy_rTrackerAlert];
-        return;
+    if (![rTracker_resource getPurchased]) {
+        // can trigger on editing an existing tracker with more than 8 items
+        if (ADVER_ITEM_LIM < [self.tempTrackerObj.valObjTable count]) {
+            [rTracker_resource buy_rTrackerAlert];
+            return;
+        }
     }
 #endif
 
@@ -698,10 +701,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) addValObj:(valueObj*) vo {
 #if ADVERSION
-    if (!vo) {
-        if (ADVER_ITEM_LIM <= [self.tempTrackerObj.valObjTable count]) {
-            [rTracker_resource buy_rTrackerAlert];
-            return;
+    if (![rTracker_resource getPurchased]) {
+        if (!vo) {
+            if (ADVER_ITEM_LIM <= [self.tempTrackerObj.valObjTable count]) {
+                [rTracker_resource buy_rTrackerAlert];
+                return;
+            }
         }
     }
 #endif

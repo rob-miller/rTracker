@@ -8,6 +8,7 @@
 
 #import "voInfo.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voInfo
 
@@ -150,8 +151,15 @@
 
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
-    frame.size.width = ctvovc.view.frame.size.width - (2*MARGIN);
+    frame.size.width = [rTracker_resource get_visible_size:ctvovc].width - 2*MARGIN; //ctvovc.view.frame.size.width - (2*MARGIN) ;
+    //frame.size.width = 2 * ctvovc.view.frame.size.width ;
 
+    CGSize tsize = [(self.vo.optDict)[@"infourl"] sizeWithAttributes:@{NSFontAttributeName: PrefBodyFont}];
+    DBGLog(@"frame width %f  tsize width %f",frame.size.width,tsize.width);
+    if (tsize.width > (frame.size.width - (2*MARGIN))) {
+        frame.size.width = tsize.width + (4 * MARGIN);
+    }
+    
     frame = [ctvovc configTextField:frame
                         key:@"iurlTF"
                      target:nil
@@ -163,6 +171,7 @@
 
     
 	ctvovc.lasty = frame.origin.y + labframe.size.height + MARGIN + SPACE ;
+    ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
     
 	//[super voDrawOptions:ctvovc];
 }

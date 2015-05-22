@@ -24,6 +24,7 @@
 @synthesize to=_to, vo=_vo, wDict=_wDict;
 @synthesize toolBar=_toolBar, navBar=_navBar, lasty=_lasty, saveFrame=_saveFrame, LFHeight=_LFHeight, vdlConfigVO=_vdlConfigVO;
 @synthesize activeField=_activeField, processingTfDone=_processingTfDone;
+@synthesize scroll=_scroll;
 
 //BOOL keyboardIsShown;
 
@@ -72,7 +73,18 @@
 //	[activeField resignFirstResponder];
 //}
 //
-
+/*
+- (UIScrollView*) scroll {
+    if (_scroll == nil) {
+        CGRect svrect= CGRectMake(0,0,
+                                  //self.navBar.frame.size.height,
+                                  self.view.frame.size.width,
+                                  self.view.frame.size.height-(self.navBar.frame.size.height + self.toolBar.frame.size.height));
+        _scroll = [[UIScrollView alloc] initWithFrame:svrect];
+    }
+    return _scroll;
+}
+*/
 - (void)viewDidLoad {
 	
 	NSString *name;
@@ -84,25 +96,37 @@
 		self.vdlConfigVO = YES;
 	}
 	
+    //DBGLog(@"nav controller= %@",self.navigationController);
+
+    
 	if ((name == nil) || [name isEqualToString:@""]) 
 		name = [NSString stringWithFormat:@"<%@>",(self.to.votArray)[self.vo.vtype]];
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"Configure %@",name]];
 	name = nil;
 	 
-	self.LFHeight = 31.0f; 
+    CGSize tsize = [@"X" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    self.LFHeight = tsize.height +4;
+	//self.LFHeight = 31.0f;
+    
 	//LFHeight = ((addValObjController *) [self parentViewController]).labelField.frame.size.height;
 	
-	self.lasty = self.navBar.frame.origin.y + self.navBar.frame.size.height + MARGIN;
+	//self.lasty = self.navBar.frame.origin.y + self.navBar.frame.size.height + MARGIN;
+    self.lasty=2;
+    self.lastx=2;
     
 	if (self.vo == nil) {
 		[self addTOFields];
 	} else {
 		[self addVOFields:self.vo.vtype];
 	}
-
-	
-	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]
-                                initWithTitle:@"\u2611" //@"Cal"  // ballot box with check
+    //self.scroll.contentOffset = CGPointMake(0, -self.navBar.frame.size.height);
+    CGSize svsize = [rTracker_resource get_visible_size:self];
+    if (svsize.width < self.lastx) svsize.width=self.lastx;
+    self.scroll.contentSize = CGSizeMake(svsize.width, self.lasty+(3*MARGIN));
+    //[self.view addSubview:self.scroll];
+    
+    UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]
+                                initWithTitle:@"\u2611"  // ballot box with check
                                 style:UIBarButtonItemStyleBordered
 								//initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 								target:self
@@ -242,7 +266,8 @@
 {
     //DBGLog(@"configTVObjVC keyboardwillshow");
     CGFloat boty = self.activeField.frame.origin.y + self.activeField.frame.size.height + MARGIN;
-    [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
+    [rTracker_resource willShowKeyboard:n view:self.scroll boty:boty];
+    //[rTracker_resource willShowKeyboard:n view:self.view boty:boty];
     
     /*
     if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
@@ -321,7 +346,8 @@
 
 	(self.wDict)[key] = rlab;
 	if (addsv)
-		[self.view addSubview:rlab];
+        [self.scroll addSubview:rlab];
+		//[self.view addSubview:rlab];
 	
 	CGRect retFrame = rlab.frame;
 	
@@ -400,10 +426,12 @@
 
 - (CGRect) configCheckButton:(CGRect)frame key:(NSString*)key state:(BOOL)state addsv:(BOOL)addsv
 {
+    /*
     if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
         frame.origin.x = MARGIN;
         frame.origin.y += MARGIN + frame.size.height;
     }
+    */
     
 	UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	//imageButton.frame = CGRectInset(frame,-3,-3); // a bit bigger please
@@ -418,19 +446,21 @@
 				 forState: UIControlStateNormal];
 	
 	if (addsv) {
-        [self.view addSubview:imageButton];
+        //[self.view addSubview:imageButton];
+        [self.scroll addSubview:imageButton];
     }
     
     return frame;
 }
 
 - (CGRect) configActionBtn:(CGRect)frame key:(NSString*)key label:(NSString*)label target:(id)target action:(SEL)action {
-
+    /*
     if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
         frame.origin.x = MARGIN;
         frame.origin.y += MARGIN + frame.size.height;
     }
-
+    */
+    
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     button.titleLabel.font = PrefBodyFont;
     frame.size.width = [label sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}].width + 4*SPACE;
@@ -449,7 +479,8 @@
     
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 	
-	[self.view addSubview:button];
+	//[self.view addSubview:button];
+    [self.scroll addSubview:button];
 
     return frame;
 }
@@ -552,10 +583,12 @@
 
 - (CGRect) configTextField:(CGRect)frame key:(NSString*)key target:(id)target action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text addsv:(BOOL)addsv
 {
+    /*
     if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
         frame.origin.x = MARGIN;
         frame.origin.y += MARGIN + frame.size.height;
     }
+    */
     
 	frame.origin.y -= TFXTRA;
 	UITextField *rtf = [rTracker_resource rrConfigTextField:frame
@@ -568,25 +601,28 @@
 	(self.wDict)[key] = rtf;
     
     if (addsv)
-		[self.view addSubview:rtf];
+        [self.scroll addSubview:rtf];
+		//[self.view addSubview:rtf];
 
     return frame;
 }
 
 - (CGRect) configTextView:(CGRect)frame key:(NSString*)key text:(NSString*)text {
-
+    /*
     if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
         frame.origin.x = MARGIN;
         frame.origin.y += MARGIN + frame.size.height;
     }
-    
+    */
 	UITextView *rtv = [[UITextView alloc] initWithFrame:frame];
 	rtv.editable = NO;
 	(self.wDict)[key] = rtv;
 	
 	rtv.text = text;
     //[rtv scrollRangeToVisible: (NSRange) { (NSUInteger) ([text length]-1), (NSUInteger)1 }];  // works 1st time but text is cached so doesn't work subsequently
-	[self.view addSubview:rtv];
+	
+    //[self.view addSubview:rtv];
+    [self.scroll addSubview:rtv];
 
     return frame;
 }
@@ -633,12 +669,17 @@
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
-	
+	/*
 	[self.view addSubview:(self.wDict)[@"nminLab"]];
 	[self.view addSubview:(self.wDict)[@"nminTF"]];
 	[self.view addSubview:(self.wDict)[@"nmaxLab"]];
 	[self.view addSubview:(self.wDict)[@"nmaxTF"]];
-	
+	*/
+    [self.scroll addSubview:(self.wDict)[@"nminLab"]];
+    [self.scroll addSubview:(self.wDict)[@"nminTF"]];
+    [self.scroll addSubview:(self.wDict)[@"nmaxLab"]];
+    [self.scroll addSubview:(self.wDict)[@"nmaxTF"]];
+
 	[UIView commitAnimations];
 }
 
@@ -863,12 +904,12 @@
 	CGRect labframe = [self configLabel:@"save returns to tracker list:" frame:frame key:@"srLab" addsv:YES];
 	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
-	
+	/*
     if (frame.origin.x + frame.size.width > [rTracker_resource getKeyWindowWidth]) {
         frame.origin.x = MARGIN;
         frame.origin.y += MARGIN + frame.size.height;
     }
-    
+    */
 	//-- draw graphs button
 	
 	frame = [self configCheckButton:frame
@@ -1004,6 +1045,9 @@
             
         }
     }
+    
+    self.lasty = frame.origin.y + frame.size.height + (3*MARGIN);
+    self.lastx = frame.origin.x + frame.size.width + (3*MARGIN);
 }
 
 #pragma mark main config region methods
@@ -1031,7 +1075,8 @@
 
 - (void) addVOFields:(NSInteger) vot
 {
-    
+    [self.vo.vos voDrawOptions:self];
+/*
     //TODO: can't we get rid of switch() here?
     
 	switch(vot) {
@@ -1070,12 +1115,12 @@
 			//[self drawGenOptsOnly];
 			//[self drawGeneralVoOpts];
 			break;
-            /*
+            / *
 		case VOT_IMAGE:
 			//[self drawImageOpts];
 			[self.vo.vos voDrawOptions:self];
 			break;
-             */
+             * /
 		case VOT_FUNC:
 			// uitextfield for function, picker or buttons for available valObjs and functions?
 			//[self drawFuncOptsOverview];
@@ -1089,6 +1134,7 @@
 		default:
 			break;
 	}
+ */
 	
 }
 

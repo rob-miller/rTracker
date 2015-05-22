@@ -204,6 +204,8 @@
 		D4A700D01379928E005E0E23 /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
 		D4A8D07B14F114EC0028AD03 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D4A8D07A14F114EC0028AD03 /* Settings.bundle */; };
 		D4A9E4371A412FF300BD15B5 /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A9E4361A412FF300BD15B5 /* addTrackerController.xib */; };
+		D4B1AD511AFE8D690098D068 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B1AD501AFE8D690098D068 /* IAPHelper.m */; };
+		D4B1AD541AFE8F670098D068 /* rt_IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B1AD531AFE8F670098D068 /* rt_IAPHelper.m */; };
 		D4B3009315A9B51A0042319D /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4B3009215A9B51A0042319D /* sampleTrackers */; };
 		D4B634B817B1C3B500E96BC1 /* notifyReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */; };
 		D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */; };
@@ -364,6 +366,10 @@
 		D4A7B00512FCC28500ABC266 /* privDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privDefs.h; sourceTree = "<group>"; };
 		D4A8D07A14F114EC0028AD03 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D4A9E4361A412FF300BD15B5 /* addTrackerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = addTrackerController.xib; sourceTree = "<group>"; };
+		D4B1AD4F1AFE8D690098D068 /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
+		D4B1AD501AFE8D690098D068 /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
+		D4B1AD521AFE8F670098D068 /* rt_IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rt_IAPHelper.h; sourceTree = "<group>"; };
+		D4B1AD531AFE8F670098D068 /* rt_IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = rt_IAPHelper.m; sourceTree = "<group>"; };
 		D4B3009215A9B51A0042319D /* sampleTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sampleTrackers; sourceTree = "<group>"; };
 		D4B634B517B1C3B500E96BC1 /* notifyReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifyReminderViewController.h; sourceTree = "<group>"; };
 		D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = notifyReminderViewController.m; sourceTree = "<group>"; };
@@ -484,6 +490,10 @@
 				D40DC28F133BEC3600023D5D /* rTracker-resource.m */,
 				D4E370331ACDCD0300118F73 /* adSupport.h */,
 				D4E370341ACDCD0300118F73 /* adSupport.m */,
+				D4B1AD4F1AFE8D690098D068 /* IAPHelper.h */,
+				D4B1AD501AFE8D690098D068 /* IAPHelper.m */,
+				D4B1AD521AFE8F670098D068 /* rt_IAPHelper.h */,
+				D4B1AD531AFE8F670098D068 /* rt_IAPHelper.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1150,8 +1160,10 @@
 				D43A7EA51AB62358001BEC96 /* voImage.m in Sources */,
 				D43A7EA61AB62358001BEC96 /* voFunction.m in Sources */,
 				D43A7EA71AB62358001BEC96 /* voState.m in Sources */,
+				D4B1AD511AFE8D690098D068 /* IAPHelper.m in Sources */,
 				D43A7EA81AB62358001BEC96 /* voDataEdit.m in Sources */,
 				D43A7EA91AB62358001BEC96 /* privacyV.m in Sources */,
+				D4B1AD541AFE8F670098D068 /* rt_IAPHelper.m in Sources */,
 				D43A7EAA1AB62358001BEC96 /* tictacV.m in Sources */,
 				D43A7EAB1AB62358001BEC96 /* GSTouchesShowingWindow.m in Sources */,
 				D43A7EAC1AB62358001BEC96 /* ppwV.m in Sources */,

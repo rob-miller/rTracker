@@ -31,7 +31,7 @@
 
 -(CGFloat)voTVCellHeight {
     //return CELL_HEIGHT_TALL;
-    return self.sliderCtl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height;
+    return self.sliderCtl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height + [self.vo getLongTitleSize].height;
 }
 
 - (void)sliderAction:(UISlider *)sender

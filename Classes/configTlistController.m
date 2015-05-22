@@ -12,6 +12,10 @@
 #import "rTracker-resource.h"
 #import "dbg-defs.h"
 
+#if ADVERSION
+#import "rt_IAPHelper.h"
+#endif
+
 @implementation configTlistController
 
 @synthesize tlist=_tlist;
@@ -26,9 +30,6 @@ static int selSegNdx=SegmentEdit;
 
 - (void)dealloc {
 	DBGLog(@"configTlistController dealloc");
-	 
-	
-    
 }
 
 
@@ -53,6 +54,12 @@ static int selSegNdx=SegmentEdit;
     
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];
 }
+#if ADVERSION
+- (void) btnUpgrade {
+    [rTracker_resource buy_rTrackerAlert];
+}
+#endif
+
 /*
 #if !RELEASE
 
@@ -67,13 +74,34 @@ static int selSegNdx=SegmentEdit;
 - (void)viewDidLoad {
 	
 	self.title = @"Edit trackers";
-    
+
 //#if RELEASE
-	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
-								  initWithTitle:@"Export all"
-								  style:UIBarButtonItemStyleBordered
-								  target:self
-								  action:@selector(btnExport)];
+
+    UIBarButtonItem *exportBtn;
+#if ADVERSION
+    if (![rTracker_resource getPurchased]) {
+        
+        exportBtn = [[UIBarButtonItem alloc]
+                     initWithTitle:@"Upgrade"
+                     style:UIBarButtonItemStyleBordered
+                     target:self
+                     action:@selector(btnUpgrade)];
+    } else {
+        exportBtn = [[UIBarButtonItem alloc]
+                     initWithTitle:@"Export all"
+                     style:UIBarButtonItemStyleBordered
+                     target:self
+                     action:@selector(btnExport)];
+        
+    }
+#else
+    exportBtn = [[UIBarButtonItem alloc]
+                 initWithTitle:@"Export all"
+                 style:UIBarButtonItemStyleBordered
+                 target:self
+                 action:@selector(btnExport)];
+#endif
+    
 /*
  #else
     // wipe orphans

@@ -40,7 +40,7 @@
 
 -(CGFloat)voTVCellHeight {
     //return CELL_HEIGHT_TALL;
-    return self.segmentedControl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height;
+    return self.segmentedControl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height + [self.vo getLongTitleSize].height;
     
 }
 
@@ -369,8 +369,8 @@
 	frame.origin.x = MARGIN;
 	frame.origin.y += labframe.size.height + MARGIN;
 	
-    CGFloat tfvWidth = [@"999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
-    CGFloat tfWidth = [@"9999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
+    CGFloat tfvWidth = [@"-88 " sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
+    CGFloat tfWidth = [@"888888888" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
 
 	frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
 	
@@ -419,8 +419,11 @@
         
 		[btn addTarget:self action:@selector(choiceColorButtonAction:) forControlEvents:UIControlEventTouchDown];
 		(ctvovc.wDict)[[NSString stringWithFormat:@"%dbtn",i]] = btn;
-		[ctvovc.view addSubview:btn];
-		
+		//[ctvovc.view addSubview:btn];
+        [ctvovc.scroll addSubview:btn];
+
+        ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
+        
 		frame.origin.x = MARGIN + (j * (tfvWidth + tfWidth + ctvovc.LFHeight + 3*MARGIN));
 		j = ( j ? 0 : 1 ); // j toggles 0-1
 		frame.origin.y += j * ((2*MARGIN) + ctvovc.LFHeight);
@@ -466,7 +469,8 @@
 
     
 	ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
-    
+    ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
+
 	[super voDrawOptions:ctvovc];
 }	
 /*

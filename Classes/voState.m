@@ -9,6 +9,8 @@
 #import "voState.h"
 #import "rTracker-constants.h"
 #import "configTVObjVC.h"
+#import "voDataEdit.h"
+
 #import "rTracker-resource.h"
 
 #import "vogd.h"
@@ -18,6 +20,8 @@
 @implementation voState
 
 @synthesize vo=_vo,vosFrame=_vosFrame;
+@synthesize vc=_vc;
+
 
 - (id) init {
 	return [self initWithVO:nil];
@@ -55,6 +59,9 @@
         (self.vo.optDict)[@"graph"] = (GRAPHDFLT ? @"1" : @"0");
     if (nil == (self.vo.optDict)[@"privacy"]) 
         (self.vo.optDict)[@"privacy"] = [NSString stringWithFormat:@"%d",PRIVDFLT];
+    if (nil == (self.vo.optDict)[@"longTitle"])
+        (self.vo.optDict)[@"longTitle"] = @"";
+
     
 }
 
@@ -66,7 +73,10 @@
     
     if (([key isEqualToString:@"graph"] && [val isEqualToString:(GRAPHDFLT ? @"1" : @"0")])
         ||
-        ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))) {
+        ([key isEqualToString:@"privacy"] && ([val intValue] == PRIVDFLT))
+        ||
+        ([key isEqualToString:@"longTitle"] && [((NSString*)val) isEqualToString:@""])
+        ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
     }
@@ -109,6 +119,24 @@
     //return [self.vos cleanOptDictDflts:key];
 }
 
+- (void) longTitleSave:(NSString*)str {
+    DBGLog(@"lts: %@",str);
+    (self.vo.optDict)[@"longTitle"] = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
+- (void) longTitleBtn {
+    DBGLog(@"long title");
+
+    voDataEdit *vde = [[voDataEdit alloc] init ];
+    vde.vo = nil;
+    vde.saveClass=self;
+    vde.saveSelector = @selector(longTitleSave:);
+    vde.text = (self.vo.optDict)[@"longTitle"];
+    
+    //[self performSelector:vde.saveSelector withObject:@"foo" afterDelay:(NSTimeInterval)0];
+    UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:vde];
+    [self.vc presentViewController:navCon animated:YES completion:NULL];
+}
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
@@ -147,7 +175,15 @@
 					   text:(self.vo.optDict)[@"privacy"]
 					  addsv:YES ];
 	
-	
+    
+    frame.origin.x = MARGIN;
+    frame.origin.y += MARGIN + frame.size.height;
+    self.vc = ctvovc;
+    frame = [ctvovc configActionBtn:frame key:nil label:@"long title" target:self action:@selector(longTitleBtn)];
+
+    ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
+    ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
+    
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
@@ -282,6 +318,22 @@
 	
 }
 
+
+
+-(CGFloat)voTVCellHeight {
+    CGSize labelSize = [self.vo getLabelSize];
+    labelSize.height +=[self.vo getLongTitleSize].height;
+    CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
+    
+    if (labelSize.width <= maxLabel.width || VOT_INFO == self.vo.vtype)
+        //return CELL_HEIGHT_NORMAL;
+        //return maxLabel.height + (2*MARGIN);
+        return labelSize.height + (2*MARGIN);
+    else
+        //return CELL_HEIGHT_TALL;
+        return labelSize.height + maxLabel.height + (2*MARGIN);
+}
+
 - (UITableViewCell*) voTVCell:(UITableView *)tableView {
 	
 	CGRect bounds;
@@ -289,7 +341,6 @@
     
 	CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
 	//DBGLog(@"votvcell maxLabel= w= %f h= %f",maxLabel.width,maxLabel.height);
-    CGSize labelSize = [self.vo getLabelSize];
 	
 	static NSString *CellIdentifier = @"Cell2";
 	
@@ -338,14 +389,19 @@
     cell.backgroundColor = [UIColor clearColor];
 
     bounds.origin.x = MARGIN;
-    bounds.origin.y = labelSize.height - (MARGIN);
+    bounds.origin.y = MARGIN;
+    
+    CGSize labelSize = [self.vo getLabelSize];
+    CGSize longTitleSize = [self.vo getLongTitleSize];
+    
+    //bounds.origin.y = labelSize.height - (MARGIN);
 
     if (labelSize.width <= maxLabel.width) {
         bounds.size.width = maxLabel.width;
     } else {
         bounds.size.width = [rTracker_resource getKeyWindowWidth] - MARGIN - RMARGIN;
     }
-    bounds.size.height = labelSize.height;
+    bounds.size.height = labelSize.height;  // maxLabel.height; // labelSize.height;
     
     UILabel *label = [[UILabel alloc] initWithFrame:bounds];
     label.tag=kViewTag;
@@ -355,6 +411,7 @@
     label.backgroundColor = [UIColor clearColor];
     
     label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
+    
     //don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
     label.contentMode = UIViewContentModeTopLeft;
     label.text = self.vo.valueName;
@@ -362,44 +419,55 @@
     
     DBGLog(@"cell text= %@ label width= %f  maxLabel width= %f",label.text, labelSize.width, maxLabel.width);
     
-    
     [cell.contentView addSubview:label];
     
-    if (labelSize.width <= maxLabel.width) {
+    if ( longTitleSize.height ) {
+        DBGLog(@"longTitle:%@",(self.vo.optDict)[@"longTitle"]);
         
+        bounds.origin.y += (3*MARGIN);  // maxLabel.height + (3*MARGIN); // labelSize.height + MARGIN;
+        bounds.size = longTitleSize;
+
+        label = [[UILabel alloc] initWithFrame:bounds];
+        label.tag=kViewTag;
+        label.font = PrefBodyFont;
+        label.textColor = [UIColor blueColor];
+        label.alpha = 1.0;
+        label.backgroundColor = [UIColor clearColor];
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.numberOfLines = 0; // remove any limit
+        
+        label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
+        //don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
+        label.contentMode = UIViewContentModeTopLeft;
+
+        label.text = (self.vo.optDict)[@"longTitle"];
+
+        [cell.contentView addSubview:label];
+        
+    }
+
+    if ((labelSize.width > maxLabel.width) || longTitleSize.height  ) {
+        bounds.origin.x = cell.frame.origin.x + MARGIN;
+        bounds.origin.y += bounds.size.height + MARGIN;  //   maxLabel.height + (2*MARGIN);
+        bounds.size.width = [rTracker_resource getKeyWindowWidth] - MARGIN - RMARGIN;
+        bounds.size.height = maxLabel.height + MARGIN;
+    } else {
         //CGSize screenSize = [[UIScreen mainScreen] bounds].size;
         bounds.origin.x = cell.frame.origin.x + maxLabel.width + LMARGIN;
         //bounds.origin.x = cell.frame.origin.x + (cell.frame.size.width )
-        bounds.origin.y = maxLabel.height - (MARGIN*1.5);
+        //bounds.origin.y = maxLabel.height - (MARGIN*1.5);
+        bounds.origin.y = MARGIN;
         bounds.size.width = [rTracker_resource getKeyWindowWidth] - maxLabel.width - LMARGIN - RMARGIN;// cell.frame.size.width - maxLabel.width - LMARGIN - RMARGIN;
         //bounds.size.width = screenSize.width - maxLabel.width - LMARGIN - RMARGIN;
         bounds.size.height = maxLabel.height + MARGIN;
         
         //DBGLog(@"maxLabel: % f %f",self.tracker.maxLabel.width, self.tracker.maxLabel.height);
         //bounds.origin.y = bounds.size.height;// - BMARGIN;
-    } else {
-        bounds.origin.x = cell.frame.origin.x + MARGIN;
-        bounds.origin.y = maxLabel.height + (2*MARGIN);
-        bounds.size.width = [rTracker_resource getKeyWindowWidth] - MARGIN - RMARGIN;
-        bounds.size.height = maxLabel.height + MARGIN;
     }
-	
+    
 	//DBGLog(@"bounds= %f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width, bounds.size.height)	;
 	[cell.contentView addSubview:[self.vo display:bounds]];
 	return cell;
-}
-
--(CGFloat)voTVCellHeight {
-    CGSize labelSize = [self.vo getLabelSize];
-    CGSize maxLabel = ((trackerObj*)self.vo.parentTracker).maxLabel;
-    
-    if (labelSize.width <= maxLabel.width || VOT_INFO == self.vo.vtype)
-        //return CELL_HEIGHT_NORMAL;
-        return maxLabel.height + (2*MARGIN);
-    else
-        //return CELL_HEIGHT_TALL;
-         return (2* maxLabel.height) + (2*MARGIN);
-    
 }
 
 - (void) dataEditVDidLoad:(UIViewController*)vc {

@@ -21,7 +21,9 @@
 
 @implementation voTextBox
 
-@synthesize tbButton=_tbButton,textView=_textView,devc=_devc,saveFrame=_saveFrame,accessoryView=_accessoryView,addButton=_addButton,segControl=_segControl;
+@synthesize tbButton=_tbButton,textView=_textView,devc=_devc;
+//,saveFrame=_saveFrame,
+@synthesize accessoryView=_accessoryView,addButton=_addButton,segControl=_segControl;
 @synthesize alphaArray=_alphaArray,namesArray=_namesArray,historyArray=_historyArray,namesNdx=_namesNdx,historyNdx=_historyNdx,parentUTC=_parentUTC;
 
 //@synthesize peopleDictionary,historyDictionary;
@@ -116,7 +118,7 @@
 												 name:rtTrackerUpdatedNotification 
 											   object:self.vo.parentTracker];
 	
-    
+    /*
     //DBGLog(@"add kybd will show notifcation");
 	keyboardIsShown = NO;
     
@@ -130,7 +132,7 @@
                                                  name:UIKeyboardWillHideNotification
                                                //object:self.textView];    //.devc.view.window];	
                                                object:self.devc.view.window];	
-     
+     */
 }
 
 - (void) dataEditVWDisappear:(UIViewController*)vc {
@@ -147,7 +149,7 @@
                                                     name:rtTrackerUpdatedNotification
                                                   object:nil];  
     
-
+/*
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
                                                   object:nil];
@@ -158,7 +160,7 @@
                                                   object:nil];
                                                   //object:self.textView];    // nil];   // self.devc.view.window];
                                                   //object:self.devc.view.window];
-
+*/
  }
 /*
 - (void) dataEditVDidUnload {
@@ -170,7 +172,7 @@
 //	[self.vo.value setString:self.textView.text];
 //}
 
-
+/*
 - (void)keyboardWillShow:(NSNotification *)aNotification 
 {
     DBGLog(@"votb keyboardwillshow");
@@ -212,6 +214,7 @@
 
     keyboardIsShown = NO;
 }
+*/
 
 #pragma mark -
 #pragma mark UITextViewDelegate

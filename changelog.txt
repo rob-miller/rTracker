@@ -1768,7 +1768,48 @@ TODO: regen all .rtrks on website
 30 apr 2015
 --- commit ---
     - save everything before trying UIScrollview for configs
-    
+    - works!
+    - put in xib to get offsets right
+    - removed code to linewrap config options when needed - instead enable scroll horizontally
+    - now keyboard scroll for text field in scrollview not working...
+
+01 may 2015
+   - textfield keyboard scroll detecting and handling uiscrollview as well as view
+   - polished for smallest text size
+
+05 may 2015
+   - happy with longTitle presentation for all text sizes on iphone 5, need to check other sizes
+   - starting on set active colour for bool button -- option done, need to implement display
+
+06 may 215
+   - implemented new bool button with color
+
+08 may 2015
+   - move bool button to rTracker_resource so can use elsewhere
+
+09 may 2015
+   - start implementation of in-app upgrade
+
+10 may 2015
+   - continue implementation of in-app upgrade, ready to handle purchase
+
+12 may 2015
+   - think fully implemented, need to set up test account and try
+
+13 may 2015
+   - changed purchased test to use bool in rTracker_resource
+   - implemented 'restore in-app upgrade'
+   - created testuser@realidata.com / Test1User account
+
+16 may 2015
+   - new company secretary Rob Drummond !
+
+22 may 2015
+--- commit ---
+
+   
+   
+
 
 +++ check rvc viewDidAppear / restart behaviour with adversion changes
 

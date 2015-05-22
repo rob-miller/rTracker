@@ -1737,7 +1737,6 @@ if (addVO) {
     //valueObj *vo;
     //while ( vo = (valueObj *) [enumer nextObject]) {
     for (valueObj *vo in self.valObjTable) {
-        //CGSize tsize = [vo.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
         CGSize tsize = [vo getLabelSize];
         //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
         if (tsize.width > lsize.width) {

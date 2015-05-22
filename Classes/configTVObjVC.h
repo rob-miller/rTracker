@@ -41,12 +41,14 @@
 @property (nonatomic,strong) NSDictionary *voOptDictStash;
 @property (nonatomic,strong) NSMutableDictionary *wDict;
 @property (nonatomic) CGFloat lasty;
+@property (nonatomic) CGFloat lastx;
 @property (nonatomic) CGRect saveFrame;
 @property (nonatomic) CGFloat LFHeight;
 
-// UI element properties 
+// UI element properties
 @property (nonatomic,strong) IBOutlet UINavigationBar *navBar;
 @property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
+@property (nonatomic, weak) IBOutlet UIScrollView *scroll;
 
 @property (nonatomic,unsafe_unretained) UITextField *activeField;   //just a pointer, no retain
 @property (nonatomic) BOOL processingTfDone;

@@ -463,7 +463,25 @@ in_vpriv:(NSInteger)in_vpriv
 
 
 - (CGSize) getLabelSize {
-    return [self.valueName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    CGSize labelSize = [self.valueName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+    return labelSize;
+    
+    //return [self.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
+}
+
+- (CGSize) getLongTitleSize {
+    CGSize labelSize = CGSizeMake(0,0);
+    if ((self.optDict)[@"longTitle"] && ![@"" isEqualToString:(self.optDict)[@"longTitle"]]) {
+        CGSize maxSize = [rTracker_resource getKeyWindowFrame].size;
+        maxSize.height = 9999;
+        maxSize.width -= (2*MARGIN);
+        NSString *lts = (self.optDict)[@"longTitle"];
+        CGRect ltrect = [lts boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:PrefBodyFont} context:nil] ;
+        labelSize.height += (ltrect.size.height - ltrect.origin.y);
+        labelSize.width = ltrect.size.width;
+    }
+    return labelSize;
+    
     //return [self.valueName sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:[UIFont systemFontSize]]}];
 }
 

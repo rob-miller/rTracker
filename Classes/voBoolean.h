@@ -14,6 +14,7 @@
     UIButton *imageButton;
 }*/
 
-@property (nonatomic,strong) UIButton *imageButton;
-
+@property (nonatomic,strong) UIButton *checkButton;
+//@property (nonatomic,strong) NSAttributedString *checkedBtn;
+//@property (nonatomic,strong) NSAttributedString *uncheckedBtn;
 @end

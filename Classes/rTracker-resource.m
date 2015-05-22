@@ -9,9 +9,10 @@
 #import "rTracker-resource.h"
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
+#import "rt_IAPHelper.h"
 
 #import <AudioToolbox/AudioToolbox.h>
-
+#import <CoreText/CTTypesetter.h>
 
 @implementation rTracker_resource
 
@@ -106,6 +107,42 @@ BOOL hasAmPm=NO;
 }
 
 //---------------------------
+
++ (UIButton*) getCheckButton:(CGRect)frame {
+    UIButton *_checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_checkButton setBackgroundColor:[UIColor clearColor]];
+    
+    _checkButton.frame = frame; //CGRectZero;
+    
+    [[_checkButton layer] setCornerRadius:8.0f];
+    [[_checkButton layer] setMasksToBounds:YES];
+    [[_checkButton layer] setBorderWidth:1.0f];
+    
+    //[_checkButton setTitle:@"\u2714" forState:UIControlStateNormal];
+    [_checkButton setTitle:@"" forState:UIControlStateNormal];
+    [_checkButton setBackgroundColor:[UIColor whiteColor]];
+    _checkButton.titleLabel.font = PrefBodyFont;
+    _checkButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _checkButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter; //Center;;  // UIControlContentHorizontalAlignmentRight; //Center;
+    
+    return _checkButton;
+}
+
++(void) setCheckButton:(UIButton*)cb colr:(UIColor*)colr {
+    if (colr) {
+        [cb setBackgroundColor:colr];
+    }
+    [cb setTitle:@"\u2714" forState:UIControlStateNormal];
+}
+
++(void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr {
+    if (colr) {
+        [cb setBackgroundColor:colr];
+    }
+    [cb setTitle:@"" forState:UIControlStateNormal];
+}
+
+//---------------------------
 + (void) alert:(NSString*)title msg:(NSString*)msg {
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:title message:msg
@@ -119,19 +156,50 @@ BOOL hasAmPm=NO;
 
 + (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if( buttonIndex == 1 ) /* NO = 0, YES = 1 */
+    if ( buttonIndex == 1 ) /* NO = 0, YES = 1 */
     {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/rtracker/id486541371"]];
+    } else if ( buttonIndex == 2 )
+    {
+        DBGLog(@"in app upgrade!");
+        
+        [[rt_IAPHelper sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+            if (success) {
+                DBGLog(@"success: %lu products",(unsigned long)[products count]);
+                NSArray *_products = products;
+                for (SKProduct *skp in _products) {
+                    DBGLog(@"Product title: %@" , skp.localizedTitle);
+                    DBGLog(@"Product description: %@" , skp.localizedDescription);
+                    DBGLog(@"Product price: %@" , skp.price);
+                    DBGLog(@"Product id: %@" , skp.productIdentifier);
+                    
+                    if ([RTA_prodid isEqualToString:skp.productIdentifier]) {
+                        [[rt_IAPHelper sharedInstance] buyProduct:skp];  // currently only one product !!!!!
+                    }
+
+                }
+            } else {
+                DBGLog(@"fail");
+            }
+
+        }];
+        
+        
+        DBGLog(@"done.");
+    
+    } else if ( buttonIndex == 3 )
+    {
+        [[rt_IAPHelper sharedInstance] restoreCompletedTransactions];
     }
 }
 
 + (void) buy_rTrackerAlert {
-    NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker to remove the advertisements and these limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
+    NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker, which does not have advertisements or limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers to rTracker (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).\n\nOr use the In-App upgrade button below to continue using rTrackerA without ads or limits.",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
     UIAlertView *_alert = [[UIAlertView alloc] initWithTitle:@"Upgrade to rTracker"
                                                      message:msg
                                                     delegate:self
                                            cancelButtonTitle:@"Not now"
-                                           otherButtonTitles:@"Get rTracker",nil];
+                                           otherButtonTitles:@"Get rTracker",@"In-App Upgrade", @"Restore In-App Upgrade",nil];
     [_alert show];
 }
 
@@ -415,7 +483,20 @@ static BOOL toldAboutSwipe=false;
 	DBGLog(@"updateToldAboutSwipe:%d",toldAboutSwipe);
 }
 
+#if ADVERSION
 
+static BOOL purchased=false;
+
++ (BOOL)getPurchased {
+    return purchased;
+}
+
++ (void)setPurchased:(BOOL)inPurchased {
+    purchased = inPurchased;
+    DBGLog(@"setPurchased:%d",inPurchased);
+}
+
+#endif
 
 //---------------------------
 
@@ -514,6 +595,7 @@ static int lastStashedTid=0;
 	[rtf setDelegate:delegate];
 	rtf.returnKeyType = UIReturnKeyDone;
 	rtf.borderStyle = UITextBorderStyleRoundedRect;
+    [rtf setFont:PrefBodyFont];
 
 	dbgNSAssert((action != nil), @"nil action");
 	dbgNSAssert((target != nil), @"nil action");
@@ -535,6 +617,32 @@ static int lastStashedTid=0;
 }
 
 //---------------------------------------
+/*
++ (CGSize)frameSizeForAttributedString:(NSAttributedString *)attributedString width:(CGFloat)width {
+    CTTypesetterRef typesetter = CTTypesetterCreateWithAttributedString((CFAttributedStringRef)attributedString);
+    //CGFloat width = YOUR_FIXED_WIDTH;
+    
+    CFIndex offset = 0, length;
+    CGFloat y = 0;
+    do {
+        length = CTTypesetterSuggestLineBreak(typesetter, offset, width);
+        CTLineRef line = CTTypesetterCreateLine(typesetter, CFRangeMake(offset, length));
+        
+        CGFloat ascent, descent, leading;
+        CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+        
+        CFRelease(line);
+        
+        offset += length;
+        y += ascent + descent + leading;
+    } while (offset < [attributedString length]);
+    
+    CFRelease(typesetter);
+    
+    return CGSizeMake(width, ceil(y));
+}
+ */
+//---------------------------------------
 
 #pragma mark -
 #pragma mark keyboard support
@@ -546,7 +654,6 @@ static int lastStashedTid=0;
     }
 	
 	DBGLog(@"handling keyboard will show: %@",[n object]);
-
     currKeyboardView = view;
 	currKeyboardSaveFrame = view.frame;
 
@@ -563,16 +670,23 @@ static int lastStashedTid=0;
 		DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
 		DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
-		
-		viewFrame.origin.y -= (boty - topk);
+        viewFrame.origin.y -= (boty - topk);
+
 		//viewFrame.size.height -= self.navigationController.toolbar.frame.size.height;
 		
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationBeginsFromCurrentState:YES];
 		[UIView setAnimationDuration:kAnimationDuration];
-		
-		[view setFrame:viewFrame];
-		
+        
+        if ([view respondsToSelector:@selector(flashScrollIndicators)]) {  // if is scrollview
+            UIScrollView *sv = (UIScrollView*) view;
+            CGPoint scrollPos = [sv contentOffset];
+            scrollPos.y += (boty - topk);
+            [sv setContentOffset:scrollPos];
+        } else {
+            [view setFrame:viewFrame];
+        }
+        
 		[UIView commitAnimations];
 	}
 	

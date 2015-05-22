@@ -84,6 +84,7 @@
 #define FDDPDFLT		2
 #define BOOLVALDFLT     1.0
 #define BOOLVALDFLTSTR  @"1"
+#define BOOLBTNCOLRDFLTSTR @"1"
 #define INFOVALDFLT     1.0
 #define INFOVALDFLTSTR  @"1.0"
 #define INFOURLDFLTSTR  @""
@@ -190,6 +191,7 @@
 - (void) validate;
 
 - (CGSize) getLabelSize;
+- (CGSize) getLongTitleSize;
 
 //+ (NSArray *) graphsForVOT:(NSInteger)vot;
 //- (NSArray *) graphsForVOT:(NSInteger)vot;

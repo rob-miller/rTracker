@@ -17,6 +17,7 @@
 
 #if ADVERSION
 #import "adSupport.h"
+#import "rt_IAPHelper.h"
 #endif
 
 //#import "trackerCalViewController.h"
@@ -109,7 +110,9 @@
 
 - (void)viewDidLayoutSubviews
 {
-    [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+    }
 }
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
@@ -136,8 +139,10 @@
 
 - (adSupport*) adSupport
 {
-    if (_adSupport == nil) {
-        _adSupport = [[adSupport alloc] init];
+    if (![rTracker_resource getPurchased]) {
+        if (_adSupport == nil) {
+            _adSupport = [[adSupport alloc] init];
+        }
     }
     return _adSupport;
 }
@@ -189,8 +194,10 @@
     tableFrame.size.height = [rTracker_resource get_visible_size:self].height; //- ( 2 * statusBarHeight ) ;
     
 #if ADVERSION
-    tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
-    DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+    if (![rTracker_resource getPurchased]) {
+        tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
+        DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+    }
 #endif
     
     DBGLog(@"tvf origin x %f y %f size w %f h %f",tableFrame.origin.x,tableFrame.origin.y,tableFrame.size.width,tableFrame.size.height);
@@ -391,8 +398,10 @@
     }
 
 #if ADVERSION
-    [self.adSupport initBannerView:self];
-    [self.view addSubview:self.adSupport.bannerView];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport initBannerView:self];
+        [self.view addSubview:self.adSupport.bannerView];
+    }
     //[self.adSupport layoutAnimated:self.view tableview:self.tableView animated:NO];
 #endif
     
@@ -429,7 +438,9 @@
     }
     
 #if ADVERSION
-    [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+    if (![rTracker_resource getPurchased]) {
+        [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+    }
 #endif
     
     [super viewDidAppear:animated];
@@ -1241,9 +1252,11 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 - (IBAction)btnAccept {
 
 #if ADVERSION
-    if (ADVER_TRACKER_LIM < [self.tlist.topLayoutIDs count]) {
-        [rTracker_resource buy_rTrackerAlert];
-        return;
+    if (![rTracker_resource getPurchased]) {
+        if (ADVER_TRACKER_LIM < [self.tlist.topLayoutIDs count]) {
+            [rTracker_resource buy_rTrackerAlert];
+            return;
+        }
     }
 #endif
     
