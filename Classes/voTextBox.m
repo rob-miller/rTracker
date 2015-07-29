@@ -335,6 +335,7 @@
             DBGLog(@"sql= %@",sql);
             NSMutableArray *searchDates = [[NSMutableArray alloc] init];
             [self.parentUTC.tracker toQry2AryI:searchDates sql:sql];
+            DBGLog(@"returns %lu entries",(unsigned long)[searchDates count]);
             if (0 < [searchDates count])
                 self.parentUTC.searchSet = [NSArray arrayWithArray:searchDates];
             else

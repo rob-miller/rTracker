@@ -64,13 +64,16 @@ NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurcha
     _productsRequest = nil;
     
     NSArray * skProducts = response.products;
+    
+#if DEBUGLOG
     for (SKProduct * skProduct in skProducts) {
         DBGLog(@"Found product: %@ %@ %0.2f",
               skProduct.productIdentifier,
               skProduct.localizedTitle,
               skProduct.price.floatValue);
     }
-    
+#endif
+
     _completionHandler(YES, skProducts);
     _completionHandler = nil;
     

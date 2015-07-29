@@ -38,7 +38,9 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg;
+#if ADVERSION
 + (void) buy_rTrackerAlert;
+#endif
 
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;

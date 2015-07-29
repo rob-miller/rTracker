@@ -1138,14 +1138,10 @@
 	//[pkr selectRow:[self epToRow:0] inComponent:0 animated:NO];
 	//[pkr selectRow:[self epToRow:1] inComponent:1 animated:NO];
 	
-	frame.origin.y += frame.size.height + MARGIN;
-	frame.origin.x = MARGIN;
+    frame.origin.y += frame.size.height ;//+ MARGIN;
+	//frame.origin.x = MARGIN;
 	frame.size.height = labframe.size.height;
-	
-	[self.ctvovcp configActionBtn:frame key:@"fdaBtn" label:@"Add" target:self action:@selector(btnAdd:)]; 
-	frame.origin.x = -1.0f;
-	[self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)]; 
-    
+//
     frame.origin.x = [@"Add" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width + 3*MARGIN;
     //frame.origin.y += frame.size.height + MARGIN;
     labframe = [self.ctvovcp configLabel:@"Constant value:" 
@@ -1167,6 +1163,12 @@
                              text:nil 
                             addsv:NO ];
     
+    frame.origin.x = MARGIN;
+    frame.origin.y -= 3*MARGIN; // I DO NOT UNDERSTAND THIS!!!!!
+    
+    [self.ctvovcp configActionBtn:frame key:@"fdaBtn" label:@"Add" target:self action:@selector(btnAdd:)];
+    frame.origin.x = -1.0f;
+    [self.ctvovcp configActionBtn:frame key:@"fddBtn" label:@"Delete" target:self action:@selector(btnDelete:)];
 
 }
 
@@ -1201,7 +1203,8 @@
 }
 
 - (void) drawFuncOptsOverview {
-	CGRect frame = {MARGIN,self.ctvovcp.lasty,0.0,0.0};
+
+    CGRect frame = {MARGIN,self.ctvovcp.lasty,0.0,0.0};
 	CGRect labframe = [self.ctvovcp configLabel:@"Range:" 
 								  frame:frame
 									key:@"frLab" 
@@ -1272,7 +1275,7 @@
 	//frame.origin.y += frame.size.height + MARGIN;
 	//frame.origin.x = MARGIN;
 	
-	self.ctvovcp.lasty = frame.origin.y + frame.size.height + MARGIN;
+    self.ctvovcp.lasty = frame.origin.y + frame.size.height + MARGIN;
 }
 
 #pragma mark -
@@ -1332,6 +1335,7 @@
 
 
 - (void) drawSelectedPage {
+    self.ctvovcp.lasty = 2; //frame.origin.y + frame.size.height + MARGIN;
 	switch (self.fnSegNdx) {
 		case FNSEGNDX_OVERVIEW: 
 			[self drawFuncOptsOverview];

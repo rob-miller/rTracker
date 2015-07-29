@@ -1807,7 +1807,25 @@ TODO: regen all .rtrks on website
 22 may 2015
 --- commit ---
 
-   
+14 june 2015
+   - disable long titles in voState:voDrawOptions() because of issues below and want to release free version
+   - found tracker name field in addTrackerController.m not config'd in cell correctly, also different alignment ios7 vs. ios8; various fixes, key was setting background colours so could see
+
+25 july 2015
+   - put background colours above under '#if !RELEASE' control
+   - testing, need to release
+
+28 july 2015
+   - change colour 'Name this tracker'
+   - change background colour tracker name field (add tracker)
+   - fix problem add/delete buttons not visiblie iphone 4s
+   - added line around password field to improve visibility
+   - fixed so 2nd 'setup' tap does not bypass password query if software keyboard not shown
+   - bring privacyV to front on parent after shoing (iAd obscures on ipad2)
+
+29 july 2015
+   - fixed problem with keyboard scroll for password field on ipads
+  
    
 
 

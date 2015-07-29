@@ -408,7 +408,13 @@ DBGLog(@"btnAddValue was pressed!");
 		self.tempTrackerObj.trackerName = self.nameField.text;
 	}
 }
-
+/*
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    DBGLog(@"tf begin editing");
+    //self.activeField = textField;
+}
+*/
 /*
 - (IBAction) privFieldDone:(id)sender {
 	[sender resignFirstResponder];
@@ -489,7 +495,8 @@ DBGLog(@"btnAddValue was pressed!");
     NSUInteger row = [indexPath row];
     NSUInteger section = [indexPath section];
     if (0==section) {
-        CGSize tns = [self.tempTrackerObj.trackerName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+        //CGSize tns = [self.tempTrackerObj.trackerName sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
+        CGSize tns = [@"Name this Tracker" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
         return tns.height + (2*MARGIN);
     } else {
         if (row == [self.tempTrackerObj.valObjTable count] ) {
@@ -528,20 +535,35 @@ DBGLog(@"btnAddValue was pressed!");
 
 			//self.nameField = nil;
             //[_nameField release];
-            self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,250,25) ];
-			self.nameField.clearsOnBeginEditing = NO;
-			[self.nameField setDelegate:self];
-			self.nameField.returnKeyType = UIReturnKeyDone;
-			[self.nameField addTarget:self
-						  action:@selector(nameFieldDone:)
-				forControlEvents:UIControlEventEditingDidEndOnExit];
-			self.nameField.tag = kViewTag;
-			[cell.contentView addSubview:self.nameField];
-			
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            self.nameField.font = PrefBodyFont;
-			self.nameField.text = self.tempTrackerObj.trackerName;
-			self.nameField.placeholder = @"Name this Tracker";
+            //self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,10,250,25) ];
+        CGRect rect= cell.contentView.frame;
+        rect.size.width = [rTracker_resource getKeyWindowWidth];  // because ios 7.1 gets different width for cell
+#if !RELEASE
+        // debug layout:
+        cell.backgroundColor = [UIColor orangeColor];
+#endif
+        self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,5,rect.size.width-20,rect.size.height-10) ];
+        self.nameField.clearsOnBeginEditing = NO;
+        [self.nameField setDelegate:self];
+        self.nameField.returnKeyType = UIReturnKeyDone;
+        [self.nameField addTarget:self
+                           action:@selector(nameFieldDone:)
+                 forControlEvents:UIControlEventEditingDidEndOnExit];
+        self.nameField.tag = kViewTag;
+        [cell.contentView addSubview:self.nameField];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.nameField.font = PrefBodyFont;
+        self.nameField.text = self.tempTrackerObj.trackerName;
+        self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
+#if !RELEASE
+        // debug layout:
+        self.nameField.backgroundColor=[UIColor redColor];
+#else
+        self.nameField.backgroundColor=[UIColor whiteColor];
+#endif
+        [self.view bringSubviewToFront:self.nameField];
+            // no help! self.nameField.layer.zPosition=10;
         //DBGLog(@"loaded section 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
 
 //		} else {   // row = 1
@@ -576,7 +598,11 @@ DBGLog(@"btnAddValue was pressed!");
 			cell = [[UITableViewCell alloc]
 					 initWithStyle:UITableViewCellStyleSubtitle
 					 reuseIdentifier: valCellID];
-            cell.backgroundColor=nil;
+            //cell.backgroundColor=nil;
+#if !RELEASE
+            // debug layout:
+            cell.backgroundColor = [UIColor greenColor];
+#endif
 		}
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
@@ -736,11 +762,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSUInteger row = [indexPath row];
-	//NSUInteger section = [indexPath section];
-	
-	//DBGLog(@"selected section %d row %d ", section, row);
+	NSUInteger section = [indexPath section];
+	DBGLog(@"selected section %lu row %lu ", (unsigned long)section, (unsigned long)row);
+    if (0 == section) {
+        [self.nameField becomeFirstResponder];
+    } else {
+        [self addValObjR:row];
+    }
 
-    [self addValObjR:row];
 }
 //*/
 

@@ -142,6 +142,7 @@ static NSNumber *stashedPriv=nil;
         [self bringSubviewToFront:self.ttv];
         
 		[self.parentView addSubview:self];
+        [self.parentView bringSubviewToFront:self];
     }
     return self;
 }
@@ -274,7 +275,8 @@ static NSTimeInterval lastShow=0;
             [self.ttv showKey:0]; 
             [self setPrivacyValue:PRIVDFLT];
         }
-            
+        [self.ppwv hide];
+        
 		//self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         //self.transform = CGAffineTransformMakeTranslation(0, (self.parentView.frame.size.height * PVH));
         self.transform = CGAffineTransformMakeTranslation(0, (self.frame.size.height));
@@ -389,7 +391,7 @@ static NSTimeInterval lastShow=0;
 		
         
 	} else if (PVCONFIG == newState) {
-		if (PWKNOWPASS == self.pwState || PVCHECKPASS == _showing) {
+        if (PWKNOWPASS == self.pwState || (PVCHECKPASS == _showing && self.ppwv.ok == self.ppwv.next)) {
 			if (PVCHECKPASS == _showing) {
 				self.pwState = PWKNOWPASS;   // just successfully entered password so don't ask again
 			//	[self hideConfigBtns:FALSE];

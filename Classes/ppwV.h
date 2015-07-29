@@ -60,4 +60,6 @@
 - (void) setp;
 - (void) cancelp;
 
+- (void) hide;
+
 @end

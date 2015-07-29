@@ -629,11 +629,13 @@
 
 
 - (CGRect) configPicker:(CGRect)frame key:(NSString*)key caller:(id)caller {
-	UIPickerView *myPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
-	frame.size = [myPickerView sizeThatFits:CGSizeZero];;
+    UIPickerView *myPickerView = [[UIPickerView alloc] initWithFrame:CGRectZero];
+    frame.size = [myPickerView sizeThatFits:CGSizeZero];;
     frame.size.width = self.view.frame.size.width - (2*MARGIN);
+    frame.origin.y += frame.size.height/4;  // because origin of picker is centre line
 	myPickerView.frame = frame;
-	
+    //frame.size.height -= (frame.size.height/4);
+    
 	myPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	myPickerView.showsSelectionIndicator = YES;	// note this is default to NO
 	
@@ -643,7 +645,6 @@
 	
 	(self.wDict)[key] = myPickerView;
 	[self.view addSubview:myPickerView];
-	
 	
 	return frame;
 }

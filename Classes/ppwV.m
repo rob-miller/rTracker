@@ -61,18 +61,10 @@
 		//keyboardIsShown = NO;
 		self.activeField = nil;
         self.hidden=YES;
-/*
- [[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(keyboardWillShow:) 
-													 name:UIKeyboardWillShowNotification 
-												   object:self.window];
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(keyboardWillHide:) 
-													 name:UIKeyboardWillHideNotification 
-												   object:self.window];	
-		
-*/
-		//DBGLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
+
+        [self toggleKeyboardNotifications:true];
+
+        //DBGLog(@"ppwv add view; parent has %d subviews",[pv.subviews count]);
 		//[pv addSubview:self];
 
 		[pv insertSubview:self atIndex:[pv.subviews count]-1];   // 9.iii.14 change from -1 probably due to keyboard view
@@ -91,6 +83,32 @@
 }
 */
 
+BOOL ObservingKeyboardNotification=false;
+
+- (void) toggleKeyboardNotifications:(BOOL)newState {
+    if (newState == ObservingKeyboardNotification) return;
+    if (newState) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillShow:)
+                                                     name:UIKeyboardWillShowNotification
+                                                   object:self.window];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillHide:)
+                                                     name:UIKeyboardWillHideNotification
+                                                   object:self.window];
+        ObservingKeyboardNotification=true;
+    } else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIKeyboardWillShowNotification
+                                                      object:self.window];
+        // unregister for keyboard notifications while not visible.
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIKeyboardWillHideNotification
+                                                      object:self.window];
+        ObservingKeyboardNotification=false;
+    }
+}
+
 #pragma mark -
 #pragma mark external api
 
@@ -103,7 +121,9 @@
     f.origin.y = self.parentView.frame.size.height;  // self.topy + self.frame.size.height;
     self.frame = f;
     self.hidden = YES;
-     
+    
+    // unregister for keyboard notifications while not visible.
+    [self toggleKeyboardNotifications:false];
 }
 
 - (void) show {
@@ -116,32 +136,21 @@
     
 	f.origin.y = self.topy - self.frame.size.height;
     
+    
+    [self toggleKeyboardNotifications:true];
+    
 	self.frame = f;
 }
 
-//TODO: xxx rtm working here
-/*
 - (void)keyboardWillShow:(NSNotification *)n
 {
     DBGLog(@"keyboardwillshow");
-    
-    CGFloat boty;
-    
-    if (kIS_LESS_THAN_IOS7) {
-        boty = self.activeField.superview.superview.frame.origin.y; // - coff.y;
-        // activeField.superview.superview.frame.origin.y - coff.y ;
-        //+ activeField.superview.superview.frame.size.height + MARGIN;
-    } else if (kIS_LESS_THAN_IOS8) {
-        boty = self.activeField.superview.superview.superview.frame.origin.y; // - coff.y;
-        boty += self.activeField.superview.superview.superview.frame.size.height;
-    } else {  // ios 8 and above
-        boty = self.activeField.superview.superview.frame.origin.y + self.activeField.superview.superview.frame.size.height; // - coff.y;
-    }
+    //CGRect f = self.topTF.frame;
+    //CGRect f2 = self.frame;
 
-    
-    //CGRect f = self.frame;
-    //CGFloat boty = self.topTF.frame.origin.y + 44;
-    //[rTracker_resource willShowKeyboard:n view:self boty:boty];
+    CGFloat boty = self.topTF.frame.origin.y + ( self.topTF.frame.size.height) + MARGIN - ( self.frame.size.height);
+
+    [rTracker_resource willShowKeyboard:n view:self boty:boty];
 
 }
 
@@ -150,7 +159,7 @@
     DBGLog(@"handling keyboard will hide");
     [rTracker_resource willHideKeyboard];
 }
-*/
+
 
 - (void) hidePPWVAnimated:(BOOL)animated {
 	//DBGLog(@"hide ppwv anim=%d",animated);
@@ -168,17 +177,6 @@
 	if (animated) {
 		[UIView commitAnimations];
 	}
-    /*
-    //DBGLog(@"remove kybd will show notifcation");
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
-    // unregister for keyboard notifications while not visible.
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
-    */
 
     //self.hidden = YES;
 }
@@ -196,17 +194,6 @@
 }
 
 - (void) showPassRqstr {
-    /*
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    */
-    
     
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:kAnimationDuration];
@@ -363,7 +350,7 @@
 	f.origin.x = 0.05f * f.size.width;
 	f.origin.y = vert * f.size.height;
 	f.size.width *= 0.9f;
-    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].height;
+    f.size.height = [@"X" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].height *1.2;
 	//DBGLog(@"genframe: x: %f  y: %f  w: %f  h: %f",f.origin.x,f.origin.y,f.size.width,f.size.height);
 	return f;
 }
@@ -385,7 +372,7 @@
 
 - (UITextField*) topTF {
 	if (nil == _topTF) {
-		_topTF = [[UITextField alloc] initWithFrame:[self genFrame:0.3f]];
+		_topTF = [[UITextField alloc] initWithFrame:[self genFrame:0.4f]];
 		//[topTF setHidden:TRUE];
 		_topTF.backgroundColor = [UIColor whiteColor];
 		_topTF.returnKeyType = UIReturnKeyDone;
@@ -393,6 +380,7 @@
 		_topTF.clearButtonMode = UITextFieldViewModeWhileEditing;
 		_topTF.delegate = self;
         _topTF.layer.cornerRadius = 4;
+        [_topTF setBorderStyle:UITextBorderStyleLine];
 		
 		[self addSubview:_topTF];
 	}

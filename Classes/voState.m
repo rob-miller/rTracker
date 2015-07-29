@@ -178,9 +178,12 @@
     
     frame.origin.x = MARGIN;
     frame.origin.y += MARGIN + frame.size.height;
+    
+    /* disable long title for now...
     self.vc = ctvovc;
     frame = [ctvovc configActionBtn:frame key:nil label:@"long title" target:self action:@selector(longTitleBtn)];
-
+    */
+    
     ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
     ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
     
