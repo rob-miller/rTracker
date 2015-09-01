@@ -378,6 +378,8 @@
         okey = @"integerstepsb"; dfltState=INTEGERSTEPSBDFLT;
     } else if ( btn == (self.wDict)[@"sdeBtn"] ) {
         okey = @"defaultenabledb"; dfltState=DEFAULTENABLEDBDFLT;
+    } else if ( btn == (self.wDict)[@"sswlBtn"] ) {
+        okey = @"slidrswlb"; dfltState=SLIDRSWLBDFLT;
     } else if ( btn == (self.wDict)[@"tbnlBtn"] ) {
 		okey = @"tbnl"; dfltState=TBNLDFLT;
 	} else if ( btn == (self.wDict)[@"tbniBtn"] ) {
@@ -556,12 +558,12 @@
 		okey = LCKEY;
 		nkey = nil;
 	} else {
-		dbgNSAssert(0,@"mtfDone cannot identify tf");
+		//dbgNSAssert(0,@"mtfDone cannot identify tf");
         okey=@"x"; // make analyze happy
 	}
 
 	if (self.vo == nil) {      // tracker config
-		DBGLog(@"to set %@: %@", okey, tf.text);    
+		DBGLog(@"to set %@: %@", okey, tf.text);
 		(self.to.optDict)[okey] = tf.text;
 	} else {                   // valobj config
 		DBGLog(@"vo set %@: %@", okey, tf.text);

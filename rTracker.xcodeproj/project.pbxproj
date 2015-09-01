@@ -163,6 +163,18 @@
 		D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B51A50FDB40009E20B /* Icon512x512.png */; };
 		D464C8B81A5100450009E20B /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B71A5100450009E20B /* icon120.png */; };
 		D469CEBB1A2BAC3800B8F48B /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */; };
+		D46E56AB1B73A10F0023CE55 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A51B73A10F0023CE55 /* Security.framework */; };
+		D46E56AC1B73A10F0023CE55 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A51B73A10F0023CE55 /* Security.framework */; };
+		D46E56AD1B73A10F0023CE55 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A61B73A10F0023CE55 /* SystemConfiguration.framework */; };
+		D46E56AE1B73A10F0023CE55 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A61B73A10F0023CE55 /* SystemConfiguration.framework */; };
+		D46E56AF1B73A10F0023CE55 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A71B73A10F0023CE55 /* libz.dylib */; };
+		D46E56B01B73A10F0023CE55 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A71B73A10F0023CE55 /* libz.dylib */; };
+		D46E56B11B73A10F0023CE55 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A81B73A10F0023CE55 /* libc++.dylib */; };
+		D46E56B21B73A10F0023CE55 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A81B73A10F0023CE55 /* libc++.dylib */; };
+		D46E56B31B73A10F0023CE55 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A91B73A10F0023CE55 /* Fabric.framework */; };
+		D46E56B41B73A10F0023CE55 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A91B73A10F0023CE55 /* Fabric.framework */; };
+		D46E56B51B73A10F0023CE55 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */; };
+		D46E56B61B73A10F0023CE55 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */; };
 		D4735FF91A51E81C006F12FC /* demoTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4735FF81A51E81C006F12FC /* demoTrackers */; };
 		D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
 		D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */; };
@@ -305,7 +317,14 @@
 		D4620056182C046E00F6F2C2 /* notifyReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = notifyReminder.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D464C8B51A50FDB40009E20B /* Icon512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon512x512.png; sourceTree = "<group>"; };
 		D464C8B71A5100450009E20B /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon120.png; path = Resources/png/icon120.png; sourceTree = "<group>"; };
+		D4678A9C1B8CE41900A33656 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/xib/MainWindow.xib; sourceTree = "<group>"; };
+		D46E56A51B73A10F0023CE55 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		D46E56A61B73A10F0023CE55 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		D46E56A71B73A10F0023CE55 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		D46E56A81B73A10F0023CE55 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		D46E56A91B73A10F0023CE55 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		D4735FF81A51E81C006F12FC /* demoTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = demoTrackers; sourceTree = "<group>"; };
 		D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarPreviousMonth.png; path = Resources/png/CalendarPreviousMonth.png; sourceTree = "<group>"; };
 		D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarPreviousMonth@2x.png"; path = "Resources/png/CalendarPreviousMonth@2x.png"; sourceTree = "<group>"; };
@@ -440,11 +459,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */,
+				D46E56B51B73A10F0023CE55 /* Crashlytics.framework in Frameworks */,
 				D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */,
 				D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				D46E56AF1B73A10F0023CE55 /* libz.dylib in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
+				D46E56B31B73A10F0023CE55 /* Fabric.framework in Frameworks */,
+				D46E56B11B73A10F0023CE55 /* libc++.dylib in Frameworks */,
+				D46E56AD1B73A10F0023CE55 /* SystemConfiguration.framework in Frameworks */,
+				D46E56AB1B73A10F0023CE55 /* Security.framework in Frameworks */,
 				D482D1FF114F7E8900CE6BC8 /* libsqlite3.dylib in Frameworks */,
 				D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */,
 				D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */,
@@ -458,13 +483,19 @@
 				D45BF7C01AC20E3600EA49D6 /* iAd.framework in Frameworks */,
 				D43A7EBD1AB62358001BEC96 /* AudioToolbox.framework in Frameworks */,
 				D43A7EBE1AB62358001BEC96 /* MessageUI.framework in Frameworks */,
+				D46E56B41B73A10F0023CE55 /* Fabric.framework in Frameworks */,
 				D43A7EBF1AB62358001BEC96 /* QuartzCore.framework in Frameworks */,
+				D46E56B21B73A10F0023CE55 /* libc++.dylib in Frameworks */,
 				D43A7EC01AB62358001BEC96 /* Foundation.framework in Frameworks */,
+				D46E56AE1B73A10F0023CE55 /* SystemConfiguration.framework in Frameworks */,
+				D46E56B61B73A10F0023CE55 /* Crashlytics.framework in Frameworks */,
 				D43A7EC11AB62358001BEC96 /* UIKit.framework in Frameworks */,
 				D43A7EC21AB62358001BEC96 /* CoreGraphics.framework in Frameworks */,
 				D43A7EC31AB62358001BEC96 /* libsqlite3.dylib in Frameworks */,
+				D46E56B01B73A10F0023CE55 /* libz.dylib in Frameworks */,
 				D45BCBCB1AB629FF00EB09EC /* StoreKit.framework in Frameworks */,
 				D43A7EC41AB62358001BEC96 /* AddressBook.framework in Frameworks */,
+				D46E56AC1B73A10F0023CE55 /* Security.framework in Frameworks */,
 				D43A7EC51AB62358001BEC96 /* AddressBookUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -510,8 +541,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				D4FE66C8178617720056B463 /* MessageUI.framework */,
-				D40518B613787B5500F001BA /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -531,6 +560,8 @@
 				D415C6DD1A988B2F005BD8BE /* GSTouchImage.png */,
 				D415C6DE1A988B2F005BD8BE /* GSTouchImage@2x.png */,
 				28A0AAE50D9B0CCF005BE974 /* rTracker_Prefix.pch */,
+				D46E56A71B73A10F0023CE55 /* libz.dylib */,
+				D46E56A81B73A10F0023CE55 /* libc++.dylib */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				D47ECFEF19411BE600DCCF12 /* TimesSquare */,
 			);
@@ -564,6 +595,13 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4678A9C1B8CE41900A33656 /* CoreData.framework */,
+				D40518B613787B5500F001BA /* QuartzCore.framework */,
+				D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */,
+				D46E56A91B73A10F0023CE55 /* Fabric.framework */,
+				D46E56A51B73A10F0023CE55 /* Security.framework */,
+				D46E56A61B73A10F0023CE55 /* SystemConfiguration.framework */,
+				D4FE66C8178617720056B463 /* MessageUI.framework */,
 				D45BF7BF1AC20E3600EA49D6 /* iAd.framework */,
 				D45BCBCA1AB629FF00EB09EC /* StoreKit.framework */,
 				D473F25919050136000B0FC8 /* AudioToolbox.framework */,
@@ -830,6 +868,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				D46E56A41B73A0CA0023CE55 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -848,6 +887,7 @@
 				D43A7E501AB62358001BEC96 /* Resources */,
 				D43A7E8B1AB62358001BEC96 /* Sources */,
 				D43A7EBC1AB62358001BEC96 /* Frameworks */,
+				D46E56A31B73A02E0023CE55 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1057,6 +1097,32 @@
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/bash    \nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
 		};
+		D46E56A31B73A02E0023CE55 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 1258577c933393b9efe19d630c7f7c618e0420e0 700e83ee96f194aef0e04285aa7893539ea354c7baa54faa7d8f8174b6180305";
+		};
+		D46E56A41B73A0CA0023CE55 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 1258577c933393b9efe19d630c7f7c618e0420e0 700e83ee96f194aef0e04285aa7893539ea354c7baa54faa7d8f8174b6180305";
+		};
 		D4A110DD15A85BE8005D2624 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1211,6 +1277,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1247,6 +1317,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
@@ -1349,6 +1423,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1385,6 +1463,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
@@ -1420,6 +1502,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
@@ -1489,6 +1575,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = rTracker_Prefix.pch;

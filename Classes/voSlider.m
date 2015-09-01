@@ -141,11 +141,21 @@
     DBGLog(@"voDisplay slider %@ vals= %@ valf= %f -> slider.valf= %f",self.vo.valueName,vals,valf,self.sliderCtl.value);
 #endif
     
-    
     //DBGLog(@"parent tracker date= %@",pto.trackerDate);
-    if ([self.vo.value isEqualToString:@""]) {  // && (self.sliderCtl.value != self.sdflt)) {
-        //self.sliderCtl.value = (float) self.sdflt;  
-        [self.sliderCtl setValue:self.sdflt animated:NO];  // method above failed with v=0.95
+    if ([self.vo.value isEqualToString:@""]) {
+        if ([(self.vo.optDict)[@"slidrswlb"] isEqualToString:@"1"]) {
+            trackerObj *to = (trackerObj*)self.vo.parentTracker;
+            NSString *sql = [NSString stringWithFormat:@"select count(*) from voData where id=%ld and date<%d",
+                             (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+            int v = [to toQry2Int:sql];
+            if (v>0) {
+                sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
+                       (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                [self.sliderCtl setValue:[to toQry2Float:sql]];
+            }
+        } else {
+            [self.sliderCtl setValue:self.sdflt animated:NO];
+        }
     } else if (self.sliderCtl.value != [self.vo.value floatValue]) {
         //self.sliderCtl.value = [self.vo.value floatValue];
         [self.sliderCtl setValue:[self.vo.value floatValue] animated:NO];
@@ -213,6 +223,9 @@
     if (nil == (self.vo.optDict)[@"defaultenabledb"])
         (self.vo.optDict)[@"defaultenabledb"] = (DEFAULTENABLEDBDFLT ? @"1" : @"0");
 
+    if (nil == (self.vo.optDict)[@"slidrswlb"])
+        (self.vo.optDict)[@"slidrswlb"] = (SLIDRSWLBDFLT ? @"1" : @"0");
+
     return [super setOptDictDflts];
 }
 
@@ -243,7 +256,14 @@
         [self.vo.optDict removeObjectForKey:key];
         return YES;
     }
+
+    if (([key isEqualToString:@"slidrswlb"] && [val isEqualToString:(SLIDRSWLBDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
     
+
     
     return [super cleanOptDictDflts:key];
 }
@@ -327,6 +347,21 @@
                         state:[(self.vo.optDict)[@"integerstepsb"] isEqualToString:@"1"] // default:0
                         addsv:YES
      ];
+
+    frame.origin.x = MARGIN;
+    frame.origin.y += labframe.size.height + MARGIN;
+    
+    labframe = [ctvovc configLabel:@"starts with last:" frame:frame key:@"sswlLab" addsv:YES];
+    
+    frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+    
+    frame = [ctvovc configCheckButton:frame
+                                  key:@"sswlBtn"
+                                state:[(self.vo.optDict)[@"slidrswlb"] isEqualToString:@"1"] // default:0
+                                addsv:YES
+             ];
+    
+    
     
     /* 
      * need more thought here -- if slider is enabled by default, can't open and leave without asking to save ?

@@ -35,6 +35,7 @@
 @property (nonatomic,strong) IBOutlet UIToolbar *toolBar;
 @property (nonatomic,strong) IBOutlet UIDatePicker *datePicker;
 @property (nonatomic,strong) IBOutlet UIButton *entryNewBtn;
+//@property (nonatomic,strong) IBOutlet UIButton *entryCopyBtn;
 @property (nonatomic,strong) IBOutlet UIButton *dateSetBtn;
 @property (nonatomic,strong) IBOutlet UIButton *dateGotoBtn;
 //@property (nonatomic,strong) IBOutlet UISegmentedControl *dtSegmentedControl;
@@ -42,6 +43,7 @@
 - (IBAction) btnCancel:(UIButton*)btn;
 
 - (IBAction) entryNewBtnAction;
+//- (IBAction) entryCopyBtnAction;
 - (IBAction) dateSetBtnAction;
 - (IBAction) dateGotoBtnAction;
 //- (IBAction) dateModeChoice:(id)sender;

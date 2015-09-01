@@ -19,6 +19,7 @@
 BOOL keyboardIsShown=NO;
 UIView *currKeyboardView=nil;
 CGRect currKeyboardSaveFrame;
+BOOL resigningActive=NO;
 
 //---------------------------
 
@@ -605,8 +606,27 @@ static int lastStashedTid=0;
     [rtf addTarget:target action:action forControlEvents:UIControlEventEditingDidEnd];
     
 	if (num) {
-		rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
+        
+		//rtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
         rtf.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentRight;
+        
+        rtf.keyboardType = UIKeyboardTypeDecimalPad; //number pad with decimal point but no done button 	// use the number input only
+        // no done button for number pad // _dtf.returnKeyType = UIReturnKeyDone;
+        // need this from http://stackoverflow.com/questions/584538/how-to-show-done-button-on-iphone-number-pad Michael Laszlo
+        float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        UIToolbar *accessoryView = [[UIToolbar alloc]
+                                    initWithFrame:CGRectMake(0, 0, appWidth, 0.1 * appWidth)];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc]
+                                  initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                  target:nil
+                                  action:nil];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc]
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                 target:rtf
+                                 action:@selector(resignFirstResponder)];
+        accessoryView.items = @[space, done, space];
+        rtf.inputAccessoryView = accessoryView;
+
 	}
 	rtf.placeholder = place;
 	

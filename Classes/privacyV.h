@@ -14,17 +14,24 @@
 @class RootViewController;
 
 // password states
+// PWNEEDPRIVOK :  need to introduce privacy with the 'skip for now' requester
+// PWNEEDPASS   :  need to set password (first usage)
+// PWQUERYPASS  :  user has not authenticated yet for config controls
+// PWKNOWPASS   :  user has authenticated with password
+
 #define PWNEEDPRIVOK -2
 #define PWNEEDPASS  -1
 #define PWQUERYPASS  0
 #define PWKNOWPASS	 1
 
 // view states
+//
 // PVNOSHOW     :  not showing
-// PVNEEDPASS   :  no password set
+// PVNEEDPASS   :  no password set, requester to set is showing
 // PVQUERY      :  present tic-tack-toe query screen
 // PVCHECKPASS  :  put up password requester prior to config open
 // PVCONFIG     :  enable config controls
+// PVSTARTUP    :
 
 #define PVNOSHOW	((unsigned int) 0)
 #define PVNEEDPASS	((unsigned int) (1<<0))

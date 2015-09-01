@@ -1032,6 +1032,12 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     self.refreshLock = 0;
     self.readingFile=NO;
     [self countScheduledReminders];
+
+    DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    
+    //[self.view addSubview:bg];
+    //[self.view sendSubviewToBack:bg];
     
     // navigationbar setup
     self.navigationItem.rightBarButtonItem = self.addBtn;
@@ -1042,7 +1048,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         self.navigationController.toolbar.barStyle = UIBarStyleBlack;  // rm for ios7
     } else {
         self.navigationController.toolbar.translucent = YES;
-        self.navigationController.toolbar.backgroundColor =[UIColor clearColor];
+        self.navigationController.toolbar.backgroundColor = [UIColor clearColor];
+        //[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     }
 
     // toolbar setup
@@ -1052,8 +1059,6 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [self initTitle];
     
     // tableview setup
-    DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
     //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
     //CGFloat statusBarHeight = statusBarFrame.size.height;
@@ -1265,6 +1270,13 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         f.origin.x = 0.0; f.origin.y = 0.0;
         self.tableView.frame = f;
         self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        /*
+         [self.navigationController.toolbar setBackgroundImage: [UIImage imageNamed:[rTracker_resource getLaunchImageName]]
+                                           forToolbarPosition: UIToolbarPositionAny
+                                                   barMetrics: UIBarMetricsDefault];
+        */
+        
+       
     }
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {

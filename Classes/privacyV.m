@@ -77,10 +77,12 @@ static NSNumber *stashedPriv=nil;
     int currP = privacyValue;
     
     [self.ttv showKey:0];
-    [self setPrivacyValue:MINPRIV]; 
+    [self setPrivacyValue:MINPRIV];
+
     if (PWNEEDPRIVOK != self.pwState) {  // 27.v.2013 don't set to query if no pw setup yet
-        self.pwState = PWQUERYPASS;   
+        self.pwState = PWQUERYPASS;
     }
+
     self.showing = PVNOSHOW;
     //if ([self.configBtn.currentTitle isEqualToString:CFGBTNLOCK]) {
 	//	self.showing = PVQUERY;

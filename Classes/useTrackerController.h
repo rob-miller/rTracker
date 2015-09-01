@@ -95,6 +95,8 @@
 @property (nonatomic,strong) UIBarButtonItem *saveBtn;
 @property (nonatomic,strong) UIBarButtonItem *menuBtn;
 
+@property (nonatomic,strong) UIViewController *gt;
+
 //@property (nonatomic,assign) UITextField *activeField;   // just a pointer, no retain
 
 - (void) updateUTC:(NSNotification*)n;

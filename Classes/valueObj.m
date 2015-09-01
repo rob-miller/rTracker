@@ -325,6 +325,19 @@ in_vpriv:(NSInteger)in_vpriv
 		else if (self.vtype == VOT_SLIDER) {
 			NSNumber *nsdflt = (self.optDict)[@"sdflt"];
 			CGFloat sdflt =  nsdflt ? [nsdflt floatValue] : SLIDRDFLTDFLT;
+            
+            if ([(self.optDict)[@"slidrswlb"] isEqualToString:@"1"]) {  // handle slider option 'starts with last'
+                trackerObj *to = (trackerObj*)self.parentTracker;
+                NSString *sql = [NSString stringWithFormat:@"select count(*) from voData where id=%ld and date<%d",
+                                 (long)self.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                int v = [to toQry2Int:sql];
+                if (v>0) {
+                    sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
+                           (long)self.vid,(int)[to.trackerDate timeIntervalSince1970]];
+                    sdflt = [to toQry2Float:sql];
+                }
+            }
+            
 			[((UISlider *) self.display) setValue:sdflt animated:YES];
 		}
 	}

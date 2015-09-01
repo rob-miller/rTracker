@@ -472,6 +472,8 @@
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
                 case FN1ARGDELTA :
+                case FN1ARGONRATIO:
+                case FN1ARGNORATIO:
                     if (nullV1)
                         return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
                     // epd1 value is ok, get from db value for epd0
@@ -486,10 +488,22 @@
                     
                     double v0 = [to toQry2Double:sql];
 #if DEBUGFUNCTION
-                    DBGLog(@"delta: v0= %f", v0);
+                    DBGLog(@"delta/on_ratio/no_ratio: v0= %f", v0);
 #endif
                     // do caclulation
-                    result = v1 - v0;
+                    switch (currTok) {
+                        case FN1ARGDELTA :
+                            result = v1 - v0;
+                            break;
+                        case FN1ARGONRATIO:
+                            if (0 == v1) return nil;
+                            result = v0/v1;
+                            break;
+                        case FN1ARGNORATIO:
+                            if (0 == v0) return nil;
+                            result = v1/v0;
+                            break;
+                    }
                     break;
                 case FN1ARGAVG :
                 {

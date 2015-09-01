@@ -86,6 +86,7 @@
 BOOL ObservingKeyboardNotification=false;
 
 - (void) toggleKeyboardNotifications:(BOOL)newState {
+    if (resigningActive) newState=NO;  // regardless of input we should not be watching notification if resigningActive
     if (newState == ObservingKeyboardNotification) return;
     if (newState) {
         [[NSNotificationCenter defaultCenter] addObserver:self

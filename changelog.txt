@@ -1825,7 +1825,42 @@ TODO: regen all .rtrks on website
 
 29 july 2015
    - fixed problem with keyboard scroll for password field on ipads
-  
+   - release as 2.0.4
+
+--- commit ---
+
+01 august 2015
+   - change userGuide link on website to point to QandA pages
+   - add 'improved help pages' to new 2.0.4 features
+
+05 august 2015
+   - 2.0.4 accepted, released both versions
+
+06 august 2015
+   - added Fabric Crashlytics to rTracker and rTrackerA
+   - rTrackerA slow to propagate to e.g. UK store! -- later tweaked release date on/off on iTunes Connect, worked then
+
+20 aug 2015
+   - textbox textview setUserInteractionEnabled:YES to fix bug with not seeing textbox contents in various cases.
+   - change numeric valueObjs to use UIKeyboardDecimalPad plus accessoryView hack to add done button from stackoverflow
+   - implement 'starts with last' for slider
+   - implement UIKeyboardDecimalPad as above for num configTextFields
+
+21 aug 2015
+   - added scrollRangeTovisible for textbox contents as not working yet
+   - added old/new and new/old ratios as function components (to monitor exchange rates)
+   
+25 aug 2015
+   - deep (?) problem ios 8 and dismissing graph view leaves black at some level(s) of view hierarchy
+   - fixed gXAxV size to not go off bottom of screen
+
+27 aug 2015
+   - make voDataEdit use voTextBox textView property, this was adding substantial confusion
+
+01 sep 2015
+   - found ppwv being instantiated on AppWillResignActive, added 'watch for keyboard notification', caused keyboardIsShown erroneously true after return to app, broke keyboard scroll in useTrackerController after return to app.
+   - tweak cancel icon to 'X' in datePickerVC.xib
+   - add/implement 'duplicate entry to now' in UseTrackerController menu
    
 
 

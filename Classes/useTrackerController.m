@@ -39,6 +39,8 @@
 @synthesize searchBtn=_searchBtn;
 @synthesize rvcTitle=_rvcTitle;
 
+@synthesize gt=_gt;
+
 #if ADVERSION
 @synthesize adSupport=_adSupport;
 #endif
@@ -659,6 +661,11 @@
     gt.dpr = self.dpr;
     gt.parentUTC = self;
     
+    self.gt = gt;
+    
+    //gt.modalPresentationStyle = UIModalPresentationFullScreen;
+    //self.modalPresentationStyle = UIModalPresentationFullScreen;
+    
     self.fwdRotations = NO;
      //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
          [self presentViewController:gt animated:YES completion:NULL];
@@ -673,9 +680,15 @@
     DBGLog(@"start return from graph");
     //self.view = nil;
     self.fwdRotations=YES;
-    
+        
      //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
          [self dismissViewControllerAnimated:YES completion:NULL];
+
+    
+    //[self dismissViewControllerAnimated:YES completion:^{
+    //    [[[UIApplication sharedApplication] keyWindow] sendSubviewToBack:self.gt.view];
+    //}];
+    
      //} else {
      //    [self dismissModalViewControllerAnimated:YES];
      //}
@@ -742,6 +755,27 @@
     //DBGLog(@"k will show, y= %f",viewFrame.origin.y);
     
 	CGFloat boty;
+
+#if DEBUGLOG
+    UIControl *ac = self.tracker.activeControl;
+    UIView *acsv = ac.viewForBaselineLayout;
+    CGRect vf = acsv.frame;
+    DBGLog(@"frame1: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
+    acsv = ac.superview;
+    vf = acsv.frame;
+    DBGLog(@"frame2: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
+    acsv = ac.superview.superview;
+    vf = acsv.frame;
+    DBGLog(@"frame3: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
+    acsv = ac.superview.superview.superview;
+    vf = acsv.frame;
+    DBGLog(@"frame4: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
+
+    acsv = self.view;
+    vf = acsv.frame;
+    DBGLog(@"self frame: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
+    
+#endif
     
     if (kIS_LESS_THAN_IOS7) {
         boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
@@ -754,6 +788,7 @@
         boty = self.tracker.activeControl.superview.superview.frame.origin.y + self.tracker.activeControl.superview.superview.frame.size.height - coff.y;
     }
 
+    DBGLog(@"dispatching to wsk, boty= %f kis=%d",boty,keyboardIsShown);
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
 
     
@@ -1187,17 +1222,45 @@ NSString *emEmailCsv = @"email CSV";
 NSString *emEmailTracker = @"email Tracker";
 NSString *emEmailTrackerData = @"email Tracker+Data";
 NSString *emItunesExport = @"save for PC (iTunes)";
+NSString *emDuplicate = @"duplicate entry to now";
 
 
 - (IBAction)btnMenu {
-	UIActionSheet *exportMenu = [[UIActionSheet alloc]
+    
+    //int prevD = (int)[self.tracker prevDate];
+    int postD = (int)[self.tracker postDate];
+    int lastD = (int)[self.tracker lastDate];
+    int currD = (int) [self.tracker.trackerDate timeIntervalSince1970];
+    /*
+     DBGLog(@"prevD = %d %@",prevD,[NSDate dateWithTimeIntervalSince1970:prevD]);
+     DBGLog(@"currD = %d %@",currD,[NSDate dateWithTimeIntervalSince1970:currD]);
+     DBGLog(@"postD = %d %@",postD,[NSDate dateWithTimeIntervalSince1970:postD]);
+     DBGLog(@"lastD = %d %@",lastD,[NSDate dateWithTimeIntervalSince1970:lastD]);
+     */
+    self.currDateBtn = nil;
+    
+    UIActionSheet *exportMenu;
+    
+    if (postD != 0 || (lastD == currD)) {
+        exportMenu = [[UIActionSheet alloc]
+                      initWithTitle:[NSString stringWithFormat:
+                                     @"%@ tracker",
+                                     self.tracker.trackerName]
+                      delegate:self
+                      cancelButtonTitle:@"Cancel"
+                      destructiveButtonTitle:nil //@"Yes, delete"
+                      otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,emDuplicate,nil];
+        
+    } else {
+        exportMenu = [[UIActionSheet alloc]
                                               initWithTitle:[NSString stringWithFormat:
-                                                             @"export %@ tracker",
+                                                             @"%@ tracker",
                                                              self.tracker.trackerName]
                                               delegate:self
                                               cancelButtonTitle:@"Cancel"
                                               destructiveButtonTitle:nil //@"Yes, delete"
                                               otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,nil];
+    }
     //[exportMenu showInView:self.view];
     //[exportMenu showFromRect:self.menuBtn.frame inView:self.view animated:YES];
 	//[exportMenu showFromToolbar:self.navigationController.toolbar];
@@ -1387,6 +1450,21 @@ NSString *emItunesExport = @"save for PC (iTunes)";
 										 destructiveButtonTitle:@"Yes, delete"
 										 otherButtonTitles:nil];
 	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
+}
+
+- (void) btnDuplicate {
+    self.tracker.trackerDate = [[NSDate alloc] init];
+    self.needSave = YES;
+
+    [self showSaveBtn];
+    
+    // write temp tracker here
+    [self.tracker saveTempTrackerData];
+    [self updateToolBar];
+    [self updateTrackerTableView];
+
+    //[[NSNotificationCenter defaultCenter] postNotificationName:rtTrackerUpdatedNotification object:self]; // not sure why this doesn't work here....
+
 }
 
 #pragma mark -
@@ -1700,6 +1778,8 @@ NSString *emItunesExport = @"save for PC (iTunes)";
             DBGLog(@"cancelled");
         } else if ([buttonTitle isEqualToString:emItunesExport]) {
             [self btnExport];
+        } else if ([buttonTitle isEqualToString:emDuplicate]) {
+            [self btnDuplicate];
         } else {
             [self openMail:buttonTitle];
         }

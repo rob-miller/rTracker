@@ -51,7 +51,7 @@
     //if (self.tracker.recalcFnLock) return;
     
     self.view.backgroundColor = [UIColor blackColor];
-    //[[self view] setBackgroundColor:[UIColor blueColor]];
+    //[[self view] setBackgroundColor:[UIColor redColor]];
     
     CGRect gtvRect;
     
@@ -133,10 +133,12 @@
     
     // view for x axis labels
     rect.origin.y = srect.size.height - ((2*labelHeight) + (3*SPACE) + TICKLEN);
-    rect.size.height = srect.size.height - BORDER - rect.size.width;
+    rect.size.height = srect.size.height - rect.origin.y; //BORDER - rect.size.width;
     rect.origin.x = rect.size.width;
     rect.size.width = srect.size.width - rect.size.width - 10;
-    
+
+    DBGLog(@"gtvc xax rect: %f %f %f %f",rect.origin.x,rect.origin.y,rect.size.width,rect.size.height);
+
     self.yAV.scaleHeightY = rect.origin.y - self.titleView.frame.size.height;   // set bottom of y scale area
     
     gtXAxV *txav = [[gtXAxV alloc] initWithFrame:rect];
@@ -244,6 +246,9 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [self resignFirstResponder];
+    //self.view.backgroundColor = [UIColor whiteColor];
+    //[self.view.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    //[self.view removeFromSuperview];
     [super viewWillDisappear:animated];
 }
 
@@ -466,6 +471,8 @@
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0") ) {// if 5.0
         if ((self.interfaceOrientation ==  UIInterfaceOrientationPortrait) || (self.interfaceOrientation ==  UIInterfaceOrientationPortraitUpsideDown)) {
             [self.parentUTC returnFromGraph];
+            //[[self presentingViewController] dismissViewControllerAnimated:YES
+            //                                                    completion:nil];
         }
     }
 

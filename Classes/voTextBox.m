@@ -72,11 +72,14 @@
 	
 }
 
+
 - (void) dataEditVDidLoad:(UIViewController*)vc {
 	//self.devc = vc;
 	//CGRect visFrame = vc.view.frame;
     
-	self.textView = [[UITextView alloc] initWithFrame:vc.view.frame];
+    
+    self.textView = [[UITextView alloc] initWithFrame:[voDataEdit getInitTVF:vc] textContainer:nil] ;  // ]vc.view.frame];
+    
 	self.textView.textColor = [UIColor blackColor];
     self.textView.font = PrefBodyFont; // [UIFont fontWithName:@"Arial" size:18];
 	self.textView.delegate = self;
@@ -86,7 +89,11 @@
 	self.textView.returnKeyType = UIReturnKeyDefault;
 	self.textView.keyboardType = UIKeyboardTypeDefault;	// use the default type input method (entire keyboard)
 	self.textView.scrollEnabled = YES;
-	
+    self.textView.userInteractionEnabled = YES;
+    //self.textView.layoutManager.allowsNonContiguousLayout = NO;
+
+    //self.textView.contentOffset = CGPointZero;
+    //[self.textView setTextContainerInset:UIEdgeInsetsMake(7, 7, 0, 0)];
 	// this will cause automatic vertical resize when the table is resized
 	self.textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 	
@@ -295,6 +302,8 @@
 	
 	[self.textView resignFirstResponder];
 	[self.textView becomeFirstResponder];
+    
+    [self.textView scrollRangeToVisible:self.textView.selectedRange];
 	
 }
 
@@ -372,7 +381,9 @@
         [self.segControl setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:fsize]} forState:UIControlStateNormal];
         [self.setSearchSeg setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:fsize]} forState:UIControlStateNormal];
     }
-	
+    //CGRect avframe = self.textView.inputAccessoryView.frame;
+    //DBGLog(@"acc view frame rect: %f %f %f %f",avframe.origin.x,avframe.origin.y,avframe.size.width,avframe.size.height);
+
     return YES;
 }
 

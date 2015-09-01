@@ -11,6 +11,7 @@
 #import "voDataEdit.h"
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
+#import "voTextBox.h"
 
 @implementation voDataEdit
 
@@ -41,6 +42,7 @@
         DBGLog(@"vde view did load");
         self.title = self.vo.valueName;
         [self.vo.vos dataEditVDidLoad:self];
+        self.textView = ((voTextBox*)self.vo.vos).textView;
     } else {
         // generic text editor
         self.textView = [[UITextView alloc] initWithFrame:self.view.frame];
@@ -53,6 +55,7 @@
         self.textView.returnKeyType = UIReturnKeyDefault;
         self.textView.keyboardType = UIKeyboardTypeDefault;	// use the default type input method (entire keyboard)
         self.textView.scrollEnabled = YES;
+        self.textView.userInteractionEnabled = YES;
         
         // this will cause automatic vertical resize when the table is resized
         self.textView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -82,7 +85,7 @@
         
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
+                                                 name:UIKeyboardWillChangeFrameNotification //UIKeyboardWillShowNotification
          //object:self.textView];    //.devc.view.window];
                                                 object:self.view.window];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -103,7 +106,7 @@
         [self.vo.vos dataEditVWDisappear:self];
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
+                                                    name:UIKeyboardWillChangeFrameNotification // UIKeyboardWillShowNotification
                                                   object:nil];
     //--object:self.textView];    // nil]; //self.devc.view.window];
     //object:self.devc.view.window];
@@ -117,6 +120,20 @@
     [super viewWillDisappear:animated];
 }
 
++ (CGRect) getInitTVF:(UIViewController*)vc {
+    CGRect frame = vc.view.frame;
+    CGRect frame2 = vc.navigationController.navigationBar.frame;
+    DBGLog(@"nvb rect: %f %f %f %f",frame2.origin.x,frame2.origin.y,frame2.size.width,frame2.size.height);
+    CGRect frame3 = vc.navigationController.toolbar.frame;
+    DBGLog(@"tb rect: %f %f %f %f",frame3.origin.x,frame3.origin.y,frame3.size.width,frame3.size.height);
+    
+    frame.origin.y += frame2.size.height +frame2.origin.y;
+    frame.size.height -= frame.origin.y + frame3.size.height;
+    
+    DBGLog(@"initTVF rect: %f %f %f %f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
+    return frame;
+}
+
 
 - (void)keyboardWillShow:(NSNotification *)aNotification
 {
@@ -126,15 +143,36 @@
         return;
     
     // the keyboard is showing so resize the table's height
-    self.saveFrame = self.view.frame;
+    //self.saveFrame = self.textView.frame;
     CGRect keyboardRect = [[aNotification userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSTimeInterval animationDuration =
-    [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    CGRect frame = self.view.frame;
+    DBGLog(@"keyboard rect: %f %f %f %f",keyboardRect.origin.x,keyboardRect.origin.y,keyboardRect.size.width,keyboardRect.size.height);
+    /*
+    if (self.vo) {
+        keyboardRect = [self.vo.vos.vc.view convertRect:keyboardRect fromView:nil];
+    } else {
+        keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
+    }
+    */
+    DBGLog(@"keyboard rect conv: %f %f %f %f",keyboardRect.origin.x,keyboardRect.origin.y,keyboardRect.size.width,keyboardRect.size.height);
+    
+    NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    CGRect frame = [voDataEdit getInitTVF:self];
     frame.size.height -= keyboardRect.size.height;
+    //UIView *iav = ((voTextBox*)self.vo.vos).textView.inputAccessoryView;
+    //CGRect avframe = iav.frame;
+    CGRect avframe = self.textView.inputAccessoryView.frame;
+    //DBGLog(@"acc view frame rect: %f %f %f %f",avframe.origin.x,avframe.origin.y,avframe.size.width,avframe.size.height);
+    
+    frame.size.height += avframe.size.height;
+    
+    DBGLog(@"keyboard TVF: %f %f %f %f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
+
     [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
     [UIView setAnimationDuration:animationDuration];
-    self.view.frame = frame;
+    
+    self.textView.frame = frame;
+    [self.textView scrollRangeToVisible:self.textView.selectedRange];
+
     [UIView commitAnimations];
     
     keyboardIsShown = YES;
@@ -147,13 +185,12 @@
     
     // the keyboard is hiding reset the table's height
     //CGRect keyboardRect = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSTimeInterval animationDuration =
-    [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     //CGRect frame = self.devc.view.frame;
     //frame.size.height += keyboardRect.size.height;
     [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
     [UIView setAnimationDuration:animationDuration];
-    self.view.frame = self.saveFrame;  // frame;
+    self.textView.frame = [voDataEdit getInitTVF:self];
     [UIView commitAnimations];
     
     

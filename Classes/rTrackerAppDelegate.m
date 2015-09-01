@@ -16,6 +16,10 @@
 #import "rTracker-resource.h"
 #import "privacyV.h"
 
+
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 #if SHOWTOUCHES
 #import "GSTouchesShowingWindow.h"
 #endif
@@ -45,6 +49,8 @@
 
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    [Fabric with:@[CrashlyticsKit]];
 
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     [sud synchronize];
@@ -273,6 +279,7 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
+    resigningActive=YES;
 	// Save data if appropriate
 	//DBGLog(@"rt app delegate: app will resign active");
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
@@ -291,6 +298,7 @@
     }
     application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
     //[rTracker_resource disableOrientationData];
+    resigningActive=NO;
 }
 
 /*
@@ -305,6 +313,7 @@
     // useTrackerController needs to detect if displaying a private tracker
     
 	DBGLog(@"rt app delegate: app did become active");
+
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
 
     //[rTracker_resource enableOrientationData];

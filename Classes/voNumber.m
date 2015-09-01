@@ -54,6 +54,10 @@
 	return YES;
 }
 
+- (void)selectDoneButton {
+    [self.dtf resignFirstResponder];
+}
+
 
 - (UITextField*) dtf {
     if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
@@ -68,12 +72,31 @@
         _dtf.backgroundColor = [UIColor whiteColor];
         _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
-        _dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only
         _dtf.placeholder = @"<enter number>";
         _dtf.textAlignment = NSTextAlignmentRight; // ios6 UITextAlignmentRight;
         //[dtf addTarget:self action:@selector(numTextFieldClose:) forControlEvents:UIControlEventTouchUpOutside];
         
-        _dtf.returnKeyType = UIReturnKeyDone;
+        
+        //_dtf.keyboardType = UIKeyboardTypeNumbersAndPunctuation;	// use the number input only -- need decimal point
+        
+        _dtf.keyboardType = UIKeyboardTypeDecimalPad; //number pad with decimal point but no done button 	// use the number input only
+        // no done button for number pad // _dtf.returnKeyType = UIReturnKeyDone;
+        // need this from http://stackoverflow.com/questions/584538/how-to-show-done-button-on-iphone-number-pad Michael Laszlo
+        float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        UIToolbar *accessoryView = [[UIToolbar alloc]
+                                    initWithFrame:CGRectMake(0, 0, appWidth, 0.1 * appWidth)];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc]
+                                  initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                  target:nil
+                                  action:nil];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc]
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                 target:self
+                                 action:@selector(selectDoneButton)];
+        accessoryView.items = @[space, done, space];
+        _dtf.inputAccessoryView = accessoryView;
+
+        
         
         _dtf.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
         

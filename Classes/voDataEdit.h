@@ -19,7 +19,7 @@
 @property (nonatomic,unsafe_unretained) valueObj *vo;
 @property (nonatomic,strong) UITextView *textView;
 
-@property (nonatomic) CGRect saveFrame;
+//@property (nonatomic) CGRect saveFrame;
 
 @property (nonatomic,weak) id saveClass;
 @property (nonatomic) SEL saveSelector;
@@ -27,5 +27,6 @@
 
 - (void)keyboardWillShow:(NSNotification *)aNotification;
 - (void)keyboardWillHide:(NSNotification *)aNotification;
++ (CGRect) getInitTVF:(UIViewController*)vc;
 
 @end

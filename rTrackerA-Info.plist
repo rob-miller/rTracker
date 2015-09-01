@@ -60,7 +60,21 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>5552</string>
+	<string>5564</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>1258577c933393b9efe19d630c7f7c618e0420e0</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
