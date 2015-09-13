@@ -692,7 +692,7 @@
 
 - (IBAction)btnHelp:(id)sender {
     DBGLog(@"btnHelp");
-    [rTracker_resource alert:@"Reminders" msg:@"Blue labels are buttons, tap to see the options.\nSet a delay from the last time this tracker (or value) was saved and the weekdays the reminder should trigger, or choose calendar days.\nSet a single time for the reminder to fire, or a time range with equal or random  intervals.\nWhen settings are OK, an 'enable' checkbox appears in the lower right.\nTo delete a reminder, leave the form when the enable checkbox is not shown.\nMultiple reminders may be set using the < and +> buttons in the titlebar."];
+    [rTracker_resource alert:@"Reminders" msg:@"Blue labels are buttons, tap to see the options.\nSet a delay from the last time this tracker (or value) was saved and the weekdays the reminder should trigger, or choose calendar days.\nSet a single time for the reminder to fire, or a time range with equal or random  intervals.\nWhen settings are OK, an 'enable' checkbox appears in the lower right.\nTo delete a reminder, leave the form when the enable checkbox is not shown.\nMultiple reminders may be set using the < and +> buttons in the titlebar." vc:self];
 }
 
 - (IBAction)monthDaysChange:(id)sender {
@@ -902,7 +902,7 @@
 -(IBAction)enableBtn:(UIButton*)sender {
     [self toggleCheckBtn:sender];
     if (! [sender isSelected]) {
-        [rTracker_resource alert:@"Reminder disabled" msg:@"This reminder is now disabled.  To delete it, clear the settings and navigate away."];
+        [rTracker_resource alert:@"Reminder disabled" msg:@"This reminder is now disabled.  To delete it, clear the settings and navigate away." vc:self];
     }
 }
 

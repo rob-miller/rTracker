@@ -13,7 +13,7 @@
 #import "trackerObj.h"
 #import "valueObj.h"
 
-@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIActionSheetDelegate>
+@interface addTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 
 @property (nonatomic, strong) trackerList *tlist;
 @property (nonatomic, strong) trackerObj *tempTrackerObj;

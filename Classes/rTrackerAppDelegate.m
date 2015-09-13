@@ -61,7 +61,6 @@
         [rt_IAPHelper sharedInstance];
     }
 #endif
-    
 
     RootViewController *rootController = (RootViewController *) (self.navigationController.viewControllers)[0];
     
@@ -108,18 +107,19 @@
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"],
            RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
            );
-    
+/*
     if ([@"rTrackerA" isEqualToString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"]]) {
 #if !ADVERSION 
-        [rTracker_resource alert:@"rTrackerA version error" msg:@"bundle rTrackerA but ADVERSION not set"];
+        [rTracker_resource alert:@"rTrackerA version error" msg:@"bundle rTrackerA but ADVERSION not set" vc:nil];
         DBGErr(@"bundle rTrackerA but ADVERSION not set");
 #endif
     } else {
 #if ADVERSION
-        [rTracker_resource alert:@"rTracker version error" msg:@"bundle not rTrackerA but ADVERSION is set"];
+        [rTracker_resource alert:@"rTracker version error" msg:@"bundle not rTrackerA but ADVERSION is set" vc:nil];
         DBGErr(@"bundle not rTrackerA but ADVERSION is set");
 #endif
     }
+ */
     //NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
     // docs say app openURL below is called anyway, so don't do here which is only if app not already open
     //
@@ -225,9 +225,25 @@
     return alert;
 }
 
+-(void) dismissAlertController:(UIAlertController *)alertController {
+    [alertController dismissViewControllerAnimated:(BOOL)YES
+                                        completion:nil];
+}
+
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
-    UIAlertView *alert = [self quickAlert:title msg:msg];
-    [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView *alert = [self quickAlert:title msg:msg];
+        [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+        [self performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
+        
+        
+        
+    }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {

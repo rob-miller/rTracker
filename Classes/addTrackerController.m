@@ -391,7 +391,7 @@ DBGLog(@"btnAddValue was pressed!");
         
 	} else {
         self.saving = FALSE;
-        [rTracker_resource alert:@"save Tracker" msg:@"Please set a name for this tracker to save"];
+        [rTracker_resource alert:@"save Tracker" msg:@"Please set a name for this tracker to save" vc:self];
 	}
 }
 
@@ -423,7 +423,7 @@ DBGLog(@"btnAddValue was pressed!");
 */
 
 #pragma mark -
-#pragma mark UIActionSheet methods
+#pragma mark deleteValObj methods
 
 - (void) delVOlocal:(NSUInteger) row
 {
@@ -439,22 +439,26 @@ DBGLog(@"btnAddValue was pressed!");
 		[self.deleteVOs addObject:vo];
 }
 
-- (void)actionSheet:(UIActionSheet *)checkValObjDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
-{
-	//DBGLog(@"checkValObjDelete buttonIndex= %d",buttonIndex);
-	
-	if (buttonIndex == checkValObjDelete.destructiveButtonIndex) {
-		NSUInteger row = [self.deleteIndexPath row];
-		valueObj *vo = (self.tempTrackerObj.valObjTable)[row];
-		DBGLog(@"checkValObjDelete: will delete row %lu name %@ id %ld",(unsigned long)row, vo.valueName,(long)vo.vid);
-		//[self delVOdb:vo.vid];
+- (void) handleCheckValObjDelete:(NSInteger)choice {
+    //DBGLog(@"checkValObjDelete buttonIndex= %d",buttonIndex);
+    
+    if (choice == 1) {  // yes delete
+        NSUInteger row = [self.deleteIndexPath row];
+        valueObj *vo = (self.tempTrackerObj.valObjTable)[row];
+        DBGLog(@"checkValObjDelete: will delete row %lu name %@ id %ld",(unsigned long)row, vo.valueName,(long)vo.vid);
+        //[self delVOdb:vo.vid];
         [self addDelVO:vo];
-		[self delVOlocal:row];
-	} else {
-		//DBGLog(@"check valobjdelete cancelled");
+        [self delVOlocal:row];
+    } else {
+        //DBGLog(@"check valobjdelete cancelled");
         [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
-	}
-	self.deleteIndexPath=nil;
+    }
+    self.deleteIndexPath=nil;
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self handleCheckValObjDelete:buttonIndex];
 }
 
 
@@ -707,17 +711,34 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             [self addDelVO:vo];
             [self delVOlocal:row];
 		} else {
-			UIActionSheet *checkValObjDelete = [[UIActionSheet alloc] 
-												initWithTitle:[NSString stringWithFormat:
-															   @"Value %@ has stored data, which will be removed when you Save this page.",
-															   vo.valueName]
-												delegate:self 
-												cancelButtonTitle:@"Cancel"
-												destructiveButtonTitle:@"Yes, delete"
-												otherButtonTitles:nil];
-			//[checkTrackerDelete showInView:self.view];
-            //[checkValObjDelete showFromToolbar:self.navigationController.toolbar ];
-            [checkValObjDelete showInView:[[[[UIApplication sharedApplication] keyWindow] subviews] lastObject] ];
+            NSString *title = [vo.valueName stringByAppendingString:@" has data"];
+            NSString *msg = [NSString stringWithFormat:@"Value %@ has stored data, which will be removed when you Save this page.",vo.valueName];
+            NSString *btn0 = @"Cancel";
+            NSString *btn1 = @"Yes, delete";
+            
+            if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+                UIAlertView* alert = [[UIAlertView alloc]
+                                      initWithTitle:title
+                                      message:msg
+                                      delegate:self
+                                      cancelButtonTitle:btn0
+                                      otherButtonTitles: btn1,nil];
+                
+                [alert show];
+            } else {
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                               message:msg
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:0]; }];
+                UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:1]; }];
+                
+                [alert addAction:cancelAction];
+                [alert addAction:deleteAction];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+                
+            }
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %lu ",(unsigned long)row);

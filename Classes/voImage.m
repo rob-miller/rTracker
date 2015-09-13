@@ -69,7 +69,7 @@
 		//[self.devc presentModalViewController:picker animated:YES];
         [self.devc presentViewController:picker animated:YES completion:NULL];
 	} else {
-        [rTracker_resource alert:@"Error accessing photo library" msg:@"Device does not support a photo library"];
+        [rTracker_resource alert:@"Error accessing photo library" msg:@"Device does not support a photo library" vc:nil];
 	}
 }
 

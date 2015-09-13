@@ -170,7 +170,7 @@
 @property (nonatomic,strong) UILabel *rlab;
 @property (nonatomic,strong) NSArray *votWoSelf;
 
-- (void) funcDone;
+- (BOOL) funcDone;
 - (void) funcVDL:(configTVObjVC*)ctvovc donebutton:(UIBarButtonItem*)db ;
 
 @end

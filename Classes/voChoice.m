@@ -237,7 +237,9 @@
 	}
 	
 	DBGLog(@"set choice %d: %@",i, tf.text);
-	(self.vo.optDict)[[NSString stringWithFormat:@"c%d",i]] = tf.text;
+    tf.text = [tf.text stringByReplacingOccurrencesOfString:@"'" withString:@""];  // these mess up sqlite -- could escape but lazy!
+    tf.text = [tf.text stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+    (self.vo.optDict)[[NSString stringWithFormat:@"c%d",i]] = tf.text;
     NSString *cc = [NSString stringWithFormat:@"cc%d",i];
     
 	UIButton *b = (self.ctvovcp.wDict)[[NSString stringWithFormat:@"%dbtn",i]];

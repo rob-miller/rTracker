@@ -35,7 +35,7 @@
 #define d(x) ((double) (x))
 
 #define SAMPLES_VERSION 1
-#define DEMOS_VERSION 1
+#define DEMOS_VERSION 2
 #define RTDB_VERSION 1
 #define RTFN_VERSION 1
 

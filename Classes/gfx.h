@@ -11,17 +11,25 @@
 
 #define GFXHDEBUG 0
 
+#define CGPush CGContextSaveGState(context)
+#define CGPop CGContextRestoreGState(context)
+
 #define MTPrim(x,y) CGContextMoveToPoint(context,(x),(y))
 #define ALPrim(x,y) CGContextAddLineToPoint(context,(x),(y))
 #define AEPrim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-2.0f),(y-2.0f)},{4.0f,4.0f}}); CGContextMoveToPoint(context,(x),(y))
 #define AFEPrim(x,y) CGContextFillEllipseInRect(context, (CGRect) {{(x-4.0f),(y-4.0f)},{8.0f,8.0f}}); CGContextMoveToPoint(context,(x),(y))
-#define AE2Prim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-3.0f),(y-3.0f)},{6.0f,6.0f}}); CGContextMoveToPoint(context,(x),(y))
+#define AE2Prim(x,y) CGContextAddEllipseInRect(context, (CGRect) {{(x-3.0f),(y-3.0f)},{6.0f ,6.0f }}); CGContextMoveToPoint(context,(x),(y))
+#define ACPrim(x,y) CGPush; CGContextSetLineWidth(context,2); CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);\
+CGContextMoveToPoint(context,(x-8.0f),(y)); CGContextAddLineToPoint(context,(x+8.0f),(y)); \
+CGContextMoveToPoint(context,(x),(y-8.0f)); CGContextAddLineToPoint(context,(x),(y+8.0f)); \
+CGContextMoveToPoint(context,(x),(y)); CGContextDrawPath(context, kCGPathFillStroke); CGPop
 
 #if GFXHDEBUG
 #define MoveTo(x,y) NSLog(@"mov: %f,%f",x,y); MTPrim(x,y)
 #define AddLineTo(x,y) NSLog(@"lin: %f,%f",x,y); ALPrim(x,y)
 #define AddCircle(x,y) NSLog(@"cir: %f,%f",x,y); AEPrim(x,y)
 #define AddFilledCircle(x,y) NSLog(@"fcir: %f,%f",x,y); AFEPrim(x,y)
+#define AddCross(x,y) NSLog(@"cross: %f,%f",x,y); ACPrim(x,y)
 #define AddBigCircle(x,y) NSLog(@"big cir: %f,%f",x,y); AE2Prim(x,y)
 #else
 //#define MoveTo(x,y) CGContextMoveToPoint(context,(x),(y))
@@ -32,6 +40,7 @@
 #define AddLineTo(x,y) ALPrim(x,y)
 #define AddCircle(x,y) AEPrim(x,y)
 #define AddFilledCircle(x,y) AFEPrim(x,y)
+#define AddCross(x,y) ACPrim(x,y)
 #define AddBigCircle(x,y) AE2Prim(x,y)
 #endif
 

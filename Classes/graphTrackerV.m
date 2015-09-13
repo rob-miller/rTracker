@@ -230,6 +230,7 @@
             //DBGLog(@"moveto %f %f",x,y);
             MoveTo(x,y);
             if (self.selectedVO) {
+                AddCross(x,y);
                 AddFilledCircle(x,y);
             } else {
                 AddCircle(x,y);
@@ -247,6 +248,7 @@
             if (lastX != LXNOTSTARTED) {  // past 1st data point, need to show lastX 
                 MoveTo(lastX,lastY);
                 if (self.selectedVO) {
+                    AddCross(x,y);
                     AddFilledCircle(lastX,lastY);
                 } else {
                     AddCircle(lastX,lastY);
@@ -257,6 +259,7 @@
             going=YES;    // going, show current
             MoveTo(x,y);
             if (self.selectedVO) {
+                AddCross(x,y);
                 AddFilledCircle(x,y);
             } else {
                 AddCircle(x,y);

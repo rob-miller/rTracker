@@ -144,23 +144,43 @@ BOOL hasAmPm=NO;
 }
 
 //---------------------------
-+ (void) alert:(NSString*)title msg:(NSString*)msg {
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:title message:msg
-                          delegate:nil
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil];
-    [alert show];
++ (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:title message:msg
+                              delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+        [alert show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        
+        if (nil == vc) {
+            UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            w.rootViewController = [UIViewController new];
+            w.windowLevel = UIWindowLevelAlert +1;
+            [w makeKeyAndVisible];
+            vc = w.rootViewController;
+        }
+
+        [vc presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 #if ADVERSION
 
-+ (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ( buttonIndex == 1 ) /* NO = 0, YES = 1 */
++(void) handleUpgradeOptions:(NSInteger)choice {
+    if ( choice == 1 ) /* NO = 0, YES = 1 */
     {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/rtracker/id486541371"]];
-    } else if ( buttonIndex == 2 )
+    } else if ( choice == 2 )
     {
         DBGLog(@"in app upgrade!");
         
@@ -177,31 +197,68 @@ BOOL hasAmPm=NO;
                     if ([RTA_prodid isEqualToString:skp.productIdentifier]) {
                         [[rt_IAPHelper sharedInstance] buyProduct:skp];  // currently only one product !!!!!
                     }
-
+                    
                 }
             } else {
                 DBGLog(@"fail");
             }
-
+            
         }];
         
         
         DBGLog(@"done.");
-    
-    } else if ( buttonIndex == 3 )
+        
+    } else if ( choice == 3 )
     {
         [[rt_IAPHelper sharedInstance] restoreCompletedTransactions];
     }
+    
+}
+
++ (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [rTracker_resource handleUpgradeOptions:buttonIndex];
 }
 
 + (void) buy_rTrackerAlert {
+    NSString *title = @"Upgrade to rTracker";
     NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker, which does not have advertisements or limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers to rTracker (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).\n\nOr use the In-App upgrade button below to continue using rTrackerA without ads or limits.",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
-    UIAlertView *_alert = [[UIAlertView alloc] initWithTitle:@"Upgrade to rTracker"
-                                                     message:msg
-                                                    delegate:self
-                                           cancelButtonTitle:@"Not now"
-                                           otherButtonTitles:@"Get rTracker",@"In-App Upgrade", @"Restore In-App Upgrade",nil];
-    [_alert show];
+    NSString *btn0 = @"Not now";
+    NSString *btn1 = @"Get rTracker";
+    NSString *btn2 = @"In-App Upgrade";
+    NSString *btn3 = @"Restore In-App Upgrade";
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView *_alert = [[UIAlertView alloc] initWithTitle:title
+                                                         message:msg
+                                                        delegate:self
+                                               cancelButtonTitle:btn0
+                                               otherButtonTitles:btn1,btn2,btn3,nil];
+        [_alert show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* skipAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+        UIAlertAction* getAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [rTracker_resource handleUpgradeOptions:1]; }];
+        UIAlertAction* inappAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [rTracker_resource handleUpgradeOptions:2]; }];
+        UIAlertAction* restoreAction = [UIAlertAction actionWithTitle:btn3 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {  [rTracker_resource handleUpgradeOptions:3]; }];
+        
+        [alert addAction:skipAction];
+        [alert addAction:getAction];
+        [alert addAction:inappAction];
+        [alert addAction:restoreAction];
+        
+        UIViewController* vc;
+        UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        w.rootViewController = [UIViewController new];
+        w.windowLevel = UIWindowLevelAlert +1;
+        [w makeKeyAndVisible];
+        vc = w.rootViewController;
+        
+        [vc presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 #endif

@@ -246,13 +246,13 @@
 	}
 	if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
         if (0 == [self.namesArray count]) {
-            [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here"];
+            [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here" vc:nil];
         } else if (self.accessAddressBook) {
             str = [NSString stringWithFormat:@"%@\n",(NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])))];
         }
 	} else {
         if (0 == [self.historyArray count]) {
-            [rTracker_resource alert:@"No history" msg:@"Use the keyboard to create some entries, then find them in the history"];
+            [rTracker_resource alert:@"No history" msg:@"Use the keyboard to create some entries, then find them in the history" vc:nil];
         } else {
             str = [NSString stringWithFormat:@"%@\n",(self.historyArray)[row]];
         }
@@ -276,7 +276,7 @@
 	} else {
         if (SEGPEOPLE == ndx) {
             if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
-                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
                 self.addButton.hidden = YES;
                 self.accessAddressBook = NO;
             } else {
@@ -572,7 +572,7 @@
             }
             
             if (! accessGranted) {
-                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
             }
         }
         

@@ -16,7 +16,7 @@
 #define SegmentMoveDelete 2
 
 
-@interface configTlistController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
+@interface configTlistController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 //@interface configTlistController : UITableViewController
 /*
  {

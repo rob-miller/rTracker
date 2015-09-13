@@ -109,9 +109,9 @@ static BOOL InstallDemos;
 #endif
     }
     if (to.csvReadFlags & CSVNOTIMESTAMP) {
-        [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have 'timestamp' as the first column.",fname]];
+        [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have 'timestamp' as the first column.",fname] vc:self];
     } else if (to.csvReadFlags & CSVNOREADDATE) {
-        [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like '%@' are not compatible with your device's calendar settings (%@).  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem,[to.dateOnlyFormatter stringFromDate:[NSDate date] ]]];
+        [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like '%@' are not compatible with your device's calendar settings (%@).  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem,[to.dateOnlyFormatter stringFromDate:[NSDate date] ]] vc:self];
     }
     
     [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];
@@ -1036,8 +1036,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
-    //[self.view addSubview:bg];
-    //[self.view sendSubviewToBack:bg];
+    //[self.navigationController.view addSubview:bg];
+    //[self.navigationController.view sendSubviewToBack:bg];
+    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
     // navigationbar setup
     self.navigationItem.rightBarButtonItem = self.addBtn;
@@ -1047,9 +1048,16 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     if (kIS_LESS_THAN_IOS7) {
         self.navigationController.toolbar.barStyle = UIBarStyleBlack;  // rm for ios7
     } else {
-        self.navigationController.toolbar.translucent = YES;
-        self.navigationController.toolbar.backgroundColor = [UIColor clearColor];
-        //[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        //self.navigationController.toolbar.translucent = YES;
+        //self.navigationController.toolbar.backgroundColor = [UIColor clearColor];
+
+        //self.navigationController.toolbar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        //self.navigationController.toolbar.backgroundColor = [UIColor whiteColor];
+        //self.navigationController.toolbar.translucent = NO;
+        
+        //self.navigationController.navigationBar.translucent = NO;
+        //self.navigationController.navigationBar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        
     }
 
     // toolbar setup
@@ -1095,7 +1103,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     
     //[self.tlist wipeOrphans];        // added 30.vii.13
     if ([self.tlist recoverOrphans]) {     // added 07.viii.13
-        [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed."];
+        [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed." vc:self];
     }
     [self.tlist loadTopLayoutTable];
     
@@ -1289,9 +1297,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 BOOL stashAnimated;
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void) fixFileProblem:(NSInteger)choice {
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
-
+    
     NSFileManager *localFileManager=[NSFileManager defaultManager];
     NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:docsDir];
     
@@ -1303,7 +1311,7 @@ BOOL stashAnimated;
             NSString *target;
             target = [docsDir stringByAppendingPathComponent:file];
             
-            if (0 == buttonIndex) {   // delete it
+            if (0 == choice) {   // delete it
                 [rTracker_resource deleteFileAtPath:target];
             } else {                  // try again -- rename from .rtrk_reading to .rtrk
                 NSString *newTarget;
@@ -1315,8 +1323,12 @@ BOOL stashAnimated;
             }
         }
     }
-
+    
     [self viewDidAppearRestart];
+    
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self fixFileProblem:buttonIndex];
 }
 
 - (void) viewDidAppearRestart {
@@ -1418,12 +1430,33 @@ BOOL stashAnimated;
                 if ([[file pathExtension] isEqualToString: @"rtrk_reading"]) {
                     NSString *fname = [file lastPathComponent];
                     NSString *rtrkName = [fname stringByDeletingPathExtension];
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Problem reading .rtrk file?"
-                                                                    message:[ NSString stringWithFormat:@"There was a problem while loading the %@ rtrk file",rtrkName ]
-                                                                   delegate:self
-                                                          cancelButtonTitle:@"Delete it"
-                                                          otherButtonTitles:@"Try again",nil];
-                    [alert show];
+                    NSString *title = @"Problem reading .rtrk file?";
+                    NSString *msg = [ NSString stringWithFormat:@"There was a problem while loading the %@ rtrk file",rtrkName ];
+                    NSString *btn0 = @"Delete it";
+                    NSString *btn1 = @"Try again";
+                    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                                        message:msg
+                                                                       delegate:self
+                                                              cancelButtonTitle:btn0
+                                                              otherButtonTitles:btn1,nil];
+                        [alert show];
+                    } else {
+                        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                                       message:msg
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        
+                        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault
+                                                                             handler:^(UIAlertAction * action) { [self fixFileProblem:0]; }];
+                        UIAlertAction* retryAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault
+                                                                              handler:^(UIAlertAction * action) { [self fixFileProblem:1]; }];
+                        
+                        [alert addAction:deleteAction];
+                        [alert addAction:retryAction];
+                        
+                        [self presentViewController:alert animated:YES completion:nil];
+                        
+                    }
                 }
             }
         }

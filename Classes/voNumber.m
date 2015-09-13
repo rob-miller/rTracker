@@ -32,7 +32,10 @@
 */
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	DBGLog(@"tf end editing vid=%ld",(long)self.vo.vid);
+    DBGLog(@"vo.value= %@",self.vo.value);
+    DBGLog(@"tf.text= %@",textField.text);
+	DBGLog(@"tf end editing vid=%ld vo.value=%@ tf.text=%@",(long)self.vo.vid,self.vo.value,textField.text);
+    //if ([textField.text isEqualToString:self.vo.value]) return;  // TODO: why/how does initial ""-><value> happen before this ?!?!?!?!
 	//[self tfvoFinEdit:textField];
 	textField.textColor = [UIColor blackColor];
 	[self.vo.value setString:textField.text];
@@ -50,6 +53,8 @@
 	// the user pressed the "Done" button, so dismiss the keyboard
 	//DBGLog(@"textField done: %@  vid=%d", textField.text,self.vo.vid);
 	// [self tfvoFinEdit:textField];  // textFieldDidEndEditing will be called, just dismiss kybd here
+    DBGLog(@"tf should return vid=%ld vo.value=%@ tf.text=%@",(long)self.vo.vid,self.vo.value,textField.text);
+
 	[textField resignFirstResponder];
 	return YES;
 }

@@ -432,7 +432,7 @@
     
     if (![rTracker_resource getToldAboutSwipe]) { // if not yet told
         if (0 != [self.tracker prevDate]) {  //  and have previous data
-            [rTracker_resource alert:@"Swipe control" msg:@"Swipe for earlier entries"];
+            [rTracker_resource alert:@"Swipe control" msg:@"Swipe for earlier entries" vc:self];
             [rTracker_resource setToldAboutSwipe:true];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutSwipe"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -947,7 +947,7 @@
                        initWithTitle:@"Export"
                        style:UIBarButtonItemStyleBordered
                        target:self
-                       action:@selector(btnExport)];
+                       action:@selector(iTunesExport)];
         }
     }
 
@@ -1035,15 +1035,16 @@
 	[self setToolbarItems:tbi animated:YES];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (0 == buttonIndex) {  // cancel
+-(void) dispatchHandleModifiedTracker:(NSInteger)choice {
+    
+    if (0 == choice) {  // cancel
         return;
     }
     
     if (self.alertResponse) {
-        if (1 == buttonIndex) {  // save
+        if (1 == choice) {  // save
             [self saveActions];
-        } else if (2 == buttonIndex) {  // discard
+        } else if (2 == choice) {  // discard
         }
         self.needSave=NO;
         if (CSSETDATE==self.alertResponse) {
@@ -1058,13 +1059,79 @@
         } else if (CSSHOWCAL==self.alertResponse) {
             self.alertResponse=0;
             [self btnCal];
-        /* 
-         // failed effort to use default back button
-        } else if (CSLEAVE==self.alertResponse) {
-            [self leaveTracker];
-            //[super viewWillDisappear:YES];
-         */
+            /*
+             // failed effort to use default back button
+             } else if (CSLEAVE==self.alertResponse) {
+             [self leaveTracker];
+             //[super viewWillDisappear:YES];
+             */
         }
+    }
+}
+
+- (void) handleDeleteEntry:(NSInteger)choice {
+    
+    if (0 == choice) {
+        DBGLog(@"cancelled");
+    } else {
+        int targD = (int)[self.tracker prevDate];
+        if (!targD) {
+            targD = (int)[self.tracker postDate];
+        }
+        [self.tracker deleteCurrEntry];
+        [self setTrackerDate: targD];
+    }
+}
+
+- (void) duplicateEntry {
+    self.tracker.trackerDate = [[NSDate alloc] init];
+    self.needSave = YES;
+    
+    [self showSaveBtn];
+    
+    // write temp tracker here
+    [self.tracker saveTempTrackerData];
+    [self updateToolBar];
+    [self updateTrackerTableView];
+    
+    //[[NSNotificationCenter defaultCenter] postNotificationName:rtTrackerUpdatedNotification object:self]; // not sure why this doesn't work here....
+    
+}
+
+- (IBAction)iTunesExport {
+    
+    DBGLog(@"exporting tracker:");
+#if DEBUGLOG
+    [self.tracker describe];
+#endif
+    //[rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
+    CGRect navframe = [[self.navigationController navigationBar] frame];
+    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y) ];
+    //[rTracker_resource startProgressBar:self.navigationController.view navItem:self.navigationItem disable:YES];
+    [NSThread detachNewThreadSelector:@selector(doPlistExport) toTarget:self withObject:nil];
+}
+
+- (void) handleExportTracker:(NSString*)buttonTitle {
+    
+    if ([emCancel isEqualToString:buttonTitle]) {
+        DBGLog(@"cancelled");
+    } else if ([emItunesExport isEqualToString:buttonTitle]) {
+        [self iTunesExport];
+    } else if ([emDuplicate isEqualToString:buttonTitle]) {
+        [self duplicateEntry];
+    } else {
+        [self openMail:buttonTitle];
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if ([alertView.title hasSuffix:@"modified"]) {          // tracker modified and trying to leave without save
+        [self dispatchHandleModifiedTracker:buttonIndex];
+    } else if ([alertView.title hasPrefix:@"Really"]) {     // pessed delete button for entry
+        [self handleDeleteEntry:buttonIndex];
+    }else {                                                 // export menu
+        [self handleExportTracker:[alertView buttonTitleAtIndex:buttonIndex]];
     }
 }
 /*
@@ -1076,16 +1143,37 @@ else do btnCancel/btnSave
 */
 
 - (void) alertChkSave {
+    NSString *title = [self.tracker.trackerName stringByAppendingString:@" modified"]; // 'modified' needed by handler
+    NSString *msg = @"Save this record before leaving?";
+    NSString *btn0 = @"Cancel";
+    NSString *btn1 = @"Save";
+    NSString *btn2 = @"Discard";
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView* alert = [[UIAlertView alloc]
+                              initWithTitle:title
+                              message:msg
+                              delegate:self
+                              cancelButtonTitle:btn0
+                              otherButtonTitles: btn1,btn2,nil];
 
-    UIAlertView *alert;
-    alert = [[UIAlertView alloc]
-             initWithTitle:[self.tracker.trackerName stringByAppendingString:@" modified"]
-             message:@"Save this record before leaving?"
-             delegate:self
-             cancelButtonTitle:@"Cancel"
-             otherButtonTitles: @"Save",@"Discard",nil];
-
-    [alert show];
+        [alert show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:0]; }];
+        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:1]; }];
+        UIAlertAction* discardAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:2]; }];
+        
+        [alert addAction:saveAction];
+        [alert addAction:discardAction];
+        [alert addAction:cancelAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
 
 }
 
@@ -1218,6 +1306,7 @@ else do btnCancel/btnSave
     }
 }
 
+NSString *emCancel = @"Cancel";
 NSString *emEmailCsv = @"email CSV";
 NSString *emEmailTracker = @"email Tracker";
 NSString *emEmailTrackerData = @"email Tracker+Data";
@@ -1239,47 +1328,44 @@ NSString *emDuplicate = @"duplicate entry to now";
      */
     self.currDateBtn = nil;
     
-    UIActionSheet *exportMenu;
-    
-    if (postD != 0 || (lastD == currD)) {
-        exportMenu = [[UIActionSheet alloc]
-                      initWithTitle:[NSString stringWithFormat:
-                                     @"%@ tracker",
-                                     self.tracker.trackerName]
-                      delegate:self
-                      cancelButtonTitle:@"Cancel"
-                      destructiveButtonTitle:nil //@"Yes, delete"
-                      otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,emDuplicate,nil];
+    NSString *title = [NSString stringWithFormat:@"%@ tracker",self.tracker.trackerName];
+    NSString *msg = nil;
+    NSString *btn5 = (postD != 0 || (lastD == currD)) ? emDuplicate : nil;
+
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView* alert = [[UIAlertView alloc]
+                              initWithTitle:title
+                              message:msg
+                              delegate:self
+                              cancelButtonTitle:emCancel
+                              otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,btn5,nil];
         
+        [alert show];
     } else {
-        exportMenu = [[UIActionSheet alloc]
-                                              initWithTitle:[NSString stringWithFormat:
-                                                             @"%@ tracker",
-                                                             self.tracker.trackerName]
-                                              delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                              destructiveButtonTitle:nil //@"Yes, delete"
-                                              otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,nil];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ecsvAction = [UIAlertAction actionWithTitle:emEmailCsv style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailCsv]; }];
+        UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
+        UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
+        UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
+        UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
+        
+        [alert addAction:ecsvAction];
+        [alert addAction:etAction];
+        [alert addAction:etdAction];
+        [alert addAction:iteAction];
+        [alert addAction:dupAction];
+        [alert addAction:cancelAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
     }
-    //[exportMenu showInView:self.view];
-    //[exportMenu showFromRect:self.menuBtn.frame inView:self.view animated:YES];
-	//[exportMenu showFromToolbar:self.navigationController.toolbar];
-    [exportMenu showFromBarButtonItem:self.menuBtn animated:YES];
     
 }
 
-- (IBAction)btnExport {
-
-    DBGLog(@"exporting tracker:");
-#if DEBUGLOG
-    [self.tracker describe];
-#endif    
-    //[rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES];
-    CGRect navframe = [[self.navigationController navigationBar] frame];
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y) ];
-    //[rTracker_resource startProgressBar:self.navigationController.view navItem:self.navigationItem disable:YES];
-    [NSThread detachNewThreadSelector:@selector(doPlistExport) toTarget:self withObject:nil];
-}
 
 - (void) privAlert:(NSInteger)tpriv vpm:(NSInteger)vpm {
     NSString *msg;
@@ -1292,7 +1378,7 @@ NSString *emDuplicate = @"duplicate entry to now";
     } else {
         msg = [NSString stringWithFormat:@"Set a privacy level greater than %ld to see the %@ tracker",(long)tpriv,self.tracker.trackerName];
     }
-    [rTracker_resource alert:@"Privacy alert" msg:msg];    
+    [rTracker_resource alert:@"Privacy alert" msg:msg vc:self];
 }
 
 - (void) checkPrivWarn {
@@ -1440,32 +1526,37 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 - (void) btnDel {
-	UIActionSheet *checkTrackerEntryDelete = [[UIActionSheet alloc] 
-										 initWithTitle:[NSString stringWithFormat:
-														@"Really delete %@ entry %@?", 
-														self.tracker.trackerName, 
-														[self.tracker.trackerDate descriptionWithLocale:[NSLocale currentLocale]]]
-										 delegate:self 
-										 cancelButtonTitle:@"Cancel"
-										 destructiveButtonTitle:@"Yes, delete"
-										 otherButtonTitles:nil];
-	[checkTrackerEntryDelete showFromToolbar:self.navigationController.toolbar];
-}
-
-- (void) btnDuplicate {
-    self.tracker.trackerDate = [[NSDate alloc] init];
-    self.needSave = YES;
-
-    [self showSaveBtn];
+    NSString *title = @"Delete entry";
+    NSString* msg = [NSString stringWithFormat:@"Really delete %@ entry %@?",self.tracker.trackerName,
+                       [self.tracker.trackerDate descriptionWithLocale:[NSLocale currentLocale]]];
+    NSString *btn0 = @"Cancel";
+    NSString *btn1 = @"Yes, delete";
     
-    // write temp tracker here
-    [self.tracker saveTempTrackerData];
-    [self updateToolBar];
-    [self updateTrackerTableView];
-
-    //[[NSNotificationCenter defaultCenter] postNotificationName:rtTrackerUpdatedNotification object:self]; // not sure why this doesn't work here....
-
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView* alert = [[UIAlertView alloc]
+                              initWithTitle:title
+                              message:msg
+                              delegate:self
+                              cancelButtonTitle:btn0
+                              otherButtonTitles:btn1,nil];
+        
+        [alert show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:0]; }];
+        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:1]; }];
+        
+        [alert addAction:deleteAction];
+        [alert addAction:cancelAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
 }
+
 
 #pragma mark -
 #pragma mark timesSquare calendar vc
@@ -1611,7 +1702,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 -(void) btnSearch {
-    [rTracker_resource alert:@"Search results" msg:[NSString stringWithFormat:@"%ld entries highlighted in calendar and graph views",(long)[self.searchSet count]]];
+    [rTracker_resource alert:@"Search results" msg:[NSString stringWithFormat:@"%ld entries highlighted in calendar and graph views",(long)[self.searchSet count]] vc:self];
 }
 
 - (UIBarButtonItem *) delBtn {
@@ -1751,39 +1842,6 @@ NSString *emDuplicate = @"duplicate entry to now";
     [self dismissViewControllerAnimated:YES completion:NULL ];
     // some say this way but don't think so: [controller dismissViewControllerAnimated:YES completion:NULL ];
     //[self dismissModalViewControllerAnimated:YES];
-}
-
-#pragma mark -
-#pragma mark UIActionSheet methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ([actionSheet.title hasPrefix:@"Really"]) {
-        DBGLog(@"checkTrackerDelete buttonIndex= %ld",(long)buttonIndex);
-	
-        if (buttonIndex == actionSheet.destructiveButtonIndex) {
-            int targD = (int)[self.tracker prevDate];
-            if (!targD) {
-                targD = (int)[self.tracker postDate];
-            }
-            [self.tracker deleteCurrEntry];
-            [self setTrackerDate: targD];
-        } else {
-            DBGLog(@"cancelled");
-        }
-    } else {  // ([actionSheet.title hasPrefix:@"export"
-        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-        
-        if (buttonIndex == actionSheet.cancelButtonIndex) {
-            DBGLog(@"cancelled");
-        } else if ([buttonTitle isEqualToString:emItunesExport]) {
-            [self btnExport];
-        } else if ([buttonTitle isEqualToString:emDuplicate]) {
-            [self btnDuplicate];
-        } else {
-            [self openMail:buttonTitle];
-        }
-    }
 }
 
 

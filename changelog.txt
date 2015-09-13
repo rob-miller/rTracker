@@ -1861,6 +1861,34 @@ TODO: regen all .rtrks on website
    - found ppwv being instantiated on AppWillResignActive, added 'watch for keyboard notification', caused keyboardIsShown erroneously true after return to app, broke keyboard scroll in useTrackerController after return to app.
    - tweak cancel icon to 'X' in datePickerVC.xib
    - add/implement 'duplicate entry to now' in UseTrackerController menu
+
+--- commit ---
+
+   - fix 'dark bars' problem by setting navigation controller background color (to background image)
+
+02 sep 2015
+   - change version to 2.0.5 ready for release
+   
+--- commit ---
+
+    - submit as 2.0.5
+
+04 sep 2015
+   - crashlytics reports issue in voFunction.m:calcFnValueWithCurrent -- run off end of array.  add checks and just return current result, should do something to test fn validity
+
+12 sep 2015
+   - crashlytics reports issue in gtYAxV:drawYAxis -- looks like vcolor=-1 (from vot_info ? should not get there?) - changed myGraphColor to check for vcolor=-1 instead of vtype to return white, also dbgErr if outside array
+   - tweak rTracker demo to change colour of text - history (DEMOS_VERSION now 2)
+   - add cross to highlight selected valueObj dots in addition to filled circle
+   - add crashlytics and fabric frameworks to source control
+   - start converting UIAlertView to UIAlertController for iOS 8
+   - set ADVERSION as preprocessor setting for specific project, so automatically matches rTracker / rTrackerA choice !
+   - add red 'X' and alerts for incomplete functions
+
+13 sep 2015
+   - all UIActionSheet references removed, replaced by UIAlertView for < iOS8, UIAlertController for >= iOS8
+   - all UIAlertView modifiect to be UIAlertController for >= iOS8
+   
    
 
 

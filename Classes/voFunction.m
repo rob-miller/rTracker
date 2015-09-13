@@ -26,6 +26,7 @@
 #pragma mark -
 #pragma mark core object methods and support
 
+BOOL FnErr=NO;
 
 - (void) saveFnArray {
 	// note this converts NSNumbers to NSStrings
@@ -433,6 +434,8 @@
 	trackerObj *to = MyTracker;
     NSString *sql;
 
+    FnErr=NO;
+    
 #if DEBUGFUNCTION
     // print our complete function
 	NSInteger i;
@@ -454,11 +457,16 @@
 	
 	double result = 0.0f;
 	
-	while (self.currFnNdx < maxc) {
+    while (self.currFnNdx < maxc) {
         // recursive function, self.currFnNdx holds our current processing position
 		NSInteger currTok = [(self.fnArray)[self.currFnNdx++] integerValue];
 		if (isFn1Arg(currTok)) {
             // currTok is function taking 1 argument, so get it
+            if (self.currFnNdx >= maxc) {  // <--- added from line 462
+                //DBGErr(@"1-arg fn missing arg: %@",self.fnArray);
+                FnErr=YES;
+                return @(result);  // crashlytics report past array bounds at next line, so at least return without crashing
+            }
             vid = [(self.fnArray)[self.currFnNdx++] integerValue];  // get fn arg, can only be valobj vid
             //valueObj *valo = [to getValObj:vid];
             NSString *sv1 = [to getValObj:vid].value;
@@ -675,6 +683,11 @@
 #endif
 			return @(result);
         } else if (FNCONSTANT == currTok) {
+                if (self.currFnNdx >= maxc) {
+                    //DBGErr(@"constant fn missing arg: %@",self.fnArray);  // TODO: send me an email?
+                    FnErr=YES;
+                    return @(result);  // crashlytics report past array bounds above (1-arg) processing function, so safety check here to return without crashing
+                }
                 result = [(self.fnArray)[self.currFnNdx++] doubleValue];
                 self.currFnNdx++;  // skip the bounding constant tok
 #if DEBUGFUNCTION
@@ -815,6 +828,7 @@
 	//UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
 	//rlab.textAlignment = UITextAlignmentRight;
 	NSString *valstr = self.vo.value;  // evaluated on read so make copy
+    if (FnErr) valstr = [@"❌ " stringByAppendingString:valstr];
 	if (![valstr isEqualToString:@""]) {
 		self.rlab.backgroundColor = [UIColor clearColor];  // was whiteColor
         self.rlab.text = valstr;
@@ -1037,11 +1051,14 @@
     }
 }
 
+//TODO: write something to test fnStr validity and use!\
+
 - (NSString*) voFnDefnStr {
 	NSMutableString *fstr = [[NSMutableString alloc] init];
-	BOOL closePending = NO;  //square brackets around target of Fn1Arg
-	BOOL constantPending = NO;  // next item is a number not tok or vid
-    BOOL constantClosePending = NO;  // constant bounded on both sides by constant token
+	BOOL closePending = NO;             //square brackets around target of Fn1Arg
+	BOOL constantPending = NO;          // next item is a number not tok or vid
+    BOOL constantClosePending = NO;     // constant bounded on both sides by constant token
+    BOOL arg2Pending = NO;              // looking for second argument
     
 	for (NSNumber *n in self.fnArray) {
 		NSInteger i = [n integerValue];
@@ -1050,6 +1067,7 @@
             constantPending = NO;
             constantClosePending = YES;
 		} else if (isFn(i)) {
+            if (isFn2ArgOp(i)) arg2Pending = YES;
             if (FNCONSTANT == i) {
                 if (constantClosePending) {
                     constantClosePending = NO;
@@ -1071,10 +1089,18 @@
 				[fstr appendString:@"]"];
 				closePending=NO;
 			}
+            arg2Pending = NO;
 		}
 		if (! closePending)
-			[fstr appendString:@" "];
+            [fstr appendString:@" "];
 	}
+    if (arg2Pending || closePending || constantPending || constantClosePending) {
+        [fstr appendString:@" ❌"];
+        FnErr = YES;
+    } else {
+        FnErr = NO;
+    }
+    
 	return fstr;
 }
 
@@ -1299,7 +1325,8 @@
 // called for btnDone in configTVObjVC
 //
 
-- (void) funcDone {
+- (BOOL) funcDone {
+    if (FnErr) return NO;
 	if (self.fnArray != nil && [self.fnArray count] != 0) {
 		//DBGLog(@"funcDone 0: %@",[self.vo.optDict objectForKey:@"func"]);
 		[self saveFnArray];
@@ -1312,8 +1339,8 @@
 			(self.vo.optDict)[@"frep1"] = @FREPDFLT;
 		
 		DBGLog(@"ep0= %@  ep1=%@",[self.vo.optDict objectForKey:@"frep0"],[self.vo.optDict objectForKey:@"frep1"]);
-		
 	}
+    return YES;
 }
 
 

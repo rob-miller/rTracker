@@ -123,6 +123,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		[self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
+        if (0>self.tempValObj.vcolor) self.tempValObj.vcolor=0;  // paranoid in case switched from vot_info or vot_choice
 		[self.votPicker selectRow:self.tempValObj.vcolor inComponent:1 animated:NO]; // first as no picker update effects
 		[self.votPicker selectRow:self.tempValObj.vtype inComponent:0 animated:NO];
 		[self updateForPickerRowSelect:self.tempValObj.vtype inComponent:0];
@@ -270,7 +271,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//DBGLog(@"addVObjC: btnSave was pressed!");
     
     if ([self.labelField.text length] == 0) {
-        [rTracker_resource alert:@"Save Item" msg:@"Please set a name for this value to save"];
+        [rTracker_resource alert:@"Save Item" msg:@"Please set a name for this value to save" vc:self];
         return;
     
     }

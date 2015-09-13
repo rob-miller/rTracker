@@ -37,8 +37,9 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) setCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 + (void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 
-+ (void) alert:(NSString*)title msg:(NSString*)msg;
++ (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc;
 #if ADVERSION
++ (void) handleUpgradeOptions:(NSInteger)choice;
 + (void) buy_rTrackerAlert;
 #endif
 

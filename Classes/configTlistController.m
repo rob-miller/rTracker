@@ -211,7 +211,7 @@ static int selSegNdx=SegmentEdit;
 }
 
 #pragma mark -
-#pragma mark UIActionSheet methods
+#pragma mark delete tracker options methods
 
 - (void) delTracker
 {
@@ -232,15 +232,14 @@ static int selSegNdx=SegmentEdit;
 	[self.tlist reloadFromTLT];
 }
 
-- (void)actionSheet:(UIActionSheet *)checkTrackerDelete clickedButtonAtIndex:(NSInteger)buttonIndex 
-{
+- (void) handleCheckTrackerDelete:(NSInteger)choice {
 	//DBGLog(@"checkTrackerDelete buttonIndex= %d",buttonIndex);
 	
-	if (buttonIndex == checkTrackerDelete.destructiveButtonIndex) {
-		[self delTracker];
-	} else if (buttonIndex == checkTrackerDelete.cancelButtonIndex) {
-		DBGLog(@"cancelled tracker delete");
+	if (choice == 0) {
+        DBGLog(@"cancelled tracker delete");
         [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+    } else if (choice == 1) {
+		[self delTracker];
 	} else {
         [self delTrackerRecords];
         [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
@@ -249,7 +248,12 @@ static int selSegNdx=SegmentEdit;
     self.deleteIndexPath = nil;
 	
 }
-					 
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [self handleCheckTrackerDelete:buttonIndex];
+}
+
+
 					 
 #pragma mark -
 #pragma mark Table view methods
@@ -315,36 +319,60 @@ static int selSegNdx=SegmentEdit;
 	
 }
 					 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle 
-forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	self.deleteIndexPath = indexPath;;
 	
-    NSString *acTitle;
     NSString *tname = (self.tlist.topLayoutNames)[[indexPath row]];
     
 	NSInteger toid = [self.tlist getTIDfromIndex:[indexPath row]];
 	trackerObj *to = [[trackerObj alloc] init:toid];
 	int entries = [to countEntries];
-    NSString *delRecTitle;
+
+    NSString *title = [NSString stringWithFormat:@"Delete tracker %@",tname];
+    NSString *msg;
+    NSString *btn0 = @"Cancel";
+    NSString *btn1 = @"Delete tracker";
+    NSString *btn2;
+
     if (entries==0) {
-        acTitle = [NSString stringWithFormat:@"Tracker %@ has no records.",tname];
-        delRecTitle=nil;
+        msg  = [NSString stringWithFormat:@"Tracker %@ has no records.",tname];
+        btn2 = nil;
     } else {
-        delRecTitle = @"Remove records only";
-        if (entries==1) 
-            acTitle = [NSString stringWithFormat:@"Tracker %@ has 1 record.",tname];
-        else 
-            acTitle = [NSString stringWithFormat:@"Tracker %@ has %d records.",tname,entries];
-	}
+        btn2 = @"Remove records only";
+        if (entries==1)
+            msg = [NSString stringWithFormat:@"Tracker %@ has 1 record.",tname];
+        else
+            msg = [NSString stringWithFormat:@"Tracker %@ has %d records.",tname,entries];
+    }
     
-    UIActionSheet *checkTrackerDelete = [[UIActionSheet alloc] 
-                                         initWithTitle:acTitle
-                                         delegate:self 
-                                         cancelButtonTitle:@"Cancel"
-                                         destructiveButtonTitle:@"Delete tracker"
-                                         otherButtonTitles:delRecTitle,nil];
-    // no toolbar! [checkTrackerDelete showFromToolbar:self.navigationController.toolbar ];
-    [checkTrackerDelete showInView:self.view];
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView* alert = [[UIAlertView alloc]
+                              initWithTitle:title
+                              message:msg
+                              delegate:self
+                              cancelButtonTitle:btn0
+                              otherButtonTitles: btn1,btn2,nil];
+        
+        [alert show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckTrackerDelete:0]; }];
+        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckTrackerDelete:1]; }];
+        [alert addAction:cancelAction];
+        [alert addAction:deleteAction];
+        
+        if (btn2) {
+            UIAlertAction* deleteRecordsAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckTrackerDelete:2]; }];
+            [alert addAction:deleteRecordsAction];
+        }
+        
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
 }
 
 // Override to support row selection in the table view.

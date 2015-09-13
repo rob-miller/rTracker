@@ -41,7 +41,7 @@
 #define PVSTARTUP	((unsigned int) (1<<4))
 
 
-@interface privacyV : UIView <UIActionSheetDelegate>
+@interface privacyV : UIView 
 /*{
 	UIView *parentView;
     RootViewController *parent;

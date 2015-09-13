@@ -352,10 +352,16 @@
 }
 
 - (UIColor*) myGraphColor {
-    if (self.vo.vtype != VOT_CHOICE) 
-        return( (UIColor *) [rTracker_resource colorSet][self.vo.vcolor] );
-    else
-        return  [UIColor whiteColor];
+    if (0 > self.vo.vcolor) return  [UIColor whiteColor];  // VOT_CHOICE, VOT_INFO
+    
+    NSArray *cs = [rTracker_resource colorSet];
+    if (cs.count <= self.vo.vcolor) {  // paranoid due to crashlytics report error in gtYAxV:drawYAxis but expect due to vcolor=-1
+        DBGErr(@"myGraphColor: vcolor out of range: %ld cs count= %lu vtype= %ld",(long)self.vo.vcolor,(unsigned long)cs.count,(long)self.vo.vtype);
+        self.vo.vcolor=0;
+    }
+
+    return( (UIColor *) cs[self.vo.vcolor] );
+    
 }
 
 @end

@@ -321,12 +321,47 @@ static NSTimeInterval lastShow=0;
 	//	return;
 	
 	if (PVNOSHOW != newState && PWNEEDPRIVOK == self.pwState) {  // first time if no password set, give some instructions
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy"
-                                                        message:@"This feature is for hiding trackers and values from display, with up to 99 filter levels.\nThe first step is to set a configuration password, then associate patterns with privacy levels as desired.\nThe password can be reset in System Preferences."
+        NSString *title = @"Privacy";
+        NSString *msg = @"This feature is for hiding trackers and values from display, with up to 99 filter levels.\nThe first step is to set a configuration password, then associate patterns with privacy levels as desired.\nThe password can be reset in System Preferences.";
+        NSString *btn0 = @"Let's go";
+        NSString *btn1 = @"Skip for now";
+        
+        if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                        message:msg
                                                            delegate:self 
-                                                  cancelButtonTitle:@"Let's go"
-                                                  otherButtonTitles:@"Skip for now",nil];
-        [alert show]; 
+                                                  cancelButtonTitle:btn0
+                                                  otherButtonTitles:btn1,nil];
+            [alert show];
+        } else {
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                           message:msg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                      self.pwState = PWNEEDPASS;
+                                                                      //self.showing = PVSTARTUP;
+                                                                      self.showing = PVQUERY;
+                                                                  }];
+            
+            UIAlertAction* skipAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [alert addAction:skipAction];
+            
+            UIViewController *vc;
+            UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            w.rootViewController = [UIViewController new];
+            w.windowLevel = UIWindowLevelAlert +1;
+            [w makeKeyAndVisible];
+            vc = w.rootViewController;
+
+            
+            [vc presentViewController:alert animated:YES completion:nil];
+            
+        }
         
         
                 

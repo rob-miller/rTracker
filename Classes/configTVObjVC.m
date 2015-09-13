@@ -59,7 +59,10 @@
     if (self.vdlConfigVO) {
         // done editing value obj
         if (self.vo.vtype == VOT_FUNC) {
-            [((voFunction*)self.vo.vos) funcDone];
+            if (![((voFunction*)self.vo.vos) funcDone]) {
+                [rTracker_resource alert:@"Invalid Function" msg:@"The function definition is not complete.\n  Please modify it so the '❌' does not show." vc:self];
+                return;
+            }
         }
     } else {
         // done editing tracker obj
@@ -518,13 +521,13 @@
             //newPriv = currPriv;
             tf.text = [NSString stringWithFormat:@"%d",currPriv];
             NSString *msg = [NSString stringWithFormat:@"rTracker's privacy level is currently set to %d.  Setting an item to a higher privacy level than the current setting is disallowed.",currPriv];
-            [rTracker_resource alert:@"Privacy higher than current" msg:msg];
+            [rTracker_resource alert:@"Privacy higher than current" msg:msg vc:self];
         }
         newPriv = [tf.text intValue];
         if (newPriv < PRIVDFLT) {
             tf.text = [NSString stringWithFormat:@"%d",PRIVDFLT];
             NSString *msg = [NSString stringWithFormat:@"Setting a privacy level below %d is disallowed.",PRIVDFLT];
-            [rTracker_resource alert:@"Privacy setting too low" msg:msg];
+            [rTracker_resource alert:@"Privacy setting too low" msg:msg vc:self];
         }
         
 	} else if ( tf == (self.wDict)[@"gmdTF"] ) {
@@ -792,7 +795,7 @@
         msg = @"no";
     }
     
-    [rTracker_resource alert:@"Recovered Values" msg:[msg stringByAppendingString:@" values recovered"]];
+    [rTracker_resource alert:@"Recovered Values" msg:[msg stringByAppendingString:@" values recovered"] vc:self];
     
 }
 
@@ -876,23 +879,36 @@
     
 //#endif
     
-    UIAlertView *alert;
     if (0 < orphanDatapoints) {
-        alert = [[UIAlertView alloc]
-                 initWithTitle:self.to.trackerName
-                 message:titleStr
-                 delegate:self
-                 cancelButtonTitle:@"Ok"
-                otherButtonTitles: @"recover missing items",nil];
+        if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+            UIAlertView *alert;
+            alert = [[UIAlertView alloc]
+                     initWithTitle:self.to.trackerName
+                     message:titleStr
+                     delegate:self
+                     cancelButtonTitle:@"Ok"
+                     otherButtonTitles: @"recover missing items",nil];
+            [alert show];
+        } else {
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:self.to.trackerName
+                                                                           message:titleStr
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"recover missing items" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) { [self recoverValuesBtn]; }];
+            
+            [alert addAction:defaultAction];
+            [alert addAction:recoverAction];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+            
+        }
     } else {
-        alert = [[UIAlertView alloc]
-                 initWithTitle:self.to.trackerName
-                 message:titleStr
-                 delegate:nil
-                 cancelButtonTitle:@"Ok"
-                 otherButtonTitles:nil];
+        //[rTracker_resource alert:self.to.trackerName str:titleStr vc:self];
+        [rTracker_resource alert:self.to.trackerName msg:titleStr vc:self];
     }
-    [alert show];
 }
 
 
@@ -1080,8 +1096,7 @@
 {
     [self.vo.vos voDrawOptions:self];
 /*
-    //TODO: can't we get rid of switch() here?
-    
+ 
 	switch(vot) {
 		case VOT_NUMBER: 
 			// uilabel 'autoscale graph'   uibutton checkbutton

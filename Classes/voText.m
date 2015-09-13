@@ -26,6 +26,7 @@
 }
 
 - (void)tfvoFinEdit:(UITextField*)tf {
+    //if ([tf.text isEqualToString:self.vo.value]) return;
 	[self.vo.value setString:tf.text];
 	tf.textColor = [UIColor blackColor];
     
