@@ -1888,6 +1888,16 @@ TODO: regen all .rtrks on website
 13 sep 2015
    - all UIActionSheet references removed, replaced by UIAlertView for < iOS8, UIAlertController for >= iOS8
    - all UIAlertView modifiect to be UIAlertController for >= iOS8
+
+--- commit ---
+
+   - all deprecations for iOS8.4 handled -- calendar units; will/didRotateTo/From -- NSCalendarUnitWeek* not finished
+
+14 sep 2015
+   - finished NSCalendarUnitWeek* fixes/debug for TimesSquare calendar and functions
+
+--- commit ---
+
    
    
 

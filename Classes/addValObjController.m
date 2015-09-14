@@ -99,7 +99,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	/*
      UIBarButtonItem *setupBtn = [[UIBarButtonItem alloc]
 								initWithTitle:@"Setup"
-								style:UIBarButtonItemStyleBordered
+								style:UIBarButtonItemStylePlain
 								target:self
 								action:@selector(btnSetup)];
     */

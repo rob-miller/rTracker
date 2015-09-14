@@ -1052,8 +1052,10 @@ static BOOL getOrientEnabled=false;
     CGSize result;
     
     CGSize size = [[UIScreen mainScreen] bounds].size;
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     
-    if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
+    //if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
         result.width = size.height;
         result.height = size.width;
     }

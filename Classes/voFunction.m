@@ -287,7 +287,8 @@ BOOL FnErr=NO;
 
 		NSString *vkey = [NSString stringWithFormat:@"frv%d",ndx];
 		NSInteger ival = [(self.vo.optDict)[vkey] integerValue] * ( ndx ? 1 : -1 ) ; // negative offset if ep0
-		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        [gregorian setLocale:[NSLocale currentLocale]];
 		NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
         
 		//NSString *vt=nil;
@@ -336,19 +337,35 @@ BOOL FnErr=NO;
                 // if calendar week, we need to get to beginning of week as per calendar
 			case FREPCWEEKS :
             {
+                DBGLog(@"first day of week= %d targ= %@",[gregorian firstWeekday],targ);
                 NSDate *beginOfWeek=nil;
-                BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                /*
+                 NSTimeInterval interval;
+                 // ios8 deprecation of NSWeekCalendarUnit -- WeekOfMonth and WeekOfYear below give same result; NSCalendarUnitWeekday does not respect locale preferences
+                 // note dbg messages time given in GMT but we fall through cases below and wipe the time component
+                 BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:&interval forDate: targ];
+                 DBGLog(@"NSWeekCalendarUnit (iOS7) %d %@ %lf",rslt,beginOfWeek,interval);
+                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfMonth startDate:&beginOfWeek interval:&interval forDate: targ];
+                 DBGLog(@"NSCalendarUnitWeekOfMonth (iOS8) %d %@ %lf",rslt,beginOfWeek, interval);
+                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekday startDate:&beginOfWeek interval:&interval forDate: targ];
+                 DBGLog(@"NSCalendarUnitWeekday (iOS8) %d %@ %lf",rslt,beginOfWeek,interval);
+                 */
+                
+                BOOL rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfYear startDate:&beginOfWeek interval:NULL forDate: targ];
+                
+                //DBGLog(@"NSCalendarUnitWeekOfYear (iOS8) %d %@",rslt,beginOfWeek);
+                
                 if (rslt) {
                     targ = beginOfWeek;
                 }
             }
                 // if any of week, day, month, year we need to wipe hour, minute, second components
 			case FREPCDAYS :
-                unitFlags |= NSDayCalendarUnit;
+                unitFlags |= NSCalendarUnitDay;
 			case FREPCMONTHS :
-                unitFlags |= NSMonthCalendarUnit;
+                unitFlags |= NSCalendarUnitMonth;
 			case FREPCYEARS :
-                unitFlags |= NSYearCalendarUnit;
+                unitFlags |= NSCalendarUnitYear;
                 NSDateComponents *components = [gregorian components:unitFlags fromDate:targ];
                 targ = [gregorian dateFromComponents:components];
                 break;
@@ -1682,7 +1699,7 @@ BOOL FnErr=NO;
     NSString *sql;
 
     NSInteger ival = [(self.vo.optDict)[@"frv0"] integerValue] *  -1 ; // negative offset if ep0
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
 
     switch (frep0) {
@@ -1728,18 +1745,19 @@ BOOL FnErr=NO;
 			case FREPCWEEKS :
             {
                 NSDate *beginOfWeek=nil;
-                BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                //BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                BOOL rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfYear startDate:&beginOfWeek interval:NULL forDate: targ];
                 if (rslt) {
                     targ = beginOfWeek;
                 }
             }
                 // if any of week, day, month, year we need to wipe hour, minute, second components
 			case FREPCDAYS :
-                unitFlags |= NSDayCalendarUnit;
+                unitFlags |= NSCalendarUnitDay;
 			case FREPCMONTHS :
-                unitFlags |= NSMonthCalendarUnit;
+                unitFlags |= NSCalendarUnitMonth;
 			case FREPCYEARS :
-                unitFlags |= NSYearCalendarUnit;
+                unitFlags |= NSCalendarUnitYear;
                 NSDateComponents *components = [gregorian components:unitFlags fromDate:targ];
                 targ = [gregorian dateFromComponents:components];
                 break;

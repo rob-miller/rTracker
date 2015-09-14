@@ -447,8 +447,68 @@
 }
 */
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    if ( self.isViewLoaded && self.view.window ) {
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         // do whatever  -- willRotateTo
+         
+         switch (orientation) {
+             case UIInterfaceOrientationPortrait:
+                 DBGLog(@"gt will rotate to interface orientation portrait");
+                 self.tracker.goRecalculate=NO; // stop!!!!
+                 break;
+             case UIInterfaceOrientationPortraitUpsideDown:
+                 DBGLog(@"gt will rotate to interface orientation portrait upside down");
+                 self.tracker.goRecalculate=NO; // stop!!!!
+                 break;
+             case UIInterfaceOrientationLandscapeLeft:
+                 DBGLog(@"gt will rotate to interface orientation landscape left");
+                 self.gtv.doDrawGraph=TRUE;
+                 break;
+             case UIInterfaceOrientationLandscapeRight:
+                 DBGLog(@"gt will rotate to interface orientation landscape right");
+                 self.gtv.doDrawGraph=TRUE;
+                 break;
+             default:
+                 DBGWarn(@"utc will rotate but can't tell to where");
+                 break;
+         }
+         
+     }
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         // do whatever -- didRotateTo
+         switch (orientation) {
+             case UIInterfaceOrientationPortrait:
+                 DBGLog(@"gt did rotate to interface orientation portrait");
+                 [self.parentUTC returnFromGraph];
+                 break;
+             case UIInterfaceOrientationPortraitUpsideDown:
+                 DBGLog(@"gt did rotate to interface orientation portrait upside down");
+                 //[self.parentUTC returnFromGraph];
+                 break;
+             case UIInterfaceOrientationLandscapeLeft:
+                 DBGLog(@"utc did rotate to interface orientation landscape left");
+                 break;
+             case UIInterfaceOrientationLandscapeRight:
+                 DBGLog(@"gt did rotate to interface orientation landscape right");
+                 break;
+             default:
+                 DBGWarn(@"gt did rotate but can't tell to where");
+                 break;
+         }
+     }];
+    }
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation 
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:

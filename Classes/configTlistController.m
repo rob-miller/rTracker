@@ -83,13 +83,13 @@ static int selSegNdx=SegmentEdit;
         
         exportBtn = [[UIBarButtonItem alloc]
                      initWithTitle:@"Upgrade"
-                     style:UIBarButtonItemStyleBordered
+                     style:UIBarButtonItemStylePlain
                      target:self
                      action:@selector(btnUpgrade)];
     } else {
         exportBtn = [[UIBarButtonItem alloc]
                      initWithTitle:@"Export all"
-                     style:UIBarButtonItemStyleBordered
+                     style:UIBarButtonItemStylePlain
                      target:self
                      action:@selector(btnExport)];
         
@@ -97,7 +97,7 @@ static int selSegNdx=SegmentEdit;
 #else
     exportBtn = [[UIBarButtonItem alloc]
                  initWithTitle:@"Export all"
-                 style:UIBarButtonItemStyleBordered
+                 style:UIBarButtonItemStylePlain
                  target:self
                  action:@selector(btnExport)];
 #endif
@@ -107,7 +107,7 @@ static int selSegNdx=SegmentEdit;
     // wipe orphans
 	UIBarButtonItem *exportBtn = [[UIBarButtonItem alloc]
 								  initWithTitle:@"wipe orphans"
-								  style:UIBarButtonItemStyleBordered
+								  style:UIBarButtonItemStylePlain
 								  target:self
 								  action:@selector(btnWipeOrphans)];
 

@@ -1404,6 +1404,23 @@ BOOL stashAnimated;
     
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    //if ( self.isViewLoaded && self.view.window ) {
+    
+    // viewController is visible
+    //CGRect f = self.view.frame;
+    CGRect f;
+    f.origin.x = 0.0; f.origin.y = 0.0;
+    f.size = size;
+    self.tableView.frame = f;
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    DBGLog(@"rotated...");
+    //}
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+
+}
+
+
 - (void) viewDidAppear:(BOOL)animated {
     
 	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
@@ -1542,7 +1559,7 @@ BOOL stashAnimated;
 	if (payBtn == nil) {
 		payBtn = [[UIBarButtonItem alloc]
 					  initWithTitle:@"$"
-					  style:UIBarButtonItemStyleBordered
+					  style:UIBarButtonItemStylePlain
 					  target:self
 					  action:@selector(btnPay)];
 	}
@@ -1602,7 +1619,7 @@ BOOL stashAnimated;
 	if (_helpBtn == nil) {
 		_helpBtn = [[UIBarButtonItem alloc]
                       initWithTitle:@"Help"
-                      style:UIBarButtonItemStyleBordered
+                      style:UIBarButtonItemStylePlain
                       target:self
                       action:@selector(btnHelp)];
 	} 
@@ -1615,7 +1632,7 @@ BOOL stashAnimated;
         _addBtn = [[UIBarButtonItem alloc]
                 initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                   //initWithTitle:@"New tracker"
-                  //style:UIBarButtonItemStyleBordered 
+                  //style:UIBarButtonItemStylePlain 
                  target:self
                  action:@selector(btnAddTracker)];
 
@@ -1630,7 +1647,7 @@ BOOL stashAnimated;
         _editBtn = [[UIBarButtonItem alloc]
                    initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                    //initWithTitle:@"Edit trackers"
-                   //style:UIBarButtonItemStyleBordered 
+                   //style:UIBarButtonItemStylePlain 
                    target:self
                    action:@selector(btnEdit)];
     
@@ -1654,7 +1671,7 @@ BOOL stashAnimated;
 	if (multiGraphBtn == nil) {
 		multiGraphBtn = [[UIBarButtonItem alloc]
 					  initWithTitle:@"Multi-Graph"
-					  style:UIBarButtonItemStyleBordered
+					  style:UIBarButtonItemStylePlain
 					  target:self
 					  action:@selector(btnMultiGraph)];
 	}

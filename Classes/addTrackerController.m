@@ -264,7 +264,7 @@ static int editMode;
     /*
 	UIBarButtonItem *setupBtnItem = [[UIBarButtonItem alloc]
 								 initWithTitle:@"Setup"
-								 style:UIBarButtonItemStyleBordered
+								 style:UIBarButtonItemStylePlain
 								 target:self
 								 action:@selector(btnSetup)];
 	*/

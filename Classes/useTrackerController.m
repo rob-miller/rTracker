@@ -175,7 +175,7 @@
 
     // navigationbar setup
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"< %@",self.rvcTitle] //@"< rTracker"  // rTracker ... tracks ?
-                                                                   style:UIBarButtonItemStyleBordered
+                                                                   style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(btnCancel)];
     self.navigationItem.leftBarButtonItem = backButton;
@@ -565,16 +565,16 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
 */
-
+///*
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
 			DBGLog(@"utc did rotate from interface orientation portrait");
-            ///*
+ 
             //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
                 [self doGT];
             //}
-             //*/
+ 
 			break;
 		case UIInterfaceOrientationPortraitUpsideDown:
 			DBGLog(@"utc did rotate from interface orientation portrait upside down");
@@ -591,6 +591,64 @@
 			break;			
 	}
 }
+//*/
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    if ( self.isViewLoaded && self.view.window ) {
+
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         // do whatever  -- willRotateTo
+         
+         switch (orientation) {
+             case UIInterfaceOrientationPortrait:
+                 DBGLog(@"utc will rotate to interface orientation portrait");
+                 break;
+             case UIInterfaceOrientationPortraitUpsideDown:
+                 DBGLog(@"utc will rotate to interface orientation portrait upside down");
+                 break;
+             case UIInterfaceOrientationLandscapeLeft:
+                 DBGLog(@"utc will rotate to interface orientation landscape left");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
+                 break;
+             case UIInterfaceOrientationLandscapeRight:
+                 DBGLog(@"utc will rotate to interface orientation landscape right");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
+                 break;
+             default:
+                 DBGWarn(@"utc will rotate but can't tell to where");
+                 break;
+         }
+         
+     }
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         // do whatever -- didRotateTo
+         switch (orientation) {
+             case UIInterfaceOrientationPortrait:
+                 DBGLog(@"utc did rotate to interface orientation portrait");
+                 break;
+             case UIInterfaceOrientationPortraitUpsideDown:
+                 DBGLog(@"utc did rotate to interface orientation portrait upside down");
+                 break;
+             case UIInterfaceOrientationLandscapeLeft:
+                 DBGLog(@"utc did rotate to interface orientation landscape left");
+                 break;
+             case UIInterfaceOrientationLandscapeRight:
+                 DBGLog(@"utc did rotate to interface orientation landscape right");
+                 break;
+             default:
+                 DBGWarn(@"utc did rotate but can't tell to where");
+                 break;
+         }
+     }];
+    }
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
+///*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -602,26 +660,24 @@
 		case UIInterfaceOrientationLandscapeLeft:
 			DBGLog(@"utc will rotate to interface orientation landscape left duration: %f sec", duration);
             [self.tracker.activeControl resignFirstResponder];
-            /*
-            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-                [self doGT];
-            }
-            */
+ 
+            // if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) { [self doGT]; }
+ 
 			break;
 		case UIInterfaceOrientationLandscapeRight:
 			DBGLog(@"utc will rotate to interface orientation landscape right duration: %f sec", duration);
             [self.tracker.activeControl resignFirstResponder];
-            /*
-            if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-                [self doGT];
-            }
-            */
+ 
+            // if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) { [self doGT]; }
+ 
 			break;
 		default:
 			DBGWarn(@"utc will rotate but can't tell to where duration: %f sec", duration);
 			break;			
 	}
 }
+// */
+
 // * not ios6
 // YES should be default anyway so no need to subclass  ??
 /*
@@ -676,26 +732,18 @@
     DBGLog(@"graph up");
 }
 
+BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called when we dismissVieControllerAnimated() below, so don't call a second time
 - (void) returnFromGraph {
+    if (alreadyReturning) return;
+    alreadyReturning = YES;
     DBGLog(@"start return from graph");
-    //self.view = nil;
     self.fwdRotations=YES;
-        
-     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-         [self dismissViewControllerAnimated:YES completion:NULL];
-
-    
-    //[self dismissViewControllerAnimated:YES completion:^{
-    //    [[[UIApplication sharedApplication] keyWindow] sendSubviewToBack:self.gt.view];
-    //}];
-    
-     //} else {
-     //    [self dismissModalViewControllerAnimated:YES];
-     //}
-    //[UIViewController attemptRotationToDeviceOrientation];
+    [self dismissViewControllerAnimated:YES completion:NULL];
+    alreadyReturning = NO;
     DBGLog(@"graph down");
 }
 
+/*
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 	switch (interfaceOrientation) {
@@ -726,7 +774,7 @@
 			break;			
 	}
 }
-
+*/
 
 
 # pragma mark -
@@ -906,7 +954,7 @@
  if (testBtn == nil) {
  testBtn = [[UIBarButtonItem alloc]
  initWithTitle:@"test"
- style:UIBarButtonItemStyleBordered
+ style:UIBarButtonItemStylePlain
  target:self
  action:@selector(testAction:)];
  }
@@ -931,7 +979,7 @@
         if (self.rejectable) {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Accept"
-                       style:UIBarButtonItemStyleBordered
+                       style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(btnAccept)];
             _menuBtn.tintColor=[UIColor greenColor];
@@ -939,13 +987,13 @@
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                        //initWithTitle:@"menuBtn"
-                       //style:UIBarButtonItemStyleBordered
+                       //style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(btnMenu)];
         } else {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Export"
-                       style:UIBarButtonItemStyleBordered
+                       style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(iTunesExport)];
         }
@@ -1602,7 +1650,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 	if (_prevDateBtn == nil) {
 		_prevDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:@"<-" // @"Prev"    // @"<"
-					   style:UIBarButtonItemStyleBordered
+					   style:UIBarButtonItemStylePlain
 					   target:self
 					   action:@selector(btnPrevDate)];
         _prevDateBtn.tintColor = [UIColor darkGrayColor];
@@ -1614,7 +1662,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 	if (_postDateBtn == nil) {
 		_postDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:@"->" // @"Next"    //@">"
-					   style:UIBarButtonItemStyleBordered
+					   style:UIBarButtonItemStylePlain
 					   target:self
 					   action:@selector(btnPostDate)];
         _postDateBtn.tintColor = [UIColor darkGrayColor];
@@ -1636,7 +1684,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 		//DBGLog(@"creating button");
 		_currDateBtn = [[UIBarButtonItem alloc]
 					   initWithTitle:datestr
-					   style:UIBarButtonItemStyleBordered
+					   style:UIBarButtonItemStylePlain
 					   target:self
 					   action:@selector(btnCurrDate)];
 	}
@@ -1669,7 +1717,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 	if (_calBtn == nil) {
 		_calBtn = [[UIBarButtonItem alloc]
                    initWithTitle:@"📆" // @"\u2630" //@"Cal"
-				  style:UIBarButtonItemStyleBordered
+				  style:UIBarButtonItemStylePlain
 				  target:self
 				  action:@selector(btnCal)];
         _calBtn.tintColor = [UIColor colorWithRed:0.0 green:0.8 blue:0.0 alpha:1.0];
@@ -1687,7 +1735,7 @@ NSString *emDuplicate = @"duplicate entry to now";
     if (_searchBtn == nil) {
         _searchBtn = [[UIBarButtonItem alloc]
                    initWithTitle:@"🔍" //@"Cal"
-                   style:UIBarButtonItemStyleBordered
+                   style:UIBarButtonItemStylePlain
                    target:self
                    action:@selector(btnSearch)];
         _searchBtn.tintColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.8 alpha:1.0];
@@ -1710,7 +1758,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 		_delBtn = [[UIBarButtonItem alloc]
                    initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
 				  //initWithTitle:@"\u2612" //@"Del"
-				  //style:UIBarButtonItemStyleBordered
+				  //style:UIBarButtonItemStylePlain
 				  target:self
 				  action:@selector(btnDel)];
         _delBtn.tintColor = [UIColor redColor];
@@ -1728,7 +1776,7 @@ NSString *emDuplicate = @"duplicate entry to now";
         _skip2EndBtn = [[UIBarButtonItem alloc]
                    initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
                    //initWithTitle:@"\u2b72" //@"Cal"
-                   //style:UIBarButtonItemStyleBordered
+                   //style:UIBarButtonItemStylePlain
                    target:self
                    action:@selector(btnSkip2End)];
         //_calBtn.tintColor = [UIColor colorWithRed:0.0 green:0.8 blue:0.0 alpha:1.0];

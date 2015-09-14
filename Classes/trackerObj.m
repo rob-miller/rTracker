@@ -1916,7 +1916,7 @@ if (addVO) {
     // for debug
 #if REMINDERDBG
     NSDate *today = [[NSDate alloc] init];
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
     [self setReminder:saveNR today:today gregorian:gregorian];
 #endif
@@ -1937,11 +1937,11 @@ if (addVO) {
 // from ios docs date and time programming guide - Determining Temporal Differences
 -(NSInteger)unitsWithinEraFromDate:(NSDate *) startDate toDate:(NSDate *) endDate calUnit:(NSCalendarUnit)calUnit calendar:(NSCalendar*)calendar
 {
-    // calUnit NSDayCalendarUnit
+    // calUnit NSCalendarUnitDay
     NSInteger startDay=[calendar ordinalityOfUnit:calUnit
-                                       inUnit: NSEraCalendarUnit forDate:startDate];
+                                       inUnit: NSCalendarUnitEra forDate:startDate];
     NSInteger endDay=[calendar ordinalityOfUnit:calUnit
-                                     inUnit: NSEraCalendarUnit forDate:endDate];
+                                     inUnit: NSCalendarUnitEra forDate:endDate];
     return endDay-startDay;
 }
 
@@ -1958,7 +1958,7 @@ if (addVO) {
     NSString *sql;
 
     NSDateComponents *todayComponents =
-    [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
+    [gregorian components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitWeekday) fromDate:today];
     //NSDateComponents *everyStartComponents = NULL;
     NSInteger nowInt = (60 * [todayComponents hour]) + [todayComponents minute];
     NSDate *lastEntryDate = [NSDate dateWithTimeIntervalSince1970:nr.saveDate]; // default to when reminder created
@@ -1997,7 +1997,7 @@ if (addVO) {
             }
         }
         DBGLog(@"lastEntryDate= %@",lastEntryDate);
-        //everyStartComponents = [gregorian components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:lastEntryDate];
+        //everyStartComponents = [gregorian components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:lastEntryDate];
         //lastEventStart = (60 * [everyStartComponents hour]) + [everyStartComponents minute];     // lasteventstart now set for appropriate offset minutes into day
         
         // but might not be today!
@@ -2005,7 +2005,7 @@ if (addVO) {
         // cannot do delay and then [x times in window] -- because can't differentiate (in window) vs (already done) from last save
         if (0!= (nr.everyMode & EV_DAYS)) {
 
-            NSInteger days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSDayCalendarUnit calendar:gregorian];
+            NSInteger days = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSCalendarUnitDay calendar:gregorian];
             NSInteger currFrac = days % nr.everyVal;
             if ((0 != currFrac)                                 // if not exactly today
                 || (days<nr.everyVal)  // or (have not passed 1x target days offset)
@@ -2017,7 +2017,11 @@ if (addVO) {
             DBGLog(@" every- days= %ld days_mod_times= %ld eventIsToday= %ld",(long)days,(long)(days % nr.everyVal),(long) eventIsToday);
             
         } else if (0!= (nr.everyMode & EV_WEEKS)) {
-            NSInteger weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
+            /* NSCalendarUnitWeekOfMOnth vs. NSCalendarUnitWeekOfYear does not seem to make any difference here
+            NSInteger weeks1 = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSWeekCalendarUnit calendar:gregorian];
+            NSInteger weeks2 = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSCalendarUnitWeekOfMonth calendar:gregorian];
+            */
+            NSInteger weeks = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSCalendarUnitWeekOfYear calendar:gregorian];
             NSInteger currFrac = weeks % nr.everyVal;
             if ((0 != currFrac)
                 || (weeks<nr.everyVal)
@@ -2025,10 +2029,10 @@ if (addVO) {
                 eventIsToday = FALSE;
                 [offsetComponents setWeekOfMonth:(nr.everyVal - currFrac)];
             }
-            DBGLog(@" every- weeks= %ld weeks_mod_times= %ld eventIsToday= %ld",(long)weeks,(long)(weeks % nr.times),(long)eventIsToday);
+            DBGLog(@" every- weeks weeks_passed= %ld weeks_mod_times= %ld eventIsToday= %ld",(long)weeks,(long)(weeks % nr.times),(long)eventIsToday);
             
         } else if (0!= (nr.everyMode & EV_MONTHS)) {
-            NSInteger months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMonthCalendarUnit calendar:gregorian];
+            NSInteger months = [self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSCalendarUnitMonth calendar:gregorian];
             NSInteger currFrac = months % nr.everyVal;
             if ((0 != currFrac)
                 || (months < nr.everyVal)
@@ -2039,7 +2043,7 @@ if (addVO) {
             DBGLog(@" every- months= %ld months_mod_times= %ld eventIsToday= %ld",(long)months,(long)(months % nr.times),(long)eventIsToday);
 
         } else { //EV_MINUTES or EV_HOURS => eventIsToday  // unless wraparound!  // or not selected weekdays!
-            NSInteger minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSMinuteCalendarUnit calendar:gregorian];
+            NSInteger minutes = [today timeIntervalSinceDate:lastEntryDate]/60; //[self unitsWithinEraFromDate:lastEntryDate toDate:today calUnit:NSCalendarUnitMinute calendar:gregorian];
             NSInteger blockMinutes = (EV_HOURS == nr.everyMode ? 60 * nr.everyVal : nr.everyVal);
             NSInteger currFrac = minutes % blockMinutes;
             NSInteger targStart;
@@ -2245,11 +2249,11 @@ if (addVO) {
                 [dateComponents setMonth:1];
                 NSDate *nextMonth = [gregorian dateByAddingComponents:dateComponents toDate:today options:0];
 
-                dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
-                                                        NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:nextMonth];
+                dateComponents = [gregorian components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay |
+                                                        NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:nextMonth];
                 [dateComponents setDay:ifirst+1];
                 nextMonth = [gregorian dateFromComponents:dateComponents];
-                days = [self unitsWithinEraFromDate:today toDate:nextMonth calUnit:NSDayCalendarUnit calendar:gregorian];
+                days = [self unitsWithinEraFromDate:today toDate:nextMonth calUnit:NSCalendarUnitDay calendar:gregorian];
                 DBGLog(@"not today- monthDays: today is %ld, wrap around to first = %ld so +%ld days",(long)itoday,(long)ifirst,(long)days);
             } else {
                 DBGErr(@"not today- monthDays fail: %0x today is %ld",nr.monthDays,(long)itoday);
@@ -2279,7 +2283,7 @@ if (addVO) {
             NSDate *tmpTargDate = [gregorian dateByAddingComponents:offsetComponents toDate:today options:0];
             
             // Get the weekday component of the current targDate
-            NSDateComponents *weekdayComponents = [gregorian components:NSWeekdayCalendarUnit fromDate:tmpTargDate];
+            NSDateComponents *weekdayComponents = [gregorian components:NSCalendarUnitWeekday fromDate:tmpTargDate];
             
             // date is not today if we are here; either not today's weekday if weekday mode, or every mode and tmpTargDate already has some offset
             
@@ -2354,7 +2358,7 @@ if (addVO) {
     [self clearScheduledReminders];
     // create uiLocalNotif here with access to nr data and tracker data
     NSDate *today = [[NSDate alloc] init];
-    //NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];   // could use [NSCalendar currentCalendar]; ?
+    //NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];   // could use [NSCalendar currentCalendar]; ?
     NSCalendar *cal = [NSCalendar currentCalendar];
     
     [self loadReminders];

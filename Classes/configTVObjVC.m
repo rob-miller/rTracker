@@ -130,7 +130,7 @@
     
     UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc]
                                 initWithTitle:@"\u2611"  // ballot box with check
-                                style:UIBarButtonItemStyleBordered
+                                style:UIBarButtonItemStylePlain
 								//initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 								target:self
 								action:@selector(btnDone:)];

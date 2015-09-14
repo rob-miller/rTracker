@@ -72,7 +72,7 @@
     NSMutableArray *vidSet = [[NSMutableArray alloc]init];
     
     for (id d in dates) {
-        NSDateComponents *dc = [_calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit) fromDate:[NSDate dateWithTimeIntervalSince1970:[d integerValue]]];
+        NSDateComponents *dc = [_calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth |  NSCalendarUnitDay) fromDate:[NSDate dateWithTimeIntervalSince1970:[d integerValue]]];
         NSDate *date = [_calendar dateFromComponents:dc];
         int dayStart = [date timeIntervalSince1970];
 
@@ -231,9 +231,9 @@
     if (nil != [self.dateSelDict objectForKey:date]) {
         return true;
     }
-    NSDateComponents *components = [self.calendar components:(NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit) fromDate:[NSDate date]];
+    NSDateComponents *components = [self.calendar components:(NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay) fromDate:[NSDate date]];
     NSDate *today = [self.calendar dateFromComponents:components];
-    components = [self.calendar components:(NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit) fromDate:date];
+    components = [self.calendar components:(NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay) fromDate:date];
     NSDate *inDate = [self.calendar dateFromComponents:components];
     
     if([today isEqualToDate:inDate]) {
