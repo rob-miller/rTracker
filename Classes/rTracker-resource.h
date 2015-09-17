@@ -86,6 +86,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (NSString*) fromSqlStr:(NSString*) instr;
 + (NSString*) toSqlStr:(NSString*) instr;
 
++ (NSString*) negateNumField:(NSString*)text;
 + (UITextField*) rrConfigTextField:(CGRect)frame key:(NSString*)key target:(id)target delegate:(id)delegate action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text;
 
 + (void) willShowKeyboard:(NSNotification*)n view:(UIView*)view boty:(CGFloat)boty;

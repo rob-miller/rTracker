@@ -314,7 +314,8 @@
 	//
 	[self.textView resignFirstResponder];
 	self.devc.navigationItem.rightBarButtonItem = nil;	// this will remove the "save" button
-	
+    self.textView.text = [[self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAppendingString:@"\n"];
+    
     DBGLog(@"tb save: vo.val= .%@  tv.txt= %@",self.vo.value,self.textView.text);
     if (0 == [self.setSearchSeg selectedSegmentIndex]) {
         if (! [self.vo.value isEqualToString:self.textView.text]) {

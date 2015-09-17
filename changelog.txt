@@ -1898,8 +1898,21 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
-   
-   
+15 sep 2015
+   - crashlytics reports 5x crashes user trying to create function without variables; put up alerts and disallow
+   -- one odd situation where delete button not shown -- then can't leave !
+   - add '-' button to decimal keypad (oops); subclass UITextField -> numField -- easy!
+
+16 sep 2015
+   - fixed ctvovc pickers and dynamically added textfields in function config (constant and -[] frep time units) not scrolling for keyboard - was adding to ctvovcp.view instead of ctvovcp.scroll
+
+    - trim newlines and whitespace from textbox data on save - had cases where newline first char so do not see in useTracker
+    - last before Xcode 7
+
+17 sep 2015
+
+--- commit ---
+
 
 
 +++ check rvc viewDidAppear / restart behaviour with adversion changes

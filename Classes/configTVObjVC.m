@@ -649,7 +649,7 @@
 	myPickerView.dataSource = caller;
 	
 	(self.wDict)[key] = myPickerView;
-	[self.view addSubview:myPickerView];
+	[self.scroll addSubview:myPickerView];
 	
 	return frame;
 }

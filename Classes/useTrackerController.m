@@ -1398,14 +1398,16 @@ NSString *emDuplicate = @"duplicate entry to now";
         UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
         UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
         UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
-        UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
         
         [alert addAction:ecsvAction];
         [alert addAction:etAction];
         [alert addAction:etdAction];
         [alert addAction:iteAction];
-        [alert addAction:dupAction];
+        if (postD != 0 || (lastD == currD)) {
+            UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
+            [alert addAction:dupAction];
+        }
         [alert addAction:cancelAction];
         
         [self presentViewController:alert animated:YES completion:nil];

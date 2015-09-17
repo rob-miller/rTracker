@@ -175,6 +175,8 @@
 		D46E56B41B73A10F0023CE55 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A91B73A10F0023CE55 /* Fabric.framework */; };
 		D46E56B51B73A10F0023CE55 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */; };
 		D46E56B61B73A10F0023CE55 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */; };
+		D46F7C951BA89E3A00CC768B /* numField.m in Sources */ = {isa = PBXBuildFile; fileRef = D46F7C941BA89E3A00CC768B /* numField.m */; };
+		D46F7C961BA89E3A00CC768B /* numField.m in Sources */ = {isa = PBXBuildFile; fileRef = D46F7C941BA89E3A00CC768B /* numField.m */; };
 		D4735FF91A51E81C006F12FC /* demoTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4735FF81A51E81C006F12FC /* demoTrackers */; };
 		D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
 		D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */; };
@@ -325,6 +327,8 @@
 		D46E56A81B73A10F0023CE55 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		D46E56A91B73A10F0023CE55 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		D46F7C931BA89E3A00CC768B /* numField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = numField.h; sourceTree = "<group>"; };
+		D46F7C941BA89E3A00CC768B /* numField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = numField.m; sourceTree = "<group>"; };
 		D4735FF81A51E81C006F12FC /* demoTrackers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = demoTrackers; sourceTree = "<group>"; };
 		D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarPreviousMonth.png; path = Resources/png/CalendarPreviousMonth.png; sourceTree = "<group>"; };
 		D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarPreviousMonth@2x.png"; path = "Resources/png/CalendarPreviousMonth@2x.png"; sourceTree = "<group>"; };
@@ -519,6 +523,8 @@
 				D4E069A61343C4D7002B42C8 /* dbg-defs.h */,
 				D40DC28E133BEC2A00023D5D /* rTracker-resource.h */,
 				D40DC28F133BEC3600023D5D /* rTracker-resource.m */,
+				D46F7C931BA89E3A00CC768B /* numField.h */,
+				D46F7C941BA89E3A00CC768B /* numField.m */,
 				D4E370331ACDCD0300118F73 /* adSupport.h */,
 				D4E370341ACDCD0300118F73 /* adSupport.m */,
 				D4B1AD4F1AFE8D690098D068 /* IAPHelper.h */,
@@ -1176,6 +1182,7 @@
 				D4E8F90412E868A300A2526B /* tictacV.m in Sources */,
 				D415C6DF1A988B2F005BD8BE /* GSTouchesShowingWindow.m in Sources */,
 				D4E8F90712E868B700A2526B /* ppwV.m in Sources */,
+				D46F7C951BA89E3A00CC768B /* numField.m in Sources */,
 				D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */,
 				D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */,
 				D4A700CD13798874005E0E23 /* togd.m in Sources */,
@@ -1207,6 +1214,7 @@
 				D43A7E921AB62358001BEC96 /* tObjBase.m in Sources */,
 				D43A7E931AB62358001BEC96 /* configTlistController.m in Sources */,
 				D43A7E941AB62358001BEC96 /* valueObj.m in Sources */,
+				D46F7C961BA89E3A00CC768B /* numField.m in Sources */,
 				D43A7E951AB62358001BEC96 /* addValObjController.m in Sources */,
 				D43A7E961AB62358001BEC96 /* useTrackerController.m in Sources */,
 				D43A7E971AB62358001BEC96 /* graphTrackerVC.m in Sources */,

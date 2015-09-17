@@ -340,23 +340,26 @@ BOOL FnErr=NO;
                 DBGLog(@"first day of week= %d targ= %@",[gregorian firstWeekday],targ);
                 NSDate *beginOfWeek=nil;
                 /*
-                 NSTimeInterval interval;
                  // ios8 deprecation of NSWeekCalendarUnit -- WeekOfMonth and WeekOfYear below give same result; NSCalendarUnitWeekday does not respect locale preferences
                  // note dbg messages time given in GMT but we fall through cases below and wipe the time component
-                 BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:&interval forDate: targ];
-                 DBGLog(@"NSWeekCalendarUnit (iOS7) %d %@ %lf",rslt,beginOfWeek,interval);
-                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfMonth startDate:&beginOfWeek interval:&interval forDate: targ];
-                 DBGLog(@"NSCalendarUnitWeekOfMonth (iOS8) %d %@ %lf",rslt,beginOfWeek, interval);
-                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekday startDate:&beginOfWeek interval:&interval forDate: targ];
-                 DBGLog(@"NSCalendarUnitWeekday (iOS8) %d %@ %lf",rslt,beginOfWeek,interval);
+                 // so we need to get the begin of week date utc time 00:00:00 to be the date in the local time zone
+                 BOOL rslt = [gregorian rangeOfUnit:NSWeekCalendarUnit startDate:&beginOfWeek interval:NULL forDate: targ];
+                 DBGLog(@"NSWeekCalendarUnit (iOS7) %d %@ ",rslt,beginOfWeek);
+                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfMonth startDate:&beginOfWeek interval:NULL forDate: targ];
+                 DBGLog(@"NSCalendarUnitWeekOfMonth (iOS8) %d %@ ",rslt,beginOfWeek);
+                 rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekday startDate:&beginOfWeek interval:NULL forDate: targ];
+                 DBGLog(@"NSCalendarUnitWeekday (iOS8) %d %@ %",rslt,beginOfWeek);
                  */
                 
                 BOOL rslt = [gregorian rangeOfUnit:NSCalendarUnitWeekOfYear startDate:&beginOfWeek interval:NULL forDate: targ];
                 
-                //DBGLog(@"NSCalendarUnitWeekOfYear (iOS8) %d %@",rslt,beginOfWeek);
+                DBGLog(@"NSCalendarUnitWeekOfYear (iOS8) %d %@",rslt,beginOfWeek);
                 
                 if (rslt) {
-                    targ = beginOfWeek;
+                    // need to shift date with 00:00:00 UTC ( = 21:00 day before in tz ) to local timezone so day component is correct 
+                    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+                    targ = [beginOfWeek dateByAddingTimeInterval:[tz secondsFromGMTForDate:beginOfWeek]];
+                    // DBGLog(@"targ= %@",targ);
                 }
             }
                 // if any of week, day, month, year we need to wipe hour, minute, second components
@@ -701,7 +704,7 @@ BOOL FnErr=NO;
 			return @(result);
         } else if (FNCONSTANT == currTok) {
                 if (self.currFnNdx >= maxc) {
-                    //DBGErr(@"constant fn missing arg: %@",self.fnArray);  // TODO: send me an email?
+                    //DBGErr(@"constant fn missing arg: %@",self.fnArray);
                     FnErr=YES;
                     return @(result);  // crashlytics report past array bounds above (1-arg) processing function, so safety check here to return without crashing
                 }
@@ -929,22 +932,22 @@ BOOL FnErr=NO;
 		
 		UITextField *vtf= (self.ctvovcp.wDict)[vtfkey];
 		vtf.text = (self.vo.optDict)[vkey];
-		[self.ctvovcp.view addSubview:vtf];
-		[self.ctvovcp.view addSubview:(self.ctvovcp.wDict)[pre_vkey]];
-		UILabel *postLab = (self.ctvovcp.wDict)[post_vkey];
+		[self.ctvovcp.scroll addSubview:vtf];
+		[self.ctvovcp.scroll addSubview:(self.ctvovcp.wDict)[pre_vkey]];
+        UILabel *postLab = (self.ctvovcp.wDict)[post_vkey];
 		//postLab.text = [[self fnrRowTitle:row] stringByReplacingOccurrencesOfString:@"cal " withString:@"c "];
 		postLab.text = [self fnrRowTitle:row];
         DBGLog(@" postlab= %@",postLab.text);
-		[self.ctvovcp.view addSubview:postLab];
+        [self.ctvovcp.scroll addSubview:postLab];
         
         if ((0 == component) && (ISCALFREP([(self.vo.optDict)[key] integerValue]))) {
             UIButton *ckBtn = (self.ctvovcp.wDict)[@"graphLastBtn"];
             BOOL state = (![(self.vo.optDict)[@"graphlast"] isEqualToString:@"0"]) ; // default:1
             [ckBtn setImage:[UIImage imageNamed:(state ? @"checked.png" : @"unchecked.png")]
                          forState: UIControlStateNormal];
-            [self.ctvovcp.view addSubview:ckBtn];
+            [self.ctvovcp.scroll addSubview:ckBtn];
             UILabel *glLab = (self.ctvovcp.wDict)[@"graphLastLabel"];
-            [self.ctvovcp.view addSubview:glLab];
+            [self.ctvovcp.scroll addSubview:glLab];
         }
         
 	}
@@ -1068,8 +1071,6 @@ BOOL FnErr=NO;
     }
 }
 
-//TODO: write something to test fnStr validity and use!\
-
 - (NSString*) voFnDefnStr {
 	NSMutableString *fstr = [[NSMutableString alloc] init];
 	BOOL closePending = NO;             //square brackets around target of Fn1Arg
@@ -1128,6 +1129,11 @@ BOOL FnErr=NO;
 }
 
 - (void) btnAdd:(id)sender {
+    if (0 >= [self.fnTitles count]) {
+        [self noVarsAlert];
+        return;
+    }
+    
 	UIPickerView *pkr = (self.ctvovcp.wDict)[@"fdPkr"];
 	NSInteger row = [pkr selectedRowInComponent:0];
 	NSNumber *ntok = (self.fnTitles)[row];    // get tok from fnTitle and add to fnArray
@@ -1398,10 +1404,10 @@ BOOL FnErr=NO;
 		case FNSEGNDX_OVERVIEW: 
 			[self drawFuncOptsOverview];
 			[super voDrawOptions:self.ctvovcp];
-			break;
+            break;
 		case FNSEGNDX_RANGEBLD:
 			[self drawFuncOptsRange];
-			break;
+            break;
 		case FNSEGNDX_FUNCTBLD:
 			[self drawFuncOptsDefinition];
 			break;
@@ -1470,12 +1476,26 @@ BOOL FnErr=NO;
     return [super cleanOptDictDflts:key];
 }
 
+- (BOOL) checkVOs {
+    for (valueObj *valo in MyTracker.valObjTable) {
+        if (valo.vtype != VOT_FUNC) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
 
+- (void) noVarsAlert {
+    [rTracker_resource alert:@"No variables for function" msg:@"A function needs variables to work on.\n\nPlease add a value (like a number, or anything other than a function) to your tracker before trying to create a function." vc:nil];
+}
 
 - (void) voDrawOptions:(configTVObjVC *)ctvovc {
 	self.ctvovcp = ctvovc;
     [self reloadEmptyFnArray];
 	[self drawSelectedPage];
+    
+    if (! [self checkVOs]) [self noVarsAlert];
+    
 }
 
 #pragma mark picker support
@@ -1642,8 +1662,8 @@ BOOL FnErr=NO;
     // display constant box
     UITextField *vtf= (self.ctvovcp.wDict)[CTFKEY];
     vtf.text = (self.vo.optDict)[LCKEY];
-    [self.ctvovcp.view addSubview:(self.ctvovcp.wDict)[CLKEY]];
-    [self.ctvovcp.view addSubview:vtf];
+    [self.ctvovcp.scroll addSubview:(self.ctvovcp.wDict)[CLKEY]];
+    [self.ctvovcp.scroll addSubview:vtf];
 }
 
 - (void) hideConstTF {

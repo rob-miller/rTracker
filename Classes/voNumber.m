@@ -8,6 +8,7 @@
 
 #import "voNumber.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation voNumber
 
@@ -63,6 +64,9 @@
     [self.dtf resignFirstResponder];
 }
 
+- (void) selectMinusButton {
+    self.dtf.text = [rTracker_resource negateNumField:self.dtf.text] ;
+}
 
 - (UITextField*) dtf {
     if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
@@ -98,7 +102,13 @@
                                  initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                  target:self
                                  action:@selector(selectDoneButton)];
-        accessoryView.items = @[space, done, space];
+        UIBarButtonItem *minus = [[UIBarButtonItem alloc]
+                                  initWithTitle:@"-"
+                                  style:UIBarButtonItemStyleBordered
+                                  target:self
+                                  action:@selector(selectMinusButton)];
+
+        accessoryView.items = @[space, done, space, minus, space];
         _dtf.inputAccessoryView = accessoryView;
 
         

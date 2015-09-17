@@ -10,6 +10,7 @@
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
 #import "rt_IAPHelper.h"
+#import "numField.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreText/CTTypesetter.h>
@@ -644,10 +645,29 @@ static int lastStashedTid=0;
 
 #pragma mark -
 
++ (NSString*) negateNumField:(NSString*)text {
+    
+    text = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSRange range = [text rangeOfString:@"-"];
+    if (NSNotFound == range.location) {
+        return [@"-" stringByAppendingString:text];
+    } else {
+        return [text stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    }
+
+    //return [text stringByAppendingString:@"-"];
+}
+
 + (UITextField*) rrConfigTextField:(CGRect)frame key:(NSString*)key target:(id)target delegate:(id)delegate action:(SEL)action num:(BOOL)num place:(NSString*)place text:(NSString*)text
 {
     DBGLog(@" frame x %f y %f w %f h %f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
-	UITextField *rtf = [[UITextField alloc] initWithFrame:frame ];
+    UITextField *rtf;
+    if (num) {
+        rtf = (UITextField*) [[numField alloc] initWithFrame:frame ];
+    } else {
+        rtf = [[UITextField alloc] initWithFrame:frame ];
+    }
+    
 	rtf.clearsOnBeginEditing = NO;
     
 	[rtf setDelegate:delegate];
@@ -681,7 +701,17 @@ static int lastStashedTid=0;
                                  initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                  target:rtf
                                  action:@selector(resignFirstResponder)];
-        accessoryView.items = @[space, done, space];
+        
+        UIBarButtonItem *minus = [[UIBarButtonItem alloc]
+                                  initWithTitle:@"-"
+                                  style:UIBarButtonItemStyleBordered
+                                  target:rtf
+                                  action:@selector(minusKey)];
+        
+        //[minus.action = [^{NSLog(@"Pressed the button");} copy] action:@selector(invoke) forControlEvents:UIControlEventTouchUpInside];
+        
+        //accessoryView.items = @[space, done, space];
+        accessoryView.items = @[space, done, space, minus, space];
         rtf.inputAccessoryView = accessoryView;
 
 	}
