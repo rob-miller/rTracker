@@ -1350,6 +1350,7 @@ else do btnCancel/btnSave
     
         [self.tracker saveToItunes];
         [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        [rTracker_resource alert:@"Tracker saved" msg:[NSString stringWithFormat:@"%@_out.csv and _out.plist files have been saved to the rTracker Documents directory on this device.  Access them through iTunes on your PC/Mac, or with a program like iExplorer from Macroplant.com.  Import by changing the names to _in.csv and _in.plist, and read about .rtcsv file import capabilities at http://www.realidata.com/rTracker-HOWTO.",self.tracker.trackerName] vc:self];
 
     }
 }
@@ -1864,6 +1865,8 @@ NSString *emDuplicate = @"duplicate entry to now";
     }
 #if RELEASE
     [rTracker_resource deleteFileAtPath:[self.tracker getPath:ext]];
+#else
+    DBGErr(@"leaving rtrk at path: %@", [self.tracker getPath:ext]);
 #endif
     
 }

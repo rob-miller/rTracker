@@ -966,7 +966,8 @@ if (addVO) {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
     DBGLog(@"trackerObj loadData for date %@",qDate);
-	[self resetData];
+    // don't leave thread, need values reset here: dispatch_async(dispatch_get_main_queue(), ^(void){
+    [self resetData];
     NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
     int c = [self toQry2Int:sql];
 	if (c) {
@@ -1362,11 +1363,13 @@ if (addVO) {
     NSInteger currDate = [self.trackerDate timeIntervalSince1970];
     NSInteger nextDate = [self firstDate];
     
+    DBGLog(@"starting CSV output %ld to %ld",(long)nextDate,(long)currDate);
     float ndx = 1.0;
     float all = [self getDateCount];
     
     do {
         @autoreleasepool {
+            //DBGLog(@"date= %d",nextDate);
             [self loadData:nextDate];
             // write data - each vo gets routine to write itself -- function results too
             outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
@@ -1381,6 +1384,8 @@ if (addVO) {
                 }
             }
             outString = [outString stringByAppendingString:@"\n"];
+            DBGLog(@"%ld: %@",(long)nextDate,outString);
+            
             [nsfh writeData:[outString dataUsingEncoding:NSUTF8StringEncoding]];
             [rTracker_resource setProgressVal:(ndx/all)];
             ndx += 1.0;
@@ -2432,6 +2437,7 @@ if (addVO) {
     NSString *sql = [NSString stringWithFormat:@"select date from trkrData where date < %d and minpriv <= %d order by date desc limit 1;",
 		   (int) [self.trackerDate timeIntervalSince1970], (int) [privacyV getPrivacyValue] ];
 	int rslt= [self toQry2Int:sql];
+    DBGLog(@"curr: %@ prev: %@",self.trackerDate,[NSDate dateWithTimeIntervalSince1970:rslt]);
 	//self.sql = nil;
 	return rslt;
 }

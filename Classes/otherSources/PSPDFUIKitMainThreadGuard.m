@@ -11,6 +11,8 @@
 
 #import "dbg-defs.h"
 
+#if !RELEASE
+
 #define PSPDFLogError DBGErr
 
 #define PSPDFAssert(expression, ...) \
@@ -101,3 +103,6 @@ __attribute__((constructor)) static void PSPDFUIKitMainThreadGuard(void) {
         }
     }
 }
+
+#endif
+

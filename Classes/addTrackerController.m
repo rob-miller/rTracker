@@ -531,7 +531,7 @@ DBGLog(@"btnAddValue was pressed!");
         rect.size.width = [rTracker_resource getKeyWindowWidth];  // because ios 7.1 gets different width for cell
 #if !RELEASE
         // debug layout:
-        cell.backgroundColor = [UIColor orangeColor];
+        //cell.backgroundColor = [UIColor orangeColor];
 #endif
         self.nameField = [[UITextField alloc] initWithFrame:CGRectMake(10,5,rect.size.width-20,rect.size.height-10) ];
         self.nameField.clearsOnBeginEditing = NO;
@@ -549,7 +549,7 @@ DBGLog(@"btnAddValue was pressed!");
         self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
 #if !RELEASE
         // debug layout:
-        self.nameField.backgroundColor=[UIColor redColor];
+        //self.nameField.backgroundColor=[UIColor redColor];
 #else
         self.nameField.backgroundColor=[UIColor whiteColor];
 #endif
@@ -592,7 +592,7 @@ DBGLog(@"btnAddValue was pressed!");
             //cell.backgroundColor=nil;
 #if !RELEASE
             // debug layout:
-            cell.backgroundColor = [UIColor greenColor];
+            //cell.backgroundColor = [UIColor greenColor];
 #endif
 		}
 		NSInteger row = [indexPath row];

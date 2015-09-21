@@ -170,8 +170,9 @@ BOOL hasAmPm=NO;
             [w makeKeyAndVisible];
             vc = w.rootViewController;
         }
-
-        [vc presentViewController:alert animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [vc presentViewController:alert animated:YES completion:nil];
+        });
     }
 }
 
@@ -321,6 +322,9 @@ static UIActivityIndicatorView *activityIndicator=nil;
 static UIView *outerView;
 static UILabel *captionLabel;
 
+static BOOL activityIndicatorGoing=NO;
+static BOOL progressBarGoing=NO;
+
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str {
     
     if (disable) {
@@ -357,25 +361,30 @@ static UILabel *captionLabel;
     [outerView addSubview:captionLabel];
 
     //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
-
+    activityIndicatorGoing=YES;
     [view addSubview:outerView];
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
-// note needs performSelectorOnMainThread fix for ios5
-    if (disable) {
-        //[navItem setHidesBackButton:NO animated:YES];
-        navItem.rightBarButtonItem.enabled = YES;
-        view.userInteractionEnabled = YES;
-    }
+    if (! activityIndicatorGoing) return;
     
-    //[activityIndicator stopAnimating];
-    [activityIndicator performSelectorOnMainThread:@selector(stopAnimating) withObject:nil waitUntilDone:NO];
-
-    activityIndicator = nil;
-    captionLabel = nil;
-    [outerView removeFromSuperview];
-    outerView = nil;
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        if (disable) {
+            //[navItem setHidesBackButton:NO animated:YES];
+            navItem.rightBarButtonItem.enabled = YES;
+            view.userInteractionEnabled = YES;
+        }
+        
+        //[activityIndicator stopAnimating];
+        [activityIndicator performSelectorOnMainThread:@selector(stopAnimating) withObject:nil waitUntilDone:YES];
+        
+        [outerView removeFromSuperview];
+        
+        activityIndicator = nil;
+        captionLabel = nil;
+        outerView = nil;
+        activityIndicatorGoing=NO;
+    });
 }
 
 static UIProgressView *progressBar=nil;
@@ -403,6 +412,7 @@ static UIProgressView *progressBar=nil;
     progressBar.frame = pbFrame;
     
     //progressBar.center = view.center;
+    progressBarGoing=YES;
     [view addSubview:progressBar];
     //[view bringSubviewToFront:progressBar];
     //[progressBar startAnimating];
@@ -464,12 +474,13 @@ static BOOL localDisable;
 
     [progressBar removeFromSuperview];
     progressBar = nil;
-    
+    progressBarGoing=NO;
     //DBGLog(@"progressbar finished");
     
 }
 
 + (void) finishProgressBar:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    if (!progressBarGoing) return;
     localView = view;
     localNavItem = navItem;
     localDisable = disable;

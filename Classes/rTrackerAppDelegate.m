@@ -51,9 +51,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     [Fabric with:@[CrashlyticsKit]];
-
-    DBGLog(@"docs dir= %@",[rTracker_resource ioFilePath:nil access:YES]);
-    
+#if !RELEASE
+    DBGWarn(@"docs dir= %@",[rTracker_resource ioFilePath:nil access:YES]);
+#endif
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     [sud synchronize];
     

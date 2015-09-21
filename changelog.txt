@@ -1933,7 +1933,17 @@ TODO: regen all .rtrks on website
 21 sep 2015
    - added pspdf library suggested by StackOverflow response, crash on any UIKit call outside main thread
    - fixed issue above
+   - finding many more ui modified not on main thread, yayyy
    
+--- commit ---
+
+    - add alert for saving for iTunes, say is done and reference possible actions with files.
+    - various thread interaction issues from changes to put ui work all on main thread; added lock for csv loading
+    - begin freeze for next release
+
+--- commit ---
+
+
 
 todo: remove rTracker_Prefix.pch ?  seems to be from ios3
 remove rTrackerTests-Prefix.pch ?

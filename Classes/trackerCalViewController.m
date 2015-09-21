@@ -173,6 +173,7 @@
 
 -(void) viewWillAppear:(BOOL)animated {
     self.SpecDate=true;
+    DBGLog(@"showing tsqcal seldate= %@",self.dpr.date);
     ((TSQCalendarView*)self.view).selectedDate = self.dpr.date;
     self.SpecDate=false;
     [super viewWillAppear:animated];
@@ -189,7 +190,8 @@
 - (void)viewDidLayoutSubviews;
 {
   // Set the calendar view to show today date on start
-  [(TSQCalendarView *)self.view scrollToDate:[NSDate date] animated:NO];
+  //[(TSQCalendarView *)self.view scrollToDate:[NSDate date] animated:NO];
+    [(TSQCalendarView *)self.view scrollToDate:self.dpr.date animated:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated;

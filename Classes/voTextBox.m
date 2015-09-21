@@ -843,6 +843,8 @@
 
 - (NSString*) mapValue2Csv {
     // add from history or contacts adds trailing \n, trim it here
+    return [self.vo.value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    /*
     NSUInteger ndx = [self.vo.value length];
 
     if (0<ndx) {
@@ -858,6 +860,7 @@
     }
     
     return (NSString*) self.vo.value;  	
+     */
 }
 
 @end

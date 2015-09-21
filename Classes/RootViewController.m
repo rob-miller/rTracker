@@ -576,8 +576,11 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     return(rtrkTid);
 }
 
+BOOL loadingCsvFiles=NO;
 
 - (void) doLoadCsvFiles {
+    if (loadingCsvFiles) return;
+    loadingCsvFiles=YES;
     @autoreleasepool {
     
         [UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -585,12 +588,15 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         [UIApplication sharedApplication].idleTimerDisabled = NO;
         
         // file load done, enable userInteraction
-        
         [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
         
         // give up lock
         self.refreshLock = 0;
-        
+        loadingCsvFiles=NO;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self refreshToolBar:YES];
+        });
         DBGLog(@"csv data loaded, UI enabled, lock off stashedTIDs= %@",self.stashedTIDs);
         
         if (0< [self.stashedTIDs count]) {
@@ -608,16 +614,17 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 	[self.tlist loadTopLayoutTable];
     dispatch_async(dispatch_get_main_queue(), ^(void){
         [self.tableView reloadData];
+        [self refreshEditBtn];
+        [self refreshToolBar:YES];
+        [self.view setNeedsDisplay];
     });
-    [self refreshEditBtn];
-    [self refreshToolBar:YES];
-    [self.view setNeedsDisplay];
     // no effect [self.tableView setNeedsDisplay];
 }
 
 BOOL loadingInputFiles=NO;
 - (void) doLoadInputfiles {
     if (loadingInputFiles) return;
+    if (loadingCsvFiles) return;
     loadingInputFiles=YES;
     @autoreleasepool {
     
@@ -670,6 +677,8 @@ BOOL loadingInputFiles=NO;
 }
 
 - (void) loadInputFiles {
+    if (loadingInputFiles) return;
+    if (loadingCsvFiles) return;
     //if (!self.openUrlLock) {
         csvLoadCount = [self countInputFiles:@"_in.csv"];
         plistLoadCount = [self countInputFiles:@"_in.plist"];
@@ -1590,8 +1599,9 @@ BOOL stashAnimated;
                          : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
                         )
                         ;
-    
-    [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
+    });
 }
 
 - (UIBarButtonItem *) privateBtn {

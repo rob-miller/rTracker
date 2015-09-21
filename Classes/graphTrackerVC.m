@@ -278,10 +278,10 @@
         
         //[rTracker_resource finishActivityIndicator:self.scrollView navItem:nil disable:NO];
         [rTracker_resource finishProgressBar:self.scrollView navItem:nil disable:NO];
-        
-        [self.gtv setNeedsDisplay];
-        [self.yAV setNeedsDisplay];
-        
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self.gtv setNeedsDisplay];
+            [self.yAV setNeedsDisplay];
+        });
         //self.shakeLock = 0; // release lock
     }
     

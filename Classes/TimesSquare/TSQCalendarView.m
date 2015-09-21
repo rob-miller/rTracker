@@ -128,9 +128,10 @@
 
 - (void)setSelectedDate:(NSDate *)newSelectedDate;
 {
+    DBGLog(@"-> %@",newSelectedDate);
     // clamp to beginning of its day
     NSDate *startOfDay = [self clampDate:newSelectedDate toComponents:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear];
-    
+
     if ([self.delegate respondsToSelector:@selector(calendarView:shouldSelectDate:)] && ![self.delegate calendarView:self shouldSelectDate:startOfDay]) {
         return;
     }
