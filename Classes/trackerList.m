@@ -43,22 +43,36 @@
 	//self.sql = @"select count(*) from toplevel;";
 	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int:sql]);
 
-	sql = @"create table if not exists info (val integer, name text);";
+	sql = @"create table if not exists info (name text unique, val integer);";
     [self toExecSql:sql];
-
-    sql = @"select count(*) from info where name='rtdb_version'";
-    if (0 == [self toQry2Int:sql]) {
+    
+    sql = @"select max(val) from info where name='rtdb_version'";
+    int dbVer = [self toQry2Int:sql];
+    if (0 == dbVer) {  // 0 means no entry so need to initialise
         DBGLog(@"rtdb_version not set");
         sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];
         [self toExecSql:sql];
-/*
-#if DEBUGLOG
     } else {
-       sql = @"select val from info where name='rtdb_version'";
-        DBGLog(@"rtdb_version= %d",[self toQry2Int:sql]);
-#endif
- */
+        
+        if (1 == dbVer) {
+            // fix info table to be unique on name
+            sql = @"select max(val) from info where name='samples_version'";
+            int samplesVer = [self toQry2Int:sql];
+            sql = @"select max(val) from info where name='demos_version'";
+            int demosVer = [self toQry2Int:sql];
+            sql = @"drop table info";
+            [self toExecSql:sql];
+            sql = @"create table if not exists info (name text unique, val integer);";
+            [self toExecSql:sql];
+            sql = [NSString stringWithFormat: @"insert into info (name, val) values ('rtdb_version',%i);",RTDB_VERSION];  // upgraded now
+            [self toExecSql:sql];
+            sql = [NSString stringWithFormat: @"insert into info (name, val) values ('demos_version',%i);",demosVer];
+            [self toExecSql:sql];
+            sql = [NSString stringWithFormat: @"insert into info (name, val) values ('samples_version',%i);",samplesVer];
+            [self toExecSql:sql];
+        }
     }
+
     
 	//self.sql = nil;
 }	
@@ -525,7 +539,7 @@
                 dictTid2Filename[@(ftid)] = fn;
                 NSNumber *ftidNdx = dictTid2Ndx[@(ftid)];
                 if (ftidNdx) {
-                    DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
+                    //DBGLog(@"%@ iv: %d toplevel: %@",fn, ftid, [s1 objectAtIndex:[ftidNdx unsignedIntegerValue]]);
                 } else {
                     [self restoreTracker:fn ndx:4];
                     didRecover = YES;
@@ -554,7 +568,7 @@
         for (tlTid in i1) {
             NSString *tltidFilename = dictTid2Filename[tlTid];
             if (tltidFilename) {
-                DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
+                //DBGLog(@"tid %@ name %@ file %@",tlTid,[s1 objectAtIndex:i],tltidFilename);
             } else {
                 NSString *tname = s1[i];
                 DBGLog(@"tid %@ name %@ no file found - delete from tlist",tlTid,tname);

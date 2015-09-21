@@ -228,20 +228,19 @@
 }
 
 
- - (void) viewWillAppear:(BOOL)animated {
-     [super viewWillAppear:animated];
-     
-     if (DPA_GOTO == self.dpr.action) {
-         int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
-         self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
-     }
-     
-     if (nil != (self.tracker.optDict)[@"dirtyFns"]) {
-         [self fireRecalculateFns];
-     }
-     [self fireRegenSearchMatches];
-     [self.navigationController setToolbarHidden:YES animated:NO];
-
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (DPA_GOTO == self.dpr.action) {
+        int targSecs = [self.dpr.date timeIntervalSince1970] - ((togd*)self.tracker.togd).firstDate;
+        self.gtv.xMark = (targSecs * ((togd*)self.tracker.togd).dateScale);
+    }
+    
+    if (nil != (self.tracker.optDict)[@"dirtyFns"]) {
+        [self fireRecalculateFns];
+    }
+    [self fireRegenSearchMatches];
+    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -260,7 +259,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-
+    [self.navigationController setToolbarHidden:YES animated:NO];
+    
     [super viewDidAppear:animated];
 
     [self becomeFirstResponder];
@@ -507,7 +507,7 @@
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
-
+/*
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
 	switch (fromInterfaceOrientation) {
@@ -537,7 +537,8 @@
     }
 
 }
-
+*/
+/*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     //rtm dbg self.gtv.doDrawGraph=FALSE;
@@ -565,9 +566,9 @@
 			break;			
 	}
 }
+*/
 
-
-
+/*
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
 	switch (interfaceOrientation) {
@@ -588,7 +589,7 @@
 			break;			
 	}
 }
-
+*/
 
  
 

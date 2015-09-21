@@ -406,7 +406,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     if ((c>20) || (c2>20))
         [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,objName] waitUntilDone:NO];
     
-    DBGLog(@"ltd enter dict= %lu",(unsigned long)[tdict count]);
+    //DBGLog(@"ltd enter dict= %lu",(unsigned long)[tdict count]);
     tid = [self loadTrackerDict:tdict tname:tname];
 
     if (nil != dataDict) {
@@ -429,6 +429,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     //[self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
     //[self restorePriv];
     [privacyV restorePriv];
+    DBGLog(@"removing file %@",[url path]);
     [rTracker_resource deleteFileAtPath:[url path]];
     //if ((c>20) || (c2>20))
         [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
@@ -490,7 +491,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         NSError *err;
         if ([localFileManager moveItemAtPath:target toPath:newTarget error:&err] != YES)
             DBGErr(@"Error on move %@ to %@: %@",target, newTarget, err);
-            //DBGLog(@"Unable to move file: %@", [err localizedDescription]);
+
         self.readingFile=YES;
         
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
@@ -590,7 +591,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         // give up lock
         self.refreshLock = 0;
         
-        DBGLog(@"csv data loaded, UI enabled, lock off");
+        DBGLog(@"csv data loaded, UI enabled, lock off stashedTIDs= %@",self.stashedTIDs);
         
         if (0< [self.stashedTIDs count]) {
             [self doRejectableTracker];
@@ -605,15 +606,19 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 - (void) refreshViewPart2 {
     //DBGLog(@"entry");
 	[self.tlist loadTopLayoutTable];
-	[self.tableView reloadData];
-    
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [self.tableView reloadData];
+    });
     [self refreshEditBtn];
     [self refreshToolBar:YES];
     [self.view setNeedsDisplay];
     // no effect [self.tableView setNeedsDisplay];
 }
 
+BOOL loadingInputFiles=NO;
 - (void) doLoadInputfiles {
+    if (loadingInputFiles) return;
+    loadingInputFiles=YES;
     @autoreleasepool {
     
         if (InstallDemos) {
@@ -637,6 +642,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
         
         DBGLog(@"load plist thread finished, lock still on, UI still disabled");
+        loadingInputFiles=NO;
     }
     // end of this thread, refreshLock still on, userInteraction disabled, activityIndicator still spinning and doLoadCsvFiles is in charge
 }
@@ -785,7 +791,16 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     // also called with doLoad=NO to just count
     // returns count
     
-    return [self loadSuppliedTrackers:doLoad set:SUPPLY_SAMPLES];
+    int count = [self loadSuppliedTrackers:doLoad set:SUPPLY_SAMPLES];
+    /*  // loadSuppliedTrackers does this (but that is not called for demos)
+    if (doLoad && count) {
+        NSString *sql;
+        sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
+        [self.tlist toExecSql:sql];
+    }
+    */
+
+    return count;
 }
 
 - (int) loadDemos:(BOOL)doLoad {
@@ -818,6 +833,8 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
                 count--;
             } else {
                 [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
+                //DBGLog(@"stashedTIDs= %@",self.stashedTIDs);
+
                 [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
             }
         }
@@ -1027,13 +1044,13 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 #endif
     
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
-    InstallSamples = NO;
-    InstallDemos = NO;
+    //InstallSamples = NO;
+    //InstallDemos = NO;
     self.refreshLock = 0;
     self.readingFile=NO;
     [self countScheduledReminders];
 
-    DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+    //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
     //[self.navigationController.view addSubview:bg];
@@ -1044,22 +1061,6 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     self.navigationItem.rightBarButtonItem = self.addBtn;
     self.navigationItem.leftBarButtonItem = self.editBtn;
     
-    //if (SYSTEM_VERSION_LESS_THAN(@"7.0")) {
-    if (kIS_LESS_THAN_IOS7) {
-        self.navigationController.toolbar.barStyle = UIBarStyleBlack;  // rm for ios7
-    } else {
-        //self.navigationController.toolbar.translucent = YES;
-        //self.navigationController.toolbar.backgroundColor = [UIColor clearColor];
-
-        //self.navigationController.toolbar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-        //self.navigationController.toolbar.backgroundColor = [UIColor whiteColor];
-        //self.navigationController.toolbar.translucent = NO;
-        
-        //self.navigationController.navigationBar.translucent = NO;
-        //self.navigationController.navigationBar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-        
-    }
-
     // toolbar setup
     [self refreshToolBar:NO];
 
@@ -1098,15 +1099,20 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     [self.view addSubview:self.tableView];
     
     
-    trackerList *tmptlist = [[trackerList alloc] init];
-	self.tlist = tmptlist;
     
-    //[self.tlist wipeOrphans];        // added 30.vii.13
-    if ([self.tlist recoverOrphans]) {     // added 07.viii.13
-        [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed." vc:self];
+}
+
+- (trackerList *) tlist {
+    if (nil == _tlist) {
+        trackerList *tmptlist = [[trackerList alloc] init];
+        self.tlist = tmptlist;
+        
+        if ([self.tlist recoverOrphans]) {     // added 07.viii.13
+            [rTracker_resource alert:@"Recovered files" msg:@"One or more tracker files were recovered, please delete if not needed." vc:self];
+        }
+        [self.tlist loadTopLayoutTable];
     }
-    [self.tlist loadTopLayoutTable];
-    
+    return _tlist;
 }
 
 - (void) refreshEditBtn {
@@ -1138,38 +1144,19 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
 - (BOOL) samplesNeeded {
     NSString *sql = @"select val from info where name = 'samples_version'";
-    return (SAMPLES_VERSION != [self.tlist toQry2Int:sql]);
+    int rslt = [self.tlist toQry2Int:sql];
+    DBGLog(@"samplesNeeded if %d != %d",SAMPLES_VERSION,rslt);
+    return (SAMPLES_VERSION != rslt);
 }
 
 - (BOOL) demosNeeded {
     NSString *sql = @"select val from info where name = 'demos_version'";
-    return (DEMOS_VERSION != [self.tlist toQry2Int:sql]);
+    int rslt = [self.tlist toQry2Int:sql];
+    DBGLog(@"demosNeeded if %d != %d",DEMOS_VERSION,rslt);
+    return (DEMOS_VERSION != rslt);
 }
 
 - (void) handlePrefs {
-    /*
-    [[NSUserDefaults standardUserDefaults] synchronize];
-
-    BOOL resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
-    BOOL reloadSamplesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reload_sample_trackers_pref"];
-    
-    DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
-
-    if (resetPassPref) [self.privacyObj resetPw];
-    if (reloadSamplesPref) [self loadSamples];
-    
-    if (resetPassPref) 
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reset_password_pref"];
-    if (reloadSamplesPref)
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"reload_sample_trackers_pref"];
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    resetPassPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reset_password_pref"];
-    reloadSamplesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"reload_sample_trackers_pref"];
-    
-    DBGLog(@"exit prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
-     */
     
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     [sud synchronize];
@@ -1188,20 +1175,42 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
     if (resetPassPref) [self.privacyObj resetPw];
     
+    InstallSamples = NO;
+    InstallDemos = NO;
+    if (reloadSamplesPref) {
+        InstallSamples = YES;
+        InstallDemos = YES;
+    } else {
+        if ([self samplesNeeded]) {
+            InstallSamples = YES;
+        }
+        if ([self demosNeeded]) {
+            InstallDemos = YES;
+        }
+    }
+    /*
     if (reloadSamplesPref
         || 
-        (self.initialPrefsLoad && [self samplesNeeded]) 
+        //(self.initialPrefsLoad && [self samplesNeeded])
+        [self samplesNeeded]
         ) { 
         InstallSamples = YES;
+    } else {
+        InstallSamples = NO;
     }
-
+    
     if (reloadSamplesPref
         ||
         //(self.initialPrefsLoad && [self demosNeeded])
         [self demosNeeded]
         ) {
         InstallDemos = YES;
+    } else {
+        InstallDemos = NO;
     }
+    */
+    
+    DBGLog(@"InstallSamples %d  InstallDemos %d",InstallSamples,InstallDemos);
     
     if (resetPassPref)
         [sud setBool:NO forKey:@"reset_password_pref"];
@@ -1263,16 +1272,17 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 */
 
 - (void)viewWillAppear:(BOOL)animated {
-
-	DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+    
+    DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
     //[self loadInputFiles];  // do this here as restarts are infrequent
-	//[self refreshView];
-
+    //[self refreshView];
+    
     //[self restorePriv];
     [privacyV restorePriv];
     //[self refreshViewPart2];
-
+    
     [self.navigationController setToolbarHidden:NO animated:NO];
+    
     CGRect f = self.view.frame;
     if (f.size.width != self.tableView.frame.size.width) {
         f.origin.x = 0.0; f.origin.y = 0.0;
@@ -1280,18 +1290,20 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
         /*
          [self.navigationController.toolbar setBackgroundImage: [UIImage imageNamed:[rTracker_resource getLaunchImageName]]
-                                           forToolbarPosition: UIToolbarPositionAny
-                                                   barMetrics: UIBarMetricsDefault];
-        */
+         forToolbarPosition: UIToolbarPositionAny
+         barMetrics: UIBarMetricsDefault];
+         */
         
-       
+        
     }
+    
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         [self.adSupport initBannerView:self];
         [self.view addSubview:self.adSupport.bannerView];
     }
 #endif
+    
     [super viewWillAppear:animated];
 }
 
@@ -1389,11 +1401,12 @@ BOOL stashAnimated;
 */
 
 - (void) doRejectableTracker {
+    //DBGLog(@"stashedTIDs= %@",self.stashedTIDs);
     NSNumber *nsntid = [self.stashedTIDs lastObject];
     [self performSelectorOnMainThread:@selector(doOpenTrackerRejectable:) withObject:nsntid waitUntilDone:YES];
     [self.stashedTIDs removeLastObject];
 }
-
+/*
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
     CGRect f = self.view.frame;
@@ -1403,7 +1416,7 @@ BOOL stashAnimated;
     DBGLog(@"rotated...");
     
 }
-
+*/
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     //if ( self.isViewLoaded && self.view.window ) {
     
@@ -1423,16 +1436,14 @@ BOOL stashAnimated;
 
 - (void) viewDidAppear:(BOOL)animated {
     
-	//DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
+    //DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
     /*
-    if (self.inputURL && !self.openUrlLock) {
-        self.openUrlLock = YES;
-        [self openInputURL];
-    } else
-*/
-/*
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-*/
+     if (self.inputURL && !self.openUrlLock) {
+     self.openUrlLock = YES;
+     [self openInputURL];
+     } else
+     */
+    
     if (! self.readingFile) {
         if (0 < [self.stashedTIDs count]) {
             [self doRejectableTracker];
@@ -1466,7 +1477,7 @@ BOOL stashAnimated;
                         UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault
                                                                              handler:^(UIAlertAction * action) { [self fixFileProblem:0]; }];
                         UIAlertAction* retryAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault
-                                                                              handler:^(UIAlertAction * action) { [self fixFileProblem:1]; }];
+                                                                            handler:^(UIAlertAction * action) { [self fixFileProblem:1]; }];
                         
                         [alert addAction:deleteAction];
                         [alert addAction:retryAction];
@@ -1478,7 +1489,7 @@ BOOL stashAnimated;
             }
         }
     } else {
-    //if (self.readingFile) {
+        //if (self.readingFile) {
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     }
     stashAnimated = animated;

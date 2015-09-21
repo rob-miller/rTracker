@@ -14,6 +14,8 @@
 
 //#import <Cocoa/Cocoa.h>
 
+#import <UIKIt/UIKit.h>
+
 @interface CSVParser : NSObject
 
 {

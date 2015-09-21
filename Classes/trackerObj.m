@@ -912,7 +912,7 @@ if (addVO) {
 	int i=0;
 	for (valueObj *vo in self.valObjTable) {
         
-		DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
+		//DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
         sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
 					(long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
 		[self toExecSql:sql];
@@ -930,7 +930,7 @@ if (addVO) {
 }
 
 - (void) saveChoiceConfigs {  // for csv load, need to update vo optDict if vo is VOT_CHOICE
-	DBGLog(@"tObj saveChoiceConfig: trackerName= %@",self.trackerName) ;
+	//DBGLog(@"tObj saveChoiceConfig: trackerName= %@",self.trackerName) ;
 	BOOL NeedSave=NO;
 	for (valueObj *vo in self.valObjTable) {
         if (VOT_CHOICE == vo.vtype) {
@@ -986,7 +986,7 @@ if (addVO) {
 			valueObj *vo = [self getValObj:vid];
 			//dbgNSAssert1(vo,@"tObj loadData no valObj with vid %d",vid);
 			if (vo) { // no vo if privacy restricted
-                DBGLog(@"vo id %ld newValue: %@",(long)vid,newVal);
+                //DBGLog(@"vo id %ld newValue: %@",(long)vid,newVal);
                 
                 if ((VOT_CHOICE == vo.vtype) || (VOT_SLIDER == vo.vtype)) {
                     vo.useVO = ([@"" isEqualToString:newVal] ? NO : YES);   // enableVO disableVO
@@ -1759,9 +1759,10 @@ if (addVO) {
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
     CGFloat maxWidth = screenSize.width - (2*MARGIN) - [@"<enter number>" sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20.0]}].width;
     if (lsize.width > maxWidth) lsize.width = maxWidth;
-    DBGLog(@"lsize.width %f maxWidth %f ss.width %f",lsize.width,maxWidth,screenSize.width);
     
-    DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
+    //DBGLog(@"lsize.width %f maxWidth %f ss.width %f",lsize.width,maxWidth,screenSize.width);
+    //DBGLog(@"maxLabel set: width %f  height %f",lsize.width, lsize.height);
+    
     //[self.optDict setObject:[NSNumber numberWithFloat:lsize.width] forKey:@"width"];
     //[self.optDict setObject:[NSNumber numberWithFloat:lsize.height] forKey:@"height"];
     

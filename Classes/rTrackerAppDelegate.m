@@ -52,6 +52,8 @@
 
     [Fabric with:@[CrashlyticsKit]];
 
+    DBGLog(@"docs dir= %@",[rTracker_resource ioFilePath:nil access:YES]);
+    
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     [sud synchronize];
     
@@ -101,11 +103,11 @@
     [self.window setRootViewController:self.navigationController];
     [self.window makeKeyAndVisible];
 
-    DBGLog(@"product %@ version %@ build %@  db_ver %d  fn_ver %d samples_ver %d",
+    DBGLog(@"product %@ version %@ build %@  db_ver %d  fn_ver %d samples_ver %d demos_ver %d",
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"],
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
            [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"],
-           RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION
+           RTDB_VERSION,RTFN_VERSION,SAMPLES_VERSION, DEMOS_VERSION
            );
 /*
     if ([@"rTrackerA" isEqualToString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"]]) {
@@ -214,7 +216,7 @@
 }
 
 - (UIAlertView*) quickAlert:(NSString*)title msg:(NSString*)msg {
-    DBGLog(@"qalert title: %@ msg: %@",title,msg);
+    //DBGLog(@"qalert title: %@ msg: %@",title,msg);
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:title message:msg
                           delegate:nil
@@ -328,7 +330,7 @@
 	// rootViewController needs to possibly load files
     // useTrackerController needs to detect if displaying a private tracker
     
-	DBGLog(@"rt app delegate: app did become active");
+	//DBGLog(@"rt app delegate: app did become active");
 
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
 

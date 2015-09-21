@@ -1910,9 +1910,33 @@ TODO: regen all .rtrks on website
     - last before Xcode 7
 
 17 sep 2015
-
 --- commit ---
+    - switch to Xcode 7
 
+18 sep 2015
+   - ios 9 race condition in rvc caused InstallSamples=NO in viewDidLoad too early; removed, initialise in HandlePrefs(), rework logic for install samples and demos
+   - ios 9 race condition causes doLoadInputfiles re-entry; add bool flag to disallow
+   - xcode7 change removed (libz,libc++,libsqlite3).dylib; SenTestingKit.framework - replaced with .tbd files except for SenTestingKit which is apparently gone/old/redundant?
+   - comment out many dbglog messages
+   - update rtdb_ver to 2, add unique constraint on info table column name
+   - items above were not problem, rvc tlist used for db query without being initialised in viewDidLoad() -- added separate initialisation routine
+
+19 sep 2015
+   - need to add Launch Screen storyboard for iOS9, seem to have that working
+
+20 sep 2015
+   - crashlytics crash on 0 index to empty array in voTextBox picker -- also managed to get once for addressbook without access; added checks with return on empty addressBook and historyarray
+   - new simulator crash: "This application is modifying the autolayout engine from a background thread, which can lead to engine corruption and weird crashes. This will cause an exception in a future release."
+   -- got in rvc viewWillAppear first, then later in configTlist viewWillAppear -- added dispatch_async(dispatch_get_main_queue(), ^(void){ <code> }); around all viewWillAppear doing anything with interface
+   --- hmmm, got hit more, all uikit calls (at least which modify UI) must be on main thread ... searching...
+
+21 sep 2015
+   - added pspdf library suggested by StackOverflow response, crash on any UIKit call outside main thread
+   - fixed issue above
+   
+
+todo: remove rTracker_Prefix.pch ?  seems to be from ios3
+remove rTrackerTests-Prefix.pch ?
 
 
 +++ check rvc viewDidAppear / restart behaviour with adversion changes

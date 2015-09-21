@@ -162,22 +162,22 @@
     [self btnDone:nil];
 }
 
-- (void) viewWillAppear:(BOOL)animated
-{
-	// register for keyboard notifications
-	keyboardIsShown = NO;
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillShow:) 
-												 name:UIKeyboardWillShowNotification 
-											   object:self.view.window];
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(keyboardWillHide:) 
-												 name:UIKeyboardWillHideNotification 
-											   object:self.view.window];
-
+- (void) viewWillAppear:(BOOL)animated {
+    
+    // register for keyboard notifications
+    keyboardIsShown = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:self.view.window];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:self.view.window];
+    
     [self.navigationController setToolbarHidden:NO animated:NO];
-
-	[super viewWillAppear:animated];
+    
+    [super viewWillAppear:animated];
 }
 
 - (void) viewWillDisappear :(BOOL)animated
@@ -831,7 +831,6 @@
         titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
     }
 
-//#if !RELEASE
    sql = @"select count(*) from reminders";
     int reminderCount = [self.to toQry2Int:sql];
 

@@ -114,25 +114,9 @@
 	[self.table reloadData];
     [self toggleEdit:self.segcEditTrackerEditItems];
 
-    /*
-    //TODO: one day save temp tracker obj in case of crash while adding tracker
-    // issue is that code for loading from dictionary loads into db and trackerList
 
-    NSString *fname = TEMPFILE;
-    NSString *fpath = [rTracker_resource ioFilePath:fname access:NO];
-    if (! ([[self.tempTrackerObj dictFromTO] writeToFile:fpath atomically:YES])) {
-        DBGErr(@"problem writing file %@",fname);
-    } else {
-        //[rTracker_resource protectFile:fp];
-     }
-    */
-    
-    //TODO: remove these lines ?
-	//if (self.navigationController.toolbarHidden)
-	//	[self.navigationController setToolbarHidden:NO animated:YES];
-	//[self.navigationController setToolbarHidden:YES animated:YES];  // must hide so one in xib is visible?
-    
     [super viewWillAppear:animated];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -147,6 +131,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    dispatch_async(dispatch_get_main_queue(), ^(void){
 	DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
     
     if ([self.nameField.text length] > 0) {
@@ -155,8 +140,9 @@
     }
     
 	[super viewWillDisappear:animated];
+       
+    });
 }
-
 
 /*
 - (void) viewDidUnload {
@@ -337,8 +323,9 @@ DBGLog(@"btnAddValue was pressed!");
         [self.tlist loadTopLayoutTable];
         
         [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
-        
-        [self.navigationController popViewControllerAnimated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self.navigationController popViewControllerAnimated:YES];
+        });
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
 
         self.saving = FALSE;

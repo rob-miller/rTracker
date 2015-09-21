@@ -104,7 +104,7 @@
                                  action:@selector(selectDoneButton)];
         UIBarButtonItem *minus = [[UIBarButtonItem alloc]
                                   initWithTitle:@"-"
-                                  style:UIBarButtonItemStyleBordered
+                                  style:UIBarButtonItemStylePlain
                                   target:self
                                   action:@selector(selectMinusButton)];
 

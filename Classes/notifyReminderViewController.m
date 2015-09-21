@@ -205,30 +205,31 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void) viewWillAppear:(BOOL)animated
-{
+- (void) viewWillAppear:(BOOL)animated {
+    
     /*
-    if (0 < [self.tracker.reminders count]) {
-        //self.nextAddBarButton.title = @">";
-        self.nr = [self.tracker.reminders objectAtIndex:0];
-    } else {
-        self.nr = [[notifyReminder alloc] init:self.tracker];
-    }
-    */
+     if (0 < [self.tracker.reminders count]) {
+     //self.nextAddBarButton.title = @">";
+     self.nr = [self.tracker.reminders objectAtIndex:0];
+     } else {
+     self.nr = [[notifyReminder alloc] init:self.tracker];
+     }
+     */
     //DBGLog(@" saveDate= %@",[NSDate dateWithTimeIntervalSince1970:self.nr.saveDate]);
     
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillShow:)
-												 name:UIKeyboardWillShowNotification
-											   object:self.view.window];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillHide:)
-												 name:UIKeyboardWillHideNotification
-											   object:self.view.window];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:self.view.window];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:self.view.window];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
-
+    
     [super viewWillAppear:animated];
+    
 }
 
 - (void) viewWillDisappear :(BOOL)animated

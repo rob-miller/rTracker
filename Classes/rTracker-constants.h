@@ -35,8 +35,13 @@
 #define d(x) ((double) (x))
 
 #define SAMPLES_VERSION 1
+
 #define DEMOS_VERSION 2
-#define RTDB_VERSION 1
+// demos_version 1 ad hard to see colours for one graph
+
+#define RTDB_VERSION 2
+// rtdb_version 1 info table needed unique constraint on names column
+
 #define RTFN_VERSION 1
 
 

@@ -163,7 +163,7 @@
         || ([key isEqualToString:@"btnColr"] && ([val isEqualToString:BOOLBTNCOLRDFLTSTR]))
         ) {
         [self.vo.optDict removeObjectForKey:key];
-        DBGLog(@"cleanDflt for bool: %@",key);
+        //DBGLog(@"cleanDflt for bool: %@",key);
         return YES;
     }
         

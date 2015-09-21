@@ -114,7 +114,7 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 		//DBGLog(@"opened tDb %@",self.dbName);
 		int c;
 		
-		NSString *sql = @"create table if not exists uniquev (id integer, value integer);";
+		NSString *sql = @"create table if not exists uniquev (id integer primary key, value integer);";
         [self toExecSql:sql];
 		sql = @"select count(*) from uniquev where id=0;";
         c = [self toQry2Int:sql];
@@ -713,20 +713,20 @@ static int col_str_flt (void *udp, int lenA, const void *strA, int lenB, const v
 
 
 - (void) toExecSql:(NSString*)sql {
-	SQLDbg(@"toExecSql: %@ => _%@_", self.dbName, sql);
-	dbgNSAssert(_tDb,@"toExecSql called with no tDb");
-	
-	sqlite3_stmt *stmt;
+    SQLDbg(@"toExecSql: %@ => _%@_", self.dbName, sql);
+    dbgNSAssert(_tDb,@"toExecSql called with no tDb");
+    
+    sqlite3_stmt *stmt;
     @synchronized(self) {
         
-	if (sqlite3_prepare_v2(self.tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
-		if (sqlite3_step(stmt) != SQLITE_DONE) {
-            [self tobExecError:sql];
-		}
-	} else {
-        [self tobPrepError:sql];
-	}
-	sqlite3_finalize(stmt);
+        if (sqlite3_prepare_v2(self.tDb, [sql UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+            if (sqlite3_step(stmt) != SQLITE_DONE) {
+                [self tobExecError:sql];
+            }
+        } else {
+            [self tobPrepError:sql];
+        }
+        sqlite3_finalize(stmt);
     }
 }
 

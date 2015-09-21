@@ -82,21 +82,21 @@
     }
     
     keyboardIsShown = NO;
-        
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillChangeFrameNotification //UIKeyboardWillShowNotification
-         //object:self.textView];    //.devc.view.window];
-                                                object:self.view.window];
+     //object:self.textView];    //.devc.view.window];
+                                               object:self.view.window];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
-         //object:self.textView];    //.devc.view.window];
-                                                   object:self.view.window];
-        
-
+     //object:self.textView];    //.devc.view.window];
+                                               object:self.view.window];
+    
+    
     //[self.navigationController setToolbarHidden:NO animated:NO];
-
+    
     [super viewWillAppear:animated];
     
 }

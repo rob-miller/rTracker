@@ -76,7 +76,7 @@
     }
     
     [self.navigationController setToolbarHidden:NO animated:NO];
-
+    
     [super viewWillAppear:animated];
 }
 - (void)didReceiveMemoryWarning

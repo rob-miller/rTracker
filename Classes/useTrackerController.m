@@ -286,8 +286,8 @@
 }
 */
 
-- (void) viewWillAppear:(BOOL)animated
-{
+- (void) viewWillAppear:(BOOL)animated {
+    
     //DBGLog(@"utc: view will appear");
     
     self.viewDisappearing=NO;
@@ -394,11 +394,11 @@
         [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable
         
         [self.navigationController setToolbarHidden:NO animated:NO];
-
+        
         [self updateToolBar];
-         
+        
     }
-
+    
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         [self.adSupport initBannerView:self];
@@ -408,10 +408,11 @@
 #endif
     
     [super viewWillAppear:animated];
-    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
     
     //DBGLog(@"utc view did appear!");
     // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
@@ -445,7 +446,6 @@
     }
 #endif
     
-    [super viewDidAppear:animated];
 }
 
 
@@ -565,7 +565,7 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown );
 }
 */
-///*
+/*
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	switch (fromInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -591,7 +591,7 @@
 			break;			
 	}
 }
-//*/
+*/
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     if ( self.isViewLoaded && self.view.window ) {
 
@@ -648,7 +648,7 @@
     }
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
-///*
+/*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	switch (toInterfaceOrientation) {
 		case UIInterfaceOrientationPortrait:
@@ -676,7 +676,7 @@
 			break;			
 	}
 }
-// */
+*/
 
 // * not ios6
 // YES should be default anyway so no need to subclass  ??

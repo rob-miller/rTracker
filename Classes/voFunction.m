@@ -271,7 +271,7 @@ BOOL FnErr=NO;
 		// use last entry
         sql = [NSString stringWithFormat:@"select date from trkrData where date < %ld order by date desc limit 1;",(long)maxdate];
 		epDate = [to toQry2Int:sql];
-		DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
+		//DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
 	} else if (ep >= 0) {
 		// ep is vid
         sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
@@ -337,7 +337,7 @@ BOOL FnErr=NO;
                 // if calendar week, we need to get to beginning of week as per calendar
 			case FREPCWEEKS :
             {
-                DBGLog(@"first day of week= %d targ= %@",[gregorian firstWeekday],targ);
+                DBGLog(@"first day of week= %lu targ= %@",(unsigned long)[gregorian firstWeekday],targ);
                 NSDate *beginOfWeek=nil;
                 /*
                  // ios8 deprecation of NSWeekCalendarUnit -- WeekOfMonth and WeekOfYear below give same result; NSCalendarUnitWeekday does not respect locale preferences
@@ -757,13 +757,15 @@ BOOL FnErr=NO;
 #if DEBUGFUNCTION
             DBGLog(@"vid %d: result= %f", lvo.vid,result);
 #endif
-			//result = [[to getValObj:currTok].value doubleValue];
+            //result = [[to getValObj:currTok].value doubleValue];
 			//self.currFnNdx++;  // on to next  // already there - postinc on read
 		}
 	}
 
+#if DEBUGFUNCTION
     DBGLog(@"%@ calcFnValueWithCurrent rtn: %@", self.vo.valueName, [NSNumber numberWithDouble:result]);
-	return @(result);
+#endif
+    return @(result);
 
 }
 

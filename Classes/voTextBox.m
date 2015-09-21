@@ -32,7 +32,7 @@
 //BOOL keyboardIsShown=NO;
 
 - (id) init {
-	DBGLog(@"voTextBox default init");
+	//DBGLog(@"voTextBox default init");
 	return [super initWithVO:nil];
 }
 
@@ -41,7 +41,7 @@
 }
 
 - (id) initWithVO:(valueObj *)valo {
-	DBGLog(@"voTextBox init for %@",valo.valueName);
+	//DBGLog(@"voTextBox init for %@",valo.valueName);
 	return [super initWithVO:valo];
 }
 
@@ -60,7 +60,7 @@
 }
 
 - (void) tbBtnAction:(id)sender {
-	DBGLog(@"tbBtn Action.");
+	//DBGLog(@"tbBtn Action.");
 	//voDataEdit *vde = [[voDataEdit alloc] initWithNibName:@"voDataEdit" bundle:nil ];
     voDataEdit *vde = [[voDataEdit alloc] init ];
 	vde.vo = self.vo;
@@ -113,7 +113,7 @@
 
 - (void) dataEditVWAppear:(UIViewController*)vc {
 	//self.devc = vc;
-	DBGLog(@"de view will appear");
+	//DBGLog(@"de view will appear");
     
     [[NSNotificationCenter defaultCenter] addObserver:self.vo.parentTracker 
                                              selector:@selector(trackerUpdated:) 
@@ -143,7 +143,7 @@
 }
 
 - (void) dataEditVWDisappear:(UIViewController*)vc {
-	DBGLog(@"de view will disappear");
+	//DBGLog(@"de view will disappear");
 
     // unregister this tracker for value updated notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self.vo.parentTracker 
@@ -266,7 +266,7 @@
 
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
-	DBGLog(@"segment changed: %ld",(long)ndx);
+	//DBGLog(@"segment changed: %ld",(long)ndx);
     
     self.pv = nil;
     
@@ -333,6 +333,7 @@
         BOOL cont=NO;
         for (NSString *ss in searchStrings) {
             NSString *st = [ss stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            st = [rTracker_resource toSqlStr:st];
             if (0< [st length]) {
                 if (cont) sql = [sql stringByAppendingString:(orAnd ? @" and " : @" or ")];
                 sql = [sql stringByAppendingString:[NSString stringWithFormat:@"val like '%%%@%%'",st]];
@@ -423,7 +424,7 @@
     // does not help ! [[self.tbButton superview] setNeedsDisplay];
     // does not help ! [self.tbButton setNeedsDisplay];
     [self.tbButton setNeedsLayout];
-    DBGLog(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
+    //DBGLog(@"tbox voDisplay: %@",[self.tbButton currentTitle]);
 	return self.tbButton;
 	
 }
@@ -612,18 +613,20 @@
 		[MyTracker toQry2AryS:his0 sql:sql];
 		for (NSString *s in his0) {
             NSString *s1 = [s stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
+            /*
 #if DEBUGLOG
             NSArray *sepset= [s1 componentsSeparatedByString:@"\n"];
             DBGLog(@"s= %@",s1);
             DBGLog(@"c= %lu separated= .%@.",(unsigned long)sepset.count,sepset);
 #endif
+             */
 			[s0 addObjectsFromArray:[s1 componentsSeparatedByString:@"\n"]];
 		}
 	sql = nil;
 		[s0 filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
 		_historyArray = [[s0 allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 		
-        DBGLog(@"historyArray count= %lu  content= .%@.",(unsigned long)_historyArray.count,_historyArray);
+        //DBGLog(@"historyArray count= %lu  content= .%@.",(unsigned long)_historyArray.count,_historyArray);
 		//historyArray = [[NSArray alloc] initWithArray:his1];
 		
 		//DBGLog(@"his array looks like:");
@@ -782,6 +785,7 @@
             if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
                 if (!self.accessAddressBook) return;
                 ABPropertyID abSortOrderProp = [self getABSortTok];
+                if (0 == [self.namesArray count]) return;
                 NSString *name =  (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)(self.namesArray)[row], abSortOrderProp));
                 if (nil == name) {
                     name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)(self.namesArray)[row])); 
@@ -791,6 +795,7 @@
                 if (NSNotFound == targRow)
                     targRow=0;
             } else {
+                if (0 == [self.historyArray count]) return; // crashlytics crash on next line in 2.0.5 - past array bounds
                 targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([(self.historyArray)[row] characterAtIndex:0])]];
                 if (NSNotFound == targRow)
                     targRow=0;
@@ -847,7 +852,7 @@
         DBGLog(@" %d %d %d : %d",[self.vo.value characterAtIndex:ndx-2],[self.vo.value characterAtIndex:ndx-1],[self.vo.value characterAtIndex:ndx],'\n');
         
         if (('\n' == c) || ('\r' == c)) {
-            DBGLog(@"trimming.");
+            //DBGLog(@"trimming.");
             return (NSString*) [self.vo.value substringToIndex:ndx];
         }
     }

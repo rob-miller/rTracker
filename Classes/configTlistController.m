@@ -60,22 +60,11 @@ static int selSegNdx=SegmentEdit;
 }
 #endif
 
-/*
-#if !RELEASE
-
-- (void) btnWipeOrphans {
-    [self.tlist wipeOrphans];
-}
-
-#endif
-*/
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	
 	self.title = @"Edit trackers";
-
-//#if RELEASE
 
     UIBarButtonItem *exportBtn;
 #if ADVERSION
@@ -165,13 +154,13 @@ static int selSegNdx=SegmentEdit;
 */
 
 - (void)viewWillAppear:(BOOL)animated {
-	
-	DBGLog(@"ctlc: viewWillAppear");
+    
+    DBGLog(@"ctlc: viewWillAppear");
     [self.navigationController setToolbarHidden:YES animated:NO];
-	
-	[self.table reloadData];
-	selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
-	
+    
+    [self.table reloadData];
+    selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
+    
     [super viewWillAppear:animated];
 }
 
@@ -281,7 +270,7 @@ static int selSegNdx=SegmentEdit;
 	} else {
 		CellIdentifier = @"Cell";
 	}
-		
+	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -293,6 +282,7 @@ static int selSegNdx=SegmentEdit;
 	cell.textLabel.text = (self.tlist.topLayoutNames)[row];
 	
     return cell;
+
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -407,7 +397,9 @@ static int selSegNdx=SegmentEdit;
 		[self.tlist addToTopLayoutTable:nTO];
         //[self.tlist confirmTopLayoutEntry:nTO];
 		//[self.tlist loadTopLayoutTable];
+         dispatch_async(dispatch_get_main_queue(), ^(void){
 		[self.table reloadData];
+         });
 
 	} else if (selSegNdx == SegmentMoveDelete) {
 		DBGWarn(@"selected for move/delete?");

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "dbg-defs.h"
 
 // make sqlite db files available from itunes? (perhaps prefs option later)

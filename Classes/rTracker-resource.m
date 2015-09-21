@@ -492,7 +492,7 @@ static BOOL separateDateTimePicker=SDTDFLT;
 
 + (void)setSeparateDateTimePicker:(BOOL)sdt {
 	separateDateTimePicker = sdt;
-	DBGLog(@"updateSeparateDateTimePicker:%d",separateDateTimePicker);
+	//DBGLog(@"updateSeparateDateTimePicker:%d",separateDateTimePicker);
 }
 
 static BOOL rtcsvOutput=RTCSVOUTDFLT;
@@ -503,7 +503,7 @@ static BOOL rtcsvOutput=RTCSVOUTDFLT;
 
 + (void)setRtcsvOutput:(BOOL)rtcsvOut {
 	rtcsvOutput = rtcsvOut;
-	DBGLog(@"updateRtcsvOutput:%d",rtcsvOutput);
+	//DBGLog(@"updateRtcsvOutput:%d",rtcsvOutput);
 }
 
 static BOOL savePrivate=SAVEPRIVDFLT;
@@ -514,7 +514,7 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 
 + (void)setSavePrivate:(BOOL)savePriv {
 	savePrivate = savePriv;
-	DBGLog(@"updateSavePrivate:%d",savePrivate);
+	//DBGLog(@"updateSavePrivate:%d",savePrivate);
 }
 
 
@@ -704,7 +704,7 @@ static int lastStashedTid=0;
         
         UIBarButtonItem *minus = [[UIBarButtonItem alloc]
                                   initWithTitle:@"-"
-                                  style:UIBarButtonItemStyleBordered
+                                  style:UIBarButtonItemStylePlain
                                   target:rtf
                                   action:@selector(minusKey)];
         
@@ -961,7 +961,7 @@ static BOOL getOrientEnabled=false;
     CGFloat maxDim = [self getScreenMaxDim];
     NSString *retStr;
     
-    DBGLog(@"width %f  height %f",size.width, size.height);
+    //DBGLog(@"width %f  height %f",size.width, size.height);
     /*
      UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     if (UIDeviceOrientationUnknown == orientation) DBGLog(@"orientation unknown");
@@ -999,7 +999,7 @@ static BOOL getOrientEnabled=false;
             }
         }
     }
-    DBGLog(@"LaunchImage: %@",retStr);
+    //DBGLog(@"LaunchImage: %@",retStr);
     return(retStr);
 }
 
@@ -1094,7 +1094,7 @@ static BOOL getOrientEnabled=false;
         result.height = size.height;
     }
 
-    DBGLog(@"gvs entry:  w= %f  h= %f",result.width, result.height);
+    //DBGLog(@"gvs entry:  w= %f  h= %f",result.width, result.height);
 
     UIViewController *rvc= (vc.navigationController.viewControllers)[0];
     
@@ -1102,29 +1102,29 @@ static BOOL getOrientEnabled=false;
         size = [[UIApplication sharedApplication] statusBarFrame].size;
         result.height -= MIN(size.width, size.height);
     
-        DBGLog(@"statusbar h= %f curr height= %f",size.height,result.height);
+        //DBGLog(@"statusbar h= %f curr height= %f",size.height,result.height);
     }
     
     if (vc.navigationController != nil) {
         if (vc == rvc) {
             size = vc.navigationController.navigationBar.frame.size;
             result.height -= MIN(size.width, size.height);
-            DBGLog(@"navigationbar h= %f curr height= %f",size.height,result.height);
+            //DBGLog(@"navigationbar h= %f curr height= %f",size.height,result.height);
         }
         if (vc.navigationController.toolbar != nil) {
             size = vc.navigationController.toolbar.frame.size;
             result.height -= MIN(size.width, size.height);
-            DBGLog(@"toolbar h= %f curr height= %f",size.height,result.height);
+            //DBGLog(@"toolbar h= %f curr height= %f",size.height,result.height);
         }
     }
     
     if (vc.tabBarController != nil) {
         size = vc.tabBarController.tabBar.frame.size;
         result.height -= MIN(size.width, size.height);
-        DBGLog(@"tabbar h= %f curr height= %f",size.height,result.height);
+        //DBGLog(@"tabbar h= %f curr height= %f",size.height,result.height);
     }
     
-    DBGLog(@"gvs exit:  w= %f  h= %f",result.width, result.height);
+    //DBGLog(@"gvs exit:  w= %f  h= %f",result.width, result.height);
     
     return result;
 }

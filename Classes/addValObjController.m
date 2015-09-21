@@ -216,21 +216,17 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 */
 
 - (void)viewWillAppear:(BOOL)animated {
-	
+    
     DBGLog(@"avoc: viewWillAppear");
-	
-	if (self.tempValObj) {
-		//self.graphTypes = nil;
-		self.graphTypes = [self.tempValObj.vos voGraphSet];
-		[self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
-	}
+    
+    if (self.tempValObj) {
+        //self.graphTypes = nil;
+        self.graphTypes = [self.tempValObj.vos voGraphSet];
+        [self.votPicker reloadComponent:2]; // in case added more graphtypes (eg tb count lines)
+    }
+
     //[self.navigationController setToolbarHidden:NO animated:NO];
-/*
-    self.view.backgroundColor=nil;
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    [self.view addSubview:bg];
-    [self.view sendSubviewToBack:bg];
-*/
+
     [super viewWillAppear:animated];
 }
 
