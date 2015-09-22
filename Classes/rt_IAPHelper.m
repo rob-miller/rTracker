@@ -9,6 +9,7 @@
 #import "rt_IAPHelper.h"
 #import "rTracker-constants.h"
 #import "rTracker-resource.h"
+#import "dbg-defs.h"
 
 @implementation rt_IAPHelper
 
@@ -44,16 +45,5 @@
     [super buyProduct:product];
 }
 
-/*
-static BOOL purchased=false;
-
-+ (BOOL) getPurchased {
-    return purchased;
-}
-
-+ (void) setPurchased {
-    purchased=true;
-}
-*/
 
 @end

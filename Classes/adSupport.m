@@ -34,33 +34,25 @@
 -(void)layoutAnimated:(UIViewController*)vc tableview:(UITableView*)tableview animated:(BOOL)animated
 {
     // As of iOS 6.0, the banner will automatically resize itself based on its width.
-    // To support iOS 5.0 however, we continue to set the currentContentSizeIdentifier appropriately.
     
     //CGRect contentFrame = view.bounds;
     CGRect contentFrame = vc.view.bounds;
     contentFrame.size = [rTracker_resource get_visible_size:vc];
-    
-    DBGLog(@"cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
-    
-    /*
-    if (contentFrame.size.width < contentFrame.size.height) {
-        self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
-    } else {
-        self.bannerView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
-    }
-    */
-    
     CGRect bannerFrame = self.bannerView.frame;
-    DBGLog(@"bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
+    
+    DBGLog(@"in: cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
+    DBGLog(@"in: bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
+
     if (self.bannerView.bannerLoaded) {
         contentFrame.size.height -= self.bannerView.frame.size.height;
         bannerFrame.origin.y = contentFrame.size.height;
         DBGLog(@"banner is loaded");
     } else {
+        DBGLog(@"banner not loaded");
         bannerFrame.origin.y = contentFrame.size.height;
     }
-    DBGLog(@"cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
-    DBGLog(@"bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
+    DBGLog(@"out: cf x %f y %f  w %f h %f",contentFrame.origin.x,contentFrame.origin.y,contentFrame.size.width,contentFrame.size.height);
+    DBGLog(@"out: bf x %f y %f  w %f h %f",bannerFrame.origin.x,bannerFrame.origin.y,bannerFrame.size.width,bannerFrame.size.height);
     //DBGLog(@"foo");
     [UIView animateWithDuration:animated ? 0.25 : 0.0 animations:^{
         //_contentView.frame = contentFrame;

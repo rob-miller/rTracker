@@ -42,6 +42,7 @@ NSUInteger DeviceSystemMajorVersion();
 #if ADVERSION
 + (void) handleUpgradeOptions:(NSInteger)choice;
 + (void) buy_rTrackerAlert;
++ (void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay vc:(UIViewController*)vc;
 #endif
 
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;

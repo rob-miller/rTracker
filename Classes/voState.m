@@ -338,7 +338,7 @@
 }
 
 - (UITableViewCell*) voTVCell:(UITableView *)tableView {
-	
+
 	CGRect bounds;
 	UITableViewCell *cell;
     

@@ -107,6 +107,13 @@
 	[super viewDidLoad];
 }
 
+#if ADVERSION
+// handle rtPurchasedNotification
+- (void) updatePurchased:(NSNotification*)n {
+    [rTracker_resource doQuickAlert:@"Purchase Successful" msg:@"Thank you!" delay:2 vc:self];
+}
+#endif
+
 - (void)viewWillAppear:(BOOL)animated {
 	
 	DBGLog(@"atc: viewWillAppear, valObjTable count= %lu", (unsigned long)[self.tempTrackerObj.valObjTable count]);
@@ -114,6 +121,15 @@
 	[self.table reloadData];
     [self toggleEdit:self.segcEditTrackerEditItems];
 
+#if ADVERSION
+    if (![rTracker_resource getPurchased]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updatePurchased:)
+                                                     name:rtPurchasedNotification
+                                                   object:nil];
+    }
+#endif
+    
 
     [super viewWillAppear:animated];
 
@@ -131,17 +147,24 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
     dispatch_async(dispatch_get_main_queue(), ^(void){
-	DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
     
-    if ([self.nameField.text length] > 0) {
-        self.tempTrackerObj.trackerName = self.nameField.text;
-        DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
-    }
-    
-	[super viewWillDisappear:animated];
-       
+        if ([self.nameField.text length] > 0) {
+            self.tempTrackerObj.trackerName = self.nameField.text;
+            DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
+        }
     });
+    
+#if ADVERSION
+    //unregister for purchase notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:rtPurchasedNotification
+                                                    object:nil];
+#endif
+    
+    [super viewWillDisappear:animated];
+    
 }
 
 /*

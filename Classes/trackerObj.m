@@ -1711,7 +1711,7 @@ if (addVO) {
 	
 	for (valueObj *vo in self.valObjTable) {
 		[vo resetData];
-		//[vo.value setString:@""];  
+		//[vo.value setString:@""];
 	}
 }
 

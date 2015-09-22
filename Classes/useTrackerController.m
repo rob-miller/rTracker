@@ -83,6 +83,27 @@
     
 }
 
+#if ADVERSION
+// handle rtPurchasedNotification
+- (void) updatePurchased:(NSNotification*)n {
+    [rTracker_resource doQuickAlert:@"Purchase Successful" msg:@"Thank you!" delay:2 vc:self];
+
+    if (nil != _adSupport) {
+        if ([self.adSupport.bannerView isDescendantOfView:self.view]) {
+            [self.adSupport.bannerView removeFromSuperview];
+        }
+        self.adSupport = nil;
+    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    CGRect tableFrame = bg.frame;
+    tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
+    [self.tableView setFrame:tableFrame];
+    self.tableView.backgroundView = bg;
+    [self.tableView setNeedsDisplay];
+    //[self.tableView reloadData];
+}
+#endif
+
 // handle rtTrackerUpdatedNotification
 
 - (void) updateUTC:(NSNotification*)n {
@@ -114,17 +135,20 @@
 {
     if (![rTracker_resource getPurchased]) {
         [self.adSupport layoutAnimated:self tableview:self.tableView animated:[UIView areAnimationsEnabled]];
+        //[self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
     }
 }
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
     [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
+    //[self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
 }
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
     [self.adSupport layoutAnimated:self tableview:self.tableView animated:YES];
+    //[self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
 }
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
@@ -375,7 +399,15 @@
                                                  selector:@selector(updateUTC:)
                                                      name:rtTrackerUpdatedNotification
                                                    object:self.tracker];
-        
+
+#if ADVERSION
+        if (![rTracker_resource getPurchased]) {
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(updatePurchased:)
+                                                         name:rtPurchasedNotification
+                                                       object:nil];
+        }
+#endif
         
         //DBGLog(@"add kybd will show notifcation");
         keyboardIsShown = NO;
@@ -397,22 +429,19 @@
         
         [self updateToolBar];
         
-    }
     
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         [self.adSupport initBannerView:self];
         [self.view addSubview:self.adSupport.bannerView];
     }
-    //[self.adSupport layoutAnimated:self.view tableview:self.tableView animated:NO];
 #endif
+    }
     
     [super viewWillAppear:animated];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
     
     //DBGLog(@"utc view did appear!");
     // in case we just regained active after interruption -- sadly view still seen if done in viewWillAppear
@@ -445,14 +474,16 @@
         [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
     }
 #endif
+
+    [super viewDidAppear:animated];
+
     
 }
 
 
+
 - (void) viewWillDisappear :(BOOL)animated
 {
-    
-    
     self.viewDisappearing=YES;
 /*
  if (self.needSave) {
@@ -474,6 +505,13 @@
                                                     name:rtTrackerUpdatedNotification
                                                   object:nil];  
 
+#if ADVERSION
+    //unregister for purchase notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:rtPurchasedNotification
+                                                    object:nil];
+#endif
+    
     //DBGLog(@"remove kybd will show notifcation");
     // unregister for keyboard notifications while not visible.
     [[NSNotificationCenter defaultCenter] removeObserver:self 
@@ -1016,14 +1054,15 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
 - (void) updateTrackerTableView {
     // see related updateTableCells above
 	//DBGLog(@"utc: updateTrackerTableView");
-	
-	for (valueObj *vo in self.tracker.valObjTable) {
-        //if (vo.vtype == VOT_FUNC)
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        
+        for (valueObj *vo in self.tracker.valObjTable) {
+            //if (vo.vtype == VOT_FUNC)
             vo.display = nil;  // always redisplay
-	}
-	
-    [self.tableView reloadData];
-    
+        }
+        
+        [self.tableView reloadData];
+    });
     
 	//[(UITableView *) self.view reloadData];
 	//	[self.tableView reloadData];  // if we were a uitableviewcontroller not uiviewcontroller

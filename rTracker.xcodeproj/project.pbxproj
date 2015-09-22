@@ -563,7 +563,6 @@
 				D40AB40516D428D2008174D3 /* rTrackerTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				D43A7ECB1AB62359001BEC96 /* rTrackerA-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -590,6 +589,7 @@
 				D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */,
 				D481089919E056D600B422A8 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* Info.plist */,
+				D43A7ECB1AB62359001BEC96 /* rTrackerA-Info.plist */,
 				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
 				D4FF224712304E050047518A /* rt-types.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,

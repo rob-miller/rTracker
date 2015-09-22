@@ -24,7 +24,7 @@
 //********       vvvvvv //
 
 #define RELEASE     0
-#define DEBUGLOG    0
+#define DEBUGLOG    1
 #define SHOWTOUCHES 0
 
 //#define ADVERSION   0

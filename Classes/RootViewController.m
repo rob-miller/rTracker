@@ -1046,6 +1046,9 @@ BOOL loadingInputFiles=NO;
     [super viewDidLoad];
 
 #if ADVERSION
+#if !RELEASE
+    [rTracker_resource setPurchased:NO];
+#endif
     if (![rTracker_resource getPurchased]) {
         [self.adSupport initBannerView:self];
     }
@@ -1280,6 +1283,29 @@ BOOL loadingInputFiles=NO;
 }
 */
 
+#if ADVERSION
+// handle rtPurchasedNotification
+- (void) updatePurchased:(NSNotification*)n {
+    if (n) {
+        [rTracker_resource doQuickAlert:@"Purchase Successful" msg:@"Thank you!" delay:2 vc:self];
+    }
+
+    if (nil != _adSupport) {
+        if ([self.adSupport.bannerView isDescendantOfView:self.view]) {
+            [self.adSupport.bannerView removeFromSuperview];
+        }
+        self.adSupport = nil;
+    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    CGRect tableFrame = bg.frame;
+    tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
+    [self.tableView setFrame:tableFrame];
+    self.tableView.backgroundView = bg;
+    [self.tableView setNeedsDisplay];
+    //[self.tableView reloadData];
+}
+#endif
+
 - (void)viewWillAppear:(BOOL)animated {
     
     DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
@@ -1307,10 +1333,19 @@ BOOL loadingInputFiles=NO;
     }
     
 #if ADVERSION
+    
     if (![rTracker_resource getPurchased]) {
         [self.adSupport initBannerView:self];
         [self.view addSubview:self.adSupport.bannerView];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updatePurchased:)
+                                                     name:rtPurchasedNotification
+                                                   object:nil];
+    } else if (_adSupport) {
+        [self updatePurchased:nil];
     }
+    
 #endif
     
     [super viewWillAppear:animated];
@@ -1507,14 +1542,20 @@ BOOL stashAnimated;
     // [super viewDidApeear] called in [self viewDidAppearRestart]
 }
 
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"rvc viewWillDisappear");
 
-    //self.privacyObj.showing = PVNOSHOW;
+#if ADVERSION
+    //unregister for purchase notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:rtPurchasedNotification
+                                                    object:nil];
+#endif
+    
     [super viewWillDisappear:animated];
 }
-*/
+
 
 /*
 #if ADVERSION

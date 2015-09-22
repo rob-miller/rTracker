@@ -83,9 +83,13 @@
 
 - (void) resetData {
     if (nil != _dtf) { // not self, do not instantiate
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        if ([NSThread isMainThread]) {
             self.dtf.text = @"";
-        });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                self.dtf.text = @"";
+            });
+        }
     }
     self.vo.useVO = YES;
 }
@@ -94,7 +98,9 @@
 	self.vosFrame = bounds;
 
 	if (![self.vo.value isEqualToString:self.dtf.text]) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
 		self.dtf.text = self.vo.value;
+        });
         DBGLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
 	}
 	

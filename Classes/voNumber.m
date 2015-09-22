@@ -130,9 +130,13 @@
 
 - (void) resetData {
     if (nil != _dtf) {  // not self as don't want to instantiate prematurely
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        if ([NSThread isMainThread]) {
             self.dtf.text = @"";
-        });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                self.dtf.text = @"";
+            });
+        }
     }
     self.vo.useVO = YES;
 }

@@ -60,12 +60,7 @@ static int selSegNdx=SegmentEdit;
 }
 #endif
 
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-	
-	self.title = @"Edit trackers";
-
+- (UIBarButtonItem *) getExportBtn {
     UIBarButtonItem *exportBtn;
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
@@ -90,7 +85,14 @@ static int selSegNdx=SegmentEdit;
                  target:self
                  action:@selector(btnExport)];
 #endif
-    
+    return exportBtn;
+}
+
+// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+- (void)viewDidLoad {
+	
+	self.title = @"Edit trackers";
+
 /*
  #else
     // wipe orphans
@@ -105,7 +107,7 @@ static int selSegNdx=SegmentEdit;
 	//NSArray *tbArray = [NSArray arrayWithObjects: exportBtn, nil];
 	//self.toolbarItems = tbArray;
     [self.navigationController setToolbarHidden:YES animated:NO];
-    [self.navigationItem setRightBarButtonItem:exportBtn animated:NO];
+    [self.navigationItem setRightBarButtonItem:[self getExportBtn] animated:NO];
 
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     self.table.backgroundColor = [UIColor clearColor];
@@ -153,6 +155,15 @@ static int selSegNdx=SegmentEdit;
 }
 */
 
+#if ADVERSION
+// handle rtPurchasedNotification
+- (void) updatePurchased:(NSNotification*)n {
+    [rTracker_resource doQuickAlert:@"Purchase Successful" msg:@"Thank you!" delay:2 vc:self];
+    [self.navigationItem setRightBarButtonItem:[self getExportBtn] animated:NO];
+}
+
+#endif
+
 - (void)viewWillAppear:(BOOL)animated {
     
     DBGLog(@"ctlc: viewWillAppear");
@@ -161,6 +172,15 @@ static int selSegNdx=SegmentEdit;
     [self.table reloadData];
     selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
     
+#if ADVERSION
+    if (![rTracker_resource getPurchased]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updatePurchased:)
+                                                     name:rtPurchasedNotification
+                                                   object:nil];
+    }
+#endif
+    
     [super viewWillAppear:animated];
 }
 
@@ -168,6 +188,13 @@ static int selSegNdx=SegmentEdit;
 	DBGLog(@"ctlc: viewWillDisappear");
 
 	//self.tlist = nil;
+
+#if ADVERSION
+    //unregister for purchase notices
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:rtPurchasedNotification
+                                                    object:nil];
+#endif
 	
 	[super viewWillDisappear:animated];
 }

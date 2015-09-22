@@ -9,6 +9,7 @@
 #import "IAPHelper.h"
 #import <StoreKit/StoreKit.h>
 #import "dbg-defs.h"
+//#import "rTracker-resource.h"
 
 @implementation IAPHelper {
     // 3
@@ -35,8 +36,10 @@ NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurcha
             if (productPurchased) {
                 [_purchasedProductIdentifiers addObject:productIdentifier];
                 DBGLog(@"Previously purchased: %@", productIdentifier);
+                //[rTracker_resource alert:@"Previously Purchased" msg:@"Previous rTracker purchase found." vc:nil];
             } else {
                 DBGLog(@"Not purchased: %@", productIdentifier);
+                //[rTracker_resource alert:@"Not Previously Purchased" msg:@"No previous rTracker purchase found." vc:nil];
             }
         }
         [[SKPaymentQueue defaultQueue] addTransactionObserver:self]; 
@@ -82,9 +85,13 @@ NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurcha
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     
     DBGLog(@"Failed to load list of products.");
+    //[rTracker_resource alert:@"Connection failure" msg:@"Failed to load list of available products." vc:nil];
+    
     _productsRequest = nil;
     
-    _completionHandler(NO, nil);
+    if (_completionHandler) {  // can be nil already if user repeatedly presses button on timeout
+        _completionHandler(NO, nil);
+    }
     _completionHandler = nil;
     
 }
@@ -112,20 +119,21 @@ NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurcha
 }
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction {
-    NSLog(@"completeTransaction...");
+    DBGLog(@"completeTransaction...");
     
     [self provideContentForProductIdentifier:transaction.payment.productIdentifier];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 }
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction {
-    NSLog(@"restoreTransaction...");
+    DBGLog(@"restoreTransaction...");
     
     [self provideContentForProductIdentifier:transaction.originalTransaction.payment.productIdentifier];
     [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 }
 
 - (void)restoreCompletedTransactions {
+    DBGLog(@"restore completed Transactions...");
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
@@ -135,6 +143,8 @@ NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurcha
     if (transaction.error.code != SKErrorPaymentCancelled)
     {
         DBGLog(@"Transaction error: %@", transaction.error.localizedDescription);
+        //[rTracker_resource alert:@"In-App Purchase Transaction Failed" msg:[@"Transaction error: " stringByAppendingString:transaction.error.localizedDescription] vc:nil];
+        
     }
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];

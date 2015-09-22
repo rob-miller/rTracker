@@ -1943,6 +1943,11 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+    - create testtzuser@realidata.com / Test1User in TZ store
+
+22 sep 2015
+   - successful in-app activation on iphone tunneling to uk; various problems getting on to app store
+   - implemented rtPurchasedNotification, thank-you alert and immediately update UI to reflect purchased 
 
 
 todo: remove rTracker_Prefix.pch ?  seems to be from ios3

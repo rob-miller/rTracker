@@ -144,6 +144,8 @@ BOOL hasAmPm=NO;
     [cb setTitle:@"" forState:UIControlStateNormal];
 }
 
+#pragma mark -
+#pragma mark generic alert
 //---------------------------
 + (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
     if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
@@ -176,14 +178,15 @@ BOOL hasAmPm=NO;
     }
 }
 
+#pragma mark -
+#pragma mark in-app purchase and ad support
+
 #if ADVERSION
 
 +(void) handleUpgradeOptions:(NSInteger)choice {
-    if ( choice == 1 ) /* NO = 0, YES = 1 */
-    {
+    if ( choice == 1 ) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/rtracker/id486541371"]];
-    } else if ( choice == 2 )
-    {
+    } else if ( choice == 2 ) {
         DBGLog(@"in app upgrade!");
         
         [[rt_IAPHelper sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
@@ -210,11 +213,12 @@ BOOL hasAmPm=NO;
         
         DBGLog(@"done.");
         
-    } else if ( choice == 3 )
-    {
+    } else if ( choice == 3 ) {
         [[rt_IAPHelper sharedInstance] restoreCompletedTransactions];
+    } else if ( choice == 4 ) {
+        [rTracker_resource setPurchased:YES];
     }
-    
+
 }
 
 + (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -229,13 +233,19 @@ BOOL hasAmPm=NO;
     NSString *btn1 = @"Get rTracker";
     NSString *btn2 = @"In-App Upgrade";
     NSString *btn3 = @"Restore In-App Upgrade";
-    
+#if !RELEASE
+    NSString *btn4 = @"set Purchased";
+#endif
     if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
         UIAlertView *_alert = [[UIAlertView alloc] initWithTitle:title
                                                          message:msg
                                                         delegate:self
                                                cancelButtonTitle:btn0
-                                               otherButtonTitles:btn1,btn2,btn3,nil];
+                                               otherButtonTitles:btn1,btn2,btn3,
+#if !RELEASE
+                               btn4,
+#endif
+                               nil];
         [_alert show];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
@@ -251,7 +261,11 @@ BOOL hasAmPm=NO;
         [alert addAction:getAction];
         [alert addAction:inappAction];
         [alert addAction:restoreAction];
-        
+
+#if !RELEASE
+        UIAlertAction* purchaseAction = [UIAlertAction actionWithTitle:btn4 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {  [rTracker_resource handleUpgradeOptions:4]; }];
+        [alert addAction:purchaseAction];
+#endif
         UIViewController* vc;
         UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         w.rootViewController = [UIViewController new];
@@ -263,7 +277,53 @@ BOOL hasAmPm=NO;
     }
 }
 
+//----
+
+/*  defined elsewhere in this file and no buttons
+ - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+ if (0 == buttonIndex) {   // do nothing
+ }
+ }
+ */
+
++ (void)dismissAlertView:(UIAlertView *)alertView{
+    [alertView dismissWithClickedButtonIndex:0 animated:YES];
+}
+
++ (UIAlertView*) quickAlert:(NSString*)title msg:(NSString*)msg {
+    //DBGLog(@"qalert title: %@ msg: %@",title,msg);
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:title message:msg
+                          delegate:nil
+                          cancelButtonTitle:nil
+                          otherButtonTitles:nil];
+    [alert show];
+    //[alert release];
+    return alert;
+}
+
++(void) dismissAlertController:(UIAlertController *)alertController {
+    [alertController dismissViewControllerAnimated:(BOOL)YES
+                                        completion:nil];
+}
+
++(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay vc:(UIViewController*)vc {
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        UIAlertView *alert = [rTracker_resource quickAlert:title msg:msg];
+        [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [vc presentViewController:alert animated:YES completion:nil];
+        [rTracker_resource performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
+    }
+}
+
+//----
 #endif
+
+
 
 //---------------------------
 #pragma mark -
@@ -564,6 +624,9 @@ static BOOL purchased=false;
 + (void)setPurchased:(BOOL)inPurchased {
     purchased = inPurchased;
     DBGLog(@"setPurchased:%d",inPurchased);
+    if (inPurchased) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:rtPurchasedNotification object:nil];
+    }
 }
 
 #endif

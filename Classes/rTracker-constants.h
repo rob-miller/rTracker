@@ -15,6 +15,9 @@
 #define rtTrackerUpdatedNotification @"rtTrackerUpdatedNotification"
 #define rtValueUpdatedNotification @"rtValueUpdatedNotification"
 #define rtProgressBarUpdateNotification @"rtProgressBarUpdateNotification"
+#if ADVERSION
+#define rtPurchasedNotification @"rtPurchasedNotification"
+#endif
 
 #define kAnimationDuration 0.3
 
