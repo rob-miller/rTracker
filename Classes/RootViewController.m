@@ -345,7 +345,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     
     trackerObj *inputTO;
     if (-1 != matchTID) {  // found tracker with same name and maybe same tid
-        [rTracker_resource stashTracker:matchTID];                            // make copy of current tracker so can reject newTID later
+        if (!loadingDemos) {
+            [rTracker_resource stashTracker:matchTID];                            // make copy of current tracker so can reject newTID later
+        }
         [self.tlist updateTID:matchTID new:newTIDi];                          // change existing tracker tid to match new (restore if we discard later)
 
         inputTO = [[trackerObj alloc] init:newTIDi];                          // load up existing tracker config
@@ -399,6 +401,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         tdict = rtdict[@"configDict"];
         dataDict = rtdict[@"dataDict"];
         objName = @"rtrk";
+        if (loadingDemos) {
+            [self.tlist deleteTrackerAllTID:[tdict objectForKey:@"tid"] name:tname];  // wipe old demo tracker otherwise starts to look ugly
+        }
     }
 
     int c = (int) [(NSArray *)tdict[@"valObjTable"] count];
@@ -832,6 +837,7 @@ BOOL loadingInputFiles=NO;
         }
     }
     */
+    loadingDemos=YES;
     for (NSString *p in paths) {
         if (doLoad) {
             NSString *file = [p lastPathComponent];
@@ -844,7 +850,7 @@ BOOL loadingInputFiles=NO;
                 [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
                 //DBGLog(@"stashedTIDs= %@",self.stashedTIDs);
 
-                [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
+                //[rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL //--> 2.0.6 deleting demo tracker before load so stash fails
             }
         }
         count++;
@@ -854,7 +860,7 @@ BOOL loadingInputFiles=NO;
         sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'demos_version')",DEMOS_VERSION];
         [self.tlist toExecSql:sql];
     }
-    
+    loadingDemos=NO;
     return count;
 }
 
@@ -1165,6 +1171,12 @@ BOOL loadingInputFiles=NO;
     NSString *sql = @"select val from info where name = 'demos_version'";
     int rslt = [self.tlist toQry2Int:sql];
     DBGLog(@"demosNeeded if %d != %d",DEMOS_VERSION,rslt);
+#if !RELEASE
+    //rslt=0;
+    if (0 == rslt) {
+        DBGLog(@"forcing demosNeeded");
+    }
+#endif
     return (DEMOS_VERSION != rslt);
 }
 
@@ -1934,8 +1946,13 @@ BOOL stashAnimated;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSString *tn;
     NSUInteger row = [indexPath row];
-    NSString *tn = (self.tlist.topLayoutNames)[row];
+    if (NSNotFound != row) {
+        tn = (self.tlist.topLayoutNames)[row];
+    } else {
+        tn = @"Sample";
+    }
     CGSize tns = [tn sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}];
     return tns.height + (2*MARGIN);
 }

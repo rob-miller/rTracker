@@ -9,11 +9,11 @@
 			<key>graphMaxDays</key>
 			<string>0</string>
 			<key>height</key>
-			<real>16.701999999999998</real>
+			<real>20.287109375</real>
 			<key>name</key>
 			<string>👣rTracker demo</string>
 			<key>prevTID</key>
-			<string>-1</string>
+			<string>181</string>
 			<key>privacy</key>
 			<string>1</string>
 			<key>rt_build</key>
@@ -27,7 +27,7 @@
 			<key>savertn</key>
 			<string>1</string>
 			<key>width</key>
-			<real>80</real>
+			<real>107</real>
 		</dict>
 		<key>reminders</key>
 		<array/>
@@ -42,13 +42,15 @@
 					<string>0</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>Edit this tracker to see how it works</string>
+				<string>📝 Edit this tracker to see how it works</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -57,6 +59,41 @@
 				<integer>0</integer>
 				<key>vtype</key>
 				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>defaultenabledb</key>
+					<string>0</string>
+					<key>graph</key>
+					<string>1</string>
+					<key>integerstepsb</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+					<key>sdflt</key>
+					<string>50.0</string>
+					<key>slidrswlb</key>
+					<string>0</string>
+					<key>smax</key>
+					<string>100.0</string>
+					<key>smin</key>
+					<string>0.0</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>2</integer>
+				<key>valueName</key>
+				<string>Low|High</string>
+				<key>vcolor</key>
+				<integer>1</integer>
+				<key>vid</key>
+				<integer>2</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>3</integer>
 			</dict>
 			<dict>
 				<key>optDict</key>
@@ -75,6 +112,8 @@
 					<string>0</string>
 					<key>graphlast</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
@@ -90,37 +129,6 @@
 				<integer>0</integer>
 				<key>vtype</key>
 				<integer>6</integer>
-			</dict>
-			<dict>
-				<key>optDict</key>
-				<dict>
-					<key>defaultenabledb</key>
-					<string>0</string>
-					<key>graph</key>
-					<string>1</string>
-					<key>integerstepsb</key>
-					<string>1</string>
-					<key>privacy</key>
-					<string>1</string>
-					<key>sdflt</key>
-					<string>50.0</string>
-					<key>smax</key>
-					<string>100.0</string>
-					<key>smin</key>
-					<string>0.0</string>
-				</dict>
-				<key>vGraphType</key>
-				<integer>2</integer>
-				<key>valueName</key>
-				<string>low|high</string>
-				<key>vcolor</key>
-				<integer>1</integer>
-				<key>vid</key>
-				<integer>2</integer>
-				<key>vpriv</key>
-				<integer>0</integer>
-				<key>vtype</key>
-				<integer>3</integer>
 			</dict>
 			<dict>
 				<key>optDict</key>
@@ -165,6 +173,8 @@
 					<string>0</string>
 					<key>graph</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 					<key>shrinkb</key>
@@ -173,11 +183,11 @@
 				<key>vGraphType</key>
 				<integer>0</integer>
 				<key>valueName</key>
-				<string>choices with values (e.g. Likert scale)</string>
+				<string>Choices with values (e.g. Likert scale)</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
-				<integer>3</integer>
+				<integer>21</integer>
 				<key>vpriv</key>
 				<integer>0</integer>
 				<key>vtype</key>
@@ -186,8 +196,45 @@
 			<dict>
 				<key>optDict</key>
 				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>fnddp</key>
+					<string>0</string>
+					<key>frep0</key>
+					<string>-1</string>
+					<key>frep1</key>
+					<string>-1</string>
+					<key>func</key>
+					<string>21</string>
 					<key>graph</key>
 					<string>1</string>
+					<key>graphlast</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>0</integer>
+				<key>valueName</key>
+				<string>choice value </string>
+				<key>vcolor</key>
+				<integer>7</integer>
+				<key>vid</key>
+				<integer>19</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>6</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 					<key>tbhi</key>
@@ -200,7 +247,7 @@
 				<key>vGraphType</key>
 				<integer>0</integer>
 				<key>valueName</key>
-				<string>text 📖 history 🔍 search</string>
+				<string>Text 📖 with history and search</string>
 				<key>vcolor</key>
 				<integer>6</integer>
 				<key>vid</key>
@@ -215,8 +262,12 @@
 				<dict>
 					<key>boolval</key>
 					<string>1</string>
+					<key>btnColr</key>
+					<string>1</string>
 					<key>graph</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 					<key>setstrackerdate</key>
@@ -242,6 +293,8 @@
 					<string>1</string>
 					<key>graph</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>nswl</key>
 					<string>0</string>
 					<key>numddp</key>
@@ -252,7 +305,7 @@
 				<key>vGraphType</key>
 				<integer>2</integer>
 				<key>valueName</key>
-				<string>number</string>
+				<string>Number</string>
 				<key>vcolor</key>
 				<integer>9</integer>
 				<key>vid</key>
@@ -267,13 +320,15 @@
 				<dict>
 					<key>graph</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>0</integer>
 				<key>valueName</key>
-				<string>one liner</string>
+				<string>One liner</string>
 				<key>vcolor</key>
 				<integer>10</integer>
 				<key>vid</key>
@@ -300,6 +355,8 @@
 					<string>1</string>
 					<key>graphlast</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
@@ -323,13 +380,15 @@
 					<string>0</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>turn sideways for graph 📊</string>
+				<string>Turn sideways for 📊 graph</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -348,13 +407,15 @@
 					<string>itms-apps://itunes.apple.com/app/id486541371</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>tap to 👏write a review</string>
+				<string>Tap to 👏 write a review</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -370,16 +431,18 @@
 					<key>graph</key>
 					<string>0</string>
 					<key>infourl</key>
-					<string>https://www.realidata.com/cgi-bin/comments.pl</string>
+					<string>https://www.realidata.com/cgi-bin/getTrackers.pl</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>tap to 💬write me a note</string>
+				<string>Tap to 💬 write me a note</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -394,15 +457,94 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infourl</key>
+					<string>https://www.realidata.com/cgi-bin/getTrackers.pl</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>👉 You can delete the sample trackers,</string>
+				<string>Tap for 🎉 more trackers</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>18</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infoval</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>Use iOS System Settings to:</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>15</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infoval</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>💥Change text size</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>16</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infoval</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>💥Reload the sample trackers</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -419,17 +561,19 @@
 					<string>0</string>
 					<key>infoval</key>
 					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>    and reload in iOS System Settings later</string>
+				<string>💥Reset privacy password </string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
-				<integer>15</integer>
+				<integer>23</integer>
 				<key>vpriv</key>
 				<integer>0</integer>
 				<key>vtype</key>
@@ -453,10 +597,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>-3</string>
 			<key>2</key>
 			<string>68.000000</string>
-			<key>3</key>
+			<key>21</key>
 			<string>-3</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string></string>
 			<key>5</key>
@@ -464,7 +616,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>65.00</string>
+			<string>68.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -484,10 +636,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>-2</string>
 			<key>2</key>
 			<string></string>
-			<key>3</key>
+			<key>21</key>
 			<string>-2</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string></string>
 			<key>5</key>
@@ -495,7 +655,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>-2.00</string>
+			<string>0.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -515,10 +675,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>-1</string>
 			<key>2</key>
 			<string></string>
-			<key>3</key>
+			<key>21</key>
 			<string>-1</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string></string>
 			<key>5</key>
@@ -526,7 +694,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>-1.00</string>
+			<string>0.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -546,9 +714,17 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>1</string>
 			<key>2</key>
 			<string></string>
-			<key>3</key>
+			<key>21</key>
+			<string>1</string>
+			<key>23</key>
 			<string>1</string>
 			<key>4</key>
 			<string></string>
@@ -557,7 +733,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>1.00</string>
+			<string>0.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -577,10 +753,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>2</string>
 			<key>2</key>
 			<string></string>
-			<key>3</key>
+			<key>21</key>
 			<string>2</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string></string>
 			<key>5</key>
@@ -588,7 +772,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>2.00</string>
+			<string>0.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -608,10 +792,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>3</string>
 			<key>2</key>
 			<string></string>
-			<key>3</key>
+			<key>21</key>
 			<string>3</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string>322</string>
 			<key>5</key>
@@ -619,7 +811,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>325.00</string>
+			<string>322.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -639,10 +831,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>2</string>
 			<key>2</key>
 			<string>69.000000</string>
-			<key>3</key>
+			<key>21</key>
 			<string>2</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string>200</string>
 			<key>5</key>
@@ -651,7 +851,7 @@
 			<string>Label entries with text box 
 </string>
 			<key>7</key>
-			<string>271.00</string>
+			<string>269.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -671,10 +871,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>-2</string>
 			<key>2</key>
 			<string>93.000000</string>
-			<key>3</key>
+			<key>21</key>
 			<string>-2</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string>444</string>
 			<key>5</key>
@@ -682,7 +890,7 @@
 			<key>6</key>
 			<string>Use the search 🔍 to find them</string>
 			<key>7</key>
-			<string>536.00</string>
+			<string>538.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -702,9 +910,17 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>1</string>
 			<key>2</key>
 			<string>20.000000</string>
-			<key>3</key>
+			<key>21</key>
+			<string>1</string>
+			<key>23</key>
 			<string>1</string>
 			<key>4</key>
 			<string>5</string>
@@ -713,7 +929,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>27.00</string>
+			<string>26.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>
@@ -733,10 +949,18 @@
 			<string>1</string>
 			<key>15</key>
 			<string>1</string>
+			<key>16</key>
+			<string>1</string>
+			<key>18</key>
+			<string>1</string>
+			<key>19</key>
+			<string>3</string>
 			<key>2</key>
 			<string>71.000000</string>
-			<key>3</key>
+			<key>21</key>
 			<string>3</string>
+			<key>23</key>
+			<string>1</string>
 			<key>4</key>
 			<string>99</string>
 			<key>5</key>
@@ -744,7 +968,7 @@
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>173.00</string>
+			<string>170.00</string>
 			<key>8</key>
 			<string>1</string>
 			<key>9</key>

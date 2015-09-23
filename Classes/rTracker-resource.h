@@ -112,4 +112,5 @@ NSUInteger DeviceSystemMajorVersion();
 extern BOOL keyboardIsShown;
 extern BOOL hasAmPm;
 extern BOOL resigningActive;
+extern BOOL loadingDemos;
 

@@ -84,6 +84,8 @@ NSUInteger DeviceSystemMajorVersion() {
     return YES;
 }
 
+BOOL loadingDemos=NO;
+
 //---------------------------
 BOOL hasAmPm=NO;
 

@@ -1949,6 +1949,15 @@ TODO: regen all .rtrks on website
    - successful in-app activation on iphone tunneling to uk; various problems getting on to app store
    - implemented rtPurchasedNotification, thank-you alert and immediately update UI to reflect purchased 
 
+23 sep 2015
+   - more improvements to demo tracker,  DEMOS_VERSION still at 2
+   - make load demos wipe existing tracker with same tid and name
+   - releasing as 2.0.6 - rTracker build 5789  rTrackerA build 557
+
+--- commit ---
+
+   
+
 
 todo: remove rTracker_Prefix.pch ?  seems to be from ios3
 remove rTrackerTests-Prefix.pch ?

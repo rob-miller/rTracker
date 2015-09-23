@@ -325,7 +325,7 @@
         valueObj *eVO = existingVOs[nVidN];
         if (eVO) {                                          // self has vid;
             NSUInteger recoveredName = [regex numberOfMatchesInString:eVO.valueName options:0 range:NSMakeRange(0, [eVO.valueName length])];
-            if ([nVname isEqualToString:eVO.valueName] || (1==recoveredName)) {       // name matches same vid or name is recovered1234
+            if ([nVname isEqualToString:eVO.valueName] || (1==recoveredName) || (loadingDemos)) {       // name matches same vid or name is recovered1234 or we are loading demo so overwrite on same vid
                 if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
                     [self rescanVoIds:existingVOs];                     // re-validate
                     eVO = [[valueObj alloc] initWithDict:self dict:voDict]; // create new vo

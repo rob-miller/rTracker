@@ -40,13 +40,12 @@
 #define SAMPLES_VERSION 1
 
 #define DEMOS_VERSION 2
-// demos_version 1 ad hard to see colours for one graph
+// demos_version 2 improve colours for one graph, wording improvements, link to getTrackers.pl, iOS settings to change text size
 
 #define RTDB_VERSION 2
-// rtdb_version 1 info table needed unique constraint on names column
+// rtdb_version 2 info table added unique constraint on names column
 
 #define RTFN_VERSION 1
-
 
 // strings to access text field for setting constant
 // lc= lastConst, could be more than 1

@@ -352,6 +352,8 @@
 
 - (void) deleteTrackerAllRow:(NSUInteger)row
 {
+    if (row >= [self.topLayoutIDs count]) return;
+    
 	int tid = [(self.topLayoutIDs)[row] intValue];
 	trackerObj *to = [[trackerObj alloc] init:tid];
     DBGLog(@"delete tracker all name:%@ id:%ldd rowtext= %@", to.trackerName,(long) (long)to.toid, [self.topLayoutNames objectAtIndex:row] );
@@ -361,6 +363,16 @@
 	[self.topLayoutIDs removeObjectAtIndex:row];
     [self.topLayoutPriv removeObjectAtIndex:row];
     [self.topLayoutReminderCount removeObjectAtIndex:row];
+}
+
+- (void) deleteTrackerAllTID:(NSNumber*)nsnTID name:(NSString*)name {
+    NSUInteger row = [self.topLayoutIDs indexOfObject:nsnTID];
+	int tid = [nsnTID intValue];
+	trackerObj *to = [[trackerObj alloc] init:tid];
+    
+    if ((NSNotFound != row) && ([name isEqualToString:to.trackerName])) {
+        [self deleteTrackerAllRow:row];
+    }
 }
 
 - (void) deleteTrackerRecordsRow:(NSUInteger)row

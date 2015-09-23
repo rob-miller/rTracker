@@ -53,6 +53,7 @@
 - (trackerObj *) copyToConfig : (trackerObj *) srcTO;
 
 - (void) deleteTrackerAllRow : (NSUInteger) row;
+- (void) deleteTrackerAllTID:(NSNumber*) tid name:(NSString*)name;
 - (void) deleteTrackerRecordsRow : (NSUInteger) row;
 - (void) reorderTLT : (NSUInteger) fromRow toRow:(NSUInteger)toRow;
 
