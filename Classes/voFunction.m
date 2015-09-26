@@ -1079,15 +1079,20 @@ BOOL FnErr=NO;
 	BOOL constantPending = NO;          // next item is a number not tok or vid
     BOOL constantClosePending = NO;     // constant bounded on both sides by constant token
     BOOL arg2Pending = NO;              // looking for second argument
+    int openParenCount=0;
     
 	for (NSNumber *n in self.fnArray) {
 		NSInteger i = [n integerValue];
+        //DBGLog(@"loop start: closePend=%d constantPend=%d constantClosePend=%d arg2Pend=%d openParen=%d fstr=%@",closePending,constantPending,constantClosePending,arg2Pending, openParenCount, fstr);
         if (constantPending) {
             [fstr appendString:[n stringValue]];
             constantPending = NO;
             constantClosePending = YES;
 		} else if (isFn(i)) {
-            if (isFn2ArgOp(i)) arg2Pending = YES;
+            if (isFn2ArgOp(i))
+                arg2Pending = YES;
+            else
+                arg2Pending = NO;
             if (FNCONSTANT == i) {
                 if (constantClosePending) {
                     constantClosePending = NO;
@@ -1102,6 +1107,8 @@ BOOL FnErr=NO;
                     [fstr appendString:@"["];
                     closePending=YES;
                 }
+                if (FNPARENOPEN == i) openParenCount++;
+                else if (FNPARENCLOSE == i) openParenCount--;
             }
 		} else {
 			[fstr appendString:[MyTracker voGetNameForVID:i]];  // could get from self.fnStrs
@@ -1113,14 +1120,15 @@ BOOL FnErr=NO;
 		}
 		if (! closePending)
             [fstr appendString:@" "];
-	}
-    if (arg2Pending || closePending || constantPending || constantClosePending) {
+        DBGLog(@"loop end: closeP=%d constantP=%d constantCloseP=%d arg2P=%d openPC=%d fstr=%@",closePending,constantPending,constantClosePending,arg2Pending, openParenCount, fstr);
+    }
+    if (arg2Pending || closePending || constantPending || constantClosePending || openParenCount) {
         [fstr appendString:@" ❌"];
         FnErr = YES;
     } else {
         FnErr = NO;
     }
-    
+    DBGLog(@"final fstr: %@",fstr);
 	return fstr;
 }
 

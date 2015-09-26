@@ -1956,6 +1956,11 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
+26 sept 2015
+   - found bug in fn checking, removed and resubmit rTracker 2.0.6(5795)  rTrackerA 2.0.6(5759)
+   
+   
+   
    
 
 
