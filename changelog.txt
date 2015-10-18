@@ -1958,7 +1958,15 @@ TODO: regen all .rtrks on website
 
 26 sept 2015
    - found bug in fn checking, removed and resubmit rTracker 2.0.6(5795)  rTrackerA 2.0.6(5759)
-   
+
+18 oct 2015
+   - earlier changes around number and text entries to enable 'save' button as soon as start editing, but too much background updating with each edit without further work.
+   - xcode update
+   - fix iphone 6plus issue with view for date picker
+   - release as 2.0.7
+
+--- commit ---
+
    
    
    

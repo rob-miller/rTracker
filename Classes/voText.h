@@ -15,6 +15,6 @@
 }*/
 
 @property (nonatomic,strong) UITextField *dtf;
-
+@property (nonatomic,weak) NSString *startStr;
 
 @end

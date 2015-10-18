@@ -20,31 +20,30 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-	DBGLog(@"tf begin editing");
-    //*activeField = textField;
+	//DBGLog(@"tf begin editing");
+    self.startStr = textField.text;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
 
-- (void)tfvoFinEdit:(UITextField*)tf {
-    //if ([tf.text isEqualToString:self.vo.value]) return;
-	[self.vo.value setString:tf.text];
-	tf.textColor = [UIColor blackColor];
-    
-	//self.vo.display = nil; // so will redraw this cell only
-	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+- (void)textFieldDidChange:(UITextField *)textField {
+    //[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
 
+
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	DBGLog(@"tf end editing");
-	[self tfvoFinEdit:textField];
-    //*activeField = nil;
+	//DBGLog(@"tf end editing");
+    if (! [self.startStr isEqualToString:textField.text]) {
+        [self.vo.value setString:textField.text];
+        textField.textColor = [UIColor blackColor];
+        [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+        self.startStr=nil;
+    }
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	// the user pressed the "Done" button, so dismiss the keyboard
 	//DBGLog(@"textField done: %@", textField.text);
-	[self tfvoFinEdit:textField];
 	[textField resignFirstResponder];
 	return YES;
 }
@@ -76,6 +75,7 @@
         // Add an accessibility label that describes what the text field is for.
         [_dtf setAccessibilityLabel:NSLocalizedString(@"NormalTextField", @"")];
         _dtf.text = @"";
+        [_dtf addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     }
     
     return _dtf;

@@ -12,41 +12,32 @@
 
 @implementation voNumber
 
-@synthesize dtf=_dtf;
-
+@synthesize dtf=_dtf, startStr=_startStr;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-	DBGLog(@"tf begin editing vid=%ld",(long)self.vo.vid);
-    //*activeField = textField;
+	//DBGLog(@"number tf begin editing vid=%ld",(long)self.vo.vid);
+    self.startStr = textField.text;
 	((trackerObj*) self.vo.parentTracker).activeControl = (UIControl*) textField;
 }
 
-/*
-- (void)tfvoFinEdit:(UITextField*)tf {
-	tf.textColor = [UIColor blackColor];
-	[self.vo.value setString:tf.text];
-    tf.backgroundColor = [UIColor whiteColor];
-    
-	//self.vo.display = nil; // so will redraw this cell only
-	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+- (void)textFieldDidChange:(UITextField *)textField {
+    // not sure yet - lot of actions for every char when just want to enable 'save'
+    //[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
 }
-*/
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     DBGLog(@"vo.value= %@",self.vo.value);
     DBGLog(@"tf.text= %@",textField.text);
 	DBGLog(@"tf end editing vid=%ld vo.value=%@ tf.text=%@",(long)self.vo.vid,self.vo.value,textField.text);
-    //if ([textField.text isEqualToString:self.vo.value]) return;  // TODO: why/how does initial ""-><value> happen before this ?!?!?!?!
-	//[self tfvoFinEdit:textField];
-	textField.textColor = [UIColor blackColor];
-	[self.vo.value setString:textField.text];
-    textField.backgroundColor = [UIColor whiteColor];
+
+    if (! [self.startStr isEqualToString:textField.text]) {
+        [self.vo.value setString:textField.text];
+        textField.textColor = [UIColor blackColor];
+        textField.backgroundColor = [UIColor whiteColor];
+        [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
+        self.startStr=nil;
+    }
     
-	//self.vo.display = nil; // so will redraw this cell only
-	[[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
-    
-    
-    //*activeField = nil;
 	((trackerObj*) self.vo.parentTracker).activeControl = nil;
 }
 
@@ -121,7 +112,7 @@
         // Add an accessibility label that describes what the text field is for.
         [_dtf setAccessibilityLabel:NSLocalizedString(@"enter a number", @"")];
         _dtf.text=@"";
-        
+        [_dtf addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     }
     //DBGLog(@"num dtf rc= %d",[dtf retainCount]);
     

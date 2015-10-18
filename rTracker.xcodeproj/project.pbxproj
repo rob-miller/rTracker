@@ -149,6 +149,7 @@
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
 		D44695C417D6894A00BB5A38 /* addValObjController7.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C217D6894A00BB5A38 /* addValObjController7.xib */; };
 		D44695C517D6894A00BB5A38 /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C317D6894A00BB5A38 /* configTlistController.xib */; };
+		D44BE6B91BBAF643001FFA97 /* rTrackerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D44BE6B81BBAF643001FFA97 /* rTrackerUITests.m */; };
 		D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */; };
 		D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */; };
 		D44C0DAD14AE4FF800C3DEB0 /* shadeview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */; };
@@ -264,6 +265,16 @@
 		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D44BE6BB1BBAF643001FFA97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = rTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* rTrackerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rTrackerAppDelegate.h; sourceTree = "<group>"; };
@@ -292,11 +303,6 @@
 		D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = GSTouchImage.png; path = Classes/otherSources/GSTouchImage.png; sourceTree = "<group>"; };
 		D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "GSTouchImage@2x.png"; path = "Classes/otherSources/GSTouchImage@2x.png"; sourceTree = "<group>"; };
 		D4099F601BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PSPDFUIKitMainThreadGuard.m; path = Classes/otherSources/PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
-		D40AB40716D428D2008174D3 /* rTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "rTrackerTests-Info.plist"; sourceTree = "<group>"; };
-		D40AB40916D428D2008174D3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D40AB40B16D428D2008174D3 /* rTrackerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rTrackerTests.h; sourceTree = "<group>"; };
-		D40AB40C16D428D2008174D3 /* rTrackerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rTrackerTests.m; sourceTree = "<group>"; };
-		D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "rTrackerTests-Prefix.pch"; sourceTree = "<group>"; };
 		D40DC28E133BEC2A00023D5D /* rTracker-resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "rTracker-resource.h"; sourceTree = "<group>"; };
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
@@ -309,6 +315,9 @@
 		D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd-cell1-320-56.png"; path = "Resources/png/bkgnd-cell1-320-56.png"; sourceTree = "<group>"; };
 		D44695C217D6894A00BB5A38 /* addValObjController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = addValObjController7.xib; path = ../Resources/xib/addValObjController7.xib; sourceTree = "<group>"; };
 		D44695C317D6894A00BB5A38 /* configTlistController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = configTlistController.xib; path = ../Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
+		D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D44BE6B81BBAF643001FFA97 /* rTrackerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rTrackerUITests.m; sourceTree = "<group>"; };
+		D44BE6BA1BBAF643001FFA97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "closedview-button-blue.png"; path = "Resources/png/closedview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fullview-button-blue.png"; path = "Resources/png/fullview-button-blue.png"; sourceTree = "<group>"; };
 		D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "shadeview-button-blue.png"; path = "Resources/png/shadeview-button-blue.png"; sourceTree = "<group>"; };
@@ -512,6 +521,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D44BE6B31BBAF643001FFA97 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -549,6 +565,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* rTracker.app */,
 				D43A7ECA1AB62358001BEC96 /* rTracker.app */,
+				D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -560,7 +577,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				D40AB40516D428D2008174D3 /* rTrackerTests */,
+				D44BE6B71BBAF643001FFA97 /* rTrackerUITests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -632,26 +649,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D40AB40516D428D2008174D3 /* rTrackerTests */ = {
-			isa = PBXGroup;
-			children = (
-				D40AB40B16D428D2008174D3 /* rTrackerTests.h */,
-				D40AB40C16D428D2008174D3 /* rTrackerTests.m */,
-				D40AB40616D428D2008174D3 /* Supporting Files */,
-			);
-			path = rTrackerTests;
-			sourceTree = "<group>";
-		};
-		D40AB40616D428D2008174D3 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D40AB40716D428D2008174D3 /* rTrackerTests-Info.plist */,
-				D40AB40816D428D2008174D3 /* InfoPlist.strings */,
-				D40AB40E16D428D2008174D3 /* rTrackerTests-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		D43EE365133CBF4100737E76 /* csv support */ = {
 			isa = PBXGroup;
 			children = (
@@ -659,6 +656,15 @@
 				D43EE367133CBF8D00737E76 /* CSVParser.m */,
 			);
 			name = "csv support";
+			sourceTree = "<group>";
+		};
+		D44BE6B71BBAF643001FFA97 /* rTrackerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D44BE6B81BBAF643001FFA97 /* rTrackerUITests.m */,
+				D44BE6BA1BBAF643001FFA97 /* Info.plist */,
+			);
+			path = rTrackerUITests;
 			sourceTree = "<group>";
 		};
 		D47ECFEF19411BE600DCCF12 /* TimesSquare */ = {
@@ -914,6 +920,24 @@
 			productReference = D43A7ECA1AB62358001BEC96 /* rTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D44BE6B51BBAF643001FFA97 /* rTrackerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D44BE6BD1BBAF643001FFA97 /* Build configuration list for PBXNativeTarget "rTrackerUITests" */;
+			buildPhases = (
+				D44BE6B21BBAF643001FFA97 /* Sources */,
+				D44BE6B31BBAF643001FFA97 /* Frameworks */,
+				D44BE6B41BBAF643001FFA97 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D44BE6BC1BBAF643001FFA97 /* PBXTargetDependency */,
+			);
+			name = rTrackerUITests;
+			productName = rTrackerUITests;
+			productReference = D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -943,6 +967,10 @@
 							};
 						};
 					};
+					D44BE6B51BBAF643001FFA97 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 1D6058900D05DD3D006BFB54;
+					};
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
@@ -962,6 +990,7 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* rTracker */,
 				D43A7E4E1AB62358001BEC96 /* rTrackerA */,
+				D44BE6B51BBAF643001FFA97 /* rTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1098,6 +1127,13 @@
 				D43A7E881AB62358001BEC96 /* ping.caf in Resources */,
 				D43A7E891AB62358001BEC96 /* CalendarTodaysDate.png in Resources */,
 				D43A7E8A1AB62358001BEC96 /* ping 2.caf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D44BE6B41BBAF643001FFA97 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1276,18 +1312,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D44BE6B21BBAF643001FFA97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D44BE6B91BBAF643001FFA97 /* rTrackerUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		D40AB40816D428D2008174D3 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D40AB40916D428D2008174D3 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
+/* Begin PBXTargetDependency section */
+		D44BE6BC1BBAF643001FFA97 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* rTracker */;
+			targetProxy = D44BE6BB1BBAF643001FFA97 /* PBXContainerItemProxy */;
 		};
-/* End PBXVariantGroup section */
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
@@ -1568,6 +1609,94 @@
 			};
 			name = AppStore;
 		};
+		D44BE6BE1BBAF643001FFA97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = rTrackerUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = rTracker;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		D44BE6BF1BBAF643001FFA97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = rTrackerUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = rTracker;
+				USES_XCTRUNNER = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D44BE6C01BBAF643001FFA97 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = rTrackerUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = rTracker;
+				USES_XCTRUNNER = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AppStore;
+		};
 		D4786E66148D8B35000E144A /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1675,6 +1804,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D44BE6BD1BBAF643001FFA97 /* Build configuration list for PBXNativeTarget "rTrackerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D44BE6BE1BBAF643001FFA97 /* Debug */,
+				D44BE6BF1BBAF643001FFA97 /* Release */,
+				D44BE6C01BBAF643001FFA97 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
