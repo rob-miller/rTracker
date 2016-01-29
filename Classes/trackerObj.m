@@ -29,7 +29,7 @@
 
 
 @synthesize trackerDate=_trackerDate, valObjTable=_valObjTable, reminders=_reminders, reminderNdx=_reminderNdx, optDict=_optDict, trackerName=_trackerName;
-@synthesize nextColor=_nextColor, votArray=_votArray;
+@synthesize nextColor=_nextColor;  //, votArray=_votArray;
 @synthesize activeControl=_activeControl,vc=_vc, dateFormatter=_dateFormatter, dateOnlyFormatter=_dateOnlyFormatter, csvReadFlags=_cvsReadFlags, csvProblem=_cvsProblem, togd=_togd, goRecalculate=_goRecalculate, changedDateFrom=_changedDateFrom, csvHeaderDict=_csvHeaderDict; // prevTID  //
 
 @synthesize maxLabel=_maxLabel;
@@ -57,7 +57,7 @@
  *     TODO: field='labelwid'  : max size to print over all valobj values
  *
  *  voConfig: id(int,unique) ; rank(int) ; type(int) ; name(text) ; color(int) ; graphtype(int) ; graphVO(int) ; priv(int)
- *         type: rt-types.plist and defs in valueObj.h
+ *         type: vtypeNames array and defs in valueObj.h
  *        color: defs in valueObj.h ; colorSet in trackerObj.m
  *    graphtype: defs in valueObj.h ; graphsForVOTCopy and mapGraphType in valueObj.m
  *         priv: copy from voInfo below
@@ -84,6 +84,7 @@
  *	  field='frep%d'    : function range endpoint 0 or 1: -constant or valobj vid
  *    field='frv%d'     : function range endpoint 0 or 1 value if frep is offset like hours, months, ... (%d=1 not used)
  *    field='fnddp'     : function display decimal pt: number of digits to show in output format
+ *    field='infosave'  : info write reported value to database and CSV
  *    TODO: field='tbmlc'     : textbox max line count for tbnl
  *
  *  trkrData: date(int,unique)
@@ -833,7 +834,7 @@ if (addVO) {
     BOOL rslt=NO;
     if ([@"" isEqualToString:vots]) return rslt;
     
-    NSUInteger vot = [self.votArray indexOfObject:vots];
+    NSUInteger vot = [[rTracker_resource vtypeNames] indexOfObject:vots];  // [self.votArray indexOfObject:vots];
     if (NSNotFound == vot) return rslt;
     
     //DBGLog(@"vot= %d",vot);
@@ -1029,21 +1030,22 @@ if (addVO) {
 	NSInteger minPriv=BIGPRIV;
     
 	for (valueObj *vo in self.valObjTable) {
-		
 		dbgNSAssert((vo.vid >= 0),@"tObj saveData vo.vid <= 0");
-		//if (vo.vtype != VOT_FUNC) { // no fn results data kept
-        DBGLog(@"  vo %@  id %ld val %@", vo.valueName, (long)vo.vid, vo.value);
-        if ([vo.value isEqualToString:@""]) {
-            sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)vo.vid, tdi];
-        } else {
-            haveData = YES;
-            minPriv = MIN(vo.vpriv,minPriv);
-            sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
-                        (long)vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
+        if (VOT_INFO != vo.vtype || [@"1" isEqualToString:vo.optDict[@"infosave"]]) {
+            //if (vo.vtype != VOT_FUNC) { // no fn results data kept
+            DBGLog(@"  vo %@  id %ld val %@", vo.valueName, (long)vo.vid, vo.value);
+            if ([vo.value isEqualToString:@""]) {
+                sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)vo.vid, tdi];
+            } else {
+                haveData = YES;
+                minPriv = MIN(vo.vpriv,minPriv);
+                sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
+                       (long)vo.vid, tdi, [rTracker_resource toSqlStr:vo.value]];
+            }
+            [self toExecSql:sql];
+            
+            //}
         }
-        [self toExecSql:sql];
-                        
-		//} 
 	}
 	
 	if (haveData) {
@@ -1315,7 +1317,7 @@ if (addVO) {
 		dbgNSAssert((vo.vid >= 0),@"tObj writeTrackerCSV vo.vid <= 0");
         //DBGLog(@"wtxls:  vo %@  id %d val %@", vo.valueName, vo.vid, vo.value);
         //[nsfh writeData:[vo.valueName dataUsingEncoding:NSUnicodeStringEncoding]];
-        if (VOT_INFO != vo.vtype) {
+        if (VOT_INFO != vo.vtype || [@"1" isEqualToString:vo.optDict[@"infosave"]]) {
             outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:vo.valueName]];
         }
 	}
@@ -1327,9 +1329,10 @@ if (addVO) {
         outString = @"";
         for (valueObj *vo in self.valObjTable) {
             //DBGLog(@"vname= %@",vo.valueName);
-            if (VOT_INFO != vo.vtype) {
+            if (VOT_INFO != vo.vtype || [@"1" isEqualToString:vo.optDict[@"infosave"]]) {
                 haveChoice = haveChoice || (vo.vtype == VOT_CHOICE);
-                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%ld",(self.votArray)[vo.vtype],(vo.vcolor > -1 ? [rTracker_resource colorNames][vo.vcolor] : @""),(long)vo.vid];
+                NSString *voStr = [NSString stringWithFormat:@"%@:%@:%ld",[rTracker_resource vtypeNames][vo.vtype],
+                                   (vo.vcolor > -1 ? [rTracker_resource colorNames][vo.vcolor] : @""),(long)vo.vid];
                 outString = [outString stringByAppendingFormat:@",%@",[self csvSafe:voStr]];
             }
         }
@@ -1341,7 +1344,7 @@ if (addVO) {
                 outString = @"\"\"";
                 for (valueObj *vo in self.valObjTable) {
                     //DBGLog(@"vname= %@",vo.valueName);
-                    if (VOT_INFO != vo.vtype) {
+                    if (VOT_INFO != vo.vtype  || [@"1" isEqualToString:vo.optDict[@"infosave"]]) {
                         NSString *voStr=@"";
                         if (vo.vtype == VOT_CHOICE) {
                             voStr = (vo.optDict)[[NSString stringWithFormat:@"c%d",i]];
@@ -1374,7 +1377,7 @@ if (addVO) {
             // write data - each vo gets routine to write itself -- function results too
             outString = [NSString stringWithFormat:@"\"%@\"",[self dateToStr:self.trackerDate]];
             for (valueObj *vo in self.valObjTable) {
-                if (VOT_INFO != vo.vtype) {
+                if (VOT_INFO != vo.vtype  || [@"1" isEqualToString:vo.optDict[@"infosave"]]) {
                     outString = [outString stringByAppendingString:@","];
                     //if (VOT_CHOICE == vo.vtype) {
                         outString = [outString stringByAppendingString:[self csvSafe:vo.csvValue]];
@@ -1744,25 +1747,36 @@ if (addVO) {
     for (valueObj *vo in self.valObjTable) {
         CGSize tsize = [vo getLabelSize];
         //DBGLog(@"rescanMaxLabel: name= %@ w=%f  h= %f",vo.valueName,tsize.width,tsize.height);
-        if (tsize.width > lsize.width) {
-            lsize = tsize;
-            // bug in xcode 4.2
-            if (lsize.width == lsize.height) {
-                lsize.height = 18.0f;
+        if (   (VOT_INFO != vo.vtype)
+            && (VOT_CHOICE != vo.vtype)
+            && (VOT_SLIDER != vo.vtype)
+            ) {
+            
+            if (tsize.width > lsize.width) {
+                lsize = tsize;
+                // bug in xcode 4.2
+                //if (lsize.width == lsize.height) {
+                //    lsize.height = 18.0f;
+                //}
             }
         }
-        if (   (VOT_INFO == vo.vtype)
-            || (VOT_CHOICE == vo.vtype)
-            || (VOT_SLIDER == vo.vtype)
-            ) {
-            lsize.width = 0.0;  // don't include info, choice, slider labels in maxWidth calculation
-        }
+        /*
+         if (   (VOT_INFO == vo.vtype)
+         || (VOT_CHOICE == vo.vtype)
+         || (VOT_SLIDER == vo.vtype)
+         ) {
+         lsize.width = 0.0;  // don't include info, choice, slider labels in maxWidth calculation
+         }
+         */
     }
     CGFloat kww5 = ceilf( [rTracker_resource getKeyWindowWidth]/3.0 );
     if (lsize.width < kww5) lsize.width = kww5;
     
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    CGFloat maxWidth = screenSize.width - (2*MARGIN) - [@"<enter number>" sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20.0]}].width;
+    
+    //#define PrefBodyFont [UIFont preferredFontForTextStyle:UIFontTextStyleBody]
+    //CGFloat maxWidth = screenSize.width - (2*MARGIN) - [@"<enter number>" sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:20.0]}].width;
+    CGFloat maxWidth = screenSize.width - (2*MARGIN) - [@"<enter number>" sizeWithAttributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]}].width;
     if (lsize.width > maxWidth) lsize.width = maxWidth;
     
     //DBGLog(@"lsize.width %f maxWidth %f ss.width %f",lsize.width,maxWidth,screenSize.width);
@@ -2476,6 +2490,16 @@ if (addVO) {
     return @"not configured yet";
 }
 
+- (NSInteger) voGetTypeForVID:(NSInteger)vid {
+    for (valueObj *vo in self.valObjTable) {
+        if (vo.vid == vid)
+            return vo.vtype;
+    }
+    DBGLog(@"voGetNameForVID %ld failed", (long)vid);
+    //return [NSString stringWithFormat:@"vid %d not found",vid];
+    return -1;
+}
+
 /*  precludes musltiple vo with same name
 - (NSInteger) voGetVIDforName:(NSString *)vname {
 	for (valueObj *vo in self.valObjTable) {
@@ -2768,7 +2792,8 @@ if (addVO) {
 */
 
 // TODO: dump plist, votArray could be encoded as colorSet above (?)
-
+// done!
+/*
 - (NSArray *) votArray {
 	if (_votArray == nil) {
 		NSBundle *bundle = [NSBundle mainBundle];
@@ -2779,6 +2804,7 @@ if (addVO) {
 	
 	return _votArray;
 }
+*/
 
 - (void) setTOGD:(CGRect)inRect {  // note TOGD not Togd -- so self.togd still automatically retained/released
     id ttogd = [[togd alloc] initWithData:self rect:inRect];

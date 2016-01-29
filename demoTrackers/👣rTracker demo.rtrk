@@ -9,7 +9,7 @@
 			<key>graphMaxDays</key>
 			<string>0</string>
 			<key>height</key>
-			<real>20.287109375</real>
+			<real>17.900390625</real>
 			<key>name</key>
 			<string>👣rTracker demo</string>
 			<key>prevTID</key>
@@ -27,7 +27,7 @@
 			<key>savertn</key>
 			<string>1</string>
 			<key>width</key>
-			<real>107</real>
+			<real>239.89013671875</real>
 		</dict>
 		<key>reminders</key>
 		<array/>
@@ -38,27 +38,60 @@
 			<dict>
 				<key>optDict</key>
 				<dict>
+					<key>autoscale</key>
+					<string>1</string>
 					<key>graph</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>nswl</key>
 					<string>0</string>
-					<key>infoval</key>
+					<key>numddp</key>
+					<string>-1</string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>2</integer>
+				<key>valueName</key>
+				<string>Number</string>
+				<key>vcolor</key>
+				<integer>9</integer>
+				<key>vid</key>
+				<integer>4</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>boolval</key>
+					<string>1</string>
+					<key>btnColr</key>
+					<string>1</string>
+					<key>graph</key>
 					<string>1</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
 					<string>1</string>
+					<key>setstrackerdate</key>
+					<string>0</string>
 				</dict>
 				<key>vGraphType</key>
-				<integer>5</integer>
+				<integer>0</integer>
 				<key>valueName</key>
-				<string>📝 Edit this tracker to see how it works</string>
+				<string>Yes!</string>
 				<key>vcolor</key>
-				<integer>-1</integer>
+				<integer>3</integer>
 				<key>vid</key>
-				<integer>10</integer>
+				<integer>11</integer>
 				<key>vpriv</key>
 				<integer>0</integer>
 				<key>vtype</key>
-				<integer>7</integer>
+				<integer>5</integer>
 			</dict>
 			<dict>
 				<key>optDict</key>
@@ -181,7 +214,7 @@
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>valueName</key>
 				<string>Choices with values (e.g. Likert scale)</string>
 				<key>vcolor</key>
@@ -232,6 +265,241 @@
 				<key>optDict</key>
 				<dict>
 					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string> </string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>30</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>fnddp</key>
+					<string>2</string>
+					<key>frep0</key>
+					<string>-1</string>
+					<key>frep1</key>
+					<string>-1</string>
+					<key>func</key>
+					<string>2 -6 21 -6 11</string>
+					<key>graph</key>
+					<string>1</string>
+					<key>graphlast</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>3</integer>
+				<key>valueName</key>
+				<string>total</string>
+				<key>vcolor</key>
+				<integer>0</integer>
+				<key>vid</key>
+				<integer>7</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>6</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>fnddp</key>
+					<string>0</string>
+					<key>frep0</key>
+					<string>-11</string>
+					<key>frep1</key>
+					<string>-1</string>
+					<key>func</key>
+					<string>-28 2 -6 -28 21 -6 -28 6 -6 -28 11 -6 -28 4 -6 -28 5</string>
+					<key>graph</key>
+					<string>1</string>
+					<key>graphlast</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>0</integer>
+				<key>valueName</key>
+				<string>active values</string>
+				<key>vcolor</key>
+				<integer>0</integer>
+				<key>vid</key>
+				<integer>24</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>6</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>fnddp</key>
+					<string>2</string>
+					<key>frep0</key>
+					<string>-6</string>
+					<key>frep1</key>
+					<string>-1</string>
+					<key>frv0</key>
+					<string>5</string>
+					<key>func</key>
+					<string>-2 2 -9 -28 2</string>
+					<key>graph</key>
+					<string>1</string>
+					<key>graphlast</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>0</integer>
+				<key>valueName</key>
+				<string>average slider value over all entries</string>
+				<key>vcolor</key>
+				<integer>5</integer>
+				<key>vid</key>
+				<integer>43</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>6</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>fnddp</key>
+					<string>2</string>
+					<key>frep0</key>
+					<string>-1</string>
+					<key>frep1</key>
+					<string>-1</string>
+					<key>func</key>
+					<string>-13</string>
+					<key>graph</key>
+					<string>1</string>
+					<key>graphlast</key>
+					<string>1</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>0</integer>
+				<key>valueName</key>
+				<string>days since last entry</string>
+				<key>vcolor</key>
+				<integer>0</integer>
+				<key>vid</key>
+				<integer>45</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>6</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>autoscale</key>
+					<string>1</string>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>nswl</key>
+					<string>0</string>
+					<key>numddp</key>
+					<string>-1</string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>swipe ⬅️🖕🏼➡️ for earlier entries</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>25</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string> </string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>26</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
 					<string>1</string>
 					<key>longTitle</key>
 					<string></string>
@@ -260,64 +528,6 @@
 			<dict>
 				<key>optDict</key>
 				<dict>
-					<key>boolval</key>
-					<string>1</string>
-					<key>btnColr</key>
-					<string>1</string>
-					<key>graph</key>
-					<string>1</string>
-					<key>longTitle</key>
-					<string></string>
-					<key>privacy</key>
-					<string>1</string>
-					<key>setstrackerdate</key>
-					<string>0</string>
-				</dict>
-				<key>vGraphType</key>
-				<integer>0</integer>
-				<key>valueName</key>
-				<string>Yes!</string>
-				<key>vcolor</key>
-				<integer>3</integer>
-				<key>vid</key>
-				<integer>11</integer>
-				<key>vpriv</key>
-				<integer>0</integer>
-				<key>vtype</key>
-				<integer>5</integer>
-			</dict>
-			<dict>
-				<key>optDict</key>
-				<dict>
-					<key>autoscale</key>
-					<string>1</string>
-					<key>graph</key>
-					<string>1</string>
-					<key>longTitle</key>
-					<string></string>
-					<key>nswl</key>
-					<string>0</string>
-					<key>numddp</key>
-					<string>-1</string>
-					<key>privacy</key>
-					<string>1</string>
-				</dict>
-				<key>vGraphType</key>
-				<integer>2</integer>
-				<key>valueName</key>
-				<string>Number</string>
-				<key>vcolor</key>
-				<integer>9</integer>
-				<key>vid</key>
-				<integer>4</integer>
-				<key>vpriv</key>
-				<integer>0</integer>
-				<key>vtype</key>
-				<integer>0</integer>
-			</dict>
-			<dict>
-				<key>optDict</key>
-				<dict>
 					<key>graph</key>
 					<string>1</string>
 					<key>longTitle</key>
@@ -341,45 +551,43 @@
 			<dict>
 				<key>optDict</key>
 				<dict>
-					<key>autoscale</key>
-					<string>1</string>
-					<key>fnddp</key>
-					<string>2</string>
-					<key>frep0</key>
-					<string>-1</string>
-					<key>frep1</key>
-					<string>-1</string>
-					<key>func</key>
-					<string>2 -6 3 -6 4 -6 5 -6 6 -6 11</string>
 					<key>graph</key>
-					<string>1</string>
-					<key>graphlast</key>
-					<string>1</string>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
 					<string>1</string>
 				</dict>
 				<key>vGraphType</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>valueName</key>
-				<string>total</string>
+				<string> </string>
 				<key>vcolor</key>
-				<integer>0</integer>
+				<integer>-1</integer>
 				<key>vid</key>
-				<integer>7</integer>
+				<integer>29</integer>
 				<key>vpriv</key>
 				<integer>0</integer>
 				<key>vtype</key>
-				<integer>6</integer>
+				<integer>7</integer>
 			</dict>
 			<dict>
 				<key>optDict</key>
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -403,10 +611,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
 					<key>infourl</key>
-					<string>itms-apps://itunes.apple.com/app/id486541371</string>
+					<string></string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -415,7 +625,65 @@
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>Tap to 👏 write a review</string>
+				<string>📝 Edit this tracker to see how it works</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>10</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string> </string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>28</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string>itms-apps://itunes.apple.com/app/id486541371</string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>👉🏼 Tap to 👏 write a review</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -430,10 +698,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
 					<key>infourl</key>
-					<string>https://www.realidata.com/cgi-bin/getTrackers.pl</string>
+					<string>https://www.realidata.com/cgi-bin/comments.pl</string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -442,7 +712,7 @@
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>Tap to 💬 write me a note</string>
+				<string>👉🏼 Tap to 💬 write me a note</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -457,10 +727,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
 					<key>infourl</key>
 					<string>https://www.realidata.com/cgi-bin/getTrackers.pl</string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -469,7 +741,7 @@
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>Tap for 🎉 more trackers</string>
+				<string>👉🏼 Tap for 🎉 more trackers</string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -484,8 +756,128 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
 					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
 					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string> </string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>27</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string>rTracker://tid=1</string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>👉🏼 tap for rTracker-&gt;Car (URL scheme)</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>31</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string>rTrackerA://tid=1</string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string>👉🏼 tap for rTrackerA-&gt;Car (URL scheme)</string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>32</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
+					<key>longTitle</key>
+					<string></string>
+					<key>privacy</key>
+					<string>1</string>
+				</dict>
+				<key>vGraphType</key>
+				<integer>5</integer>
+				<key>valueName</key>
+				<string> </string>
+				<key>vcolor</key>
+				<integer>-1</integer>
+				<key>vid</key>
+				<integer>40</integer>
+				<key>vpriv</key>
+				<integer>0</integer>
+				<key>vtype</key>
+				<integer>7</integer>
+			</dict>
+			<dict>
+				<key>optDict</key>
+				<dict>
+					<key>graph</key>
+					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
+					<key>infoval</key>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -509,8 +901,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -534,8 +930,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -559,8 +959,12 @@
 				<dict>
 					<key>graph</key>
 					<string>0</string>
+					<key>infosave</key>
+					<string>0</string>
+					<key>infourl</key>
+					<string></string>
 					<key>infoval</key>
-					<string>1</string>
+					<string>1.0</string>
 					<key>longTitle</key>
 					<string></string>
 					<key>privacy</key>
@@ -588,19 +992,19 @@
 			<key>1</key>
 			<string>68</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>-3</string>
 			<key>2</key>
@@ -608,38 +1012,62 @@
 			<key>21</key>
 			<string>-3</string>
 			<key>23</key>
-			<string>1</string>
+			<string>1.0</string>
+			<key>24</key>
+			<string>2</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string></string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>16409.33</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>68.00</string>
+			<string>65.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>439545120</key>
 		<dict>
 			<key>1</key>
 			<string>0</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>-2</string>
 			<key>2</key>
@@ -647,38 +1075,62 @@
 			<key>21</key>
 			<string>-2</string>
 			<key>23</key>
+			<string>1.0</string>
+			<key>24</key>
 			<string>1</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string></string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>1.00</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>0.00</string>
+			<string>-2.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>439631520</key>
 		<dict>
 			<key>1</key>
 			<string>0</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>-1</string>
 			<key>2</key>
@@ -686,38 +1138,62 @@
 			<key>21</key>
 			<string>-1</string>
 			<key>23</key>
+			<string>1.0</string>
+			<key>24</key>
 			<string>1</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string></string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>1.00</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>0.00</string>
+			<string>-1.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>439717920</key>
 		<dict>
 			<key>1</key>
 			<string>0</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>1</string>
 			<key>2</key>
@@ -725,38 +1201,62 @@
 			<key>21</key>
 			<string>1</string>
 			<key>23</key>
+			<string>1.0</string>
+			<key>24</key>
 			<string>1</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string></string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>1.00</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>0.00</string>
+			<string>1.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>439804320</key>
 		<dict>
 			<key>1</key>
 			<string>0</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>2</string>
 			<key>2</key>
@@ -764,38 +1264,62 @@
 			<key>21</key>
 			<string>2</string>
 			<key>23</key>
+			<string>1.0</string>
+			<key>24</key>
 			<string>1</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string></string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>1.00</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>0.00</string>
+			<string>2.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>439890720</key>
 		<dict>
 			<key>1</key>
 			<string>0</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>3</string>
 			<key>2</key>
@@ -803,38 +1327,62 @@
 			<key>21</key>
 			<string>3</string>
 			<key>23</key>
-			<string>1</string>
+			<string>1.0</string>
+			<key>24</key>
+			<string>2</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string>322</string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.00</string>
+			<key>45</key>
+			<string>1.00</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>322.00</string>
+			<string>3.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>440572580</key>
 		<dict>
 			<key>1</key>
 			<string>69</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string></string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>2</string>
 			<key>2</key>
@@ -842,78 +1390,126 @@
 			<key>21</key>
 			<string>2</string>
 			<key>23</key>
-			<string>1</string>
+			<string>1.0</string>
+			<key>24</key>
+			<string>5</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string>200</string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>68.50</string>
+			<key>45</key>
+			<string>7.89</string>
 			<key>5</key>
 			<string>Hey</string>
 			<key>6</key>
 			<string>Label entries with text box 
 </string>
 			<key>7</key>
-			<string>269.00</string>
+			<string>71.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>441179784</key>
 		<dict>
 			<key>1</key>
-			<string>93</string>
+			<string>50</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string>1</string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>-2</string>
 			<key>2</key>
-			<string>93.000000</string>
+			<string>50.000000</string>
 			<key>21</key>
 			<string>-2</string>
 			<key>23</key>
-			<string>1</string>
+			<string>1.0</string>
+			<key>24</key>
+			<string>5</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string>444</string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>62.33</string>
+			<key>45</key>
+			<string>7.03</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string>Use the search 🔍 to find them</string>
 			<key>7</key>
-			<string>538.00</string>
+			<string>49.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 		<key>441528360</key>
 		<dict>
 			<key>1</key>
 			<string>20</string>
 			<key>10</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>11</key>
 			<string>1</string>
 			<key>13</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>14</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>15</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>16</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>18</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>19</key>
 			<string>1</string>
 			<key>2</key>
@@ -921,58 +1517,43 @@
 			<key>21</key>
 			<string>1</string>
 			<key>23</key>
-			<string>1</string>
+			<string>1.0</string>
+			<key>24</key>
+			<string>4</string>
+			<key>25</key>
+			<string>1.0</string>
+			<key>26</key>
+			<string>1.0</string>
+			<key>27</key>
+			<string>1.0</string>
+			<key>28</key>
+			<string>1.0</string>
+			<key>29</key>
+			<string>1.0</string>
+			<key>30</key>
+			<string>1.0</string>
+			<key>31</key>
+			<string>1.0</string>
+			<key>32</key>
+			<string>1.0</string>
 			<key>4</key>
 			<string>5</string>
+			<key>40</key>
+			<string>1.0</string>
+			<key>43</key>
+			<string>51.75</string>
+			<key>45</key>
+			<string>4.03</string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
 			<string></string>
 			<key>7</key>
-			<string>26.00</string>
+			<string>22.00</string>
 			<key>8</key>
-			<string>1</string>
+			<string>1.0</string>
 			<key>9</key>
-			<string>1</string>
-		</dict>
-		<key>441704856</key>
-		<dict>
-			<key>1</key>
-			<string>71</string>
-			<key>10</key>
-			<string>1</string>
-			<key>11</key>
-			<string></string>
-			<key>13</key>
-			<string>1</string>
-			<key>14</key>
-			<string>1</string>
-			<key>15</key>
-			<string>1</string>
-			<key>16</key>
-			<string>1</string>
-			<key>18</key>
-			<string>1</string>
-			<key>19</key>
-			<string>3</string>
-			<key>2</key>
-			<string>71.000000</string>
-			<key>21</key>
-			<string>3</string>
-			<key>23</key>
-			<string>1</string>
-			<key>4</key>
-			<string>99</string>
-			<key>5</key>
-			<string></string>
-			<key>6</key>
-			<string></string>
-			<key>7</key>
-			<string>170.00</string>
-			<key>8</key>
-			<string>1</string>
-			<key>9</key>
-			<string>1</string>
+			<string>1.0</string>
 		</dict>
 	</dict>
 	<key>tid</key>

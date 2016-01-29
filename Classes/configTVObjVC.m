@@ -88,6 +88,16 @@
     return _scroll;
 }
 */
+
+- (void) btnChoiceHelp {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/choices.html"]];
+}
+
+- (void) btnInfoHelp {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/info.html"]];
+}
+
+
 - (void)viewDidLoad {
 	
 	NSString *name;
@@ -103,7 +113,7 @@
 
     
 	if ((name == nil) || [name isEqualToString:@""]) 
-		name = [NSString stringWithFormat:@"<%@>",(self.to.votArray)[self.vo.vtype]];
+        name = [NSString stringWithFormat:@"<%@>",[rTracker_resource vtypeNames][self.vo.vtype]];    // (self.to.votArray)[self.vo.vtype]];
 	[[self.navBar.items lastObject] setTitle:[NSString stringWithFormat:@"Configure %@",name]];
 	name = nil;
 	 
@@ -142,7 +152,24 @@
     
 	if (self.vdlConfigVO && self.vo.vtype == VOT_FUNC) {
 		[(voFunction*)self.vo.vos funcVDL:self donebutton:doneBtn];
-	} else {
+    } else 	if (self.vdlConfigVO &&
+                ( VOT_CHOICE == self.vo.vtype || VOT_INFO == self.vo.vtype )
+                ) {
+        // help button links for choice and info types
+        UIBarButtonItem *flexibleSpaceButtonItem = [[UIBarButtonItem alloc]
+                                                    initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                    target:nil action:nil];
+        
+        UIBarButtonItem *fnHelpButtonItem;
+        if ( VOT_CHOICE == self.vo.vtype ) {
+            fnHelpButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(btnChoiceHelp)];
+        } else {
+            fnHelpButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(btnInfoHelp)];
+        }
+        
+        self.toolBar.items = @[doneBtn, flexibleSpaceButtonItem, fnHelpButtonItem];
+
+    } else {
 		self.toolBar.items = @[doneBtn];
 	}
 
@@ -393,11 +420,13 @@
 		okey = @"graph"; dfltState=GRAPHDFLT;
 	} else if ( btn == (self.wDict)[@"swlBtn"] ) {
 		okey = @"nswl"; dfltState=NSWLDFLT;
-	} else if ( btn == (self.wDict)[@"srBtn"] ) {
+    } else if ( btn == (self.wDict)[@"srBtn"] ) {
 		okey = @"savertn"; dfltState=SAVERTNDFLT;
 	} else if ( btn == (self.wDict)[@"graphLastBtn"] ) {
 		okey = @"graphlast"; dfltState=GRAPHLASTDFLT;
-	}else {
+	} else if ( btn == (self.wDict)[@"infosaveBtn"] ) {
+		okey = @"infosave"; dfltState=INFOSAVEDFLT;
+    }else {
 		dbgNSAssert(0,@"ckButtonAction cannot identify btn");
         okey=@"x"; // make analyze happy
 	}
@@ -875,6 +904,9 @@
     }
     
 
+    NSDictionary *infoDict = [NSBundle mainBundle].infoDictionary;
+                              
+    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%@ %@ [%@]",infoDict[@"CFBundleDisplayName"], infoDict[@"CFBundleShortVersionString"], infoDict[@"CFBundleVersion"]]];
     
 //#endif
     

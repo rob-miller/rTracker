@@ -49,6 +49,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) myNavPopTransition:(UINavigationController*)navc animOpt:(NSInteger)animOpt;
 + (NSArray*) colorSet;
 + (NSArray*) colorNames;
++ (NSArray*) vtypeNames;
 
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str;
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable;
@@ -69,11 +70,20 @@ NSUInteger DeviceSystemMajorVersion();
 + (BOOL)getSavePrivate;
 + (void)setSavePrivate:(BOOL)savePriv;
 
+//+ (NSUInteger)getSCICount;
+//+ (void)setSCICount:(NSUInteger)saveSCICount;
+
 //+ (BOOL)getHideRTimes;
 //+ (void)setHideRTimes:(BOOL)hideRTimes;
 
 + (BOOL)getToldAboutSwipe;
 + (void)setToldAboutSwipe:(BOOL)toldSwipe;
+
++ (BOOL)getToldAboutNotifications;
++ (void)setToldAboutNotifications:(BOOL)toldNotifications;
+
++ (BOOL)notificationsEnabled;
+
 
 #if ADVERSION
 + (BOOL)getPurchased;

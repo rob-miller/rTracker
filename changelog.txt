@@ -1967,14 +1967,58 @@ TODO: regen all .rtrks on website
 
 --- commit ---
 
-   
-   
-   
+  - submit rTacker 2.0.7(5825)
+  - submit rTackerA 2.0.7(5661)
 
+14 dec 2015
+   - think have correctly created new, revoked old developer and distrbution profiles.  may have problems with next release for this...
 
-todo: remove rTracker_Prefix.pch ?  seems to be from ios3
-remove rTrackerTests-Prefix.pch ?
+19 jan 2016
+   - add <none> for function previous endpoint to enable counting used vs. unused choices and sliders
+   - added 167x167 main app icon for ipad pro / ios 9.0
 
+20 jan 2016
+   - fix 'tap to write me a note' link in demo rTracker
+
+22 jan 2016
+   - fix inaccessible trackers at bottom of tracker list after rotate from graph view
+   - add url scheme handler rTracker://tid=%d or rTracker://
+   - fixed crash on display graph with only info values
+   - implemented shortcut items (first four public trackers) for iphone 6s/6s+
+
+23 jan 2016
+   - fixed copy VO bug where VOT_INFO url still pointed to old string
+     -- was just plain copy, now is CFPropertyListCreateDeepCopy - kCFPropertyListMutableContainersAndLeaves
+
+24 jan 2016
+   - removed rt-types.plist and to.votArray - replaced with rTracker_resource:vtypeNames constant NSArray
+   - added info to crashlytics report - fn:voDisplay logs debug versions of fnDefnStr and fnRangeStr with types instead of names
+   - make so can clear textbox fully
+   - change text for vo_textbox option 'use number of lines for graph value' as can't do cleanly for function value (can't get in sql)
+   - changed text for email csv to 'rtCSV' if that option set 
+   - add links to help pages for choice and function configuration pages
+
+25 jan 2016
+   - add spaces to string in 'maxLabelFromArray' so vo type names and graph types do not get truncated in addValObj picker
+   - changed delta and ratio functions to be date >= epd0 as this is consistent with other functions (?)
+
+26 jan 2016
+   - add text to rTracker upgrade alert to highlight costs more and slower updates
+   - add help button for vot_info config
+
+27 jan 2016
+   - add check for info url == "" so don't go off to localhost on tap
+   - re-work to:rescanMaxLabel to improve which labels cause taller cells in useTracker
+
+28 jan 2016
+   - delete tracker row from toplevel in tlist.deleteTrackerAllRow() : old callers (delTracker and orphans code) all did reloadFromTLT() after delete, fix problem new demo tracker not wiping old
+   - add one-time alert to say 'enable notifications for reminders' before requesting to enable notifications on startup
+   - add alert when reminder enabled if notifications disabled
+   - add bundle display name, version and build to database info
+   
+todo: replace all export gui stuff with share menu and maybe airdrop
+todo: fix bug in graph display for fn:lines at start of data -- e.g. air consumption tracker
+todo: add 'no graph' as graph type and lose 'draw graph' checkbox
 
 +++ check rvc viewDidAppear / restart behaviour with adversion changes
 

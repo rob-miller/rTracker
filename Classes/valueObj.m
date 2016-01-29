@@ -81,7 +81,8 @@ in_vpriv:(NSInteger)in_vpriv
 		self.vid = [(NSNumber*) dict[@"vid"] integerValue];
         [(trackerObj*) self.parentTracker minUniquev:self.vid];
 		self.valueName = (NSString*) dict[@"valueName"];
-        self.optDict = (NSMutableDictionary*) dict[@"optDict"];
+        //self.optDict = (NSMutableDictionary*) dict[@"optDict"];
+        self.optDict = (NSMutableDictionary*) CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dict[@"optDict"], kCFPropertyListMutableContainersAndLeaves));
         self.vpriv = [(NSNumber*) dict[@"vpriv"] integerValue];
 		self.vtype = [(NSNumber*) dict[@"vtype"] integerValue];
         // setting vtype sets vo.useVO through vos init

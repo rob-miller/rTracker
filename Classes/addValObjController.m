@@ -107,7 +107,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//self.toolbarItems = @[setupBtn];
 	
 	
-	sizeVOTLabel = [addValObjController maxLabelFromArray:self.parentTrackerObj.votArray];
+    sizeVOTLabel = [addValObjController maxLabelFromArray:[rTracker_resource vtypeNames]];  //self.parentTrackerObj.votArray];
 	NSArray *allGraphs = [valueObj allGraphs];
 	sizeGTLabel = [addValObjController maxLabelFromArray:allGraphs];
 	
@@ -188,7 +188,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	// Release any cached data, images, etc that aren't in use.
 
 	//parentTrackerObj.colorSet = nil;
-	self.parentTrackerObj.votArray = nil;
+	//self.parentTrackerObj.votArray = nil;
 	
 }
 
@@ -277,7 +277,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[self.labelField resignFirstResponder];
     
 	NSUInteger row = [self.votPicker selectedRowInComponent:0];
-	self.tempValObj.vtype = row;  // works because vtype defs are same order as rt-types.plist entries
+	self.tempValObj.vtype = row;  // works because vtype defs are same order as vtypeNames array entries
 	row = [self.votPicker selectedRowInComponent:1];
     if ((VOT_CHOICE == self.tempValObj.vtype) || (VOT_INFO == self.tempValObj.vtype)){
         self.tempValObj.vcolor = -1;   // choice color set in optDict per choice
@@ -328,7 +328,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
     }
     
 #if DEBUGLOG	
-	NSString *selected = [self.parentTrackerObj.votArray objectAtIndex:row];
+    NSString *selected = [rTracker_resource vtypeNames][row]; // [self.parentTrackerObj.votArray objectAtIndex:row];
 	DBGLog(@"save label: %@ id: %ld row: %lu = %@",self.tempValObj.valueName,(long)self.tempValObj.vid, (unsigned long)row,selected);
 #endif
 	
@@ -382,7 +382,10 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
         //if (kIS_LESS_THAN_IOS7) {
         //    tsize = [s sizeWithFont:[UIFont systemFontOfSize:FONTSIZE]];
         //} else {
-            tsize = [s sizeWithAttributes:@{NSFontAttributeName: PrefBodyFont}];
+        NSString *s1 = [s stringByAppendingString:@"  "];
+        tsize = [s1 sizeWithAttributes:@{NSFontAttributeName: PrefBodyFont}];
+        tsize.width = ceilf(tsize.width);
+        tsize.height = ceilf(tsize.height);
         //}
 		if (tsize.width > rsize.width) {
 			rsize = tsize;
@@ -404,7 +407,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger) component {
 	switch (component) {
 		case 0:
-			return [self.parentTrackerObj.votArray count];
+            return [[rTracker_resource vtypeNames] count]; //[self.parentTrackerObj.votArray count];
 			break;
 		case 1:
 			//return [self.parentTrackerObj.colorSet count];
@@ -429,7 +432,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			 forComponent:(NSInteger)component {
 	switch (component) {
 		case 0:
-			return [self.parentTrackerObj.votArray objectAtIndex:row];
+            return [rTracker_resource vtypeNames][row]; // [self.parentTrackerObj.votArray objectAtIndex:row];
 			break;
 		case 1:
 			//return [self.paretntTrackerObj.colorSet objectAtIndex:row];
@@ -464,7 +467,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
-			label.text = (self.parentTrackerObj.votArray)[row];
+            label.text = [rTracker_resource vtypeNames][row];  // (self.parentTrackerObj.votArray)[row];
             //if (kIS_LESS_THAN_IOS7) {
                 label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
             //} else {

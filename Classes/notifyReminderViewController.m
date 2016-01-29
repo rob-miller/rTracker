@@ -397,6 +397,7 @@
     if ([self.enableButton isHidden]) return;
     
     self.nr.reminderEnabled = self.enableButton.selected;
+    
     self.nr.msg = self.msgTF.text;
     self.nr.tid = self.tracker.toid;
     
@@ -558,6 +559,13 @@
     
     self.nextAddBarButton.enabled = (!guiStateIsNull || [self.tracker haveNextReminder]);
     self.prevBarButton.enabled = ([self.tracker havePrevReminder] || ((0 == self.nr.rid) && [self.tracker haveCurrReminder]));
+    
+    if (self.enableButton.selected) {
+        if (! [rTracker_resource notificationsEnabled]) {
+            NSString *bdn = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+            [rTracker_resource alert:@"Notifications disabled" msg:[NSString stringWithFormat:@"Notifications are disabled for %@ in system settings, so reminders cannot work.\n\nPlease go to System Settings -> Notifications -> %@ and allow notifications.\n\n%@ reminders use badges, sounds and lock screen alerts.",bdn,bdn,bdn] vc:self];
+        }
+    }
 }
 
 

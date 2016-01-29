@@ -11,6 +11,9 @@
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 @interface voFunction ()
 - (void) updateFnTitles;
 - (void) showConstTF;
@@ -114,7 +117,7 @@ BOOL FnErr=NO;
 	if (_epTitles == nil) {
 		// n.b.: tied to FREP symbol defns in voFunctions.h
 		_epTitles = @[@"entry", @"hours", @"days", @"weeks", @"months", @"years",
-                    @"cal days",@"cal weeks",@"cal months", @"cal years"];
+                    @"cal days",@"cal weeks",@"cal months", @"cal years", @"<none>"];
 	}
 	return _epTitles;
 }
@@ -272,11 +275,11 @@ BOOL FnErr=NO;
         sql = [NSString stringWithFormat:@"select date from trkrData where date < %ld order by date desc limit 1;",(long)maxdate];
 		epDate = [to toQry2Int:sql];
 		//DBGLog(@"ep %d ->entry: %@", ndx, [self qdate:epDate] );
-	} else if (ep >= 0) {
+    } else if (ep >= 0) {
 		// ep is vid
         sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
 #if DEBUGFUNCTION
-        DBGLog(@"get ep qry: %@",to.sql);
+        DBGLog(@"get ep qry: %@",sql);
 #endif
 		epDate = [to toQry2Int:sql];
 #if DEBUGFUNCTION
@@ -294,6 +297,9 @@ BOOL FnErr=NO;
 		//NSString *vt=nil;
 		
 		switch (ep) {
+            case FREPNONE :
+                // no previous endpoint - find nothing prior to now
+                break;
 			case FREPHOURS :
 				[offsetComponents setHour:ival];
 				//vt = @"hours";
@@ -378,7 +384,7 @@ BOOL FnErr=NO;
         
 		epDate = [targ timeIntervalSince1970];
 #if DEBUGFUNCTION
-        DBGLog(@"ep %d ->offset %d: %@", ndx, ival, [self qdate:epDate] );
+        DBGLog(@"ep %d ->offset %ld: %@", ndx, (long)ival, [self qdate:epDate] );
 #endif
 	}
    //sql = nil;
@@ -508,11 +514,11 @@ BOOL FnErr=NO;
                     //to.sql = [NSString stringWithFormat:@"select val from voData where id=%d and date=%d;",vid,epd0];
                     // with per calendar date calcs, epd0 may not match a datapoint
                     // - so get val coming into this time segment or skip for beginning - rtm 17.iii.13
-                   sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date<=%ld;",(long)vid,(long)epd0];
+                   sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date>=%ld;",(long)vid,(long)epd0];
                     ci= [to toQry2Int:sql]; // slightly different for delta
                     if (0 == ci)
                         return nil; // skip for beginning
-                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<=%ld order by date desc limit 1;",(long)vid,(long)epd0];
+                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date>=%ld order by date desc limit 1;",(long)vid,(long)epd0];
                     
                     double v0 = [to toQry2Double:sql];
 #if DEBUGFUNCTION
@@ -755,7 +761,7 @@ BOOL FnErr=NO;
             valueObj *lvo = [to getValObj:currTok];
             result = [lvo.value doubleValue];
 #if DEBUGFUNCTION
-            DBGLog(@"vid %d: result= %f", lvo.vid,result);
+            DBGLog(@"vid %ld: result= %f", (long)lvo.vid,result);
 #endif
             //result = [[to getValObj:currTok].value doubleValue];
 			//self.currFnNdx++;  // on to next  // already there - postinc on read
@@ -849,6 +855,10 @@ BOOL FnErr=NO;
     
 	//UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
 	//rlab.textAlignment = UITextAlignmentRight;
+
+    [CrashlyticsKit setObjectValue:[self voFnDefnStr:TRUE] forKey:@"fnDefn"];
+    [CrashlyticsKit setObjectValue:[self voRangeStr:TRUE] forKey:@"fnRange"];
+    
 	NSString *valstr = self.vo.value;  // evaluated on read so make copy
     if (FnErr) valstr = [@"❌ " stringByAppendingString:valstr];
 	if (![valstr isEqualToString:@""]) {
@@ -920,6 +930,7 @@ BOOL FnErr=NO;
 
 // 
 // if picker row is offset (not valobj), display a textfield and label to get number of (hours, months,...) offset
+// check 
 //
 
 - (void) updateValTF:(NSInteger)row component:(NSInteger)component {
@@ -928,6 +939,8 @@ BOOL FnErr=NO;
 	if (row > votc) {
 		NSString *vkey = [NSString stringWithFormat:@"frv%ld",(long)component];
 		NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
+        if (FREPNONE == [(self.vo.optDict)[key] integerValue])
+            return;
 		NSString *vtfkey = [NSString stringWithFormat:@"fr%ldTF",(long)component];
 		NSString *pre_vkey = [NSString stringWithFormat:@"frpre%ldvLab",(long)component];
 		NSString *post_vkey = [NSString stringWithFormat:@"frpost%ldvLab",(long)component];
@@ -1073,7 +1086,7 @@ BOOL FnErr=NO;
     }
 }
 
-- (NSString*) voFnDefnStr {
+- (NSString*) voFnDefnStr:(BOOL)dbg {
 	NSMutableString *fstr = [[NSMutableString alloc] init];
 	BOOL closePending = NO;             //square brackets around target of Fn1Arg
 	BOOL constantPending = NO;          // next item is a number not tok or vid
@@ -1111,7 +1124,16 @@ BOOL FnErr=NO;
                 else if (FNPARENCLOSE == i) openParenCount--;
             }
 		} else {
-			[fstr appendString:[MyTracker voGetNameForVID:i]];  // could get from self.fnStrs
+            if (dbg) {
+                NSInteger vt = [MyTracker voGetTypeForVID:i];
+                if (0 > vt) {
+                    [fstr appendString:@"noType"];
+                } else {
+                    [fstr appendString:[rTracker_resource vtypeNames][vt]];
+                }
+            } else {
+                [fstr appendString:[MyTracker voGetNameForVID:i]];  // could get from self.fnStrs
+            }
 			if (closePending) {
 				[fstr appendString:@"]"];
 				closePending=NO;
@@ -1135,7 +1157,7 @@ BOOL FnErr=NO;
 
 - (void) updateFnTV {
 	UITextView *ftv = (self.ctvovcp.wDict)[@"fdefnTV2"];
-	ftv.text = [self voFnDefnStr];
+    ftv.text = [self voFnDefnStr:FALSE];
 }
 
 - (void) btnAdd:(id)sender {
@@ -1200,7 +1222,7 @@ BOOL FnErr=NO;
             frame.size.height = 8* self.ctvovcp.LFHeight;
         }
     }
-	[self.ctvovcp configTextView:frame key:@"fdefnTV2" text:[self voFnDefnStr]];
+    [self.ctvovcp configTextView:frame key:@"fdefnTV2" text:[self voFnDefnStr:FALSE]];
 	
 	frame.origin.x = 0.0;
 	frame.origin.y += frame.size.height + MARGIN;
@@ -1252,7 +1274,7 @@ BOOL FnErr=NO;
 // nice text string to describe a specified range endpoint
 //
 
-- (NSString*) voEpStr:(NSInteger)component {
+- (NSString*) voEpStr:(NSInteger)component dbg:(BOOL)dbg {
 	NSString *key = [NSString stringWithFormat:@"frep%ld",(long)component];
 	NSString *vkey = [NSString stringWithFormat:@"frv%ld",(long)component];
 	NSString *pre = component ? @"current" : @"previous";
@@ -1261,18 +1283,25 @@ BOOL FnErr=NO;
 	NSInteger ep = [n integerValue];
 	NSUInteger ep2 = n ? (ep+1)*-1 : 0; // invalid if ep is tmpUniq (negative)
 	
-	if (n == nil || ep == FREPDFLT) // no endpoint defined, default is 'entry'
+    if (nil == n || FREPDFLT == ep || FREPNONE == ep) // no endpoint defined, default is 'entry'
 		return [NSString stringWithFormat:@"%@ %@", pre, (self.epTitles)[ep2]];  // FREPDFLT
-	if (ep >= 0 || ep <= -TMPUNIQSTART )  // endpoint is vid and valobj saved, or tmp vid as valobj not saved
-		return [NSString stringWithFormat:@"%@ %@", pre, ((valueObj*)[MyTracker getValObj:ep]).valueName];
-	
-	// ep is hours / days / months entry
-	return [NSString stringWithFormat:@"%@%d %@",  
-			(component ? @"+" : @"-"), [(self.vo.optDict)[vkey] intValue], (self.epTitles)[ep2]];
+
+    if (ep >= 0 || ep <= -TMPUNIQSTART )  { // endpoint is vid and valobj saved, or tmp vid as valobj not saved
+        if (dbg) {
+            return [NSString stringWithFormat:@"%@ %@", pre,[rTracker_resource vtypeNames][((valueObj*)[MyTracker getValObj:ep]).vtype]];
+        } else {
+            return [NSString stringWithFormat:@"%@ %@", pre, ((valueObj*)[MyTracker getValObj:ep]).valueName];
+        }
+    }
+    
+    // ep is hours / days / months entry
+    return [NSString stringWithFormat:@"%@%d %@",
+        (component ? @"+" : @"-"), [(self.vo.optDict)[vkey] intValue], (self.epTitles)[ep2]];
+    
 }
 
-- (NSString*) voRangeStr {
-	return [NSString stringWithFormat:@"%@ to %@", [self voEpStr:0], [self voEpStr:1]];
+- (NSString*) voRangeStr:(BOOL)dbg {
+    return [NSString stringWithFormat:@"%@ to %@", [self voEpStr:0 dbg:dbg], [self voEpStr:1 dbg:dbg]];
 }
 
 - (void) drawFuncOptsOverview {
@@ -1292,7 +1321,7 @@ BOOL FnErr=NO;
     frame.size.width = screenSize.width - 2*MARGIN;  // seems always wrong on initial load // self.ctvovcp.view.frame.size.width - 2*MARGIN; // 300.0f;
 	frame.size.height = self.ctvovcp.LFHeight;
 	
-	[self.ctvovcp configTextView:frame key:@"frangeTV" text:[self voRangeStr]];
+    [self.ctvovcp configTextView:frame key:@"frangeTV" text:[self voRangeStr:FALSE]];
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	labframe = [self.ctvovcp configLabel:@"Definition:" 
@@ -1319,7 +1348,7 @@ BOOL FnErr=NO;
         }
     }
 
-    [self.ctvovcp configTextView:frame key:@"fdefnTV" text:[self voFnDefnStr]];
+    [self.ctvovcp configTextView:frame key:@"fdefnTV" text:[self voFnDefnStr:FALSE]];
 	
 	frame.origin.y += frame.size.height + MARGIN;
 	
@@ -1376,6 +1405,24 @@ BOOL FnErr=NO;
     return YES;
 }
 
+- (void) btnHelp {
+    switch (self.fnSegNdx) {
+        case FNSEGNDX_OVERVIEW:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#overview"]];
+            break;
+        case FNSEGNDX_RANGEBLD:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#range"]];
+            break;
+        case FNSEGNDX_FUNCTBLD:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#operators"]];
+            break;
+        default:
+            dbgNSAssert(0,@"fnSegmentAction bad index!");
+            break;
+    }
+    
+
+}
 
 //
 // called for configTVObjVC  viewDidLoad
@@ -1388,7 +1435,7 @@ BOOL FnErr=NO;
 													initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
 													target:nil action:nil];
 		
-		NSArray *segmentTextContent = @[@"Overview", @"Range", @"Fn definition"];
+		NSArray *segmentTextContent = @[@"Overview", @"Range", @"Definition"];
 		
 		UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:segmentTextContent];
 		//[segmentTextContent release];
@@ -1398,8 +1445,9 @@ BOOL FnErr=NO;
 		segmentedControl.selectedSegmentIndex = self.fnSegNdx ; //= 0;
 		UIBarButtonItem *scButtonItem = [[UIBarButtonItem alloc]
 										 initWithCustomView:segmentedControl];
+        UIBarButtonItem *fnHelpButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(btnHelp)];
 		
-		ctvovc.toolBar.items = @[db, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem];
+		ctvovc.toolBar.items = @[db, flexibleSpaceButtonItem, scButtonItem, flexibleSpaceButtonItem, fnHelpButtonItem, flexibleSpaceButtonItem];
 		
 	} else {
         ctvovc.toolBar.items = @[db];
@@ -1499,6 +1547,9 @@ BOOL FnErr=NO;
     [rTracker_resource alert:@"No variables for function" msg:@"A function needs variables to work on.\n\nPlease add a value (like a number, or anything other than a function) to your tracker before trying to create a function." vc:nil];
 }
 
+#pragma mark -
+
+
 - (void) voDrawOptions:(configTVObjVC *)ctvovc {
 	self.ctvovcp = ctvovc;
     [self reloadEmptyFnArray];
@@ -1507,6 +1558,8 @@ BOOL FnErr=NO;
     if (! [self checkVOs]) [self noVarsAlert];
     
 }
+#pragma mark -
+
 
 #pragma mark picker support
 

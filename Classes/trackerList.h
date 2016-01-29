@@ -64,5 +64,6 @@
 - (void) wipeOrphans;
 - (BOOL) recoverOrphans;
 
+- (void) updateShortcutItems;
 
 @end

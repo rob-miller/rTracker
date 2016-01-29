@@ -126,10 +126,11 @@
 #define FREPCWEEKS  -8
 #define FREPCMONTHS -9
 #define FREPCYEARS  -10
+#define FREPNONE    -11
 
 #define ISCALFREP(x) ((FREPCDAYS >= x) && (FREPCYEARS <= x))
 
-#define MAXFREP 10
+#define MAXFREP 11
 
 
 #define FNSEGNDX_OVERVIEW 0

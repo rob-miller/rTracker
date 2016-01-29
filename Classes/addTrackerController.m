@@ -142,7 +142,7 @@
 	// Release any cached data, images, etc that aren't in use.
 	
 	//tempTrackerObj.colorSet = nil;
-	self.tempTrackerObj.votArray = nil;
+	//self.tempTrackerObj.votArray = nil;
 	
 }
 
@@ -633,20 +633,20 @@ DBGLog(@"btnAddValue was pressed!");
 			cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 			//cell.detailTextLabel.text = [self.tempTrackerObj.votArray objectAtIndex:vo.vtype];
             /*
-            DBGLog(@"vtype %@",(self.tempTrackerObj.votArray)[vo.vtype]);
+            DBGLog(@"vtype %@",[rTracker_resource vtypeNames][vo.vtype]);
             DBGLog(@"gtype %@",(vo.vos.voGraphSet)[vo.vGraphType]);
             DBGLog(@"color %@",[rTracker_resource colorNames][vo.vcolor]);
             */
             
             if ([@"0" isEqualToString:(vo.optDict)[@"graph"]])
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", (self.tempTrackerObj.votArray)[vo.vtype]];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - no graph", [rTracker_resource vtypeNames][vo.vtype]];
             else if (VOT_CHOICE == vo.vtype)  // vColor = -1
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",(self.tempTrackerObj.votArray)[vo.vtype],
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",[rTracker_resource vtypeNames][vo.vtype],
                                              (vo.vos.voGraphSet)[vo.vGraphType]];
             else if (VOT_INFO == vo.vtype)  // vColor = -1, no graph
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",(self.tempTrackerObj.votArray)[vo.vtype]];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[rTracker_resource vtypeNames][vo.vtype]];
             else 
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",(self.tempTrackerObj.votArray)[vo.vtype],
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@ - %@",[rTracker_resource vtypeNames][vo.vtype],
                                              (vo.vos.voGraphSet)[vo.vGraphType],
                                              [rTracker_resource colorNames][vo.vcolor]];
 		}

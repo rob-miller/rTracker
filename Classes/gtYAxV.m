@@ -151,6 +151,7 @@ NSInteger choiceCompare(id ndx0, id ndx1, void *context)
                 }
                 break;
             }
+                
             case VOT_BOOLEAN:
                 if (1 == i) {
                     vstr = (self.vogd.vo.optDict)[@"boolval"];
@@ -159,7 +160,7 @@ NSInteger choiceCompare(id ndx0, id ndx1, void *context)
                     vstr = @"";
                 }
                 break;
-                
+
             case VOT_TEXT:
                 //case VOT_IMAGE:
                 if (1 == i) {
@@ -228,7 +229,9 @@ NSInteger choiceCompare(id ndx0, id ndx1, void *context)
 	}
     
     //[[self.vogd myGraphColor] set];  dictionaryWithObjects
-    [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName: [self.vogd myGraphColor]}];
+    if (self.vogd) { // can get here with no graph data if only vot_info entries
+        [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName: [self.vogd myGraphColor]}];
+    }
     //[self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withFont:self.myFont];
     [[UIColor whiteColor] set];
     

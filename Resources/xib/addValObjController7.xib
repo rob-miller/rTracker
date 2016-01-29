@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="addValObjController">
@@ -29,10 +29,10 @@
                     </connections>
                 </navigationBar>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGk-cK-RNh" userLabel="vspacer1">
-                    <rect key="frame" x="0.0" y="66" width="600" height="86"/>
+                    <rect key="frame" x="0.0" y="66" width="600" height="68.5"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8r5-Pv-PCI" userLabel="itemNameContainer">
-                    <rect key="frame" x="0.0" y="151.5" width="600" height="30"/>
+                    <rect key="frame" x="0.0" y="134" width="600" height="30"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                             <rect key="frame" x="10" y="0.0" width="50" height="30"/>
@@ -64,24 +64,24 @@
                     </constraints>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aNP-M6-mEt" userLabel="vspacer2">
-                    <rect key="frame" x="0.0" y="181.5" width="600" height="86"/>
+                    <rect key="frame" x="0.0" y="164" width="600" height="68"/>
                 </view>
                 <pickerView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" translatesAutoresizingMaskIntoConstraints="NO" id="6">
-                    <rect key="frame" x="0.0" y="307.5" width="600" height="162"/>
+                    <rect key="frame" x="0.0" y="271" width="600" height="216"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="13"/>
                         <outlet property="delegate" destination="-1" id="14"/>
                     </connections>
                 </pickerView>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yah-fd-475" userLabel="vspacer3">
-                    <rect key="frame" x="0.0" y="469.5" width="600" height="86"/>
+                    <rect key="frame" x="0.0" y="487" width="600" height="68.5"/>
                 </view>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ya7-ZR-4ic">
                     <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                     <items>
                         <barButtonItem style="plain" id="oWo-0b-AxY">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GIu-CE-ejq">
-                                <rect key="frame" x="16" y="7" width="30" height="30"/>
+                                <rect key="frame" x="20" y="7" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="⚙">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -94,16 +94,16 @@
                     </items>
                 </toolbar>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pvl-yr-pMy" userLabel="headingsContainer">
-                    <rect key="frame" x="0.0" y="267.5" width="600" height="30"/>
+                    <rect key="frame" x="0.0" y="231" width="600" height="30"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Type" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9">
-                            <rect key="frame" x="100" y="0.0" width="36" height="30"/>
+                            <rect key="frame" x="100" y="0.0" width="37.5" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Graph" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="16">
-                            <rect key="frame" x="452" y="0.0" width="48" height="30"/>
+                            <rect key="frame" x="452" y="0.0" width="47.5" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

@@ -817,6 +817,18 @@ BOOL loadingInputFiles=NO;
     return count;
 }
 
+/*
+- (void) deleteDemos {
+     // already deleting in handleOpenFileURL, but there is a race condition ...
+    
+     NSString *tdName = @"👣rTracker demo";
+     NSNumber *tdTid = [NSNumber numberWithInteger:[self.tlist getTIDfromName:tdName]];
+     if (![tdTid isEqual:@0])
+     [self.tlist deleteTrackerAllTID:tdTid name:tdName];
+
+}
+ */
+
 - (int) loadDemos:(BOOL)doLoad {
     
     //return [self loadSuppliedTrackers:doLoad set:SUPPLY_DEMOS];
@@ -1116,6 +1128,11 @@ BOOL loadingInputFiles=NO;
     
     [self.view addSubview:self.tableView];
     
+    NSArray <UIApplicationShortcutItem *> *existingShortcutItems = [[UIApplication sharedApplication] shortcutItems];
+    if (0 == [existingShortcutItems count] /*|| ([rTracker_resource getSCICount] != [existingShortcutItems count]) */ ) {  // can#'t set more than 4 or prefs messed up
+        [self.tlist updateShortcutItems];
+    }
+    
     
     
 }
@@ -1192,8 +1209,10 @@ BOOL loadingInputFiles=NO;
     [rTracker_resource setRtcsvOutput:[sud boolForKey:@"rtcsv_out_pref"]];
     [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
     //[rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
+    //[rTracker_resource setSCICount:(NSUInteger)[sud integerForKey:@"shortcut_count_pref"]];
     
     [rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]];
+    [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     //DBGLog(@"entry prefs-- resetPass: %d  reloadsamples: %d",resetPassPref,reloadSamplesPref);
 
@@ -1209,6 +1228,7 @@ BOOL loadingInputFiles=NO;
             InstallSamples = YES;
         }
         if ([self demosNeeded]) {
+            //[self deleteDemos];
             InstallDemos = YES;
         }
     }
@@ -1340,10 +1360,11 @@ BOOL loadingInputFiles=NO;
          forToolbarPosition: UIToolbarPositionAny
          barMetrics: UIBarMetricsDefault];
          */
-        
-        
     }
-    
+    f = self.tableView.frame;
+    f.size.height = [rTracker_resource get_visible_size:self].height;  // fix inaccessible trackers at bottom after rotate from graph view
+    self.tableView.frame = f;
+
 #if ADVERSION
     
     if (![rTracker_resource getPurchased]) {

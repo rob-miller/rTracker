@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>rTrackerA</string>
+	<string>${TARGET_NAME}</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -52,15 +52,30 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>rTrackerA</string>
+	<string>${TARGET_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.6</string>
+	<string>2.0.7</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>CFBundleURLIconFile</key>
+			<string>icon120</string>
+			<key>CFBundleURLName</key>
+			<string>com.realidata.rTrackerA</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>${TARGET_NAME}</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>5660</string>
+	<string>5707</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>

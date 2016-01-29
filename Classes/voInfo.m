@@ -94,8 +94,14 @@
 
 - (void) setOptDictDflts {
     if (nil == (self.vo.optDict)[@"infoval"])
-        (self.vo.optDict)[@"infoval"] = BOOLVALDFLTSTR;
+        (self.vo.optDict)[@"infoval"] = INFOVALDFLTSTR;
 
+    if (nil == (self.vo.optDict)[@"infourl"])
+        (self.vo.optDict)[@"infourl"] = INFOURLDFLTSTR;
+
+    if (nil == (self.vo.optDict)[@"infosave"])
+        (self.vo.optDict)[@"infosave"] = (INFOSAVEDFLT ? @"1" : @"0");
+    
     (self.vo.optDict)[@"graph"] = @"0";
     (self.vo.optDict)[@"privacy"] = [NSString stringWithFormat:@"%d",PRIVDFLT];
     
@@ -108,11 +114,24 @@
     if (nil == val)
         return YES;
     
-    if (([key isEqualToString:@"infoval"] && ([val floatValue] == f(INFOVALDFLT)))
+    if (([key isEqualToString:@"infoval"] && ([INFOVALDFLTSTR isEqualToString:val]))   // ([val floatValue] == f(INFOVALDFLT)))
         ) {
         [self.vo.optDict removeObjectForKey:key];
         return YES;
     }
+
+    if (([key isEqualToString:@"infourl"] && ([INFOURLDFLTSTR isEqualToString:[val stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]))
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+
+    if (([key isEqualToString:@"infosave"] && [val isEqualToString:(INFOSAVEDFLT ? @"1" : @"0")])
+        ) {
+        [self.vo.optDict removeObjectForKey:key];
+        return YES;
+    }
+
     
     return [super cleanOptDictDflts:key];
 }
@@ -128,7 +147,7 @@
     DBGLog(@"ctvovc frame x %f y %f w %f h %f",ctvovc.view.frame.origin.x,ctvovc.view.frame.origin.y,ctvovc.view.frame.size.width,ctvovc.view.frame.size.height );
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	
-	CGRect labframe = [ctvovc configLabel:@"stored value:" frame:frame key:@"ivLab" addsv:YES];
+	CGRect labframe = [ctvovc configLabel:@"reported value:" frame:frame key:@"ivLab" addsv:YES];
 	
 	frame.origin.x = labframe.size.width + MARGIN + SPACE;
     CGFloat tfWidth = [@"9999999999" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
@@ -147,6 +166,16 @@
     frame.origin.y += frame.size.height + MARGIN;
 	frame.origin.x = MARGIN;
 
+    labframe = [ctvovc configLabel:@"Write value in database and CSV" frame:frame key:@"infosaveLab" addsv:YES];
+    frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+    frame = [ctvovc configCheckButton:frame
+                                  key:@"infosaveBtn"
+                                state:([(self.vo.optDict)[@"infosave"] isEqualToString:@"1"])  // default:0
+                                addsv:YES
+             ];
+    frame.origin.x = MARGIN;
+    frame.origin.y += MARGIN + frame.size.height;
+    
     labframe = [ctvovc configLabel:@"URL:" frame:frame key:@"iurlLab" addsv:YES];
 
 	frame.origin.x = MARGIN;

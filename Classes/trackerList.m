@@ -359,6 +359,9 @@
     DBGLog(@"delete tracker all name:%@ id:%ldd rowtext= %@", to.trackerName,(long) (long)to.toid, [self.topLayoutNames objectAtIndex:row] );
     [to clearScheduledReminders];
 	[to deleteTrackerDB];
+    
+    [self toExecSql:[NSString stringWithFormat:@"delete from toplevel where id=%d and name='%@'",tid, to.trackerName]];
+
 	[self.topLayoutNames removeObjectAtIndex:row];
 	[self.topLayoutIDs removeObjectAtIndex:row];
     [self.topLayoutPriv removeObjectAtIndex:row];
@@ -594,6 +597,35 @@
     //self.sql = nil;
     
     return didRecover;
+}
+
+
+- (void) updateShortcutItems {
+
+    NSUInteger sciCount = SCICOUNTDFLT;   //[rTracker_resource getSCICount];
+    NSMutableArray *newShortcutItems = [NSMutableArray arrayWithCapacity:sciCount];
+    NSMutableArray *idArray = [NSMutableArray arrayWithCapacity:sciCount];
+    NSMutableArray *nameArray = [NSMutableArray arrayWithCapacity:sciCount];
+    
+    NSString *sql = [NSString stringWithFormat:@"select id, name from toplevel where priv <= %i order by rank limit %d;",MINPRIV,(unsigned int)sciCount];
+    [self toQry2AryIS:idArray s1:nameArray sql:sql];
+    
+    if (! nameArray) return;   // no trackers, no names on first start
+    NSUInteger c = [nameArray count];
+    if (! c) return;   // no trackers, no names on first start
+    
+    NSUInteger i;
+    for (i=0; i<sciCount && i<c; i++) {
+        UIApplicationShortcutItem *si = [[UIApplicationShortcutItem alloc]
+                                         initWithType:@"open" localizedTitle:[nameArray objectAtIndex:i]
+                                         localizedSubtitle:NULL icon:NULL
+                                         userInfo:@{ @"tid":[idArray objectAtIndex:i] } ];
+
+        [newShortcutItems addObject:si];
+    }
+
+    [UIApplication sharedApplication].shortcutItems = newShortcutItems;
+    
 }
 
 @end

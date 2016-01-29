@@ -6,6 +6,8 @@
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 #import "rTracker-resource.h"
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
@@ -230,7 +232,7 @@ BOOL hasAmPm=NO;
 
 + (void) buy_rTrackerAlert {
     NSString *title = @"Upgrade to rTracker";
-    NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker, which does not have advertisements or limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers to rTracker (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).\n\nOr use the In-App upgrade button below to continue using rTrackerA without ads or limits.",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
+    NSString *msg = [NSString stringWithFormat:@"\nrTrackerA is advertising supported and limited to %d trackers of %d items.\n\nPlease buy rTracker, which does not have advertisements or limits.\n\nUse the 'email tracker+data' functionality to transfer your existing trackers to rTracker (email to yourself, open the attachment in rTracker from Mail on your iOS device - you may need to look in your sent mail folder).\n\nOr use the In-App upgrade button below to continue using rTrackerA without ads or limits.  Please note that the In-App upgraded product costs more and seems to get updates later.",ADVER_TRACKER_LIM, ADVER_ITEM_LIM];
     NSString *btn0 = @"Not now";
     NSString *btn1 = @"Get rTracker";
     NSString *btn2 = @"In-App Upgrade";
@@ -373,6 +375,11 @@ BOOL hasAmPm=NO;
             @"cyan", @"yellow", @"magenta",
             @"orange", @"purple", @"brown", 
             @"white", @"lightGray", @"darkGray"];
+}
+
++ (NSArray*) vtypeNames {
+    // indexes must match defns in valueObj.h 
+    return @[@"number", @"text", @"textbox", @"slider", @"choice", @"yes/no", @"function", @"info"];
 }
 
 
@@ -590,6 +597,18 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 	//DBGLog(@"updateSavePrivate:%d",savePrivate);
 }
 
+/*
+ // can't set more than 4 :-(
+ 
+static NSUInteger SCICount=SCICOUNTDFLT;
+
++ (NSUInteger)getSCICount {
+    return SCICount;
+}
++ (void)setSCICount:(NSUInteger)saveSCICount {
+    SCICount = saveSCICount;
+}
+*/
 
 /*
 static BOOL hideRTimes=HIDERTIMESDFLT;
@@ -613,6 +632,27 @@ static BOOL toldAboutSwipe=false;
 + (void)setToldAboutSwipe:(BOOL)toldSwipe {
 	toldAboutSwipe = toldSwipe;
 	DBGLog(@"updateToldAboutSwipe:%d",toldAboutSwipe);
+}
+
+static BOOL toldAboutNotifications=false;
+
++ (BOOL)getToldAboutNotifications {
+    return toldAboutNotifications;
+}
+
++ (void)setToldAboutNotifications:(BOOL)toldNotifications {
+    toldAboutNotifications = toldNotifications;
+    DBGLog(@"updateToldAboutNotifications:%d",toldAboutNotifications);
+}
+
++ (BOOL)notificationsEnabled {
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
+        UIUserNotificationType types = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
+        return (types & UIUserNotificationTypeAlert);
+    }
+    else {
+        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+    }
 }
 
 #if ADVERSION

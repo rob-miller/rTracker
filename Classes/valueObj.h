@@ -14,7 +14,7 @@
 @class voState;
 @class vogd;
 
-// supported valueObj types ; note these defns tied to Resource: rt-types.plist
+// supported valueObj types ; note these defns tied to rTracker-resource vtypeNames array
 #define VOT_NUMBER	0
 #define VOT_TEXT	1
 #define VOT_TEXTB	2
@@ -89,6 +89,7 @@
 #define INFOVALDFLT     1.0
 #define INFOVALDFLTSTR  @"1.0"
 #define INFOURLDFLTSTR  @""
+#define INFOSAVEDFLT    NO
 
 #define NUMDDPDFLT		-1
 

@@ -314,7 +314,10 @@
 	//
 	[self.textView resignFirstResponder];
 	self.devc.navigationItem.rightBarButtonItem = nil;	// this will remove the "save" button
-    self.textView.text = [[self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAppendingString:@"\n"];
+    self.textView.text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (![@"" isEqualToString:self.textView.text]) {
+        self.textView.text = [self.textView.text stringByAppendingString:@"\n"];
+    }
     
     DBGLog(@"tb save: vo.val= .%@  tv.txt= %@",self.vo.value,self.textView.text);
     if (0 == [self.setSearchSeg selectedSegmentIndex]) {
@@ -476,7 +479,7 @@
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
 	CGRect labframe = [ctvovc configLabel:@"Text box options:" frame:frame key:@"tboLab" addsv:YES];
 	frame.origin.y += labframe.size.height + MARGIN;
-	labframe = [ctvovc configLabel:@"Use number of lines for value:" frame:frame key:@"tbnlLab" addsv:YES];
+	labframe = [ctvovc configLabel:@"Use number of lines for graph value:" frame:frame key:@"tbnlLab" addsv:YES];     // can't do cleanly for function value (can't get linecount in sql and still use for other vtypes)
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	frame = [ctvovc configCheckButton:frame
                           key:@"tbnlBtn"

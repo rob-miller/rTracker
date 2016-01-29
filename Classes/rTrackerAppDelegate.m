@@ -15,6 +15,7 @@
 #import "rTracker-constants.h"
 #import "rTracker-resource.h"
 #import "privacyV.h"
+#import "trackerList.h"
 
 
 #import <Fabric/Fabric.h>
@@ -50,7 +51,8 @@
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-    [Fabric with:@[CrashlyticsKit]];
+    //[Fabric with:@[CrashlyticsKit]];
+    [Fabric with:@[[Crashlytics class]]];
 #if !RELEASE
     DBGWarn(@"docs dir= %@",[rTracker_resource ioFilePath:nil access:YES]);
 #endif
@@ -134,11 +136,39 @@
 
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-    
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-
+        if (! [rTracker_resource notificationsEnabled]) {
+            
+            [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
+            if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
+                
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Authorise notifications"
+                                                                               message:@"Authorise notifications to enable tracker reminders."
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                      handler:^(UIAlertAction * action) {
+                                                                          [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                                                                      }];
+                
+                [alert addAction:defaultAction];
+                [rootController presentViewController:alert animated:YES completion:nil];
+                
+                
+                
+                [rTracker_resource setToldAboutNotifications:true];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutNotifications"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+        }
+        
+        
+        //[rTracker_resource alert:@"" msg:@"Authorise notifications to use tracker reminders." vc:rootController];
     }
     
+        
+
+
+
     // for when actually not running, not just in background:
     UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     if (nil != notification) {
@@ -151,16 +181,53 @@
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
     
+    UIApplicationShortcutItem *shortcutItem = [launchOptions objectForKey:UIApplicationLaunchOptionsShortcutItemKey];
+    if (nil != shortcutItem){
+        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(shortcutItem.userInfo)[@"tid"] waitUntilDone:NO];
+        return NO;  // http://stackoverflow.com/questions/32634024/3d-touch-home-shortcuts-in-obj-c
+    }
     
     return YES;
 }
 
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
+    NSString *bdn = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+    
     DBGLog(@"openURL %@",url);
+    DBGLog(@"bundle id: %@",bdn);
+
+    RootViewController *rootController = (self.navigationController.viewControllers)[0];
+
+    int tid;
+    NSString *urlas = [url absoluteString];
+    const char *curl = [urlas UTF8String];
+    NSString *base = [NSString stringWithFormat:@"%@://",bdn];
+    const char *format = [[NSString stringWithFormat:@"%@tid=%%d",base ] UTF8String];
+    
+    if (1 == sscanf(curl,format,&tid)) {   // correct match to URL scheme with tid
+        DBGLog(@"curl=%s format=%s tid=%d",curl,format,tid);
+        
+        trackerList *tlist = rootController.tlist;
+        [tlist loadTopLayoutTable];
+        if ([tlist.topLayoutIDs containsObject:[NSNumber numberWithInt:tid]]) {
+            [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[NSNumber numberWithInt:tid] waitUntilDone:NO];
+        } else {
+            [rTracker_resource alert:@"no tracker found" msg:[NSString stringWithFormat:@"No tracker with ID %d found in %@.  Edit the tracker, tap the ⚙, and look in 'database info' for the tracker id.",tid,bdn] vc:rootController];
+        }
+        
+    } else if ([urlas isEqualToString:base]) {
+        // do nothing because rTracker:// should open with default trackerList page
+    } else if ([urlas hasPrefix:base] || [urlas hasPrefix:[base lowercaseString]]) { // looks like our URL scheme but some errors
+        DBGLog(@"sscanf fail curl=%s format=%s",curl,format);
+        [rTracker_resource alert:@"bad URL" msg:[NSString stringWithFormat:@"URL received was %@ but should look like %s",[url absoluteString],format] vc:rootController];
+    }
+
+    
+
+
     //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
     //rootController.inputURL=url;
-    
     //[self.navigationController popToRootViewControllerAnimated:NO];
 
     return YES;
@@ -337,6 +404,11 @@
     //[rTracker_resource enableOrientationData];
 
     [self.navigationController.visibleViewController viewDidAppear:YES];
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    RootViewController *rootController = (self.navigationController.viewControllers)[0];
+    [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(shortcutItem.userInfo)[@"tid"] waitUntilDone:NO];
 }
 
 #pragma mark -

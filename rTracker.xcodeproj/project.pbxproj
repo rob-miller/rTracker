@@ -24,12 +24,12 @@
 		D40607E617D7CB5A00C05A38 /* shadeview-button-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DC17D7CB5A00C05A38 /* shadeview-button-7@2x.png */; };
 		D40607E717D7CB5A00C05A38 /* shadeview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DD17D7CB5A00C05A38 /* shadeview-button-blue-7.png */; };
 		D40607E817D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DE17D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png */; };
-		D4099F611BAFC5270026CA36 /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F5D1BAFC5270026CA36 /* GSTouchesShowingWindow.m */; settings = {ASSET_TAGS = (); }; };
-		D4099F621BAFC5270026CA36 /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F5D1BAFC5270026CA36 /* GSTouchesShowingWindow.m */; settings = {ASSET_TAGS = (); }; };
-		D4099F631BAFC5270026CA36 /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */; settings = {ASSET_TAGS = (); }; };
-		D4099F641BAFC5270026CA36 /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */; settings = {ASSET_TAGS = (); }; };
-		D4099F651BAFC5270026CA36 /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */; settings = {ASSET_TAGS = (); }; };
-		D4099F661BAFC5270026CA36 /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */; settings = {ASSET_TAGS = (); }; };
+		D4099F611BAFC5270026CA36 /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F5D1BAFC5270026CA36 /* GSTouchesShowingWindow.m */; };
+		D4099F621BAFC5270026CA36 /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F5D1BAFC5270026CA36 /* GSTouchesShowingWindow.m */; };
+		D4099F631BAFC5270026CA36 /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */; };
+		D4099F641BAFC5270026CA36 /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */; };
+		D4099F651BAFC5270026CA36 /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */; };
+		D4099F661BAFC5270026CA36 /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */; };
 		D4099F671BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F601BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D4099F681BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F601BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
@@ -43,7 +43,6 @@
 		D43A7E591AB62358001BEC96 /* CalendarSelectedDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3A19571F8A00B4702C /* CalendarSelectedDate.png */; };
 		D43A7E5A1AB62358001BEC96 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
 		D43A7E5B1AB62358001BEC96 /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
-		D43A7E5C1AB62358001BEC96 /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 		D43A7E5D1AB62358001BEC96 /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B71A5100450009E20B /* icon120.png */; };
 		D43A7E5E1AB62358001BEC96 /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C317D6894A00BB5A38 /* configTlistController.xib */; };
 		D43A7E5F1AB62358001BEC96 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
@@ -187,6 +186,130 @@
 		D473ED4619571F8A00B4702C /* CalendarTodaysDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */; };
 		D473ED4719571F8A00B4702C /* CalendarTodaysDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */; };
 		D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D473F25919050136000B0FC8 /* AudioToolbox.framework */; };
+		D479A6441C4FBF3600DB54F4 /* CalendarTodaysDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */; };
+		D479A6451C4FBF3600DB54F4 /* CalendarRowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3919571F8A00B4702C /* CalendarRowBottom@2x.png */; };
+		D479A6461C4FBF3600DB54F4 /* closedview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D817D7CB5A00C05A38 /* closedview-button-blue-7@2x.png */; };
+		D479A6471C4FBF3600DB54F4 /* fullview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D917D7CB5A00C05A38 /* fullview-button-blue-7.png */; };
+		D479A6481C4FBF3600DB54F4 /* CalendarPreviousMonth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3519571F8A00B4702C /* CalendarPreviousMonth@2x.png */; };
+		D479A6491C4FBF3600DB54F4 /* Icon512x512.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B51A50FDB40009E20B /* Icon512x512.png */; };
+		D479A64A1C4FBF3600DB54F4 /* CalendarSelectedDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3A19571F8A00B4702C /* CalendarSelectedDate.png */; };
+		D479A64B1C4FBF3600DB54F4 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
+		D479A64C1C4FBF3600DB54F4 /* CalendarPreviousMonth.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3419571F8A00B4702C /* CalendarPreviousMonth.png */; };
+		D479A64E1C4FBF3600DB54F4 /* icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = D464C8B71A5100450009E20B /* icon120.png */; };
+		D479A64F1C4FBF3600DB54F4 /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C317D6894A00BB5A38 /* configTlistController.xib */; };
+		D479A6501C4FBF3600DB54F4 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D479A6511C4FBF3600DB54F4 /* shadeview-button-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DB17D7CB5A00C05A38 /* shadeview-button-7.png */; };
+		D479A6521C4FBF3600DB54F4 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
+		D479A6531C4FBF3600DB54F4 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
+		D479A6541C4FBF3600DB54F4 /* GSTouchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5F1BAFC5270026CA36 /* GSTouchImage@2x.png */; };
+		D479A6551C4FBF3600DB54F4 /* shadeview-button-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DC17D7CB5A00C05A38 /* shadeview-button-7@2x.png */; };
+		D479A6561C4FBF3600DB54F4 /* CalendarRowBottom.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3819571F8A00B4702C /* CalendarRowBottom.png */; };
+		D479A6571C4FBF3600DB54F4 /* configTVObjVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D487D7731260A77800298C1D /* configTVObjVC.xib */; };
+		D479A6581C4FBF3600DB54F4 /* addTrackerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A9E4361A412FF300BD15B5 /* addTrackerController.xib */; };
+		D479A6591C4FBF3600DB54F4 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
+		D479A65A1C4FBF3600DB54F4 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
+		D479A65B1C4FBF3600DB54F4 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
+		D479A65C1C4FBF3600DB54F4 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
+		D479A65D1C4FBF3600DB54F4 /* demoTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4735FF81A51E81C006F12FC /* demoTrackers */; };
+		D479A65E1C4FBF3600DB54F4 /* shadeview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DE17D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png */; };
+		D479A65F1C4FBF3600DB54F4 /* closedview-button-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D517D7CB5A00C05A38 /* closedview-button-7.png */; };
+		D479A6601C4FBF3600DB54F4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D481089919E056D600B422A8 /* Images.xcassets */; };
+		D479A6611C4FBF3600DB54F4 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D469CEBA1A2BAC3800B8F48B /* MainWindow.xib */; };
+		D479A6621C4FBF3600DB54F4 /* addValObjController7.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C217D6894A00BB5A38 /* addValObjController7.xib */; };
+		D479A6631C4FBF3600DB54F4 /* shadeview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DD17D7CB5A00C05A38 /* shadeview-button-blue-7.png */; };
+		D479A6641C4FBF3600DB54F4 /* closedview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB7E14A9E2D700CE0547 /* closedview-button.png */; };
+		D479A6651C4FBF3600DB54F4 /* fullview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8014A9E2E300CE0547 /* fullview-button.png */; };
+		D479A6661C4FBF3600DB54F4 /* CalendarRow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3719571F8A00B4702C /* CalendarRow@2x.png */; };
+		D479A6671C4FBF3600DB54F4 /* shadeview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8214A9E2F100CE0547 /* shadeview-button.png */; };
+		D479A6681C4FBF3600DB54F4 /* closedview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DA814AE4FE100C3DEB0 /* closedview-button-blue.png */; };
+		D479A6691C4FBF3600DB54F4 /* fullview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAA14AE4FE900C3DEB0 /* fullview-button-blue.png */; };
+		D479A66A1C4FBF3600DB54F4 /* closedview-button-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D617D7CB5A00C05A38 /* closedview-button-7@2x.png */; };
+		D479A66B1C4FBF3600DB54F4 /* GSTouchImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D4099F5E1BAFC5270026CA36 /* GSTouchImage.png */; };
+		D479A66C1C4FBF3600DB54F4 /* closedview-button-blue-7.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D717D7CB5A00C05A38 /* closedview-button-blue-7.png */; };
+		D479A66D1C4FBF3600DB54F4 /* shadeview-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = D44C0DAC14AE4FF800C3DEB0 /* shadeview-button-blue.png */; };
+		D479A66E1C4FBF3600DB54F4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D4A8D07A14F114EC0028AD03 /* Settings.bundle */; };
+		D479A66F1C4FBF3600DB54F4 /* sampleTrackers in Resources */ = {isa = PBXBuildFile; fileRef = D4B3009215A9B51A0042319D /* sampleTrackers */; };
+		D479A6701C4FBF3600DB54F4 /* fullview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607DA17D7CB5A00C05A38 /* fullview-button-blue-7@2x.png */; };
+		D479A6711C4FBF3600DB54F4 /* notifyReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4B634B717B1C3B500E96BC1 /* notifyReminderViewController.xib */; };
+		D479A6721C4FBF3600DB54F4 /* bugle_call.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A31955664F007D0263 /* bugle_call.caf */; };
+		D479A6731C4FBF3600DB54F4 /* bugle_charge.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A41955664F007D0263 /* bugle_charge.caf */; };
+		D479A6741C4FBF3600DB54F4 /* fail_wah_wah_wah.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE3A51955664F007D0263 /* fail_wah_wah_wah.caf */; };
+		D479A6751C4FBF3600DB54F4 /* LaunchScreenImg.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D555101BAC84C600064968 /* LaunchScreenImg.png */; };
+		D479A6761C4FBF3600DB54F4 /* bell 1.caf in Resources */ = {isa = PBXBuildFile; fileRef = D47EE39B19556555007D0263 /* bell 1.caf */; };
+		D479A6771C4FBF3600DB54F4 /* bell 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A71955AEF7004526CF /* bell 2.caf */; };
+		D479A6781C4FBF3600DB54F4 /* CalendarRow.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3619571F8A00B4702C /* CalendarRow.png */; };
+		D479A6791C4FBF3600DB54F4 /* CalendarSelectedDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3B19571F8A00B4702C /* CalendarSelectedDate@2x.png */; };
+		D479A67A1C4FBF3600DB54F4 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4D5550D1BAC7C8900064968 /* Launch Screen.storyboard */; };
+		D479A67B1C4FBF3600DB54F4 /* bell 3.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A61955AEF7004526CF /* bell 3.caf */; };
+		D479A67C1C4FBF3600DB54F4 /* bell 4.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8A81955AEF7004526CF /* bell 4.caf */; };
+		D479A67D1C4FBF3600DB54F4 /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8AD1955B256004526CF /* ping.caf */; };
+		D479A67E1C4FBF3600DB54F4 /* CalendarTodaysDate.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */; };
+		D479A67F1C4FBF3600DB54F4 /* ping 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D457D8AC1955B256004526CF /* ping 2.caf */; };
+		D479A6811C4FBF3600DB54F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		D479A6821C4FBF3600DB54F4 /* rTrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* rTrackerAppDelegate.m */; };
+		D479A6831C4FBF3600DB54F4 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		D479A6841C4FBF3600DB54F4 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
+		D479A6851C4FBF3600DB54F4 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
+		D479A6861C4FBF3600DB54F4 /* addTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4588ADB1177497200AD2106 /* addTrackerController.m */; };
+		D479A6871C4FBF3600DB54F4 /* tObjBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A314A91189BB6A00F062AC /* tObjBase.m */; };
+		D479A6881C4FBF3600DB54F4 /* configTlistController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A317B21192B7C800F062AC /* configTlistController.m */; };
+		D479A6891C4FBF3600DB54F4 /* valueObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9E7E119AA02A00B37C93 /* valueObj.m */; };
+		D479A68A1C4FBF3600DB54F4 /* addValObjController.m in Sources */ = {isa = PBXBuildFile; fileRef = D48F9FB0119B4CA600B37C93 /* addValObjController.m */; };
+		D479A68B1C4FBF3600DB54F4 /* useTrackerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D49854AE12312A400009E458 /* useTrackerController.m */; };
+		D479A68C1C4FBF3600DB54F4 /* graphTrackerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FDD6125283B1004BB4EC /* graphTrackerVC.m */; };
+		D479A68D1C4FBF3600DB54F4 /* GSTouchesShowingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F5D1BAFC5270026CA36 /* GSTouchesShowingWindow.m */; };
+		D479A68E1C4FBF3600DB54F4 /* graphTrackerV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E5FE4512529300004BB4EC /* graphTrackerV.m */; };
+		D479A68F1C4FBF3600DB54F4 /* TSQCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */; };
+		D479A6901C4FBF3600DB54F4 /* notifyReminderVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = D47D169019028FBE006563B9 /* notifyReminderVC2.m */; };
+		D479A6911C4FBF3600DB54F4 /* configTVObjVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D487D7721260A77800298C1D /* configTVObjVC.m */; };
+		D479A6921C4FBF3600DB54F4 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
+		D479A6931C4FBF3600DB54F4 /* voNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE67127EC33500C036ED /* voNumber.m */; };
+		D479A6941C4FBF3600DB54F4 /* voText.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE6C127EC34D00C036ED /* voText.m */; };
+		D479A6951C4FBF3600DB54F4 /* voTextBox.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE71127EC35E00C036ED /* voTextBox.m */; };
+		D479A6961C4FBF3600DB54F4 /* notifyReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = D4620056182C046E00F6F2C2 /* notifyReminder.m */; };
+		D479A6971C4FBF3600DB54F4 /* voSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE76127EC36E00C036ED /* voSlider.m */; };
+		D479A6981C4FBF3600DB54F4 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
+		D479A6991C4FBF3600DB54F4 /* voChoice.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE7B127EC38300C036ED /* voChoice.m */; };
+		D479A69A1C4FBF3600DB54F4 /* voBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE82127EC39800C036ED /* voBoolean.m */; };
+		D479A69B1C4FBF3600DB54F4 /* voImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE89127EC3AA00C036ED /* voImage.m */; };
+		D479A69C1C4FBF3600DB54F4 /* voFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AE8E127EC3BE00C036ED /* voFunction.m */; };
+		D479A69D1C4FBF3600DB54F4 /* voState.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B6AEB5127EE24D00C036ED /* voState.m */; };
+		D479A69E1C4FBF3600DB54F4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
+		D479A69F1C4FBF3600DB54F4 /* privacyV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90012E8682100A2526B /* privacyV.m */; };
+		D479A6A01C4FBF3600DB54F4 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F601BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D479A6A11C4FBF3600DB54F4 /* tictacV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90312E868A300A2526B /* tictacV.m */; };
+		D479A6A21C4FBF3600DB54F4 /* ppwV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4E8F90612E868B700A2526B /* ppwV.m */; };
+		D479A6A31C4FBF3600DB54F4 /* numField.m in Sources */ = {isa = PBXBuildFile; fileRef = D46F7C941BA89E3A00CC768B /* numField.m */; };
+		D479A6A41C4FBF3600DB54F4 /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
+		D479A6A51C4FBF3600DB54F4 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
+		D479A6A61C4FBF3600DB54F4 /* togd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CC13798874005E0E23 /* togd.m */; };
+		D479A6A71C4FBF3600DB54F4 /* vogd.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A700CF1379928D005E0E23 /* vogd.m */; };
+		D479A6A81C4FBF3600DB54F4 /* gtTitleV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F02397137BFF7F0097AC16 /* gtTitleV.m */; };
+		D479A6A91C4FBF3600DB54F4 /* gtXAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239A137BFFA10097AC16 /* gtXAxV.m */; };
+		D479A6AA1C4FBF3600DB54F4 /* gtYAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239D137BFFB30097AC16 /* gtYAxV.m */; };
+		D479A6AB1C4FBF3600DB54F4 /* trackerCalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B564419411739002B0CCA /* trackerCalViewController.m */; };
+		D479A6AC1C4FBF3600DB54F4 /* TSQCalendarMonthHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */; };
+		D479A6AD1C4FBF3600DB54F4 /* TSQCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */; };
+		D479A6AE1C4FBF3600DB54F4 /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
+		D479A6AF1C4FBF3600DB54F4 /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
+		D479A6B01C4FBF3600DB54F4 /* notifyReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B634B617B1C3B500E96BC1 /* notifyReminderViewController.m */; };
+		D479A6B11C4FBF3600DB54F4 /* TSQCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */; };
+		D479A6B21C4FBF3600DB54F4 /* trackerCalCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */; };
+		D479A6B41C4FBF3600DB54F4 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B8D0041BAC1500002E94CD /* libsqlite3.tbd */; };
+		D479A6B51C4FBF3600DB54F4 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B8D0021BAC14F0002E94CD /* libc++.tbd */; };
+		D479A6B61C4FBF3600DB54F4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B8CFFF1BAC148B002E94CD /* libz.tbd */; };
+		D479A6B71C4FBF3600DB54F4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D473F25919050136000B0FC8 /* AudioToolbox.framework */; };
+		D479A6B81C4FBF3600DB54F4 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56AA1B73A10F0023CE55 /* Crashlytics.framework */; };
+		D479A6B91C4FBF3600DB54F4 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4FE66C8178617720056B463 /* MessageUI.framework */; };
+		D479A6BA1C4FBF3600DB54F4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40518B613787B5500F001BA /* QuartzCore.framework */; };
+		D479A6BB1C4FBF3600DB54F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		D479A6BC1C4FBF3600DB54F4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		D479A6BD1C4FBF3600DB54F4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
+		D479A6BE1C4FBF3600DB54F4 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A91B73A10F0023CE55 /* Fabric.framework */; };
+		D479A6BF1C4FBF3600DB54F4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A61B73A10F0023CE55 /* SystemConfiguration.framework */; };
+		D479A6C01C4FBF3600DB54F4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46E56A51B73A10F0023CE55 /* Security.framework */; };
+		D479A6C11C4FBF3600DB54F4 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
+		D479A6C21C4FBF3600DB54F4 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
 		D47B564519411739002B0CCA /* trackerCalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B564419411739002B0CCA /* trackerCalViewController.m */; };
 		D47B5648194118D5002B0CCA /* trackerCalCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D47B5647194118D5002B0CCA /* trackerCalCalendarRowCell.m */; };
 		D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47D168D19028F2C006563B9 /* notifyReminderVC2.xib */; };
@@ -241,10 +364,10 @@
 		D4CCF43419422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */; };
 		D4CCF43519422F3300BD2ECD /* TSQCalendarRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43119422F3300BD2ECD /* TSQCalendarRowCell.m */; };
 		D4CCF43619422F3300BD2ECD /* TSQCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43219422F3300BD2ECD /* TSQCalendarView.m */; };
-		D4D5550E1BAC7C8900064968 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4D5550D1BAC7C8900064968 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
-		D4D5550F1BAC7C8900064968 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4D5550D1BAC7C8900064968 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
-		D4D555111BAC84C600064968 /* LaunchScreenImg.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D555101BAC84C600064968 /* LaunchScreenImg.png */; settings = {ASSET_TAGS = (); }; };
-		D4D555121BAC84C600064968 /* LaunchScreenImg.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D555101BAC84C600064968 /* LaunchScreenImg.png */; settings = {ASSET_TAGS = (); }; };
+		D4D5550E1BAC7C8900064968 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4D5550D1BAC7C8900064968 /* Launch Screen.storyboard */; };
+		D4D5550F1BAC7C8900064968 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4D5550D1BAC7C8900064968 /* Launch Screen.storyboard */; };
+		D4D555111BAC84C600064968 /* LaunchScreenImg.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D555101BAC84C600064968 /* LaunchScreenImg.png */; };
+		D4D555121BAC84C600064968 /* LaunchScreenImg.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D555101BAC84C600064968 /* LaunchScreenImg.png */; };
 		D4D7DCEB125B25E00049EB93 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEA125B25E00049EB93 /* checked.png */; };
 		D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D4D7DCEC125B25F70049EB93 /* unchecked.png */; };
 		D4DC23FF138404140086E5F3 /* dpRslt.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DC23FE138404140086E5F3 /* dpRslt.m */; };
@@ -262,7 +385,6 @@
 		D4F0239E137BFFB40097AC16 /* gtYAxV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F0239D137BFFB30097AC16 /* gtYAxV.m */; };
 		D4F023A1137BFFD80097AC16 /* gtVONameV.m in Sources */ = {isa = PBXBuildFile; fileRef = D4F023A0137BFFD80097AC16 /* gtVONameV.m */; };
 		D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4FE66C8178617720056B463 /* MessageUI.framework */; };
-		D4FF224812304E050047518A /* rt-types.plist in Resources */ = {isa = PBXBuildFile; fileRef = D4FF224712304E050047518A /* rt-types.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -354,6 +476,8 @@
 		D473ED3C19571F8A00B4702C /* CalendarTodaysDate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CalendarTodaysDate.png; path = Resources/png/CalendarTodaysDate.png; sourceTree = "<group>"; };
 		D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CalendarTodaysDate@2x.png"; path = "Resources/png/CalendarTodaysDate@2x.png"; sourceTree = "<group>"; };
 		D473F25919050136000B0FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		D479A6C81C4FBF3600DB54F4 /* rTracker-test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rTracker-test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D479A6C91C4FBF3700DB54F4 /* rTracker-test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "rTracker-test-Info.plist"; path = "/Users/rob/proj/rTracker/rTracker-test-Info.plist"; sourceTree = "<absolute>"; };
 		D47B564319411739002B0CCA /* trackerCalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalViewController.h; sourceTree = "<group>"; };
 		D47B564419411739002B0CCA /* trackerCalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = trackerCalViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D47B5646194118D5002B0CCA /* trackerCalCalendarRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackerCalCalendarRowCell.h; sourceTree = "<group>"; };
@@ -471,7 +595,6 @@
 		D4F023A0137BFFD80097AC16 /* gtVONameV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gtVONameV.m; sourceTree = "<group>"; };
 		D4F023A2137C1D7A0097AC16 /* graphTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "graphTracker-constants.h"; sourceTree = "<group>"; };
 		D4FE66C8178617720056B463 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		D4FF224712304E050047518A /* rt-types.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "rt-types.plist"; path = "Classes/rt-types.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -528,6 +651,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D479A6B31C4FBF3600DB54F4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D479A6B41C4FBF3600DB54F4 /* libsqlite3.tbd in Frameworks */,
+				D479A6B51C4FBF3600DB54F4 /* libc++.tbd in Frameworks */,
+				D479A6B61C4FBF3600DB54F4 /* libz.tbd in Frameworks */,
+				D479A6B71C4FBF3600DB54F4 /* AudioToolbox.framework in Frameworks */,
+				D479A6B81C4FBF3600DB54F4 /* Crashlytics.framework in Frameworks */,
+				D479A6B91C4FBF3600DB54F4 /* MessageUI.framework in Frameworks */,
+				D479A6BA1C4FBF3600DB54F4 /* QuartzCore.framework in Frameworks */,
+				D479A6BB1C4FBF3600DB54F4 /* Foundation.framework in Frameworks */,
+				D479A6BC1C4FBF3600DB54F4 /* UIKit.framework in Frameworks */,
+				D479A6BD1C4FBF3600DB54F4 /* CoreGraphics.framework in Frameworks */,
+				D479A6BE1C4FBF3600DB54F4 /* Fabric.framework in Frameworks */,
+				D479A6BF1C4FBF3600DB54F4 /* SystemConfiguration.framework in Frameworks */,
+				D479A6C01C4FBF3600DB54F4 /* Security.framework in Frameworks */,
+				D479A6C11C4FBF3600DB54F4 /* AddressBook.framework in Frameworks */,
+				D479A6C21C4FBF3600DB54F4 /* AddressBookUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -566,6 +711,7 @@
 				1D6058910D05DD3D006BFB54 /* rTracker.app */,
 				D43A7ECA1AB62358001BEC96 /* rTracker.app */,
 				D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */,
+				D479A6C81C4FBF3600DB54F4 /* rTracker-test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -607,8 +753,8 @@
 				D481089919E056D600B422A8 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				D43A7ECB1AB62359001BEC96 /* rTrackerA-Info.plist */,
+				D479A6C91C4FBF3700DB54F4 /* rTracker-test-Info.plist */,
 				D4A8D07A14F114EC0028AD03 /* Settings.bundle */,
-				D4FF224712304E050047518A /* rt-types.plist */,
 				D4D7DCEA125B25E00049EB93 /* checked.png */,
 				D4D7DCEC125B25F70049EB93 /* unchecked.png */,
 				D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */,
@@ -938,6 +1084,25 @@
 			productReference = D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		D479A6411C4FBF3600DB54F4 /* rTracker-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D479A6C41C4FBF3600DB54F4 /* Build configuration list for PBXNativeTarget "rTracker-test" */;
+			buildPhases = (
+				D479A6421C4FBF3600DB54F4 /* ShellScript */,
+				D479A6431C4FBF3600DB54F4 /* Resources */,
+				D479A6801C4FBF3600DB54F4 /* Sources */,
+				D479A6B31C4FBF3600DB54F4 /* Frameworks */,
+				D479A6C31C4FBF3600DB54F4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "rTracker-test";
+			productName = rTracker;
+			productReference = D479A6C81C4FBF3600DB54F4 /* rTracker-test.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -971,6 +1136,9 @@
 						CreatedOnToolsVersion = 7.0;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
+					D479A6411C4FBF3600DB54F4 = {
+						DevelopmentTeam = DM8S4B24P4;
+					};
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
@@ -991,6 +1159,7 @@
 				1D6058900D05DD3D006BFB54 /* rTracker */,
 				D43A7E4E1AB62358001BEC96 /* rTrackerA */,
 				D44BE6B51BBAF643001FFA97 /* rTrackerUITests */,
+				D479A6411C4FBF3600DB54F4 /* rTracker-test */,
 			);
 		};
 /* End PBXProject section */
@@ -1009,7 +1178,6 @@
 				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
 				D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */,
-				D4FF224812304E050047518A /* rt-types.plist in Resources */,
 				D464C8B81A5100450009E20B /* icon120.png in Resources */,
 				D44695C517D6894A00BB5A38 /* configTlistController.xib in Resources */,
 				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
@@ -1076,7 +1244,6 @@
 				D43A7E591AB62358001BEC96 /* CalendarSelectedDate.png in Resources */,
 				D43A7E5A1AB62358001BEC96 /* notifyReminderVC2.xib in Resources */,
 				D43A7E5B1AB62358001BEC96 /* CalendarPreviousMonth.png in Resources */,
-				D43A7E5C1AB62358001BEC96 /* rt-types.plist in Resources */,
 				D43A7E5D1AB62358001BEC96 /* icon120.png in Resources */,
 				D43A7E5E1AB62358001BEC96 /* configTlistController.xib in Resources */,
 				D43A7E5F1AB62358001BEC96 /* blueButton.png in Resources */,
@@ -1137,6 +1304,72 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D479A6431C4FBF3600DB54F4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D479A6441C4FBF3600DB54F4 /* CalendarTodaysDate@2x.png in Resources */,
+				D479A6451C4FBF3600DB54F4 /* CalendarRowBottom@2x.png in Resources */,
+				D479A6461C4FBF3600DB54F4 /* closedview-button-blue-7@2x.png in Resources */,
+				D479A6471C4FBF3600DB54F4 /* fullview-button-blue-7.png in Resources */,
+				D479A6481C4FBF3600DB54F4 /* CalendarPreviousMonth@2x.png in Resources */,
+				D479A6491C4FBF3600DB54F4 /* Icon512x512.png in Resources */,
+				D479A64A1C4FBF3600DB54F4 /* CalendarSelectedDate.png in Resources */,
+				D479A64B1C4FBF3600DB54F4 /* notifyReminderVC2.xib in Resources */,
+				D479A64C1C4FBF3600DB54F4 /* CalendarPreviousMonth.png in Resources */,
+				D479A64E1C4FBF3600DB54F4 /* icon120.png in Resources */,
+				D479A64F1C4FBF3600DB54F4 /* configTlistController.xib in Resources */,
+				D479A6501C4FBF3600DB54F4 /* blueButton.png in Resources */,
+				D479A6511C4FBF3600DB54F4 /* shadeview-button-7.png in Resources */,
+				D479A6521C4FBF3600DB54F4 /* checked.png in Resources */,
+				D479A6531C4FBF3600DB54F4 /* unchecked.png in Resources */,
+				D479A6541C4FBF3600DB54F4 /* GSTouchImage@2x.png in Resources */,
+				D479A6551C4FBF3600DB54F4 /* shadeview-button-7@2x.png in Resources */,
+				D479A6561C4FBF3600DB54F4 /* CalendarRowBottom.png in Resources */,
+				D479A6571C4FBF3600DB54F4 /* configTVObjVC.xib in Resources */,
+				D479A6581C4FBF3600DB54F4 /* addTrackerController.xib in Resources */,
+				D479A6591C4FBF3600DB54F4 /* datePickerVC.xib in Resources */,
+				D479A65A1C4FBF3600DB54F4 /* voTBacc.xib in Resources */,
+				D479A65B1C4FBF3600DB54F4 /* bkgnd-cell1-320-56.png in Resources */,
+				D479A65C1C4FBF3600DB54F4 /* iTunesArtwork in Resources */,
+				D479A65D1C4FBF3600DB54F4 /* demoTrackers in Resources */,
+				D479A65E1C4FBF3600DB54F4 /* shadeview-button-blue-7@2x.png in Resources */,
+				D479A65F1C4FBF3600DB54F4 /* closedview-button-7.png in Resources */,
+				D479A6601C4FBF3600DB54F4 /* Images.xcassets in Resources */,
+				D479A6611C4FBF3600DB54F4 /* MainWindow.xib in Resources */,
+				D479A6621C4FBF3600DB54F4 /* addValObjController7.xib in Resources */,
+				D479A6631C4FBF3600DB54F4 /* shadeview-button-blue-7.png in Resources */,
+				D479A6641C4FBF3600DB54F4 /* closedview-button.png in Resources */,
+				D479A6651C4FBF3600DB54F4 /* fullview-button.png in Resources */,
+				D479A6661C4FBF3600DB54F4 /* CalendarRow@2x.png in Resources */,
+				D479A6671C4FBF3600DB54F4 /* shadeview-button.png in Resources */,
+				D479A6681C4FBF3600DB54F4 /* closedview-button-blue.png in Resources */,
+				D479A6691C4FBF3600DB54F4 /* fullview-button-blue.png in Resources */,
+				D479A66A1C4FBF3600DB54F4 /* closedview-button-7@2x.png in Resources */,
+				D479A66B1C4FBF3600DB54F4 /* GSTouchImage.png in Resources */,
+				D479A66C1C4FBF3600DB54F4 /* closedview-button-blue-7.png in Resources */,
+				D479A66D1C4FBF3600DB54F4 /* shadeview-button-blue.png in Resources */,
+				D479A66E1C4FBF3600DB54F4 /* Settings.bundle in Resources */,
+				D479A66F1C4FBF3600DB54F4 /* sampleTrackers in Resources */,
+				D479A6701C4FBF3600DB54F4 /* fullview-button-blue-7@2x.png in Resources */,
+				D479A6711C4FBF3600DB54F4 /* notifyReminderViewController.xib in Resources */,
+				D479A6721C4FBF3600DB54F4 /* bugle_call.caf in Resources */,
+				D479A6731C4FBF3600DB54F4 /* bugle_charge.caf in Resources */,
+				D479A6741C4FBF3600DB54F4 /* fail_wah_wah_wah.caf in Resources */,
+				D479A6751C4FBF3600DB54F4 /* LaunchScreenImg.png in Resources */,
+				D479A6761C4FBF3600DB54F4 /* bell 1.caf in Resources */,
+				D479A6771C4FBF3600DB54F4 /* bell 2.caf in Resources */,
+				D479A6781C4FBF3600DB54F4 /* CalendarRow.png in Resources */,
+				D479A6791C4FBF3600DB54F4 /* CalendarSelectedDate@2x.png in Resources */,
+				D479A67A1C4FBF3600DB54F4 /* Launch Screen.storyboard in Resources */,
+				D479A67B1C4FBF3600DB54F4 /* bell 3.caf in Resources */,
+				D479A67C1C4FBF3600DB54F4 /* bell 4.caf in Resources */,
+				D479A67D1C4FBF3600DB54F4 /* ping.caf in Resources */,
+				D479A67E1C4FBF3600DB54F4 /* CalendarTodaysDate.png in Resources */,
+				D479A67F1C4FBF3600DB54F4 /* ping 2.caf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1167,6 +1400,32 @@
 			shellScript = "./Fabric.framework/run 1258577c933393b9efe19d630c7f7c618e0420e0 700e83ee96f194aef0e04285aa7893539ea354c7baa54faa7d8f8174b6180305";
 		};
 		D46E56A41B73A0CA0023CE55 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 1258577c933393b9efe19d630c7f7c618e0420e0 700e83ee96f194aef0e04285aa7893539ea354c7baa54faa7d8f8174b6180305";
+		};
+		D479A6421C4FBF3600DB54F4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash    \nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
+		};
+		D479A6C31C4FBF3600DB54F4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1320,6 +1579,63 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D479A6801C4FBF3600DB54F4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D479A6811C4FBF3600DB54F4 /* main.m in Sources */,
+				D479A6821C4FBF3600DB54F4 /* rTrackerAppDelegate.m in Sources */,
+				D479A6831C4FBF3600DB54F4 /* RootViewController.m in Sources */,
+				D479A6841C4FBF3600DB54F4 /* trackerList.m in Sources */,
+				D479A6851C4FBF3600DB54F4 /* trackerObj.m in Sources */,
+				D479A6861C4FBF3600DB54F4 /* addTrackerController.m in Sources */,
+				D479A6871C4FBF3600DB54F4 /* tObjBase.m in Sources */,
+				D479A6881C4FBF3600DB54F4 /* configTlistController.m in Sources */,
+				D479A6891C4FBF3600DB54F4 /* valueObj.m in Sources */,
+				D479A68A1C4FBF3600DB54F4 /* addValObjController.m in Sources */,
+				D479A68B1C4FBF3600DB54F4 /* useTrackerController.m in Sources */,
+				D479A68C1C4FBF3600DB54F4 /* graphTrackerVC.m in Sources */,
+				D479A68D1C4FBF3600DB54F4 /* GSTouchesShowingWindow.m in Sources */,
+				D479A68E1C4FBF3600DB54F4 /* graphTrackerV.m in Sources */,
+				D479A68F1C4FBF3600DB54F4 /* TSQCalendarRowCell.m in Sources */,
+				D479A6901C4FBF3600DB54F4 /* notifyReminderVC2.m in Sources */,
+				D479A6911C4FBF3600DB54F4 /* configTVObjVC.m in Sources */,
+				D479A6921C4FBF3600DB54F4 /* datePickerVC.m in Sources */,
+				D479A6931C4FBF3600DB54F4 /* voNumber.m in Sources */,
+				D479A6941C4FBF3600DB54F4 /* voText.m in Sources */,
+				D479A6951C4FBF3600DB54F4 /* voTextBox.m in Sources */,
+				D479A6961C4FBF3600DB54F4 /* notifyReminder.m in Sources */,
+				D479A6971C4FBF3600DB54F4 /* voSlider.m in Sources */,
+				D479A6981C4FBF3600DB54F4 /* voInfo.m in Sources */,
+				D479A6991C4FBF3600DB54F4 /* voChoice.m in Sources */,
+				D479A69A1C4FBF3600DB54F4 /* voBoolean.m in Sources */,
+				D479A69B1C4FBF3600DB54F4 /* voImage.m in Sources */,
+				D479A69C1C4FBF3600DB54F4 /* voFunction.m in Sources */,
+				D479A69D1C4FBF3600DB54F4 /* voState.m in Sources */,
+				D479A69E1C4FBF3600DB54F4 /* voDataEdit.m in Sources */,
+				D479A69F1C4FBF3600DB54F4 /* privacyV.m in Sources */,
+				D479A6A01C4FBF3600DB54F4 /* PSPDFUIKitMainThreadGuard.m in Sources */,
+				D479A6A11C4FBF3600DB54F4 /* tictacV.m in Sources */,
+				D479A6A21C4FBF3600DB54F4 /* ppwV.m in Sources */,
+				D479A6A31C4FBF3600DB54F4 /* numField.m in Sources */,
+				D479A6A41C4FBF3600DB54F4 /* rTracker-resource.m in Sources */,
+				D479A6A51C4FBF3600DB54F4 /* CSVParser.m in Sources */,
+				D479A6A61C4FBF3600DB54F4 /* togd.m in Sources */,
+				D479A6A71C4FBF3600DB54F4 /* vogd.m in Sources */,
+				D479A6A81C4FBF3600DB54F4 /* gtTitleV.m in Sources */,
+				D479A6A91C4FBF3600DB54F4 /* gtXAxV.m in Sources */,
+				D479A6AA1C4FBF3600DB54F4 /* gtYAxV.m in Sources */,
+				D479A6AB1C4FBF3600DB54F4 /* trackerCalViewController.m in Sources */,
+				D479A6AC1C4FBF3600DB54F4 /* TSQCalendarMonthHeaderCell.m in Sources */,
+				D479A6AD1C4FBF3600DB54F4 /* TSQCalendarView.m in Sources */,
+				D479A6AE1C4FBF3600DB54F4 /* gtVONameV.m in Sources */,
+				D479A6AF1C4FBF3600DB54F4 /* dpRslt.m in Sources */,
+				D479A6B01C4FBF3600DB54F4 /* notifyReminderViewController.m in Sources */,
+				D479A6B11C4FBF3600DB54F4 /* TSQCalendarCell.m in Sources */,
+				D479A6B21C4FBF3600DB54F4 /* trackerCalCalendarRowCell.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1364,7 +1680,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTracker;
 				PRODUCT_NAME = rTracker;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1405,7 +1721,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTracker;
 				PRODUCT_NAME = rTracker;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1443,7 +1759,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				"New Setting" = "";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -1761,8 +2076,134 @@
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTracker;
 				PRODUCT_NAME = rTracker;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = AppStore;
+		};
+		D479A6C51C4FBF3600DB54F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "ADVERSION=0";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.rTracker-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Debug;
+		};
+		D479A6C61C4FBF3600DB54F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "ADVERSION=0";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.rTracker-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
+			};
+			name = Release;
+		};
+		D479A6C71C4FBF3600DB54F4 /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = rTracker_Prefix.pch;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "ADVERSION=0";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.realidata.rTracker-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -1813,6 +2254,17 @@
 				D44BE6C01BBAF643001FFA97 /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D479A6C41C4FBF3600DB54F4 /* Build configuration list for PBXNativeTarget "rTracker-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D479A6C51C4FBF3600DB54F4 /* Debug */,
+				D479A6C61C4FBF3600DB54F4 /* Release */,
+				D479A6C71C4FBF3600DB54F4 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

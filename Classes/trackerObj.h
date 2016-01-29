@@ -70,7 +70,7 @@
 @property (nonatomic) NSInteger reminderNdx;
 @property (nonatomic) CGSize maxLabel;
 @property (nonatomic) NSInteger nextColor;
-@property (nonatomic,strong) NSArray *votArray;
+//@property (nonatomic,strong) NSArray *votArray;
 @property (nonatomic,unsafe_unretained) UIControl *activeControl;
 @property (nonatomic,unsafe_unretained) UIViewController *vc;
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;
@@ -146,6 +146,7 @@
 - (BOOL) hasData;
 - (int) countEntries;
 - (NSString*) voGetNameForVID:(NSInteger)vid;
+- (NSInteger) voGetTypeForVID:(NSInteger)vid;
 
 - (BOOL) voVIDisUsed:(NSInteger)vid;
 - (void) voUpdateVID:(valueObj*)vo newVID:(NSInteger)newVID;
