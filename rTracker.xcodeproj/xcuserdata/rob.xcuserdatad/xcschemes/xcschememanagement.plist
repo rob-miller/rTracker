@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>debug rTracker.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>rTracker-test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>rTracker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<true/>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>rTrackerA debug.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>rTrackerA.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>1D6058900D05DD3D006BFB54</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D40AB3FF16D428D2008174D3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D431F2B41488395D00E2608A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D431F31A1488396700E2608A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D431F36B14883A6600E2608A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D43A7E4E1AB62358001BEC96</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D44BE6B51BBAF643001FFA97</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D479A6411C4FBF3600DB54F4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
