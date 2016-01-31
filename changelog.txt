@@ -2015,7 +2015,17 @@ TODO: regen all .rtrks on website
    - add one-time alert to say 'enable notifications for reminders' before requesting to enable notifications on startup
    - add alert when reminder enabled if notifications disabled
    - add bundle display name, version and build to database info
-   
+
+--- commit ---
+
+   - archived rTracker 2.0.8 5944
+   - archived rTrackerA 2.0.8 5708
+
+
+* try application loader for app submission - xcode -> open developer tool -> application loader
+ - in organizer window, choose 'export' after creating archive, then ... for app store deployment
+ 
+
 todo: replace all export gui stuff with share menu and maybe airdrop
 todo: fix bug in graph display for fn:lines at start of data -- e.g. air consumption tracker
 todo: add 'no graph' as graph type and lose 'draw graph' checkbox

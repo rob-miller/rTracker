@@ -39,7 +39,7 @@
 
 #define SAMPLES_VERSION 1
 
-#define DEMOS_VERSION 2
+#define DEMOS_VERSION 3
 // demos_version 2 improve colours for one graph, wording improvements, link to getTrackers.pl, iOS settings to change text size
 // demos version 3 fix link for 'tap to drop me a note'; add endpoint <none> example; 
 
