@@ -31,6 +31,7 @@
 
 -(CGFloat)voTVCellHeight {
     //return CELL_HEIGHT_TALL;
+    DBGLog(@"%f %f %f %f",self.sliderCtl.frame.size.height,(3*MARGIN),[self.vo getLabelSize].height, [self.vo getLongTitleSize].height);
     return self.sliderCtl.frame.size.height + (3*MARGIN) + [self.vo getLabelSize].height + [self.vo getLongTitleSize].height;
 }
 

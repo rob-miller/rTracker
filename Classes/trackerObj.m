@@ -1760,6 +1760,10 @@ if (addVO) {
                 //}
             }
         }
+        if (tsize.height > lsize.height) {  // still need height for trackers with only choices and/or sliders
+            lsize.height = tsize.height;
+        }
+        
         /*
          if (   (VOT_INFO == vo.vtype)
          || (VOT_CHOICE == vo.vtype)
