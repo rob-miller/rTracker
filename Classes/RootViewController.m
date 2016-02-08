@@ -1127,12 +1127,13 @@ BOOL loadingInputFiles=NO;
     //self.tableView.tableFooterView = tfv;
     
     [self.view addSubview:self.tableView];
-    
-    NSArray <UIApplicationShortcutItem *> *existingShortcutItems = [[UIApplication sharedApplication] shortcutItems];
-    if (0 == [existingShortcutItems count] /*|| ([rTracker_resource getSCICount] != [existingShortcutItems count]) */ ) {  // can#'t set more than 4 or prefs messed up
-        [self.tlist updateShortcutItems];
+
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
+        NSArray <UIApplicationShortcutItem *> *existingShortcutItems = [[UIApplication sharedApplication] shortcutItems];
+        if (0 == [existingShortcutItems count] /*|| ([rTracker_resource getSCICount] != [existingShortcutItems count]) */ ) {  // can#'t set more than 4 or prefs messed up
+            [self.tlist updateShortcutItems];
+        }
     }
-    
     
     
 }

@@ -181,10 +181,12 @@
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
     
-    UIApplicationShortcutItem *shortcutItem = [launchOptions objectForKey:UIApplicationLaunchOptionsShortcutItemKey];
-    if (nil != shortcutItem){
-        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(shortcutItem.userInfo)[@"tid"] waitUntilDone:NO];
-        return NO;  // http://stackoverflow.com/questions/32634024/3d-touch-home-shortcuts-in-obj-c
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
+        UIApplicationShortcutItem *shortcutItem = [launchOptions objectForKey:UIApplicationLaunchOptionsShortcutItemKey];
+        if (nil != shortcutItem){
+            [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(shortcutItem.userInfo)[@"tid"] waitUntilDone:NO];
+            return NO;  // http://stackoverflow.com/questions/32634024/3d-touch-home-shortcuts-in-obj-c
+        }
     }
     
     return YES;

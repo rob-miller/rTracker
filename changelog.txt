@@ -2021,6 +2021,10 @@ TODO: regen all .rtrks on website
    - archived rTracker 2.0.8 5944
    - archived rTrackerA 2.0.8 5708
 
+08 feb 2016
+   - oops looks like crashes on iOS 8 at least according to simulator, due to shortcut items
+   -- added check and avoid
+   
 
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
