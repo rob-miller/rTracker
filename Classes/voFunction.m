@@ -508,9 +508,15 @@ BOOL FnErr=NO;
 #endif
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
+                                // changed to date > epd1 for consistency with other functions
                 case FN1ARGDELTA :
                 case FN1ARGONRATIO:
                 case FN1ARGNORATIO:
+                case FN1ARGELAPSEDWEEKS:
+                case FN1ARGELAPSEDDAYS:
+                case FN1ARGELAPSEDHOURS:
+                case FN1ARGELAPSEDMINS:
+                case FN1ARGELAPSEDSECS:
                     if (nullV1)
                         return nil;  // delta requires v1 to subtract from, sums and avg just get one less result
                     // epd1 value is ok, get from db value for epd0
@@ -521,6 +527,29 @@ BOOL FnErr=NO;
                     ci= [to toQry2Int:sql]; // slightly different for delta
                     if (0 == ci)
                         return nil; // skip for beginning
+                    
+                    if (isFn1ArgElapsed(currTok)) {
+                        sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date>=%ld order by date asc limit 1;",(long)vid,(long)epd0];
+                        int d0 = [to toQry2Int:sql];
+                        result = (double) epd1 - d0;
+                        DBGLog(@"elapsed unit: epd0= %ld d0= %ld epd1=%ld rslt= %lf",epd0,d0,epd1,result);
+                        switch (currTok) {
+                            case FN1ARGELAPSEDWEEKS:
+                                result /= d(7);
+                            case FN1ARGELAPSEDDAYS:
+                                result /= d(24);
+                            case FN1ARGELAPSEDHOURS:
+                                result /= d(60);
+                            case FN1ARGELAPSEDMINS:
+                                result /= d(60);
+                            case FN1ARGELAPSEDSECS:
+                            default:
+                                break;
+                        }
+                        DBGLog(@"elapsed unit: final result = %lf",result);
+                        break;
+                    }
+                    
                    sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date>=%ld order by date asc limit 1;",(long)vid,(long)epd0]; // desc->asc 22.ii.2016 to match <= -> >= change 25.01.16
                     
                     double v0 = [to toQry2Double:sql];

@@ -2028,7 +2028,8 @@ TODO: regen all .rtrks on website
 
 22 feb 2016
    - oops!  25 jan 2016 change to make delta, ratios consistent >= start date broke those functions because needed to change desc->asc -- fixed
-
+   - implemented elapsed_units : weeks, days, hours, minutes, seconds : 1-arg function reporting elapsed time for specific value in database within range - improves accuracy for values/<time>
+   
 
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
