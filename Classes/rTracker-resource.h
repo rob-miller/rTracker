@@ -117,6 +117,8 @@ NSUInteger DeviceSystemMajorVersion();
 
 + (CGSize)get_visible_size:(UIViewController*)uvc;
 
++ (NSString *)sanitizeFileNameString:(NSString *)fileName;
+
 @end
 
 extern BOOL keyboardIsShown;

@@ -1080,7 +1080,8 @@ if (addVO) {
 - (NSString*) getPath:(NSString*)extension {
     NSString *fpatho = [rTracker_resource ioFilePath:@"outbox" access:NO];
     [[NSFileManager defaultManager] createDirectoryAtPath:fpatho withIntermediateDirectories:NO attributes:nil error:nil];
-    NSString *fname = [self.trackerName stringByAppendingString:extension];
+    NSString *fname = [ [rTracker_resource sanitizeFileNameString:self.trackerName] stringByAppendingString:extension];
+    //NSString *fname = [ self.trackerName stringByAppendingString:extension];
     NSString *fpath = [fpatho stringByAppendingPathComponent:fname];
     return fpath;
 }

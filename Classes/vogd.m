@@ -149,7 +149,7 @@
         //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
         // 6.ii.2013 implement maxGraphDays
         NSString *sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
-
+        DBGLog(@"graph points sql: %@",sql);
         [myTracker toQry2AryID:i1 d1:d1 sql:sql];
       //sql = nil;
         
@@ -159,7 +159,7 @@
             
             NSNumber *nv = [e nextObject];
             
-            //DBGLog(@"i: %@  f: %@",ni,nv);
+            DBGLog(@"i: %@  f: %@",ni,nv);
             double d = [ni doubleValue];		// date as int secs cast to float
             double v = [nv doubleValue] ;		// val as float
             

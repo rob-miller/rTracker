@@ -532,7 +532,7 @@ BOOL FnErr=NO;
                         sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date>=%ld order by date asc limit 1;",(long)vid,(long)epd0];
                         int d0 = [to toQry2Int:sql];
                         result = (double) epd1 - d0;
-                        DBGLog(@"elapsed unit: epd0= %ld d0= %ld epd1=%ld rslt= %lf",epd0,d0,epd1,result);
+                        DBGLog(@"elapsed unit: epd0= %ld d0= %d epd1=%d rslt= %lf",(long)epd0,d0,epd1,result);
                         switch (currTok) {
                             case FN1ARGELAPSEDWEEKS:
                                 result /= d(7);
@@ -691,6 +691,9 @@ BOOL FnErr=NO;
 		} else if (isFn2ArgOp(currTok)) {
             // we are processing some combo of previous result and next value, currFnNdx was ++ already so get that result:
 			NSNumber *nrnum = [self calcFunctionValueWithCurrent:epd0]; // currFnNdx now at next place already
+            if (nil == nrnum) {
+                return nil;
+            }
 			double nextResult = [nrnum doubleValue];
 			switch (currTok) {
                     // now just combine with what we have so far
@@ -730,6 +733,9 @@ BOOL FnErr=NO;
 		} else if (currTok == FNPARENOPEN) {
             // open paren means just recurse and return the result up
 			NSNumber *nrnum = [self calcFunctionValueWithCurrent:epd0]; // currFnNdx now at next place already
+            if (nil == nrnum) {
+                return nil;
+            }
 			result = [nrnum doubleValue];
 #if DEBUGFUNCTION
             DBGLog(@"paren open: result= %f", result);
@@ -859,7 +865,7 @@ BOOL FnErr=NO;
 	self.currFnNdx=0;
 	
 	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
-	
+    DBGLog(@"fn update val= %@",val);
     if (val != nil) {
         NSNumber *nddp = (self.vo.optDict)[@"fnddp"];
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
@@ -1881,7 +1887,7 @@ BOOL FnErr=NO;
         
         NSInteger currD = [targ timeIntervalSince1970];
         if (epDate == currD) {
-           sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d",(long)self.vo.vid,[d intValue]];
+           sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d",(long)self.vo.vid,[d intValue]];  // safe because this is just cached fn rslt
             [MyTracker toExecSql:sql];
         } else {
             epDate = currD;
@@ -1893,10 +1899,11 @@ BOOL FnErr=NO;
 }
 
 
--(void) setFnVals:(int)tDate {
+-(void) setFnVals:(int)tDate { // called from trackerObj.m
     NSString *sql;
     if ([self.vo.value isEqualToString:@""]) {   //TODO: null/init value is 0.00 so what does this delete line do?
        sql = [NSString stringWithFormat:@"delete from voData where id = %ld and date = %d;",(long)self.vo.vid, tDate];
+        //DBGLog(@"sql delete= %@",sql);
     } else {
        sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%ld, %d,'%@');",
                          (long)self.vo.vid, tDate, [rTracker_resource toSqlStr:self.vo.value]];
@@ -1917,7 +1924,7 @@ BOOL FnErr=NO;
 }
 
 /*
-// change to move loop on date to tracker level so jsut do once, not for every fn vo
+// change to move loop on date to tracker level so just do once, not for every fn vo
  
  // TODO: rtm here -- optionally eliminate fn results for calendar unit endpoints
 // based on vo opt @"graphlast"

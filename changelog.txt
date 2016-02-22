@@ -2029,16 +2029,17 @@ TODO: regen all .rtrks on website
 22 feb 2016
    - oops!  25 jan 2016 change to make delta, ratios consistent >= start date broke those functions because needed to change desc->asc -- fixed
    - implemented elapsed_units : weeks, days, hours, minutes, seconds : 1-arg function reporting elapsed time for specific value in database within range - improves accuracy for values/<time>
+   - fixed function calculations converting '' to 0.00 on () calculation and Fn2argOp calculations -- stops many fn graphs from arbitrarily starting at 0
+   - fixed lines+dots first point not drawn correctly -- dumped dotslines(), replaced with flag for lines() plotter
+   - filter bad filename characters from write file names and when creating tracker
    
-
+   
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
  
 todo: make csv split date and time columns so excel can handle — need to read in old version 
-todo: handle / in tracker name 
 
 todo: replace all export gui stuff with share menu and maybe airdrop
-todo: fix bug in graph display for fn:lines at start of data -- e.g. air consumption tracker
 todo: add 'no graph' as graph type and lose 'draw graph' checkbox
 
 +++ check rvc viewDidAppear / restart behaviour with adversion changes

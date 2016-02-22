@@ -92,7 +92,7 @@
 
 #define LXNOTSTARTED -1.0f
 
-- (void) plotVO_lines:(vogd *)vogd context:(CGContextRef)context
+- (void) plotVO_lines:(vogd *)vogd context:(CGContextRef)context dots:(BOOL)dots
 {
     
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
@@ -111,6 +111,11 @@
         if (going) {
             //DBGLog(@"addline %f %f",x,y);
             AddLineTo(x,y);
+            if (dots) {
+                AddCircle(x,y);
+                if (self.selectedVO)
+                    AddBigCircle(x,y);
+            }
             if (x > maxX)
                 break; //going=NO;                
         } else {  // not started yet
@@ -121,9 +126,24 @@
                 if (lastX == LXNOTSTARTED) { // 1st time through, 1st point needs showing
                     //DBGLog(@"moveto %f %f",x,y);
                     MoveTo(x,y);
+                    if (dots) {
+                        AddCircle(x,y);
+                        if (self.selectedVO)
+                            AddBigCircle(x,y);
+                    }
                 } else { // process starting, need to show lastX plus current
                     MoveTo(lastX, lastY);
+                    if (dots) {
+                        AddCircle(lastX,lastY);
+                        if (self.selectedVO)
+                            AddBigCircle(lastX,lastY);
+                    }
                     AddLineTo(x,y);
+                    if (dots) {
+                        AddCircle(x,y);
+                        if (self.selectedVO)
+                            AddBigCircle(x,y);
+                    }                    
                 }  
                 going=YES;
             } 
@@ -137,7 +157,7 @@
 	Stroke;
 }
 
-
+/*
 - (void) plotVO_dotsline:(vogd*)vogd context:(CGContextRef)context
 {
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
@@ -209,6 +229,7 @@
 	
 	Stroke;
 }
+*/
 
 - (void) plotVO_dots:(vogd *)vogd context:(CGContextRef)context {
 	NSEnumerator *e = [vogd.ydat objectEnumerator];
@@ -466,10 +487,11 @@
 			[self plotVO_bar:currVogd context:context barCount:barCount];
 			break;
 		case VOG_LINE:
-			[self plotVO_lines:currVogd context:context];
+            [self plotVO_lines:currVogd context:context dots:false];
 			break;
 		case VOG_DOTSLINE:
-			[self plotVO_dotsline:currVogd context:context];
+			//[self plotVO_dotsline:currVogd context:context];
+            [self plotVO_lines:currVogd context:context dots:true];
 			break;
 		case VOG_PIE:
 			DBGErr(@"pie chart not yet supported");

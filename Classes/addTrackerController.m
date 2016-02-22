@@ -415,7 +415,7 @@ DBGLog(@"btnAddValue was pressed!");
 - (IBAction) nameFieldDone:(id)sender {
 	[sender resignFirstResponder];
 	if (self.nameField.text) {
-		self.tempTrackerObj.trackerName = self.nameField.text;
+		self.tempTrackerObj.trackerName = [rTracker_resource sanitizeFileNameString:self.nameField.text];
 	}
 }
 /*
