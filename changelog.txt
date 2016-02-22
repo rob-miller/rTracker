@@ -2026,9 +2026,15 @@ TODO: regen all .rtrks on website
    -- added check and avoid
    - user Hakan Durgat reports display bug for trackers with only choice or slider entries -- due to rescanMaxLabel skipping these; changed to always get height value
 
+22 feb 2016
+   - oops!  25 jan 2016 change to make delta, ratios consistent >= start date broke those functions because needed to change desc->asc -- fixed
+
+
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
  
+todo: make csv split date and time columns so excel can handle — need to read in old version 
+todo: handle / in tracker name 
 
 todo: replace all export gui stuff with share menu and maybe airdrop
 todo: fix bug in graph display for fn:lines at start of data -- e.g. air consumption tracker

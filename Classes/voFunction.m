@@ -457,7 +457,7 @@ BOOL FnErr=NO;
 	
 	NSInteger maxc = [self.fnArray count];
 	NSInteger vid=0;
-	trackerObj *to = MyTracker;
+    trackerObj *to = (trackerObj*) self.vo.parentTracker;  // MyTracker;
     NSString *sql;
 
     FnErr=NO;
@@ -501,7 +501,10 @@ BOOL FnErr=NO;
             sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",(long)vid,(long)epd0,epd1];
             int ci= [to toQry2Int:sql];
 #if DEBUGFUNCTION
-            DBGLog(@"v1= %f nullV1=%d", v1, nullV1);
+            DBGLog(@"v1= %f nullV1=%d vid=%ld %@:%@", v1,
+                   nullV1,
+                   (long)vid,
+                   ((trackerObj*)self.vo.parentTracker).trackerName ,self.vo.valueName);
 #endif
             // v1 is value for current tracker entry (epd1) for our arg
             switch (currTok) {  // all these 'date < epd1' because we will add in curr v1 and need to exclude if stored in db
@@ -518,7 +521,7 @@ BOOL FnErr=NO;
                     ci= [to toQry2Int:sql]; // slightly different for delta
                     if (0 == ci)
                         return nil; // skip for beginning
-                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date>=%ld order by date desc limit 1;",(long)vid,(long)epd0];
+                   sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date>=%ld order by date asc limit 1;",(long)vid,(long)epd0]; // desc->asc 22.ii.2016 to match <= -> >= change 25.01.16
                     
                     double v0 = [to toQry2Double:sql];
 #if DEBUGFUNCTION
