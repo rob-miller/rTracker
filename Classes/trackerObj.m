@@ -1269,6 +1269,16 @@ if (addVO) {
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setTimeStyle:NSDateFormatterLongStyle];
         [_dateFormatter setDateStyle:NSDateFormatterLongStyle];
+        
+        //[_dateFormatter setTimeStyle:NSDateFormatterLongStyle];
+        //[_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+        
+        /*
+        NSString *dateComponents = @"yyyy MM dd HH mm ss";
+        _dateFormatter.locale = [NSLocale currentLocale];
+        _dateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:dateComponents options:0 locale:[NSLocale currentLocale]];
+         */
+        
     }
     return _dateFormatter;
 }
@@ -1278,6 +1288,7 @@ if (addVO) {
         _dateOnlyFormatter = [[NSDateFormatter alloc] init];
         [_dateOnlyFormatter setTimeStyle:NSDateFormatterNoStyle];
         [_dateOnlyFormatter setDateStyle:NSDateFormatterLongStyle];
+        //[_dateOnlyFormatter setDateStyle:NSDateFormatterShortStyle];
     }
     return _dateOnlyFormatter;
 }
@@ -1296,7 +1307,8 @@ if (addVO) {
 
 - (NSString*) dateToStr:(NSDate*)dat {
     
-    return [self.dateFormatter stringFromDate:dat ];
+    //return [[self.dateFormatter stringFromDate:dat] stringByReplacingOccurrencesOfString:@" at " withString:@" "];
+    return [self.dateFormatter stringFromDate:dat];
     
 }
 

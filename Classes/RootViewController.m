@@ -109,9 +109,13 @@ static BOOL InstallDemos;
 #endif
     }
     if (to.csvReadFlags & CSVNOTIMESTAMP) {
-        [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have 'timestamp' as the first column.",fname] vc:self];
+        [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have '%@' as the first column.",fname,TIMESTAMP_LABEL] vc:self];
+        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+        return;
     } else if (to.csvReadFlags & CSVNOREADDATE) {
-        [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like '%@' are not compatible with your device's calendar settings (%@).  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem,[to.dateOnlyFormatter stringFromDate:[NSDate date] ]] vc:self];
+        [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like '%@' are not compatible with your device's calendar settings (%@).  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem,[to.dateFormatter stringFromDate:[NSDate date] ]] vc:self];
+        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+        return;
     }
     
     [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];

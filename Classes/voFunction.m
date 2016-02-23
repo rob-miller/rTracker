@@ -758,6 +758,13 @@ BOOL FnErr=NO;
             DBGLog(@"constant: result= %f", result);
 #endif
         } else if (isFnTimeOp(currTok)) {
+            if (0 == epd0) {
+#if DEBUGFUNCTION
+                DBGLog(@" timefn: at beginning");
+#endif
+                return nil;
+            }
+            
             result = (double) epd1 - epd0;
 #if DEBUGFUNCTION
             DBGLog(@" timefn: %f secs",result);

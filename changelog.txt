@@ -2032,6 +2032,11 @@ TODO: regen all .rtrks on website
    - fixed function calculations converting '' to 0.00 on () calculation and Fn2argOp calculations -- stops many fn graphs from arbitrarily starting at 0
    - fixed lines+dots first point not drawn correctly -- dumped dotslines(), replaced with flag for lines() plotter
    - filter bad filename characters from write file names and when creating tracker
+
+23 feb 2016
+   - bad csv date file left spinner running, fixed
+   - tried to improve date/timestamp format for excel but seems basically hopeless
+   - fix FnTimeOp values to return nil for first entry
    
    
 * try application loader for app submission - xcode -> open developer tool -> application loader
