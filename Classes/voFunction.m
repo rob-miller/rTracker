@@ -674,7 +674,19 @@ BOOL FnErr=NO;
                             break;
                         case FN1ARGPOSTSUM :
                             // (date<%d) because add in v1 below
-                           sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%ld and date <%d;",(long)vid,(long)epd0,epd1];
+                            // 24.ii.2016 below does not really work, was created when start date was exact match to one to skip -- but with e.g. 'current-3 weeks' need to skip earliest value
+                            sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%ld and date <%d;",(long)vid,(long)epd0,epd1];
+                            
+                            /*
+                             // except
+                            sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date >=%ld and date <%d limit 1;",(long)vid,(long)epd0,epd1];
+                            int firstDate = [to toQry2Int:sql];
+                            if (firstDate) {
+                                sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >%d and date <%d;",(long)vid,firstDate,epd1];
+                            } else {
+                                sql = @"select 0";
+                            }
+                             */
 #if DEBUGFUNCTION
                             DBGLog(@"postsum: set sql");
 #endif

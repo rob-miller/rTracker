@@ -2037,6 +2037,10 @@ TODO: regen all .rtrks on website
    - bad csv date file left spinner running, fixed
    - tried to improve date/timestamp format for excel but seems basically hopeless
    - fix FnTimeOp values to return nil for first entry
+
+27 feb 2016
+   - archived rTracker 2.0.9 6037
+   - archived rTrackerA 2.09 5710
    
    
 * try application loader for app submission - xcode -> open developer tool -> application loader
