@@ -366,7 +366,8 @@ DBGLog(@"btnAddValue was pressed!");
     if (![rTracker_resource getPurchased]) {
         // can trigger on editing an existing tracker with more than 8 items
         if (ADVER_ITEM_LIM < [self.tempTrackerObj.valObjTable count]) {
-            [rTracker_resource buy_rTrackerAlert];
+            //[rTracker_resource buy_rTrackerAlert];
+            [rTracker_resource replaceRtrackerA:self];
             return;
         }
     }
@@ -761,7 +762,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (![rTracker_resource getPurchased]) {
         if (!vo) {
             if (ADVER_ITEM_LIM <= [self.tempTrackerObj.valObjTable count]) {
-                [rTracker_resource buy_rTrackerAlert];
+                //[rTracker_resource buy_rTrackerAlert];
+                [rTracker_resource replaceRtrackerA:self];
                 return;
             }
         }

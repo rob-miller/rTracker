@@ -324,6 +324,9 @@ BOOL hasAmPm=NO;
     }
 }
 
++(void) replaceRtrackerA:(UIViewController*)vc {
+    [rTracker_resource alert:@"rTracker is free" msg:@"rTrackerA is being removed from the app store.\n\nPlease install rTracker, which is now free and open source.\n\nSee Github for instructions on how to transfer trackers between these applications." vc:vc];
+}
 //----
 #endif
 
@@ -595,6 +598,17 @@ static BOOL savePrivate=SAVEPRIVDFLT;
 + (void)setSavePrivate:(BOOL)savePriv {
 	savePrivate = savePriv;
 	//DBGLog(@"updateSavePrivate:%d",savePrivate);
+}
+
+static BOOL acceptLicense=ACCEPTLICENSEDFLT;
+
++ (BOOL)getAcceptLicense {
+    return acceptLicense;
+}
+
++ (void)setAcceptLicense:(BOOL)acceptLic {
+    acceptLicense = acceptLic;
+    //DBGLog(@"updateAcceptLicense:%d",acceptLicense);
 }
 
 /*

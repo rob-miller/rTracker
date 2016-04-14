@@ -26,6 +26,7 @@
 #define RELEASE     1
 #define DEBUGLOG    0
 #define SHOWTOUCHES 0
+#define FABRIC      0
 
 //#define ADVERSION   0
 

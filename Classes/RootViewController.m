@@ -1139,7 +1139,6 @@ BOOL loadingInputFiles=NO;
         }
     }
     
-    
 }
 
 - (trackerList *) tlist {
@@ -1213,6 +1212,7 @@ BOOL loadingInputFiles=NO;
     [rTracker_resource setSeparateDateTimePicker:[sud boolForKey:@"separate_date_time_pref"]];
     [rTracker_resource setRtcsvOutput:[sud boolForKey:@"rtcsv_out_pref"]];
     [rTracker_resource setSavePrivate:[sud boolForKey:@"save_priv_pref"]];
+    [rTracker_resource setAcceptLicense:[sud boolForKey:@"accept_license_pref"]];
     //[rTracker_resource setHideRTimes:[sud boolForKey:@"hide_rtimes_pref"]];
     //[rTracker_resource setSCICount:(NSUInteger)[sud integerForKey:@"shortcut_count_pref"]];
     
@@ -1427,12 +1427,14 @@ BOOL stashAnimated;
 
 - (void) viewDidAppearRestart {
 	[self refreshView];
-    [super viewDidAppear:stashAnimated];
+    //[super viewDidAppear:stashAnimated];
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
     }
 #endif
+   
+    [super viewDidAppear:stashAnimated];
 }
 
 - (void) doOpenTrackerRejectable:(NSNumber*)nsnTid {
@@ -1830,7 +1832,8 @@ BOOL stashAnimated;
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         if (ADVER_TRACKER_LIM <= [self.tlist.topLayoutIDs count]) {
-            [rTracker_resource buy_rTrackerAlert];
+            //[rTracker_resource buy_rTrackerAlert];
+            [rTracker_resource replaceRtrackerA:self];
             return;
         }
     }

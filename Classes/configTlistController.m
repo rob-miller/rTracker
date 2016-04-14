@@ -56,7 +56,8 @@ static int selSegNdx=SegmentEdit;
 }
 #if ADVERSION
 - (void) btnUpgrade {
-    [rTracker_resource buy_rTrackerAlert];
+    //[rTracker_resource buy_rTrackerAlert];
+    [rTracker_resource replaceRtrackerA:self];
 }
 #endif
 

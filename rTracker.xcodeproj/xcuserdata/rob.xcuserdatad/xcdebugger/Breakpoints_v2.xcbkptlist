@@ -255,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1177"
             endingLineNumber = "1177"
-            landmarkName = "-btnAdd:"
+            landmarkName = "-voFnDefnStr:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -468,11 +468,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Classes/rTrackerAppDelegate.m"
-            timestampString = "475327778.296844"
+            timestampString = "482315872.715054"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
             landmarkName = "-application:didFinishLaunchingWithOptions:"
             landmarkType = "5">
          </BreakpointContent>
@@ -484,11 +484,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Classes/rTrackerAppDelegate.m"
-            timestampString = "475327778.296844"
+            timestampString = "482315872.715054"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
             landmarkName = "-application:didFinishLaunchingWithOptions:"
             landmarkType = "5">
          </BreakpointContent>
@@ -596,11 +596,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Classes/RootViewController.m"
-            timestampString = "475615646.03379"
+            timestampString = "482310457.140495"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1192"
-            endingLineNumber = "1192"
+            startingLineNumber = "1191"
+            endingLineNumber = "1191"
             landmarkName = "-demosNeeded"
             landmarkType = "5">
          </BreakpointContent>
@@ -617,7 +617,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1097"
             endingLineNumber = "1097"
-            landmarkName = "-voFnDefnStr:"
+            landmarkName = "-drawFuncOptsRange"
             landmarkType = "5">
             <Locations>
                <Location

@@ -43,6 +43,7 @@ NSUInteger DeviceSystemMajorVersion();
 + (void) handleUpgradeOptions:(NSInteger)choice;
 + (void) buy_rTrackerAlert;
 + (void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay vc:(UIViewController*)vc;
++ (void) replaceRtrackerA:(UIViewController*)vc ;
 #endif
 
 + (void) myNavPushTransition:(UINavigationController*)navc vc:(UIViewController*)vc animOpt:(NSInteger)animOpt;
@@ -69,6 +70,9 @@ NSUInteger DeviceSystemMajorVersion();
 
 + (BOOL)getSavePrivate;
 + (void)setSavePrivate:(BOOL)savePriv;
+
++ (BOOL)getAcceptLicense;
++ (void)setAcceptLicense:(BOOL)acceptLic;
 
 //+ (NSUInteger)getSCICount;
 //+ (void)setSCICount:(NSUInteger)saveSCICount;

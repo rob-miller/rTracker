@@ -17,9 +17,10 @@
 #import "privacyV.h"
 #import "trackerList.h"
 
-
+#if FABRIC
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#endif
 
 #if SHOWTOUCHES
 #import "GSTouchesShowingWindow.h"
@@ -48,11 +49,53 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    [application registerForRemoteNotifications];
+}
+
+- (void) registerForNotifications:(RootViewController *)rootController {
+    // ios 8.1 must register for notifications
+    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
+        if (! [rTracker_resource notificationsEnabled]) {
+            
+            
+            if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
+                
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Authorise notifications"
+                                                                               message:@"Authorise notifications to enable tracker reminders."
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                      handler:^(UIAlertAction * action) {
+                                                                          [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                                                                      }];
+                
+                [alert addAction:defaultAction];
+                [rootController.navigationController presentViewController:alert animated:YES completion:nil];
+                
+                
+                
+                [rTracker_resource setToldAboutNotifications:true];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutNotifications"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+        }
+        
+        
+        //[rTracker_resource alert:@"" msg:@"Authorise notifications to use tracker reminders." vc:rootController];
+    }
+    
+}
+
+
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+#if FABRIC
     //[Fabric with:@[CrashlyticsKit]];
     [Fabric with:@[[Crashlytics class]]];
+#endif
+    
 #if !RELEASE
     DBGWarn(@"docs dir= %@",[rTracker_resource ioFilePath:nil access:YES]);
 #endif
@@ -95,6 +138,7 @@
          [sud registerDefaults:registerableDictionary];
          [sud synchronize];
     }
+    [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     // Override point for customization after app launch    
 
@@ -134,36 +178,31 @@
 
     [rTracker_resource initHasAmPm];
 
-    // ios 8.1 must register for notifications
-    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-        if (! [rTracker_resource notificationsEnabled]) {
-            
-            [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
-            if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
-                
-                UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Authorise notifications"
-                                                                               message:@"Authorise notifications to enable tracker reminders."
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                
-                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                                      handler:^(UIAlertAction * action) {
-                                                                          [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-                                                                      }];
-                
-                [alert addAction:defaultAction];
-                [rootController presentViewController:alert animated:YES completion:nil];
-                
-                
-                
-                [rTracker_resource setToldAboutNotifications:true];
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutNotifications"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-            }
-        }
+    
+    
+#if ADVERSION
+    [rTracker_resource replaceRtrackerA:self];
+#else
+    if (![rTracker_resource getAcceptLicense]) {
         
+        NSString *freeMsg= @"Copyright 2010-2016 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
-        //[rTracker_resource alert:@"" msg:@"Authorise notifications to use tracker reminders." vc:rootController];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
+                                                                       message:freeMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) { [self registerForNotifications:rootController]; }];
+        UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) { exit(0); }];
+        
+        [alert addAction:defaultAction];
+        [alert addAction:recoverAction];
+        
+        [rootController.navigationController presentViewController:alert animated:YES completion:nil];
     }
+#endif
+    
     
         
 
@@ -365,6 +404,13 @@
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
+- (BOOL)checkNotificationType:(UIUserNotificationType)type
+{
+    UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    
+    return (currentSettings.types & type);
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     resigningActive=YES;
 	// Save data if appropriate
@@ -383,7 +429,9 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
-    application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
+    if ([self checkNotificationType:UIUserNotificationTypeBadge]) {  // minimum version is iOS 8 currently (14.iv.2016)
+        application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
+    }
     //[rTracker_resource disableOrientationData];
     resigningActive=NO;
 }

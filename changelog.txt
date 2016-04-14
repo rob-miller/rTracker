@@ -2041,8 +2041,19 @@ TODO: regen all .rtrks on website
 27 feb 2016
    - archived rTracker 2.0.9 6037
    - archived rTrackerA 2.09 5710
-   
-   
+
+13 apr 2016
+   - added new license alert to rTracker with preference to accept permanently
+   - added 'rTrackerA is going away' alert to rTrackerA
+
+14 apr 2016
+   - fixed display of startup alerts to eliminate warning messages
+   - disable badging application if notifications not allowed (fix warning)
+   - remove GSTouches and Fabric/Crashlytics for Github release
+   - add Apache license text, README.md and put website under Documentation/realidata-website
+
+
+
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
  
@@ -2050,11 +2061,6 @@ todo: make csv split date and time columns so excel can handle — need to read 
 
 todo: replace all export gui stuff with share menu and maybe airdrop
 todo: add 'no graph' as graph type and lose 'draw graph' checkbox
-
-+++ check rvc viewDidAppear / restart behaviour with adversion changes
-
-+ work through fonts, probably use PrefBodyFont more
-+ check mail func as changing present view controller calls (ios6)
 
 + add -[n] entries thing
 + add entry_count as a fn piece -- count of entries over range, so avg could be sum()/entry_count

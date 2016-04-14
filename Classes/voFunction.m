@@ -11,8 +11,10 @@
 #import "dbg-defs.h"
 #import "rTracker-resource.h"
 
+#if FABRIC
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#endif
 
 @interface voFunction ()
 - (void) updateFnTitles;
@@ -913,8 +915,10 @@ BOOL FnErr=NO;
 	//UILabel *rlab = [[UILabel alloc] initWithFrame:bounds];
 	//rlab.textAlignment = UITextAlignmentRight;
 
+#if FABRIC
     [CrashlyticsKit setObjectValue:[self voFnDefnStr:TRUE] forKey:@"fnDefn"];
     [CrashlyticsKit setObjectValue:[self voRangeStr:TRUE] forKey:@"fnRange"];
+#endif
     
 	NSString *valstr = self.vo.value;  // evaluated on read so make copy
     if (FnErr) valstr = [@"❌ " stringByAppendingString:valstr];

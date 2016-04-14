@@ -1493,7 +1493,8 @@ NSString *emDuplicate = @"duplicate entry to now";
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
         if (ADVER_TRACKER_LIM < [self.tlist.topLayoutIDs count]) {
-            [rTracker_resource buy_rTrackerAlert];
+            //[rTracker_resource buy_rTrackerAlert];
+            [rTracker_resource replaceRtrackerA:self];
             return;
         }
     }
