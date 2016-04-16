@@ -30,7 +30,13 @@ The released application includes [Fabric/Crashlytics](https://try.crashlytics.c
 
 Preprocessor macros control log, warning and error level NSLog messages.  These and other project-wide devlopment controls are contained in the file dbg-defs.h.
 
-Each tracker defines a frontend for one sqlite3 database, as does the overall list of trackers.  The base class for individual tracked values is valueObj and this implements an Objective C protocol called voProtocol.   The default voProtocol implementations are in voState, and subclassed in control-named classes such as voSlider.
+Each tracker defines a frontend for one sqlite3 database, and the overall list of trackers is one more (so 5 trackers means 5+1 separate sqlite3 databases).
+
+The base class for individual tracked values is valueObj and this implements an Objective C protocol called voProtocol.   The default voProtocol implementations are in voState, and subclassed in control-named classes such as voSlider.
+
+rTrackerA is a separate build target which uses the iOS advertising platform, is limited to 8 trackers of 8 items each, and offers an in-app upgrade to remove these features.  It is being/has been removed from the App Store.
+
+rTracker-test is a separate build target for distribution to testers through Fabric.
 
 ## License
 
