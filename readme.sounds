@@ -1,0 +1,25 @@
+
+The sound files used in the released version of rTracker were obtained from http://www.fresfx.co.uk but their licensing does not allow redistribution.
+Thus they are not included in this repository.
+
+However, any *.caf file placed in the main rTracker directory and added to the project in Xcode will be offered as a reminder sound effect when the application is loaded on to the phone.
+
+The original source files for the .caf files used in the rTracker app are:
+
+bell 1.caf        : medium_small_bell_ring_version_1.mp3
+bell 2.caf        : medium_large_bell.mp3
+bell 3.caf        : medium_small_bell_ring_version_2.mp3
+bell 4.caf        : small_bell_hotel_reception_or_elevator_ring_002.mp3
+bugle_call.caf    : bugle_music_cavalry_call.mp3
+bugle_charge.caf  : bugle_music_chargel.mp3
+fail_wah_wah_wah.caf ping.caf :  comedy_trumpet_playing_sad_song_wah_wah_wah_wah.mp3
+ping.caf          : glass_ping.mp3
+ping 2.caf        : glassy_ding_or_bell.mp3
+
+
+On OSX these can be converted to .caf files as follows:
+
+afconvert bugle_music_chargel.mp3 bugle_charge.caf -d ima4 -f caff -v
+
+Note that afplay is an OSX command line utility which can play .caf and .mp3 files
+

@@ -209,7 +209,10 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         
         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) { [self registerForNotifications:rootController]; }];
+                                                              handler:^(UIAlertAction * action) {
+                                                                  [rTracker_resource setAcceptLicense:YES];
+                                                                  [self registerForNotifications:rootController];
+                                                              }];
         UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) { exit(0); }];
         

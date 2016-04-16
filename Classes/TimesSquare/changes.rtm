@@ -1,0 +1,10 @@
+
+Added method
+
+// Asks the delegate for a textColor for a particular date.
+- (UIColor*)calendarView:(TSQCalendarView *)calendarView colorForDate:(NSDate *)date;
+
+to TSQCalendarView.m.
+
+Updated ios6 deprecations.
+
