@@ -1,0 +1,8 @@
+This tracker maintains a simple categorization of spending, but still enough to see where your
+money's going.
+<p>
+My own personal version includes several bank account balances, but you won't see them because those items are hidden from normal view by a <a href="/rTracker/iPhone/QandA/usePrivacy.html">privacy</a> setting.
+<p>
+Create the finance tracker that fits your exact needs with rTracker.
+
+

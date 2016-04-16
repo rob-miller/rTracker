@@ -1,0 +1,11 @@
+shortName: Utilities
+longName: rTracker Electricity and Gas Tracker for iOS
+mainTextFile: Utilities.txt
+author: Realidata, Ltd.
+img1: utils-tracker.png
+caption1: Key inputs and computed daily gas and electricity usage for this sample tracker.
+img2: utils-graph.png
+caption2: I worked hard getting our utilities usage down after moving in to the new house!
+img2alt: Graph of of gas and electricity usage values in an rTracker Utilities tracker.
+img2title: Utilities usage graph
+img3:

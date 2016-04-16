@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+    <meta name="description" content="Intructions for importing a tracker and its data into rTracker">
+    <title>RTracker: Import Trackers And Data</title>
+    <!-- meta name="viewport" content="width=device-width" -->
+    <link rel="stylesheet" type="text/css" href="../../../css/realidata1.css">
+  </head>
+  <body>
+    <h1>How to import data or trackers into rTracker?<br>
+    </h1>
+    <table style="text-align: left; width: 100%;" border="1" cellpadding="6" cellspacing="2">
+      <tbody>
+        <tr>
+          <td style="vertical-align: top;">
+            <h3>Importing trackers</h3>
+            As of version 1.0.10, rTracker supports .rtrk format files.&nbsp;
+            These will be recognised by iOS devices with rTracker installed, in
+            both Safari and Mail.&nbsp; <br>
+            <br>
+            Thus the <span style="font-weight: bold;">easiest way to import a
+              tracker</span> from Realidata, Ltd is to visit the website in
+            Safari on your iPhone or iPad, and just click on the 'Download' or
+            '.rtrk' link.&nbsp; Alternatively, you can save the .rtrk file and
+            email it to your iOS device, or use the iTunes <a href="import.html#install">installation</a>
+            procedure below to copy it to your device.<br>
+            <br>
+            rTracker exported tracker definitions are stored separately from
+            tracker data, in '.plist' files.&nbsp; This might be from an
+            archived tracker exported with its data in the past, or might be a
+            tracker supplied by someone else.
+            <p><span style="color: rgb(190, 0, 0);">An exported tracker
+                definition file will be called '&lt;tracker name&gt;<span style="color: rgb(90, 0, 0);">_out</span>.plist'.&nbsp;
+                To change this to a file for import, rename it to '&lt;tracker
+                name&gt;<span style="color: rgb(90, 0, 0);">_in</span>.plist'.&nbsp;
+                </span><br> <br>
+              Jump to <a href="#install">Installation</a> </p>
+          </td>
+          <td style="vertical-align: top;">
+            	<h3><a href="http://itunes.apple.com/us/app/rtracker/id486541371">Get rTracker</a> and use all these sample trackers:</h3>
+<ul class="sampleTrackers">
+<li class="sampleTrackers"><a href="../pages/time_tracker.html" class="sampleTrackersLi">Time tracker</a></li>
+<li class="sampleTrackers"><a href="../pages/sleep.html" class="sampleTrackersLi">Sleep</a></li>
+<li class="sampleTrackers"><a href="../pages/drinks.html" class="sampleTrackersLi">Drinks</a></li>
+<li class="sampleTrackers"><a href="../pages/menus_guests.html" class="sampleTrackersLi">Menus & Guests</a></li>
+<li class="sampleTrackers"><a href="../pages/utilities.html" class="sampleTrackersLi">Utilities</a></li>
+<li class="sampleTrackers"><a href="../pages/self.html" class="sampleTrackersLi">Mood</a></li>
+<li class="sampleTrackers"><a href="../pages/exercise.html" class="sampleTrackersLi">Exercise</a></li>
+<li class="sampleTrackers"><a href="../pages/car.html" class="sampleTrackersLi">Car</a></li>
+<li class="sampleTrackers"><a href="../pages/finances.html" class="sampleTrackersLi">Finances</a></li>
+<li class="sampleTrackers"><a href="../pages/weight_body.html" class="sampleTrackersLi">Weight & Body</a></li>
+</ul>
+           
+            <!--
+	<ul>          <li><a href="downloadTrackers.html">What trackers can I download?</a> <br>          </li>	</ul>
+	--> <br>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">
+            <h3>Importing data</h3>
+            To import tracker data, you will be starting with a Comma Separated
+            Value (.csv) file containing the data of interest.&nbsp; The column
+            headings in this file will match the value names for your tracker,
+            and there will be one row for each timepoint.&nbsp; The easiest way
+            to get the correct format is to start with an <a href="export.html">exported</a>
+            .csv file for your tracker, and edit that file as desired.
+            <p> Data for timepoints which exactly match entries already stored
+              in rTracker will overwrite those entries, while new timepoint data
+              will be added.&nbsp; If you need to delete records, use the review
+              or edit functions within rTracker. </p>
+            <p> <span style="color: rgb(190, 0, 0);">An exported tracker data
+                file will be called '&lt;tracker name&gt;<span style="color: rgb(90, 0, 0);">_out</span>.csv'.&nbsp;
+                To change this to a file for import, rename it to '&lt;tracker
+                name&gt;<span style="color: rgb(90, 0, 0);">_in</span>.csv'.&nbsp;&nbsp;</span></p>
+            <p>As of version 1.1.5, rTracker supports .rtcsv as a file type - so
+              the <span style="font-weight: bold;">easiest way to import .csv
+                data</span> into tracker is to change the extension to .rtcsv
+              and email it to your device.&nbsp; The iOS Mail app will offer to
+              open it in rTracker.&nbsp; The .rtcsv format can read <span style="font-style: italic;">some</span>
+              tracker configuration data in a special second header line; to
+              learn about it, enable the 'save as .rtcsv' option in the rTracker
+              preferences (System Settings -&gt; rTracker) and inspect a saved
+              .rtcsv file. <br style="color: rgb(255, 0, 0);">
+              <br>
+              <a name="install"></a> </p>
+          </td>
+          <td style="vertical-align: top;">
+            <ul>
+              <li><a href="export.html">How to export data or trackers?</a> <br>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">
+            <h3>Installation - iTunes</h3>
+            To install the files from a computer, start iTunes with your device
+            connected.&nbsp; Select your device, and go to the 'Apps' tab.&nbsp;
+            <span style="font-weight: bold;">Scroll to the bottom</span> to see
+            a list of installed Apps which are configured to share files.&nbsp;
+            Select rTracker.
+            <p> Jump to <a href="#install2">Step 2</a> </p>
+          </td>
+          <td style="vertical-align: top;"><img style="width: 488px; height: 600px;"
+              alt="iTunes -&gt; device/apps/rTracker to
+					       collect your files" title="iTunes -&gt;
+						 device/apps/rTracker to collect your files" src="imgs/itunesExportLeft.png"><br>
+            <a name="install2"></a> </td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;">The right-hand pane will show a list
+            of the files in rTracker's documents directory.&nbsp; Click the
+            'Add...' button to select your files for import.&nbsp; <br>
+            <br>
+            <span style="font-weight: bold;">Remember to rename your .plist and
+              .csv files to '&lt;tracker name&gt;_in.csv' or '&lt;tracker
+              name&gt;_in.plist', otherwise they will not be recognized by
+              rTracker for loading.<br>
+              <br>
+              .rtrk files do not have this restriction, so just add them to
+              iTunes.<br>
+            </span> <br>
+            Once they have been installed, the files will be imported and then <b>deleted</b>
+            from the rTracker documents directory the next time the rTracker
+            main screen is displayed.<br>
+            <br>
+            If your files do not import, please note the following:<br>
+            <ul>
+              <li>.csv files will not import if the timestamp date format does
+                not match the format set in the iOS system preferences.&nbsp; If
+                there is a problem, compare to the format of an rTracker
+                exported .csv file.</li>
+              <li>.plist tracker definition files will not import if the tracker
+                name is already in use.&nbsp; Change the existing tracker's
+                name, or delete it. <br>
+              </li>
+            </ul>
+            <br style="font-weight: bold;">
+            <br>
+            <br>
+          </td>
+          <td style="vertical-align: top;"><img style="width: 492px; height: 600px;"
+              alt="select rTracker and click 'Add...' to
+					       choose files" title="select rTracker and click 'Add...' to
+						 choose files" src="imgs/itunesImportRight.png"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <ul>
+      <li><a href="../QandA.html">back to Questions</a></li>
+      <li><a href="useTracker.html">how to use a tracker</a></li>
+      <li><a href="addFunction.html">how to add a function</a></li>
+    </ul>
+    <p><br>
+    </p>
+  </body>
+</html>

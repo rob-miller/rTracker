@@ -1,0 +1,8 @@
+There's more to your body status than just your weight!  Scales are 
+available today to measure percent body fat, basal metabolic index (BMI), 
+and much more.  This tracker can capture that information, plus waist 
+circumference.  
+<p>
+Does your scale report more or different values?  Customize 
+a tracker to handle the parameters of your body.  
+

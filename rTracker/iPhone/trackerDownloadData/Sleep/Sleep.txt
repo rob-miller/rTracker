@@ -1,0 +1,14 @@
+To sleep better, you need to understand how you sleep over time and
+what affects that pattern.  To use this tracker, tap the first checkbox and save
+when you go to bed.  Tap the second checkbox when you get up, evaluate
+your sleep experience with the other controls, and save.  If you
+forget, you can always go back and add or edit the data with the
+timestamp you want.  
+<p> 
+Scrolling down from the values shown in this
+screenshot are functions calculating the number of hours resting, a 'sleep
+score', and your average resting hours per night over the last month.  
+<p>
+You may have your own sleep features to capture.  That flexibility is 
+exactly what rTracker is designed to handle, so you can customize any of 
+these trackers to log just what you want.

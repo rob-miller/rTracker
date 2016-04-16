@@ -1,0 +1,8 @@
+Ever have friends over for dinner and worry that you might have served
+the same dish last time?  Yes lasagne is an easy dish to make for
+a group of people, but don't start them thinking you don't know how to
+make anything else! 
+<p>
+Use this tracker for all your events and keep your friends
+coming.  The values shown in the graph are the number of lines in
+each textbox -- so it tracks your social life as well.

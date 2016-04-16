@@ -1,0 +1,23 @@
+The Car tracker is included as standard when you buy rTracker, but this is my own personal version reporting costs and distance over months and years.
+Install this version and it will merge with the default Car tracker and show your data in a new light!  Please <b>back-up your data first</b>, for example by sending yourself the CSV data file.
+<p>
+Car mileage is an obvious example for personal data tracking,
+especially because it is a key indicator of the overall health of your
+vehicle.  Put in the total fuel and total cost readings from
+the pump, and tick the '<span style="font-style: italic;">tank full</span>'
+checkbox to activate the mileage function calculation.
+<p>
+This rTracker example shows the use of the '<span
+ style="font-style: italic;">Start with last saved value'</span> option
+on the odometer value; this way you will usually only need to change
+the last few digits of this number when entering data for a
+fill-up.  
+<p>
+In the Car tracker,
+the total distance travelled and price per unit are calculated and
+logged.  I use the 'total cost' field to log service expenses as well, and the 'notes' item is a full textbox -- perfect for logging longer trips, 
+service details, or other issues that will help in understanding your car's 
+performance over time.
+<p>
+With rTracker's flexibility, it is easy to add a conversion for 'miles per 
+gallon' or similar if the fuel pumps in your country report litres.  

@@ -1,0 +1,13 @@
+shortName: Mood
+longName: rTracker Mood Tracker for iOS
+mainTextFile: Self.txt
+author: Realidata, Ltd.
+download: Self_in.plist
+rtrk: Self.rtrk
+img1: Self.png
+caption1: Track your mood with a Self tracker in rTracker.
+img2: Self-reminders.png
+caption2: Configure reminders to query your status randomly throughout the day.
+img2alt: Reminder controls set to notify at six random times, Monday to Friday from 8 a.m. to 10 p.m.
+img2title: Reminder settings page
+img3:

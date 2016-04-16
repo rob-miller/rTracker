@@ -1,0 +1,239 @@
+
+/* fonts */
+
+/* body,tbody,td,th,div,ul,li */
+
+td {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 18px;
+	line-height: 22px;
+	font-weight: normal;
+}
+
+#realidataName {
+        margin-top: -10px;
+	text-align: center;
+        padding-bottom: 10px;
+}
+
+huge {
+        font-family: Tahoma, Geneva, sans-serif;  /* Tahoma, Geneva, sans-serif; */
+        font-size: 42px;
+        line-height: 32px;
+        color: #000;
+        font-weight: normal;
+
+
+	/*
+        text-align: left;
+        padding-bottom: 3px;
+	*/
+}
+
+h1 {
+        font-family: Tahoma, Geneva, sans-serif;  /* Tahoma, Geneva, sans-serif; */
+        font-size: 30px;
+        line-height: 32px;
+        color: #000;
+        font-weight: normal;
+
+	/*
+        text-align: left;
+        margin-top: -5px;
+        padding-bottom: 3px;
+	*/
+}
+
+h2 {
+        font-family: sans-serif;  /* Tahoma, Geneva, sans-serif; */
+        font-size: 22px;
+        line-height: 24px;
+        color: #000;
+	font-weight: normal;
+
+	/*
+        text-align: left;
+        margin-top: -10px;
+        padding-bottom: 3px;
+	*/
+}
+
+h3 {
+        font-family: sans-serif;  /* Tahoma, Geneva, sans-serif; */
+        font-size: 20px;
+        line-height: 22px;
+        color: #000;
+	font-weight: normal;
+
+        margin-top: -1px;
+
+}
+
+.sampleTrackers {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:16px;
+    line-height:20px;
+    font-weight: normal;
+    margin: 0;
+}
+
+ul.sampleTrackers {
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+
+/* position */
+
+/*
+html, body {
+    margin: 0;
+    width:960px;
+}
+*/
+
+
+
+.innerMargins { width: 98%; float: right; }
+
+.splitRight {
+    width: 40%;  
+    float: right; 
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:16px;
+    line-height:24px;
+    font-weight: normal;
+}
+
+.splitLeft {
+    width: 60%;  
+    float: left; 
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:16px;
+    line-height:22px;
+    font-weight: normal;
+}
+
+.bar {
+    width: 90%;
+}
+
+/* #leftMargin {width: 2%; float: left; } */
+
+/*.header { width: 98%; float: right; } */
+
+.band { width: 100%; float: right; background-color: #E8A25B; border-radius: 8px; -moz-border-radius: 8px; }
+.subheader { width: 98%; float: right; margin-bottom: 10px; margin-right: 10px; margin-left: 10px;  } 
+.subheader-left { width: 49%; float: left; margin-left: 10px; }
+.subheader-right { width: 49%; float: right; text-align: right; margin-top: 40px; }
+
+/*.mainSection { width: 100%; float: left; }*/
+/*.mainSection { width: 98%; float: right; } */
+
+.mainSectionRightMain { width: 84%; float: right; }
+.mainSectionLeftMain { width: 15%; float: left; }
+
+
+.floaterMsl {
+   /* position: absolute; */
+   /*
+     top: 50%;
+    vertical-align: middle;
+*/
+}
+
+.mainTextmsl {
+    /* position: relative; */
+    /*top: -50%; */
+    padding-top: 50%;
+    width: 95%;
+    margin-top: 40px;
+
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:16px;
+    line-height:22px;
+    font-weight: normal;
+}
+
+.mainTextmsr {
+    width: 65%;
+    float: left;
+    margin-top: 20px;
+
+
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:18px;
+    line-height:25px;
+    font-weight: normal;
+}
+
+
+.ibr { float: right; max-width: 80%; height: auto; }
+
+.imageBar { width: 98%; float: right; }
+.ib12 {  max-width: 66%; height: auto; float: left; }
+.ib1 {  max-width: 50%; height: auto; float: left; }
+.ib2 {  max-width: 50%; height: auto; float: right; }
+.ib3 {  max-width: 33%; height: auto; float: right; }
+
+/*
+.imageColmsr { width: 32%; float: right; / *margin-left: 20px; * / margin-top: 20px; } 
+*/
+.imageColsWrap {  float: clear; margin-top: 20px;  margin-left: 20px; overflow: auto; }
+.imageColmsr { float: left;  margin-top: 20px;  margin-left: 20px;  }
+.imageColmsr2 { float: right;  margin-left: 20px;  margin-top: 20px; }
+
+.ic { max-width: 100%; height: auto; }
+
+
+.ibh { max-width: 100%; float: left; height: auto; }
+
+.caption {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: normal;
+	/*max-width: 100%;*/
+        width: 250px;
+        margin-top: 10px;
+}
+
+/* img.ib { max-width: 98%; height: auto; } */
+
+
+
+body {
+	background-color: #F5D5B5;
+
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 18px;
+	line-height: 22px;
+	font-weight: normal;
+}
+
+
+/* links */
+
+a {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 18px;
+	line-height: 22px;
+	font-weight: normal;
+}
+
+a:link {
+	text-decoration: none;
+	color: #3E4093;
+}
+a:visited {
+	text-decoration: none;
+	color: #B15F1A;
+}
+a:hover {
+	color: #BC2626;
+	text-decoration: underline;
+}
+a:active {
+	text-decoration: none;
+	color: #666666;
+}
+

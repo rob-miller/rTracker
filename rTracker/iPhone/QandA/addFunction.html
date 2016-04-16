@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta  content="text/html; charset=ISO-8859-1"  http-equiv="content-type">
+    <meta  name="description"  content="Instructions for setting up a function as a tracker value in rTracker">
+    <title>RTracker: How To Add A Function</title>
+    <link  rel="stylesheet"  type="text/css"  href="../../../css/realidata1.css">
+    <!-- meta name="viewport" content="width=device-width" -->
+  </head>
+  <body>
+    <h1>How to add a function in rTracker?</h1>
+    <table  style="text-align: left; width: 100%;"  border="1"  cellpadding="4"
+       cellspacing="2">
+      <tbody>
+        <tr>
+          <td  style="vertical-align: top;">Add a new value to your tracker (see
+            <a  href="createTracker.html">how to create a tracker?</a>)<br>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="add an item under tracker"
+               title="add a value to your tracker as normal"
+               src="imgs/fn_add0.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="vertical-align: top;"><br>
+            <ul>
+              <li>Give your value a name</li>
+              <li>Select 'function' as the type</li>
+              <li>Tap the gear icon at the bottom to configure</li>
+            </ul>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><br>
+            </p>
+            <p><a  name="overview"></a></p>
+            <ul>
+            </ul>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="set name, choose 'function' under 'type', click 'i' button at bottom"
+               title="name it and select 'function'"
+               src="imgs/fn_add1.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="vertical-align: top;"><br>
+            <ul>
+              <li>Select the Range tab to set the endpoints</li>
+            </ul>
+            <p>This function will only use values from the current entry, so set
+              the <span  style="font-weight: bold;">Previous:</span> endpoint
+              to <span  style="font-weight: bold;">&lt;none&gt;</span>.&nbsp;
+              Set the <span  style="font-weight: bold;">Current</span>:
+              endpoint to <span  style="font-weight: bold;">distance</span> so
+              this result will only be calculated when there is a value in the
+              distance field. </p>
+            <p>In this case, the function will also not be calculated without a
+              value in the <span  style="font-weight: bold;">time</span> field
+              as this is recognized as a division by zero.</p>
+            <p><br>
+            </p>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="select 'range' tab and set function endpoints"
+               title="set the function endpoints"
+               src="imgs/fn_add2.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="vertical-align: top;"><br>
+            <ul>
+              <li>Select the Definition tab</li>
+              <li>Build the function by selecting items from the spinner and
+                tapping the 'add' button</li>
+            </ul>
+            <p><br>
+            </p>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="build function in 'fn definition' tab"
+               title="define the function"
+               src="imgs/fn_add3.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="vertical-align: top;"><br>
+            <ul>
+              <li>Select the Overview tab to check your setup</li>
+              <li>The range will only be over the values in the current entry
+                (previous &lt;none&gt;), and only when 'distance' has a
+                value.&nbsp; </li>
+              <li>The function is 'distance divided by time'</li>
+              <li>Tap the checkbox to return<br>
+              </li>
+            </ul>
+            <p><br>
+            </p>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="review in the 'overview' tab"
+               title="review and save"
+               src="imgs/fn_add4.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="vertical-align: top;"><br>
+            &nbsp; Here's a second function has been defined to use the results
+            of the first.<br>
+            <ul>
+              <li>The range is from the previous <span  style="font-weight: bold;">entry</span>
+                to the current <span  style="font-weight: bold;">entry</span>.&nbsp;
+                Most functions will calculate results over several date entries
+                (a.k.a. database records).</li>
+              <li>This function is defined to use only the <span  style="font-weight: bold;">change_in[]</span>
+                operator, which calculates the difference in the specified
+                variable (the <span  style="font-weight: bold;">speed</span>
+                result from the function above) between the two range endpoints.</li>
+            </ul>
+          </td>
+          <td  style="vertical-align: top;"><img  style="width: 320px; height: 480px;"
+               alt="functions can work over multiple entries and use the results of other functions"
+               title="A second function using the first"
+               src="imgs/fn_add5.png"><br>
+          </td>
+        </tr>
+        <tr>
+          <td>&nbsp; The finished Exercise tracker in use.</td>
+          <td><img  title="Finished tracker in use"  alt="An Exercise tracker with two numeric input variables and two functions"
+               src="imgs/fn_add6.png"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h2><br>
+    </h2>
+    <h2><a  name="range"></a><br>
+    </h2>
+    <h2><a  href="../QandA.html"> </a>Range Endpoints</h2>
+    <img  title="Function Range"  alt="The function is calculated over entries within the range including the two endpoints"
+       src="imgs/fn_range.png">
+    <p>A function is calculated over all of the entries (green spots) between
+      the previous and current endpoints inclusive.&nbsp; In the figure, the
+      brown spots are entries which fall outside of the red function range, so
+      they are not included in the calculation.&nbsp; The <span  style="font-weight: bold;">current</span>
+      endpoint will always correspond to a timestamped entry, while the <span  style="font-weight: bold;">previous</span>
+      endpoint may not match a specific entry.</p>
+    <table  border="1"  width="100%">
+      <tbody>
+        <tr>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Previous:
+              | Current: </span>endpoint selected</td>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Meaning</span></td>
+        </tr>
+        <tr>
+          <td>entry<br>
+          </td>
+          <td>The function will be calculated using data from the previous entry
+            and/or the current entry.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Values (user specified)<br>
+          </td>
+          <td>For the <span  style="font-weight: bold;">current</span>
+            endpoint, the function won't be calculated until the specified value
+            has data entered.<br>
+            For the <span  style="font-weight: bold;">previous</span> endpoint,
+            the function will start with the last entry with data entered in the
+            specified value.<br>
+            <br>
+            In the <a  href="/cgi-bin/bin/gst.pl?t=Car">Car</a> tracker, the
+            mileage function is only calculated between two entries with 'tank
+            full' yes/no values checked.&nbsp; This way the calculation is still
+            correct if you occasionally add small amounts fuel without filling
+            up. <br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="width: 235.717px;">Time differences<br>
+            <br>
+            Hours, Days, Weeks, Months, Years<br>
+          </td>
+          <td  style="width: 724.283px;">The <span  style="font-weight: bold;">previous</span>
+            endpoint will be the specified number of time units before the <span
+               style="font-weight: bold;">current</span>
+            endpoint (only available for <span  style="font-weight: bold;">previous</span>
+            endpoint setting).<br>
+            <br>
+            If the current entry is 12 December with a time difference of '-2
+            months', the previous endpoint will be the same time on 12 October.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Calendar unit time differences<br>
+            <br>
+            Cal Days, Cal Weeks, Cal Months, Cal Years<br>
+            <br>
+            Option: <span  style="font-weight: bold;">Only last</span><br>
+          </td>
+          <td>The <span  style="font-weight: bold;">previous</span> endpoint
+            will be counted back only by <span  style="font-style: italic;">complete</span>
+            time units before the <span  style="font-weight: bold;">current</span>
+            endpoint (only available for <span  style="font-weight: bold;">previous</span>
+            endpoint setting).<br>
+            <br>
+            If the current entry is 12 December with a time difference of '-2
+            cal months', the previous endpoint will be 12:00 a.m. on 1 November.<br>
+            <br>
+            The 'Only last' option controls the graph presentation for functions
+            with calendar endpoints. This is used in the <span  style="color: rgb(0, 0, 238);"><span
+                 style="text-decoration: underline;">Drinks</span></span>
+            tracker for the 'daily alcohol' and 'daily caffeine' values.&nbsp;
+            The graph will normally display one data point for each entry, so
+            without this option there would be a 'ramp' shown shown for each day
+            if you had one, two and then a third cup of coffee.&nbsp; Enabling
+            the 'Only last' option will suppress the display of the first and
+            second entries in the graph, so for that date it would only show a
+            point at '3'. <br>
+          </td>
+        </tr>
+        <tr>
+          <td>&lt;none&gt;</td>
+          <td>The function is only calculated using data in the current entry
+            (only available for <span  style="font-weight: bold;">previous</span>
+            endpoint setting).<br>
+            See the 'Speed' </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br>
+    </p>
+    <h2>Function Operators</h2>
+    <p><a  name="broken_function"></a><span  style="font-weight: bold; font-style: italic; color: rgb(255, 0, 0);">Please
+        note:</span> It is entirely possible to create a function which does not
+      make mathematical sense, creates an infinite loop, or has some other
+      logical problem.&nbsp; rTracker will allow you to create and save such a
+      function, but will crash when it is executed by attempting to use the
+      tracker.&nbsp; If you create or find a tracker that crashes when used,
+      please inspect its functions and try to think through how they will work
+      in practice.&nbsp; </p>
+    <table  style="width: 100%;"  border="1">
+      <tbody>
+        <tr>
+          <td  style="text-align: center; width: 188.983px;"><span  style="font-weight: bold;">Single
+              Value Operators</span></td>
+          <td  style="text-align: center; width: 961.017px;"><span  style="font-weight: bold;">Result</span></td>
+        </tr>
+        <tr>
+          <td>change_in</td>
+          <td>The value in the first entry is subtracted from the value in the
+            last entry.&nbsp; Example: <span  style="font-style: italic;">change_in[odometer]</span>
+            in the <a  href="file:///cgi-bin/bin/gst.pl?t=Car">Car</a> tracker.</td>
+        </tr>
+        <tr>
+          <td>sum, post-sum, pre-sum</td>
+          <td>The value is summed up over all entries in the range.&nbsp; <span
+               style="font-style: italic;">post-sum</span>
+            skips the first entry in the summation, used in the <a  href="file:///cgi-bin/bin/gst.pl?t=Car">Car</a>
+            tracker as <span  style="font-style: italic;">post-sum[fuel]</span>
+            for the mileage calculation (the mileage can only be calculated from
+            when the tank is full, but should not include the fuel to fill it on
+            that first entry).&nbsp; <span  style="font-style: italic;">pre-sum</span>
+            skips the last entry in the range to match <span  style="font-style: italic;">post-sum</span>;
+            let me know if you find a use for it!</td>
+        </tr>
+        <tr>
+          <td>avg</td>
+          <td>The value is summed up over the entries in the range.&nbsp; If the
+            previous endpoint is a time unit (e.g. -2 weeks), the sum is divided
+            by the number of time units (2 in the example); otherwise the sum is
+            divided by the number of entries in the range.</td>
+        </tr>
+        <tr>
+          <td>min, max</td>
+          <td>The minimum or maximum value over the entries in the range is
+            returned.</td>
+        </tr>
+        <tr>
+          <td>count</td>
+          <td>The number of entries in the range where the value has data
+            stored.&nbsp; </td>
+        </tr>
+        <tr>
+          <td>old/new, new/old</td>
+          <td>The ratio of the value between the first and last entries in the
+            range is returned.</td>
+        </tr>
+        <tr>
+          <td>elapsed_&lt;time_units&gt;<br>
+          </td>
+          <td>The 'Time Counters' below can only report the time difference
+            between the function range endpoints.&nbsp; The
+            elapsed_&lt;time&gt;[value] will calculate the number of time units
+            for the 'value' entries over the range.&nbsp; For example, if your
+            function is "change_in[electricity_meter]/days" and your range is
+            "-10 days to current entry", the result will always be (last_reading
+            - first_reading)/10.&nbsp; To get the actual electricity used per
+            day, use
+            "change_in[electricity_meter]/elapsed_days[electricity_meter]"; this
+            will calculate the elapsed days between the first and last reading
+            for the denominator.<br>
+          </td>
+        </tr>
+        <tr>
+          <td><br>
+          </td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Two
+              Value Operators</span></td>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Result</span></td>
+        </tr>
+        <tr>
+          <td>+ - * / ()</td>
+          <td>As expected</td>
+        </tr>
+        <tr>
+          <td><br>
+          </td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Time
+              Counters</span></td>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Result</span></td>
+        </tr>
+        <tr>
+          <td>weeks, days, hours, minutes, seconds</td>
+          <td>Returns the number of time units specified between the first and
+            last entries in the range</td>
+        </tr>
+        <tr>
+          <td><br>
+          </td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Other</span></td>
+          <td  style="text-align: center;"><span  style="font-weight: bold;">Result</span></td>
+        </tr>
+        <tr>
+          <td>constant</td>
+          <td>Allows specifying a fixed value in a formula without storing in
+            the database (compare to the&nbsp;<a  href="/rTracker/iPhone/QandA/dataTypes.html">info</a>
+            value)</td>
+        </tr>
+        <tr>
+          <td><br>
+          </td>
+          <td><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <p> </p>
+    <p><a  href="../QandA.html">back to Questions</a></p>
+    <p> <br>
+    </p>
+  </body>
+</html>

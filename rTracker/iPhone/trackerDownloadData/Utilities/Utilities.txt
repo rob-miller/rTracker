@@ -1,0 +1,19 @@
+
+If you want to reduce your energy usage, the place to start is with a clear understanding of
+your current consumption levels and how they vary.  With this baseline, you can see the effects
+of your actions and the changes you make.
+<p>
+This tracker is the one I personally use in England, so it incorporates conversion factors for cubic
+meters of natural gas to kilowatt-hours and the prices per kilowatt-hour charged by my supplier.
+We have a wood-burning stove, so I make a note when I use it - but I removed the 'average fires per day' trace from
+the graph below for clarity.  
+<p>
+Tracker configuration and customization are the design goals of <a href="/cgi-bin/rTracker/iPhone/rTracker-main.pl">rTracker</a>, so creating the specific utilities
+tracker for your local needs is simple.  With rTracker installed, click <a href="/rTracker/iPhone/trackerDownloadData/Utilities/Utilities.rtrk">Download Utilities.rtrk</a>
+on your iOS device (iPhone) to install this tracker, then click <a href="/rTracker/iPhone/QandA/editTracker.html">'edit'</a> and make it work for you.
+<p>
+Combining rTracker data with a lot of thinking and hard work, our household electricity usage is now 1/7 (one seventh)
+what it was over the months after we first moved in.  Last winter our gas usage was 1/5 (one fifth) what it was
+during that first winter.  Result!
+<p>
+How well can you do?  You have to <a href="http://itunes.apple.com/us/app/rtracker/id486541371">get started</a> to find out.

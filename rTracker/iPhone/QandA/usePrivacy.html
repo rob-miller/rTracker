@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <meta name="description"
+ content="Instructions for using the privacy facility within rTracker">
+  <title>RTracker: Using The Privacy Facility</title>
+<link rel='stylesheet' type='text/css' href='../../../css/realidata1.css'>
+</head>
+<body>
+<br>
+<h1>How To Use the Privacy Facility</h1>
+<a name="setupPrivacy">
+<h2>Set Up Your Privacy Patterns</h2>
+</a>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="4" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><br>
+The overall idea of the privacy facility is that you will assign
+privacy levels to
+'tic-tac-toe' (or 'noughts and crosses') patterns, and later use these
+to quickly raise the privacy level and thus reveal hidden
+trackers.&nbsp;
+Trackers and tracked items within them can have individual privacy
+levels, and will not be visible unless rTracker's privacy level is high
+enough.<br>
+        <br>
+        The intention is to hide your more private trackers and tracked items from casual observers or those to whom you might want to show some of your other trackers.
+        <br><br>
+        This privacy feature does not itself provide encryption (full security) for your tracked data however, as of version 2.0, rTracker uses the full iOS encryption as configured for your phone.  To enable this, simply set a passcode and auto-locking in System Settings.
+        <br>
+        <br>
+      <span style="font-weight: bold;">Click the sunglasses button</span> in the
+        lower right of the main tracker list to get started.<br>
+        &nbsp;<br>
+       
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup0.png" style="width: 320px; height: 480px;"
+ alt="click the sunglasses icon to start"
+        title="Start by clicking the sunglasses icon in the bottom right">
+        <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+A password is required the first
+time you set up privacy, but not in normal use.&nbsp; Don't worry, you
+can change it later, or just set a <a
+ href="usePrivacy.html#passwordReset">new one</a> if you forget.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup2.png" style="width: 320px; height: 480px;"
+ alt="An initial password is required"
+ title="You'll need a password to start, it can be changed later"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+This is the normal privacy usage view.&nbsp; <br>
+      <br>
+      <span style="font-weight: bold;">Tap the 'Setup' button to
+configure your privacy levels</span> and access.&nbsp; Normally the
+password will be required to enter the setup mode, but not in the case
+where a new password has just been created.<br>
+      <br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup3.png" style="width: 320px; height: 480px;"
+ alt="See the usage screen, click 'setup'"
+ title="Next, click the 'setup' button"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+The privacy Setup view is the control panel where the password can be
+changed, new privacy patterns can be set, and existing privacy patterns
+can be reviewed and modified.<br>
+      <br>
+The first step is to <span style="font-weight: bold;">create a
+pattern, and assign a privacy level to it</span>.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup4.png" style="width: 320px; height: 480px;"
+ alt="The setup screen is mainly for pattern configuration"
+ title="All the configuration settings are here"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Each tap of a square will change it in the pattern X - O - + -
+&lt;blank&gt;.&nbsp; When the desired pattern has ben set, choose the
+associated privacy level on the left using the slider at the bottom.<br>
+      <br>
+Here a relatively low privacy level of 25 is linked to the pattern of
+one 'X' in the uppler left corner.<br>
+      <br>
+      <span style="font-weight: bold;">Tap 'save' to store this
+association.</span><br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup5.png" style="width: 320px; height: 480px;"
+ alt="setting a pattern for a low privacy setting of 25"
+ title="low privacy of 25"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Here the pattern shown with two X's is linked to the medium privacy
+level of 50.<br>
+      <br>
+Tap '<span style="font-weight: bold;">save</span>' to store this
+association.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup6.png" style="width: 320px; height: 480px;"
+ alt="setting a pattern for medium privacy setting of 50"
+ title="medium privacy of 50"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Here the pattern of three X's is linked to the relatively high privacy
+level of 75.<br>
+      <br>
+Tap '<span style="font-weight: bold;">save</span>' to store this
+association.<br>
+      <br>
+      <span style="font-weight: bold;">Tap 'Lock' to exit the Setup
+mode </span>and return to the normal use mode.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privSetup7.png" style="width: 320px; height: 480px;"
+ alt="setting a pattern for a higher privacy setting of 75"
+ title="higher privacy of 75"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<a name="privateTracker"></a>
+<h2>Set Up A Private Tracker</h2>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="4" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><br>
+To create a private tracker or
+tracker value, first raise the privacy level to a value at least as
+high as the
+hidden item will be.&nbsp; <br>
+      <br>
+This is important, as rTracker will not allow a tracker or value to be
+set 'more private' than the current privacy level.<br>
+      <br>
+      <span style="font-weight: bold;">Tap the sunglasses button again
+to hide the privacy panel.</span><br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/secretTracker1.png"
+ style="width: 320px; height: 480px;"
+ alt="Set a privacy level higher than the secret tracker will be"
+ title="First raise the privacy level"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Observe that the sunglass lenses are now 'shaded' to indicate that the
+privacy level is raised.&nbsp; When privacy is disabled, the lenses
+will be opaque, and when the password has been accepted the lenses will
+be clear (see the rTracker screenshots above).<br>
+      <br>
+Now tap the 'edit' button to modify an existing tracker, or the '+'
+button to create a new tracker.&nbsp; See <a href="createTracker.html">how
+to create a tracker</a> for details on this.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/secretTracker2.png"
+ style="width: 320px; height: 480px;"
+ alt="Once the privacy is raised, now add (+) or edit your private tracker"
+ title="Main screen with raised privacy"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Navigate to a screen showing the configuration 'i' in the lower left
+corner, and tap this button.&nbsp; This screenshot shows the 'Add
+tracker' screen for configuring the items within a tracker, but the
+same option is in the lower left corner when creating or configuring
+each individual tracked item.<br>
+      <br>
+      <span style="font-weight: bold;">Tap the 'i' button to access the
+configuration options.</span><br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/secretTracker3.png"
+ style="width: 320px; height: 480px;"
+ alt="From the tracker or item configuration screens, click the 'i' button to access options"
+ title="click the 'i' configuration button"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Set the privacy level to the desired setting.&nbsp; Once again, a
+setting higher than the current rTracker privacy level will not be
+accepted.<br>
+      <br>
+      <span style="font-weight: bold;">Tap the appropriate buttons at
+each step to confirm and save the changes at each step</span> as you
+return to the main tracker view.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/secretTracker5.png"
+ style="width: 320px; height: 480px;"
+ alt="Set privacy level for tracker or item, limited to current privacy level"
+ title="set the privacy level"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<a name="usePrivacy"></a>
+<p>
+<br>
+<h2>Use Your Private Tracker</h2>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="4" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      <span style="font-weight: bold;">Click the sunglasses button</span>
+to
+bring up the privacy 'use' screen.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privUse1.png" style="width: 320px; height: 480px;"
+ alt="main tracker list, click the sunglasses button"
+ title="click the sunglasses button"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      <span style="font-weight: bold;">Tap in the pre-set pattern for
+the desired privacy level</span>.&nbsp; All trackers and values with a
+privacy setting below this level will be shown.<br>
+      <br>
+      <span style="font-weight: bold;">Tap the sunglasses button again
+to hide the privacy panel.</span><br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privUse2.png" style="width: 320px; height: 480px;"
+ alt="input your pre-set privacy pattern" title="set your pattern"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Observe that <span style="font-weight: bold;">the lenses on the
+sunglasses are now shaded</span> to indicate a raised privacy level.<br>
+      <br>
+Also note that <span style="font-weight: bold;">the 'secret tracker'
+is now visible</span> in the tracker list.<br>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<img
+ src="privImages/privUse3.png" style="width: 320px; height: 480px;"
+ alt="main screen, privacy is raised and secret tracker is visible"
+ title="Secret tracker now visible"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Tap the sunglasses button again to bring up the privacy panel, and <span
+ style="font-weight: bold;">tap the clear button to wipe the pattern
+clean</span>.<br>
+      <br>
+      <span style="font-weight: bold;">Shortcuts</span>: <span
+ style="font-weight: bold;">double-tap the sunglasses button</span>
+(bring the privacy panel up and down quickly), or just <span
+ style="font-weight: bold;">leave the rTracker application</span> to
+clear the privacy setting.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privUse4.png" style="width: 320px; height: 480px;"
+ alt="clear the privacy pattern to disable private trackers"
+ title="cleared privacy pattern"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Observe that the <span style="font-weight: bold;">sunglasses lenses
+are opaque</span> again, and the <span style="font-weight: bold;">'secret
+tracker' is not visible</span>.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privUse5.png" style="width: 320px; height: 480px;"
+ alt="main screen, no secret tracker is seen"
+ title="no secret tracker available"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<a name="reviewPatterns"></a>
+<p>
+<br>
+<h2>I Forgot...</h2>
+<h3>My privacy patterns</h3>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="4" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;" align="right;"><br>
+Use the arrow buttons on each
+side of the slider to review the privacy patterns you have set earlier.<br>
+      </td>
+      <td style="vertical-align: top;"><img
+ src="privImages/privForgotPatterns.png"
+ style="width: 320px; height: 480px;"
+ alt="review saved patterns with &lt;,&gt; buttons"
+ title="&lt; and &gt; buttons to cycle through saved patterns"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<a name="passwordReset">
+<br>
+<p>
+<h3>My password</h3>
+<br>
+</a>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="4" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><br>
+Go the the system Settings
+application, and find the rTracker settings.&nbsp; From here you can
+reset (clear) the saved password, and you will set a new password the
+next time you use the privacy facility.&nbsp; All of your
+patterns&nbsp; and tracker privacy levels will&nbsp; remain the same. <br>
+      </td>
+      <td style="vertical-align: top;" align="right;"><img
+ src="privImages/rTrackerPrefs.png" style="width: 320px; height: 480px;"
+ alt="Clear the password using the iOS system Settings"
+ title="Delete your password in Settings if you forget"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+
+<ul>
+  <li><a href="../QandA.html">back to Questions</a></li>
+</ul>
+
+<br>
+<br>
+</body>
+</html>

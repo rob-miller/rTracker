@@ -1,0 +1,8 @@
+The Drinks tracker is a simple log for caffeinated and alcoholic drinks
+consumption, and computes daily caffeine, daily alcohol and weekly
+alcohol intake.  Just tap the checkbox and save for each drink throughout 
+the day.
+<p>
+If these aren't your usual drinks, pick your own and modify the tracker to 
+match your preferences.  Choice is what rTracker is all about.
+

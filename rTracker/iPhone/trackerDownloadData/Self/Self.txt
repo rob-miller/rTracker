@@ -1,0 +1,11 @@
+How <span style="font-weight: bold;">are</span> you today? Right
+now?  How would you capture your changes in mood and feelings
+throughout the day?  rTracker can handle the concepts that you want to measure.
+<p>
+Mood tracking is sensitive to set and setting, so to get a realistic view over time we need readings when they're not expected.  The Self tracker uses rTracker's <a href="/rTracker/iPhone/QandA/reminder.html">reminders</a>
+functionality to query mood at six random times throughout the day to solve this problem.
+<p>
+Once upon a time, <a href="http://en.wikipedia.org/wiki/Biorhythms">Biorhythms</a> were
+believed by many to influence our daily lives.  Does your
+experience of life follow any patterns?  More importantly, can you
+influence those patterns for the better?   Track and find out.

@@ -1,0 +1,13 @@
+Most exercise trackers are designed to track what their developer
+thought you would be interested in; <b>rTracker does not have this limitation</b>.
+ rTracker is about creating trackers for the values you are interested in - laps, heart rate, rope skips,
+distance - your <b>exact</b> fitness regimen.
+<p>
+In this example, heart rate is logged at
+four different points to enable exploring ranges and transitions as
+exercise progresses. Your exercise -- or exercise machine(s) --
+may report still more parameters that are trackworthy and waiting to
+be watched over time.  rTracker can handle the parameters you want.
+<p>
+One measure of exercise effectiveness is how quickly your pulse returns to 
+normal.  Can you improve that result?
