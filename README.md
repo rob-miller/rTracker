@@ -16,6 +16,10 @@ A rudimentary privacy facility is available, such that trackers and/or their val
 
 rTracker is available on the [Apple App Store](https://itunes.apple.com/us/app/rtracker-track-it-all-your-way/id486541371?mt=8&uo=4 "rTracker on the App Store").  Released as open source because programming is fun, but filing company paperwork is not.
 
+## Documentation
+
+The original webpages for the commercial website are [here](http://rob-miller.github.io/rTracker/rTracker/iPhone/pages/rTracker-main.html)
+
 ## Dependencies / included software
 
 Tracker reminders (iOS local notifications) can have sounds associated with them.  For the published app these have been obtained from http://www.freesfx.co.uk/ , however their licensing does not allow redistribution in this repository.  Any .caf audio file included in the top level directory and added to the project in Xcode will be placed in the bundle and offered as a reminder sound effect; see the 'readme.sounds' file for details.
