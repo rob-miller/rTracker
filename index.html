@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Rtracker by rob-miller</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Rtracker</h1>
+        <p>A generic, customizable personal data tracker for iOS</p>
+
+        <p class="view"><a href="https://github.com/rob-miller/rTracker">View the Project on GitHub <small>rob-miller/rTracker</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/rob-miller/rTracker/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/rob-miller/rTracker/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/rob-miller/rTracker">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="rtracker" class="anchor" href="#rtracker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rTracker</h1>
+
+<p>rTracker is a complete iOS application for creating local on-device databases ('trackers') to log data with timestamps.</p>
+
+<p>Trackers can use a variety of iOS controls (number/text fields, sliders, radiobuttons, checkbuttons), and can implement limited functions on values within entries and over time.  These controls comprise the data input form, and are presented when the device is in portrait orientation; rotating the device to landscape mode will present a graph of the collected data over time.</p>
+
+<p>Tracker data can be exported in CSV format, and trackers (with or without data) can be shared with other rTracker users.  CSV data can also be imported, and trackers can be created with (specially formatted) CSV files.</p>
+
+<p>Trackers can have iOS local notifications which trigger on specific time and data criteria, implementing a 'reminder to track' facility.</p>
+
+<p>rTracker supports URL schemes to either open the application main window (rTracker://) or a specific tracker (rTracker://tid=4).</p>
+
+<p>A rudimentary privacy facility is available, such that trackers and/or their values can be hidden until a 'graphical password' is entered.</p>
+
+<h2>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status</h2>
+
+<p>rTracker is available on the <a href="https://itunes.apple.com/us/app/rtracker-track-it-all-your-way/id486541371?mt=8&amp;uo=4" title="rTracker on the App Store">Apple App Store</a>.  Released as open source because programming is fun, but filing company paperwork is not.</p>
+
+<h2>
+<a id="dependencies--included-software" class="anchor" href="#dependencies--included-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies / included software</h2>
+
+<p>Tracker reminders (iOS local notifications) can have sounds associated with them.  For the published app these have been obtained from <a href="http://www.freesfx.co.uk/">http://www.freesfx.co.uk/</a> , however their licensing does not allow redistribution in this repository.  Any .caf audio file included in the top level directory and added to the project in Xcode will be placed in the bundle and offered as a reminder sound effect; see the 'readme.sounds' file for details.</p>
+
+<p>The <a href="https://github.com/puls/objc-TimesSquare">TimesSquare calendar view</a> is included, with modifications updating it for more recent versions of iOS and supporting coloring of individual dates.</p>
+
+<p>Many other contributions from around the net (especially Matt Gallagher's CSV parser, and Peter Steinberger's ThreadGuard work) and snippets from <a href="http://stackoverflow.com/">StackOverflow</a> are attributed (though often insufficiently) in the source files. </p>
+
+<p>The released application includes <a href="https://try.crashlytics.com/">Fabric/Crashlytics</a> for crash reporting.  Relevant lines in the source code are enabled/disabled by '#define FABRIC' in the file dbg-defs.h.</p>
+
+<h2>
+<a id="development--layout" class="anchor" href="#development--layout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development / layout</h2>
+
+<p>Preprocessor macros control log, warning and error level NSLog messages.  These and other project-wide devlopment controls are contained in the file dbg-defs.h.</p>
+
+<p>Each tracker defines a frontend for one sqlite3 database, and the overall list of trackers is one more (so 5 trackers means 5+1 separate sqlite3 databases).</p>
+
+<p>The base class for individual tracked values is valueObj and this implements an Objective C protocol called voProtocol.   The default voProtocol implementations are in voState, and subclassed in control-named classes such as voSlider.</p>
+
+<p>rTrackerA is a separate build target which uses the iOS advertising platform, is limited to 8 trackers of 8 items each, and offers an in-app upgrade to remove these features.  It is being/has been removed from the App Store.</p>
+
+<p>rTracker-test is a separate build target for distribution to testers through Fabric.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright 2010-2016 Robert T. Miller</p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use these files except in compliance with the License.
+   You may obtain a copy of the License at</p>
+
+<pre><code>   http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>
+
+<p>Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/rob-miller">rob-miller</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
