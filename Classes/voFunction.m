@@ -1,3 +1,20 @@
+/***************
+ voFunction.m
+ Copyright 2010-2016 Robert T. Miller
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ *****************/
+
 //
 //  voFunction.m
 //  rTracker
@@ -89,7 +106,7 @@ BOOL FnErr=NO;
 	[self loadFnArray];
 	NSUInteger i=0;
 	NSUInteger max = [self.fnArray count];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
     DBGLog(@"start fnArray= %@",self.fnArray);
 #endif
 	for (i=0; i< max; i++) {
@@ -97,7 +114,7 @@ BOOL FnErr=NO;
 			(self.fnArray)[i] = @(newVID);
 		}
 	}
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
     DBGLog(@"fin fnArray= %@",self.fnArray);
 #endif
 	[self saveFnArray];
@@ -280,11 +297,11 @@ BOOL FnErr=NO;
     } else if (ep >= 0) {
 		// ep is vid
         sql = [NSString stringWithFormat:@"select date from voData where id=%ld and date < %ld and val <> 0 and val <> '' order by date desc limit 1;",(long)ep,(long)maxdate]; // add val<>0,<>"" 5.vii.12
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
         DBGLog(@"get ep qry: %@",sql);
 #endif
 		epDate = [to toQry2Int:sql];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
 		DBGLog(@"ep %d ->vo %@: %@", ndx, self.vo.valueName, [self qdate:epDate] );
 #endif
 	} else {
@@ -385,7 +402,7 @@ BOOL FnErr=NO;
         
         
 		epDate = [targ timeIntervalSince1970];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
         DBGLog(@"ep %d ->offset %ld: %@", ndx, (long)ival, [self qdate:epDate] );
 #endif
 	}
@@ -464,7 +481,7 @@ BOOL FnErr=NO;
 
     FnErr=NO;
     
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
     // print our complete function
 	NSInteger i;
     NSString *outstr=@"";
@@ -502,7 +519,7 @@ BOOL FnErr=NO;
             double v1 = [sv1 doubleValue];
             sql= [NSString stringWithFormat:@"select count(val) from voData where id=%ld and date >=%ld and date <%d;",(long)vid,(long)epd0,epd1];
             int ci= [to toQry2Int:sql];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@"v1= %f nullV1=%d vid=%ld %@:%@", v1,
                    nullV1,
                    (long)vid,
@@ -555,7 +572,7 @@ BOOL FnErr=NO;
                    sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date>=%ld order by date asc limit 1;",(long)vid,(long)epd0]; // desc->asc 22.ii.2016 to match <= -> >= change 25.01.16
                     
                     double v0 = [to toQry2Double:sql];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"delta/on_ratio/no_ratio: v0= %f", v0);
 #endif
                     // do caclulation
@@ -595,7 +612,7 @@ BOOL FnErr=NO;
                               (long)vid,(long)epd0,epd1];
                     double v =  [to toQry2Float:sql];
                     result = (v + v1) / c ;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"avg: v= %f v1= %f (v+v1)= %f c= %f rslt= %f ",v,v1,(v+v1),c,result);
 #endif
                     break;
@@ -615,7 +632,7 @@ BOOL FnErr=NO;
                         
                         }
                     }
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"min: result= %f", result);
 #endif
                     break;
@@ -634,7 +651,7 @@ BOOL FnErr=NO;
                             result = v1;
                         }
                     }
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"max: result= %f", result);
 #endif
                     break;
@@ -647,7 +664,7 @@ BOOL FnErr=NO;
                     if (!nullV1) {
                         result += 1.0f;
                     }
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"count: result= %f", result);
 #endif
                     break;
@@ -663,14 +680,14 @@ BOOL FnErr=NO;
                             //to.sql = [NSString stringWithFormat:@"select total(val) from voData where id=%d and date >=%d and date <%d;",
                             //		  vid,epd0,epd1];
                             //break;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                             DBGLog(@"presum: fall through");
 #endif
                         case FN1ARGSUM :
                             // (date<%d) because add in v1 below
                            sql = [NSString stringWithFormat:@"select total(val) from voData where id=%ld and date >=%ld and date <%d;",
                                       (long)vid,(long)epd0,epd1];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                             DBGLog(@"sum: set sql");
 #endif
                             break;
@@ -689,7 +706,7 @@ BOOL FnErr=NO;
                                 sql = @"select 0";
                             }
                              */
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                             DBGLog(@"postsum: set sql");
 #endif
                             break;
@@ -697,7 +714,7 @@ BOOL FnErr=NO;
                     result = [to toQry2Float:sql];
                     if (currTok != FN1ARGPRESUM)
                         result += v1;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"pre/post/sum: result= %f", result);
 #endif
                     break;
@@ -713,31 +730,31 @@ BOOL FnErr=NO;
                     // now just combine with what we have so far
 				case FN2ARGPLUS :
 					result += nextResult;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"plus: result= %f", result);
 #endif
 					break;
 				case FN2ARGMINUS :
 					result -= nextResult;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"minus: result= %f", result);
 #endif
 					break;
 				case FN2ARGTIMES :
 					result *= nextResult;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@"times: result= %f", result);
 #endif
 					break;
 				case FN2ARGDIVIDE :
 					if (nrnum != nil && nextResult != 0.0f) {
 						result /= nextResult;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                         DBGLog(@"divide: result= %f", result);
 #endif
 					} else {
 						//result = nil;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                         DBGLog(@"divide: rdivide by zero!");
 #endif
 						return nil;
@@ -751,12 +768,12 @@ BOOL FnErr=NO;
                 return nil;
             }
 			result = [nrnum doubleValue];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@"paren open: result= %f", result);
 #endif
 		} else if (currTok == FNPARENCLOSE) {
             // close paren means we are there, return what we have
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@"paren close: result= %f", result);
 #endif
 			return @(result);
@@ -768,58 +785,58 @@ BOOL FnErr=NO;
                 }
                 result = [(self.fnArray)[self.currFnNdx++] doubleValue];
                 self.currFnNdx++;  // skip the bounding constant tok
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@"constant: result= %f", result);
 #endif
         } else if (isFnTimeOp(currTok)) {
             if (0 == epd0) {
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                 DBGLog(@" timefn: at beginning");
 #endif
                 return nil;
             }
             
             result = (double) epd1 - epd0;
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@" timefn: %f secs",result);
 #endif
             switch (currTok) {
                 case FNTIMEWEEKS:
                     result /= 7;            // 7 days /week
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@" timefn: weeks : %f ",result);
 #endif
                 case FNTIMEDAYS :
                     result /= 24;            // 24 hrs / day 
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@" timefn: days %f ",result);
 #endif
                 case FNTIMEHRS :
                     result /= 60;           // 60 mins / hr
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@" timefn: hrs %f ",result);
 #endif
                 case FNTIMEMINS :
                     result /= 60;           // 60 secs / min
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@" timefn: mins %f ",result);
 #endif
                 case FNTIMESECS :
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
                     DBGLog(@" timefn: secs %f ",result);
 #endif
                 default:
                     //result /= d( 60 * 60 );  // 60 secs min * 60 secs hr
                     break;
             }
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@" timefn: %f final units",result);
 #endif
 		} else {
             // remaining option is we have some vid as currTok, return its value up the chain
             valueObj *lvo = [to getValObj:currTok];
             result = [lvo.value doubleValue];
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
             DBGLog(@"vid %ld: result= %f", (long)lvo.vid,result);
 #endif
             //result = [[to getValObj:currTok].value doubleValue];
@@ -827,7 +844,7 @@ BOOL FnErr=NO;
 		}
 	}
 
-#if DEBUGFUNCTION
+#if FUNCTIONDBG
     DBGLog(@"%@ calcFnValueWithCurrent rtn: %@", self.vo.valueName, [NSNumber numberWithDouble:result]);
 #endif
     return @(result);

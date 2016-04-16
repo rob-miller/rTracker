@@ -1,3 +1,20 @@
+/***************
+ dbg-defs.h
+ Copyright 2011-2016 Robert T. Miller
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ *****************/
+
 //
 //  dbg-defs.h
 //  rTracker
@@ -5,6 +22,33 @@
 //  Created by Rob Miller on 30/03/2011.
 //  Copyright 2011 Robert T. Miller. All rights reserved.
 //
+
+
+#define RELEASE     1
+
+#define DEBUGLOG    0
+#define DEBUGWARN   1
+#define DEBUGERR    1
+
+// enable additional debugging code in these sections
+#define SQLDEBUG    0
+#define FUNCTIONDBG 0
+#define REMINDERDBG 0
+
+
+// enable advertising code -- controlled in Xcode build settings (Apple LLVM -> Preprocessing -> Preprocessor macros) for rTrackerA
+//#define ADVERSION   0
+
+
+// enable Lukas Petr's GSTouchesShowingWindow (https://github.com/LukasCZ/GSTouchesShowingWindow - not included here)
+#define SHOWTOUCHES 0
+
+// enable Fabric Crashlytics crash reporting (https://try.crashlytics.com/ - not included here)
+#define FABRIC      0
+
+// disable attempts to extract device owner's name and use for main screen title line ("rob's tracks")
+#define NONAME      0
+
 
 // iOS Version Checking
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
@@ -15,29 +59,7 @@
 
 
 
-#define SQLDEBUG    0
-#define NONAME      0
-
-#define DEBUGFUNCTION     0
-#define REMINDERDBG 0
-
-//********       vvvvvv //
-
-#define RELEASE     1
-#define DEBUGLOG    0
-#define SHOWTOUCHES 0
-#define FABRIC      0
-
-//#define ADVERSION   0
-
-
-// report scheduled notification fire dates in dbInfo() 
-
-
-//********       ^^^^^^ //
-
-#define DEBUGWARN   1
-#define DEBUGERR    1
+// implementation for debug messages:
 
 #if SQLDEBUG
 #define SQLDbg(args...) NSLog(@"%@",[NSString stringWithFormat: args])

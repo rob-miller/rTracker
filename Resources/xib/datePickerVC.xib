@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -24,7 +24,6 @@
             <subviews>
                 <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                     <rect key="frame" x="0.0" y="22" width="600" height="44"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="ZUS-Rl-mtv"/>
                     </constraints>
@@ -33,8 +32,7 @@
                     </items>
                 </navigationBar>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C6Y-uS-8gK" userLabel="vspacer1">
-                    <rect key="frame" x="285" y="66" width="30" height="89.5"/>
-                    <animations/>
+                    <rect key="frame" x="285" y="66" width="30" height="90"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="30" id="CEv-kX-3sk"/>
@@ -43,7 +41,6 @@
                 </view>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="2" translatesAutoresizingMaskIntoConstraints="NO" id="11">
                     <rect key="frame" x="9" y="155" width="582" height="162"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="162" id="HzW-xL-xuR"/>
                     </constraints>
@@ -52,16 +49,14 @@
                     </date>
                 </datePicker>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4QZ-lF-acz" userLabel="vspacer2">
-                    <rect key="frame" x="285" y="317" width="30" height="89.5"/>
-                    <animations/>
+                    <rect key="frame" x="285" y="317" width="30" height="90"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i5t-zA-WAT" userLabel="buttonSet">
-                    <rect key="frame" x="9" y="406.5" width="582" height="60"/>
+                    <rect key="frame" x="9" y="407" width="582" height="60"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                             <rect key="frame" x="10" y="15" width="75" height="30"/>
-                            <animations/>
                             <constraints>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="Ibk-Pa-pzH"/>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="v3M-mx-v8E"/>
@@ -82,7 +77,6 @@
                         </button>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXI-vO-9xb" userLabel="hspacer2">
                             <rect key="frame" x="85" y="0.0" width="169" height="60"/>
-                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="95" id="BRY-GP-cAd"/>
@@ -99,7 +93,6 @@
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                             <rect key="frame" x="254" y="15" width="75" height="30"/>
-                            <animations/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="20P-kn-GFR"/>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="4lz-UJ-v2f"/>
@@ -120,12 +113,10 @@
                         </button>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rbb-0i-cDD" userLabel="hspacer3">
                             <rect key="frame" x="329" y="0.0" width="149" height="60"/>
-                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                             <rect key="frame" x="497" y="15" width="75" height="30"/>
-                            <animations/>
                             <constraints>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="9Fk-wY-PQH"/>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="FQO-nf-vAE"/>
@@ -145,7 +136,6 @@
                             </connections>
                         </button>
                     </subviews>
-                    <animations/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="centerY" secondItem="nXI-vO-9xb" secondAttribute="centerY" id="0Uw-cq-PtK"/>
@@ -203,13 +193,11 @@
                     </variation>
                 </view>
                 <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CKz-zx-Q1u" userLabel="vspacer3">
-                    <rect key="frame" x="285" y="466.5" width="30" height="89.5"/>
-                    <animations/>
+                    <rect key="frame" x="285" y="467" width="30" height="89"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="WIH-yH-yvc"/>
                     </constraints>
@@ -218,7 +206,6 @@
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="xGn-qo-KOr">
                                 <rect key="frame" x="20" y="7" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
                                 <state key="normal" title="❌">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -230,7 +217,6 @@
                     </items>
                 </toolbar>
             </subviews>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="4QZ-lF-acz" secondAttribute="bottom" constant="255" id="0Hj-fY-7jA"/>
