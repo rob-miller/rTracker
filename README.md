@@ -15,7 +15,8 @@ A rudimentary privacy facility is available, such that trackers and/or their val
 ## Views
 
 ![Tracker list](http://rob-miller.github.io/rTracker/rTracker/iPhone/rTracker-main-imgs/rTracker-main-view.png)
-![sample tracker](http://rob-miller.github.io/rTracker/rTracker/iPhone/rTracker-main-imgs/rTracker-use-car-tracker.png)
+![sample tracker](http://rob-miller.github.io/rTracker/screenShots/iphone6_tia.png)
+![graph](http://rob-miller.github.io/rTracker/screenShots/iPhone6_graph.png)
 
 ## Status
 
@@ -46,6 +47,8 @@ The base class for individual tracked values is valueObj and this implements an 
 rTrackerA is a separate build target which uses the iOS advertising platform, is limited to 8 trackers of 8 items each, and offers an in-app upgrade to remove these features.  It is being/has been removed from the App Store.
 
 rTracker-test is a separate build target for distribution to testers through Fabric.
+
+[GitHub contribution hints](http://www.javaworld.com/article/2113465/developer-tools-ide/git-smart-20-essential-tips-for-git-and-github-users.html)
 
 ## License
 
