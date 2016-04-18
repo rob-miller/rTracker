@@ -2052,7 +2052,9 @@ TODO: regen all .rtrks on website
    - remove GSTouches and Fabric/Crashlytics for Github release
    - add Apache license text, README.md and put website under Documentation/realidata-website
 
-
+18 apr 2016
+   - final cahges to 3.0.0, submitted to Apple
+   
 
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
