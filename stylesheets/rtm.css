@@ -1,0 +1,18 @@
+
+div.photos_together {
+    width: 540px;
+    display:inline-block;
+}
+
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.inline-block {
+  display: inline-block;
+}
+.clear-both {
+  clear: both;
+}
