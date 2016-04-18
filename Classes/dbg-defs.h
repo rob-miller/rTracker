@@ -39,6 +39,10 @@
 // enable advertising code -- controlled in Xcode build settings (Apple LLVM -> Preprocessing -> Preprocessor macros) for rTrackerA
 //#define ADVERSION   0
 
+// advertisements disabled - open source - no revenue
+// code left in place as documentation/example for interested parties
+#define DISABLE_ADS   1
+
 
 // enable Lukas Petr's GSTouchesShowingWindow (https://github.com/LukasCZ/GSTouchesShowingWindow - not included here)
 #define SHOWTOUCHES 0

@@ -13,7 +13,7 @@
 			<key>name</key>
 			<string>👣rTracker demo</string>
 			<key>prevTID</key>
-			<string>181</string>
+			<string>-1</string>
 			<key>privacy</key>
 			<string>1</string>
 			<key>rt_build</key>
@@ -701,7 +701,7 @@
 					<key>infosave</key>
 					<string>0</string>
 					<key>infourl</key>
-					<string>https://www.realidata.com/cgi-bin/comments.pl</string>
+					<string>https://github.com/rob-miller/rTracker</string>
 					<key>infoval</key>
 					<string>1.0</string>
 					<key>longTitle</key>
@@ -712,7 +712,7 @@
 				<key>vGraphType</key>
 				<integer>5</integer>
 				<key>valueName</key>
-				<string>👉🏼 Tap to 💬 write me a note</string>
+				<string>👉🏼 Tap to 💻 use the source </string>
 				<key>vcolor</key>
 				<integer>-1</integer>
 				<key>vid</key>
@@ -730,7 +730,7 @@
 					<key>infosave</key>
 					<string>0</string>
 					<key>infourl</key>
-					<string>https://www.realidata.com/cgi-bin/getTrackers.pl</string>
+					<string>http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/QandA_downloadTrackers.html</string>
 					<key>infoval</key>
 					<string>1.0</string>
 					<key>longTitle</key>
@@ -804,35 +804,6 @@
 				<integer>-1</integer>
 				<key>vid</key>
 				<integer>31</integer>
-				<key>vpriv</key>
-				<integer>0</integer>
-				<key>vtype</key>
-				<integer>7</integer>
-			</dict>
-			<dict>
-				<key>optDict</key>
-				<dict>
-					<key>graph</key>
-					<string>0</string>
-					<key>infosave</key>
-					<string>0</string>
-					<key>infourl</key>
-					<string>rTrackerA://tid=1</string>
-					<key>infoval</key>
-					<string>1.0</string>
-					<key>longTitle</key>
-					<string></string>
-					<key>privacy</key>
-					<string>1</string>
-				</dict>
-				<key>vGraphType</key>
-				<integer>5</integer>
-				<key>valueName</key>
-				<string>👉🏼 tap for rTrackerA-&gt;Car (URL scheme)</string>
-				<key>vcolor</key>
-				<integer>-1</integer>
-				<key>vid</key>
-				<integer>32</integer>
 				<key>vpriv</key>
 				<integer>0</integer>
 				<key>vtype</key>
@@ -1029,8 +1000,6 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string></string>
 			<key>40</key>
@@ -1038,7 +1007,7 @@
 			<key>43</key>
 			<string>68.00</string>
 			<key>45</key>
-			<string>16409.33</string>
+			<string></string>
 			<key>5</key>
 			<string></string>
 			<key>6</key>
@@ -1091,8 +1060,6 @@
 			<key>30</key>
 			<string>1.0</string>
 			<key>31</key>
-			<string>1.0</string>
-			<key>32</key>
 			<string>1.0</string>
 			<key>4</key>
 			<string></string>
@@ -1155,14 +1122,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string></string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>68.00</string>
+			<string>34.00</string>
 			<key>45</key>
 			<string>1.00</string>
 			<key>5</key>
@@ -1218,14 +1183,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string></string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>68.00</string>
+			<string>22.67</string>
 			<key>45</key>
 			<string>1.00</string>
 			<key>5</key>
@@ -1281,14 +1244,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string></string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>68.00</string>
+			<string>17.00</string>
 			<key>45</key>
 			<string>1.00</string>
 			<key>5</key>
@@ -1344,14 +1305,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string>322</string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>68.00</string>
+			<string>13.60</string>
 			<key>45</key>
 			<string>1.00</string>
 			<key>5</key>
@@ -1407,14 +1366,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string>200</string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>68.50</string>
+			<string>19.57</string>
 			<key>45</key>
 			<string>7.89</string>
 			<key>5</key>
@@ -1471,14 +1428,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string>444</string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>62.33</string>
+			<string>23.38</string>
 			<key>45</key>
 			<string>7.03</string>
 			<key>5</key>
@@ -1534,14 +1489,12 @@
 			<string>1.0</string>
 			<key>31</key>
 			<string>1.0</string>
-			<key>32</key>
-			<string>1.0</string>
 			<key>4</key>
 			<string>5</string>
 			<key>40</key>
 			<string>1.0</string>
 			<key>43</key>
-			<string>51.75</string>
+			<string>23.00</string>
 			<key>45</key>
 			<string>4.03</string>
 			<key>5</key>

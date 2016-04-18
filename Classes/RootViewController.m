@@ -1089,7 +1089,9 @@ BOOL loadingInputFiles=NO;
     [rTracker_resource setPurchased:NO];
 #endif
     if (![rTracker_resource getPurchased]) {
+#if !DISABLE_ADS
         [self.adSupport initBannerView:self];
+#endif
     }
     //[self.view addSubview:self.adSupport.bannerView];
 #endif
@@ -1128,8 +1130,10 @@ BOOL loadingInputFiles=NO;
 
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
+#if !DISABLE_ADS
         tableFrame.size.height -= self.adSupport.bannerView.frame.size.height;
         DBGLog(@"ad h= %f  tfh= %f ",self.adSupport.bannerView.frame.size.height,tableFrame.size.height);
+#endif
     }
 #endif
 
@@ -1390,9 +1394,10 @@ BOOL loadingInputFiles=NO;
 #if ADVERSION
     
     if (![rTracker_resource getPurchased]) {
+#if !DISABLE_ADS
         [self.adSupport initBannerView:self];
         [self.view addSubview:self.adSupport.bannerView];
-        
+#endif
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updatePurchased:)
                                                      name:rtPurchasedNotification
@@ -1447,7 +1452,10 @@ BOOL stashAnimated;
     //[super viewDidAppear:stashAnimated];
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
+#if !DISABLE_ADS
+
         [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
+#endif
     }
 #endif
    
@@ -1900,7 +1908,11 @@ BOOL stashAnimated;
 }
 
 - (void) btnHelp {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/userGuide"]];
+#if ADVERSION
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/replace_rTrackerA.html"]];
+#else
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/userGuide/"]];
+#endif
 }
 
 - (void)btnPay {
@@ -2035,11 +2047,13 @@ BOOL stashAnimated;
     utc.saveFrame = self.view.frame; // self.tableView.frame; //  view.frame;
     utc.rvcTitle = self.title;
 #if ADVERSION
+#if !DISABLE_ADS
     if (![rTracker_resource getPurchased]) {
         utc.adSupport = self.adSupport;
     } else {
         utc.adSupport = nil;
     }
+#endif
 #endif
     
     //if (rejectable) {

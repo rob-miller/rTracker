@@ -66,7 +66,7 @@ static int selSegNdx=SegmentEdit;
     
     DBGLog(@"export all");
     CGRect navframe = [[self.navigationController navigationBar] frame];
-    [rTracker_resource alert:@"exporting trackers" msg:@"_out.csv and _out.plist files are being saved to the rTracker Documents directory on this device.  Access them through iTunes on your PC/Mac, or with a program like iExplorer from Macroplant.com.  Import by changing the names to _in.csv and _in.plist, and read about .rtcsv file import capabilities at http://www.realidata.com/rTracker-HOWTO." vc:self];
+    [rTracker_resource alert:@"exporting trackers" msg:@"_out.csv and _out.plist files are being saved to the rTracker Documents directory on this device.  Access them through iTunes on your PC/Mac, or with a program like iExplorer from Macroplant.com.  Import by changing the names to _in.csv and _in.plist, and read about .rtcsv file import capabilities in the help pages." vc:self];
     [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES yloc:(navframe.size.height + navframe.origin.y)];
     
     [NSThread detachNewThreadSelector:@selector(startExport) toTarget:self withObject:nil];

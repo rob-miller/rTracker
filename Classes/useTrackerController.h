@@ -40,7 +40,7 @@
 
 #import "dbg-defs.h"
 
-#if ADVERSION
+#if ADVERSION && (!DISABLE_ADS)
 #import "adSupport.h"
 @interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MFMailComposeViewControllerDelegate, ADBannerViewDelegate>
 #else
@@ -89,7 +89,7 @@
 @property (nonatomic,strong) NSArray *searchSet;
 @property (nonatomic,strong) NSString *rvcTitle;
 
-#if ADVERSION
+#if ADVERSION && (!DISABLE_ADS)
 @property (nonatomic,strong) adSupport *adSupport;
 #endif
 

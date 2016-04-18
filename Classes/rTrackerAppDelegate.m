@@ -70,7 +70,7 @@
     [application registerForRemoteNotifications];
 }
 
-- (void) registerForNotifications:(RootViewController *)rootController {
+- (void) pleaseRegisterForNotifications:(RootViewController *)rootController {
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
         if (! [rTracker_resource notificationsEnabled]) {
@@ -79,7 +79,7 @@
             if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
                 
                 UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Authorise notifications"
-                                                                               message:@"Authorise notifications to enable tracker reminders."
+                                                                               message:@"Authorise notifications in the next window to enable tracker reminders."
                                                                         preferredStyle:UIAlertControllerStyleAlert];
                 
                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -198,7 +198,7 @@
     
     
 #if ADVERSION
-    [rTracker_resource replaceRtrackerA:self];
+    [rTracker_resource replaceRtrackerA:rootController];
 #else
     if (![rTracker_resource getAcceptLicense]) {
         
@@ -211,7 +211,7 @@
         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) {
                                                                   [rTracker_resource setAcceptLicense:YES];
-                                                                  [self registerForNotifications:rootController];
+                                                                  [self pleaseRegisterForNotifications:rootController];
                                                               }];
         UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) { exit(0); }];

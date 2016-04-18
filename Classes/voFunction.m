@@ -1486,13 +1486,13 @@ BOOL FnErr=NO;
 - (void) btnHelp {
     switch (self.fnSegNdx) {
         case FNSEGNDX_OVERVIEW:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#overview"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#overview"]];
             break;
         case FNSEGNDX_RANGEBLD:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#range"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#range"]];
             break;
         case FNSEGNDX_FUNCTBLD:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.realidata.com/rTracker/iPhone/QandA/addFunction.html#operators"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#operators"]];
             break;
         default:
             dbgNSAssert(0,@"fnSegmentAction bad index!");

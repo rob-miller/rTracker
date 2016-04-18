@@ -342,7 +342,7 @@ BOOL hasAmPm=NO;
 }
 
 +(void) replaceRtrackerA:(UIViewController*)vc {
-    [rTracker_resource alert:@"rTracker is free" msg:@"rTrackerA is being removed from the app store.\n\nPlease install rTracker, which is now free and open source.\n\nSee Github for instructions on how to transfer trackers between these applications." vc:vc];
+    [rTracker_resource alert:@"rTracker is free" msg:@"rTrackerA is being removed from the app store.\n\nPlease install rTracker, which is now free and open source.\n\nSee the help pages for instructions on how to transfer trackers between these applications (tl;dr : email tracker+data to yourself, open attachment with rTracker)." vc:vc];
 }
 //----
 #endif
