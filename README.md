@@ -1,6 +1,6 @@
 # rTracker
 
-rTracker is a complete iOS application for creating local on-device databases ('trackers') to log data with timestamps.
+[rTracker](http://rob-miller.github.io/rTracker/rTracker/iPhone/pages/rTracker-main.html) is a complete iOS application for creating local on-device databases ('trackers') to log data with timestamps.
 
 Trackers can use a variety of iOS controls (number/text fields, sliders, radiobuttons, checkbuttons), and can implement limited functions on values within entries and over time.  These controls comprise the data input form, and are presented when the device is in portrait orientation; rotating the device to landscape mode will present a graph of the collected data over time.
 
