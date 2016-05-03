@@ -200,8 +200,9 @@
 #if ADVERSION
     [rTracker_resource replaceRtrackerA:rootController];
 #else
-    if (![rTracker_resource getAcceptLicense]) {
-        
+    //if (![rTracker_resource getAcceptLicense]) {
+
+    if (! [sud boolForKey:@"acceptLicense"]) { // race relying on rvc having set
         NSString *freeMsg= @"Copyright 2010-2016 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
@@ -211,6 +212,9 @@
         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) {
                                                                   [rTracker_resource setAcceptLicense:YES];
+                                                                  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"acceptLicense"];
+                                                                  [[NSUserDefaults standardUserDefaults] synchronize];
+                                                                  
                                                                   [self pleaseRegisterForNotifications:rootController];
                                                               }];
         UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
