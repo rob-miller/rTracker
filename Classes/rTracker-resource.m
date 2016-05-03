@@ -626,7 +626,6 @@ static BOOL acceptLicense=ACCEPTLICENSEDFLT;
 + (void)setAcceptLicense:(BOOL)acceptLic {
     acceptLicense = acceptLic;
     //DBGLog(@"updateAcceptLicense:%d",acceptLicense);
-    NSLog(@"updateAcceptLicense:%d",acceptLicense);
 }
 
 /*

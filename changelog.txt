@@ -2057,7 +2057,7 @@ TODO: regen all .rtrks on website
    
 03 may 2016
    - fix display license agreement at every restart -- typo and race condition
-   
+   - release as 3.0.1
    
 * try application loader for app submission - xcode -> open developer tool -> application loader
  - in organizer window, choose 'export' after creating archive, then ... for app store deployment
