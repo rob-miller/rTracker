@@ -522,6 +522,8 @@
         newTid = [self getUnique];
         newFn = [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)newTid];
     }
+
+    // RTM TODO ADDRESS: what if fn = newFN here?
     
     if ([fm moveItemAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]
                     toPath:[rTracker_resource ioFilePath:newFn access:DBACCESS] error:&error] != YES) {
