@@ -1070,9 +1070,13 @@ static BOOL getOrientEnabled=false;
 
 +(CGRect) getKeyWindowFrame
 {
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    return window.frame;
+    __block CGRect rframe;
+    dispatch_sync(dispatch_get_main_queue(), ^(void){
+        UIWindow* window = [UIApplication sharedApplication].keyWindow;
+        if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+        rframe = window.frame;
+    });
+    return rframe;
 }
 
 +(UIDeviceOrientation) getOrientationFromWindow
