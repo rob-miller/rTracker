@@ -213,10 +213,11 @@ static BOOL InstallDemos;
 
                 if (csvString)
                 {
-                    [UIApplication sharedApplication].idleTimerDisabled = YES;
-                    [self doCSVLoad:csvString to:to fname:fname];
-                    [UIApplication sharedApplication].idleTimerDisabled = NO;
-
+                    dispatch_sync(dispatch_get_main_queue(), ^(void){
+                        [UIApplication sharedApplication].idleTimerDisabled = YES;
+                        [self doCSVLoad:csvString to:to fname:fname];
+                        [UIApplication sharedApplication].idleTimerDisabled = NO;
+                    });
                     [rTracker_resource deleteFileAtPath:target];
                 }
                 
@@ -458,8 +459,9 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     DBGLog(@"removing file %@",[url path]);
     [rTracker_resource deleteFileAtPath:[url path]];
     //if ((c>20) || (c2>20))
+    dispatch_async(dispatch_get_main_queue(), ^(void){
         [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
-    
+    });
     
     return tid;
 }
@@ -469,7 +471,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
     // called on refresh, loads any _in.plist files as trackers
     // also called if any .rtrk files exist
     DBGLog(@"loadTrackerPlistFiles");
-    int rtrkTid=0;
+    __block int rtrkTid=0;
     
     NSString *docsDir = [rTracker_resource ioFilePath:nil access:YES];
     NSFileManager *localFileManager= [NSFileManager defaultManager];
@@ -505,7 +507,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
         //NSString *tname = nil;
         NSString *target;
         NSString *newTarget;
-        BOOL plistFile=NO;
+        __block BOOL plistFile=NO;
         
         NSString *fname = [file lastPathComponent];
         DBGLog(@"process input: %@",fname);
@@ -519,29 +521,31 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
             DBGErr(@"Error on move %@ to %@: %@",target, newTarget, err);
 
         self.readingFile=YES;
-        
+
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
 
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            [UIApplication sharedApplication].idleTimerDisabled = YES;
 
-        if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
-            rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
-            plistFile = YES;
-            //TODO:need to delete stash file now!!!
-            //tname = [fname substringToIndex:inmatch.location];
-            //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
-            // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
-        } else {   // .rtrk file
-            rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
-            /*
-            NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
-            tname = [rtdict objectForKey:@"trackerName"];
-            tdict = [rtdict objectForKey:@"configDict"];
-            dataDict = [rtdict objectForKey:@"dataDict"];
-             */
+            if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
+                rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
+                plistFile = YES;
+                //TODO:need to delete stash file now!!!
+                //tname = [fname substringToIndex:inmatch.location];
+                //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
+                // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
+            } else {   // .rtrk file
+                rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
+                /*
+                NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
+                tname = [rtdict objectForKey:@"trackerName"];
+                tdict = [rtdict objectForKey:@"configDict"];
+                dataDict = [rtdict objectForKey:@"dataDict"];
+                 */
         }
 
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+        });
         
         if (plistFile) {
             [rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL
@@ -608,15 +612,15 @@ BOOL loadingCsvFiles=NO;
     if (loadingCsvFiles) return;
     loadingCsvFiles=YES;
     @autoreleasepool {
-    
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
-        [self loadTrackerCsvFiles];
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
-        
-        // file load done, enable userInteraction
-        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
-        [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
-        
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            [UIApplication sharedApplication].idleTimerDisabled = YES;
+            [self loadTrackerCsvFiles];
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+            // file load done, enable userInteraction
+            [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+            [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
+        });
+
         // give up lock
         self.refreshLock = 0;
         loadingCsvFiles=NO;
