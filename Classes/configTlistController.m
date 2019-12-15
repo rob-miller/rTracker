@@ -445,7 +445,7 @@ static int selSegNdx=SegmentEdit;
         //[self.tlist confirmTopLayoutEntry:nTO];
 		//[self.tlist loadTopLayoutTable];
          dispatch_async(dispatch_get_main_queue(), ^(void){
-		[self.table reloadData];
+             [self.table reloadData];
          });
 
 	} else if (selSegNdx == SegmentMoveDelete) {
