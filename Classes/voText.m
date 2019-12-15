@@ -115,8 +115,8 @@
 	self.vosFrame = bounds;
 
 	if (![self.vo.value isEqualToString:self.dtf.text]) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-		self.dtf.text = self.vo.value;
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            self.dtf.text = self.vo.value;
         });
         DBGLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
 	}
