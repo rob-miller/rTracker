@@ -165,7 +165,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
-    dispatch_async(dispatch_get_main_queue(), ^(void){
+    dispatch_sync(dispatch_get_main_queue(), ^(void){
     
         if ([self.nameField.text length] > 0) {
             self.tempTrackerObj.trackerName = self.nameField.text;
