@@ -1071,11 +1071,17 @@ static BOOL getOrientEnabled=false;
 +(CGRect) getKeyWindowFrame
 {
     __block CGRect rframe;
-    dispatch_sync(dispatch_get_main_queue(), ^(void){
+    if ([NSThread isMainThread]) {
         UIWindow* window = [UIApplication sharedApplication].keyWindow;
         if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
         rframe = window.frame;
-    });
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            UIWindow* window = [UIApplication sharedApplication].keyWindow;
+            if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+            rframe = window.frame;
+        });
+    }
     return rframe;
 }
 
