@@ -1980,12 +1980,13 @@ if (addVO) {
 }
 
 - (void) initReminderTable {
-    NSString *sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
+    NSString *sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, soundFileName text, unique(rid) on conflict replace)";
     [self toExecSql:sql];
-    sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr:sql];
-    sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr:sql];
+    // assume all old databsese updated by now.
+    //sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
+    //[self toExecSqlIgnErr:sql];
+    //sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
+    //[self toExecSqlIgnErr:sql];
   //sql = nil;
 }
 
