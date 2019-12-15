@@ -54,8 +54,9 @@
 	
 	NSString *sql = @"create table if not exists toplevel (rank integer, id integer unique, name text, priv integer, remindercount integer);";
     [self toExecSql:sql];
-    sql = @"alter table toplevel add column remindercount int";  // new column added for reminders
-    [self toExecSqlIgnErr:sql];
+    // assume all old users have updated columns by now
+    //sql = @"alter table toplevel add column remindercount int";  // new column added for reminders
+    //[self toExecSqlIgnErr:sql];
     
 	//self.sql = @"select count(*) from toplevel;";
 	//DBGLog(@"toplevel at open contains %d entries",[self toQry2Int:sql]);
