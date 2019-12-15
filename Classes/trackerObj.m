@@ -925,24 +925,25 @@ if (addVO) {
     sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
     [self toExecSql:sql];
     
-	// now save
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
-	int i=0;
-	for (valueObj *vo in self.valObjTable) {
+    dispatch_sync(dispatch_get_main_queue(), ^(void){
+        // now save
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        int i=0;
+        for (valueObj *vo in self.valObjTable) {
+            
+            //DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
+            NSString *sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
+                        (long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
+            [self toExecSql:sql];
+            
+            [self saveVoOptdict:vo];
+        }
         
-		//DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
-        sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
-					(long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
-		[self toExecSql:sql];
-		
-		[self saveVoOptdict:vo];
-	}
-    
-    [self reminders2db];
-    [self setReminders];
-     
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
-	
+        [self reminders2db];
+        [self setReminders];
+         
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+    });
 	//self.sql = nil;
     
 }
@@ -2394,16 +2395,18 @@ if (addVO) {
 
 
 - (void) clearScheduledReminders {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
-            [app cancelLocalNotification:oneEvent];
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        UIApplication *app = [UIApplication sharedApplication];
+        NSArray *eventArray = [app scheduledLocalNotifications];
+        for (int i=0; i<[eventArray count]; i++)
+        {
+            UILocalNotification* oneEvent = eventArray[i];
+            NSDictionary *userInfoCurrent = oneEvent.userInfo;
+            if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
+                [app cancelLocalNotification:oneEvent];
+            }
         }
-    }
+    });
 }
 
 - (void) setReminders {
