@@ -1701,7 +1701,7 @@ BOOL stashAnimated;
 - (void) privBtnSetImg:(UIButton*)pbtn noshow:(BOOL)noshow {
     //BOOL shwng = (self.privacyObj.showing == PVNOSHOW); 
     BOOL minprv = ( [privacyV getPrivacyValue] > MINPRIV );
-    
+    /*
     NSString *btnImg = ( kIS_LESS_THAN_IOS7 ?
                         ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
                          : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) )
@@ -1710,6 +1710,16 @@ BOOL stashAnimated;
                          : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
                         )
                         ;
+     */
+    NSString *btnImg = (/* kIS_LESS_THAN_IOS7 ?
+                        ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
+                         : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) )
+                        : */
+                        ( noshow ? ( minprv ? @"shadeview-button-7.png" : @"closedview-button-7.png" )
+                         : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
+                        )
+                        ;
+
     dispatch_async(dispatch_get_main_queue(), ^(void){
         [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
     });
@@ -1720,7 +1730,7 @@ BOOL stashAnimated;
 	if (_privateBtn == nil) {
         // /*
         UIButton *pbtn = [[UIButton alloc] init];
-        [pbtn setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"closedview-button.png" : @"closedview-button-7.png")]
+        [pbtn setImage:[UIImage imageNamed:(/* kIS_LESS_THAN_IOS7 ? @"closedview-button.png" : */  @"closedview-button-7.png")]
               forState:UIControlStateNormal];
         pbtn.frame = CGRectMake(0, 0, ( pbtn.currentImage.size.width * 1.5 ), pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
@@ -1735,7 +1745,7 @@ BOOL stashAnimated;
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
             [(UIButton *)_privateBtn.customView
-             setImage:[UIImage imageNamed:(kIS_LESS_THAN_IOS7 ? @"fullview-button-blue.png" : @"fullview-button-blue-7.png")]
+             setImage:[UIImage imageNamed:(/* kIS_LESS_THAN_IOS7 ? @"fullview-button-blue.png" : */ @"fullview-button-blue-7.png")]
              forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
