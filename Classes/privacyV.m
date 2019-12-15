@@ -132,9 +132,9 @@ static NSNumber *stashedPriv=nil;
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
 		self.pwState = PWNEEDPRIVOK; //PWNEEDPASS;
-        if (kIS_LESS_THAN_IOS7) {
-            self.backgroundColor = [UIColor darkGrayColor];
-        } else {
+       // if (kIS_LESS_THAN_IOS7) {
+       //     self.backgroundColor = [UIColor darkGrayColor];
+       // } else {
             //self.backgroundColor = [UIColor whiteColor];
             // set graph paper background
             // /*
@@ -143,7 +143,7 @@ static NSNumber *stashedPriv=nil;
             [self sendSubviewToBack:bg];
              // */
             //self.backgroundColor = [UIColor greenColor];
-        }
+        //}
         self.layer.cornerRadius = 8;
 		self.showing = PVNOSHOW;
         //self.hidden = YES;
@@ -550,11 +550,11 @@ static NSTimeInterval lastShow=0;
 - (UIButton*) getBtn:(NSString*)btitle borg:(CGPoint)borg {
 	UIButton *rbtn = [UIButton buttonWithType:UIButtonTypeRoundedRect ];
     CGRect bframe;
-    if (kIS_LESS_THAN_IOS7) {
+    //if (kIS_LESS_THAN_IOS7) {
+    //    bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
+    //} else {
         bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
-    } else {
-        bframe = (CGRect) {borg, [btitle sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}]};
-    }
+    //}
 	bframe.origin.x -= bframe.size.width/2.0f;  // center now we know btn title size
 	rbtn.frame = bframe;
 	[rbtn setTitle:btitle forState:UIControlStateNormal];
