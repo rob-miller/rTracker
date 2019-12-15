@@ -28,7 +28,7 @@
 
 #import "togd.h"
 #import "valueObj.h"
-#import "vostate.h"
+#import "voState.h"
 
 #import "rTracker-constants.h"
 #import "dbg-defs.h"
