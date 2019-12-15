@@ -60,9 +60,9 @@
 	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
-        if (kIS_LESS_THAN_IOS7) {
-            self.backgroundColor = [UIColor darkGrayColor];
-        } else {
+        //if (kIS_LESS_THAN_IOS7) {
+        //    self.backgroundColor = [UIColor darkGrayColor];
+        //} else {
             //self.backgroundColor = [UIColor whiteColor];
             // set graph paper background
             ///*
@@ -71,7 +71,7 @@
             [self sendSubviewToBack:bg];
             // */
             //self.backgroundColor = [UIColor redColor];
-        }
+        //}
         self.layer.cornerRadius=8;
 		self.parentView = pv;
 		
@@ -225,9 +225,9 @@ BOOL ObservingKeyboardNotification=false;
 	//DBGLog(@"ppwv check pass");
 	[self setUpPass:okState cancel:cancelState];
 	self.topLabel.text = @"Please enter password:";
-    if (kIS_LESS_THAN_IOS7) {
-        self.topLabel.textColor = [UIColor whiteColor];
-    }
+    //if (kIS_LESS_THAN_IOS7) {
+    //    self.topLabel.textColor = [UIColor whiteColor];
+    //}
 	[self.topTF addTarget:self action:@selector(testp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -238,9 +238,9 @@ BOOL ObservingKeyboardNotification=false;
 	[self setUpPass:okState cancel:cancelState];
 
 	self.topLabel.text = @"Please set a password:";
-    if (kIS_LESS_THAN_IOS7) {
-        self.topLabel.textColor = [UIColor whiteColor];
-    }
+    //if (kIS_LESS_THAN_IOS7) {
+    //    self.topLabel.textColor = [UIColor whiteColor];
+    //}
 	[self.topTF addTarget:self action:@selector(setp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -375,11 +375,11 @@ BOOL ObservingKeyboardNotification=false;
 
 - (UILabel*) topLabel {
 	if (nil == _topLabel) {
-        if (kIS_LESS_THAN_IOS7) {
-            _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
-        } else {
+        //if (kIS_LESS_THAN_IOS7) {
+        //    _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
+        //} else {
             _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.15f]];
-        }
+        //}
 		//[topLabel setHidden:TRUE];
 		_topLabel.backgroundColor = [UIColor clearColor];
 		[self addSubview:_topLabel];
