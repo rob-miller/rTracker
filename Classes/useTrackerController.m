@@ -336,7 +336,7 @@
     //DBGLog(@"utc: view will appear");
     
     self.viewDisappearing=NO;
-    
+
     CGRect f = [rTracker_resource getKeyWindowFrame];
     
     if (f.size.width > f.size.height) {  // already in landscape view
@@ -887,7 +887,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
     DBGLog(@"self frame: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
     
 #endif
-    
+    /*
     if (kIS_LESS_THAN_IOS7) {
         boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
         // activeField.superview.superview.frame.origin.y - coff.y ;
@@ -896,8 +896,9 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
         boty = self.tracker.activeControl.superview.superview.superview.frame.origin.y - coff.y;
         boty += self.tracker.activeControl.superview.superview.superview.frame.size.height;
     } else {  // ios 8 and above
+     */
         boty = self.tracker.activeControl.superview.superview.frame.origin.y + self.tracker.activeControl.superview.superview.frame.size.height - coff.y;
-    }
+    //}
 
     DBGLog(@"dispatching to wsk, boty= %f kis=%d",boty,keyboardIsShown);
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
