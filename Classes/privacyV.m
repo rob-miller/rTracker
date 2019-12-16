@@ -326,7 +326,6 @@ static NSTimeInterval lastShow=0;
 }
 
 // state control for what's showing
-
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",_showing,newState,[privacyV getPrivacyValue]);
     if ((PVNOSHOW == _showing) && (PVNOSHOW == newState))
@@ -368,14 +367,19 @@ static NSTimeInterval lastShow=0;
             [alert addAction:defaultAction];
             [alert addAction:skipAction];
             
+            /*
             UIViewController *vc;
             UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
             w.rootViewController = [UIViewController new];
             w.windowLevel = UIWindowLevelAlert +1;
             [w makeKeyAndVisible];
             vc = w.rootViewController;
-
+            //vc.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+            [vc presentViewController:alert animated:YES completion:nil];
+            */
             
+            UIViewController *vc = [UIApplication sharedApplication].keyWindow.rootViewController;
             [vc presentViewController:alert animated:YES completion:nil];
             
         }
