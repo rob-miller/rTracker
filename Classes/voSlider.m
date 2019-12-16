@@ -98,6 +98,18 @@
 }
 */
 
+- (void)sliderTouchUp:(UISlider *)sender
+{
+    ((trackerObj*)self.vo.parentTracker).swipeEnable=YES;
+    //DBGLog(@"*********slider up");
+}
+- (void)sliderTouchDown:(UISlider *)sender
+{
+    ((trackerObj*)self.vo.parentTracker).swipeEnable=NO;
+    //DBGLog(@"********slider down");
+}
+
+
 - (UISlider*) sliderCtl {
     if (_sliderCtl && _sliderCtl.frame.size.width != self.vosFrame.size.width) _sliderCtl=nil;  // first time around thinks size is 320, handle larger devices
 
@@ -107,6 +119,10 @@
         
         _sliderCtl = [[UISlider alloc] initWithFrame:self.vosFrame];
         [_sliderCtl addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
+
+        [_sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+        [_sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpOutside];
+        [_sliderCtl addTarget:self action:@selector(sliderTouchDown:) forControlEvents:UIControlEventTouchDown];
 /*
         if ([(NSString*) [self.vo.optDict objectForKey:@"integerstepsb"] isEqualToString:@"1"]) {
             [sliderCtl addTarget:self action:@selector(sliderTouchUp:) forControlEvents:UIControlEventTouchUpInside];
