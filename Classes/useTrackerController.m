@@ -1538,6 +1538,8 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    if (!self.tracker.swipeEnable)
+        return;
 	int targD = (int)[self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
@@ -1549,6 +1551,8 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 - (void)handleViewSwipeLeft:(UISwipeGestureRecognizer *)gesture {
+    if (!self.tracker.swipeEnable)
+        return;
     int targD = (int)[self.tracker postDate];
 	[self setTrackerDate:targD];
     if (targD >0)
