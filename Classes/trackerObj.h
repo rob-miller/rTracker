@@ -97,6 +97,7 @@
 @property (nonatomic,strong) id togd;
 @property (nonatomic) NSInteger prevTID;
 @property (nonatomic) BOOL goRecalculate;
+@property (nonatomic) BOOL swipeEnable;
 @property (nonatomic) int changedDateFrom;
 @property (nonatomic,strong) NSMutableDictionary *csvHeaderDict;
 

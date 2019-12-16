@@ -222,6 +222,7 @@
 		*/
 		//DBGLog(@"init trackerObj New");
         self.goRecalculate=NO;
+        self.swipeEnable=YES;
         self.changedDateFrom=0;
 	}
 	
