@@ -165,14 +165,20 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
-    dispatch_sync(dispatch_get_main_queue(), ^(void){
-    
+    if ([NSThread isMainThread]) {
         if ([self.nameField.text length] > 0) {
             self.tempTrackerObj.trackerName = self.nameField.text;
             DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
         }
-    });
-    
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^(void){
+            if ([self.nameField.text length] > 0) {
+                self.tempTrackerObj.trackerName = self.nameField.text;
+                DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
+            }
+        });
+    }
+
 #if ADVERSION
     //unregister for purchase notices
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -362,8 +368,8 @@ DBGLog(@"btnAddValue was pressed!");
         //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
         [self.tlist loadTopLayoutTable];
         
-        [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
             [self.navigationController popViewControllerAnimated:YES];
         });
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
