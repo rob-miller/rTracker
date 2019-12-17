@@ -26,6 +26,7 @@
 #import "voText.h"
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 @implementation voText
 
@@ -115,11 +116,11 @@
 	self.vosFrame = bounds;
 
 	if (![self.vo.value isEqualToString:self.dtf.text]) {
-        dispatch_sync(dispatch_get_main_queue(), ^(void){
+        safeDispatchSync(^{
             self.dtf.text = self.vo.value;
         });
         DBGLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
-	}
+    }
 	
     DBGLog(@"textfield voDisplay: %@", self.dtf.text);
 	return self.dtf;
