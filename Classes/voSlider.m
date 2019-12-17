@@ -101,12 +101,12 @@
 - (void)sliderTouchUp:(UISlider *)sender
 {
     ((trackerObj*)self.vo.parentTracker).swipeEnable=YES;
-    //DBGLog(@"*********slider up");
+    DBGLog(@"*********slider up");
 }
 - (void)sliderTouchDown:(UISlider *)sender
 {
     ((trackerObj*)self.vo.parentTracker).swipeEnable=NO;
-    //DBGLog(@"********slider down");
+    DBGLog(@"********slider down");
 }
 
 
