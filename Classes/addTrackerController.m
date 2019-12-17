@@ -328,9 +328,9 @@ static int editMode;
 	}
 	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
-	
-	[self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-	
+	dispatch_async(dispatch_get_main_queue(), ^(void){
+        [self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+    });
 }
 
 
