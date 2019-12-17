@@ -895,6 +895,7 @@ if (addVO) {
         [self toExecSql:sql];
     }
 }
+
 - (void) saveConfig {
 	DBGLog(@"tObj saveConfig: trackerName= %@",self.trackerName) ;
 	
@@ -926,7 +927,7 @@ if (addVO) {
     sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
     [self toExecSql:sql];
     
-    dispatch_sync(dispatch_get_main_queue(), ^(void){
+    safeDispatchSync(^{
         // now save
         [UIApplication sharedApplication].idleTimerDisabled = YES;
         int i=0;
