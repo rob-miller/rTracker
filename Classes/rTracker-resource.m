@@ -41,6 +41,22 @@ UIView *currKeyboardView=nil;
 CGRect currKeyboardSaveFrame;
 BOOL resigningActive=NO;
 
+// found syntax for this here :
+// https://stackoverflow.com/questions/5225130/grand-central-dispatch-gcd-vs-performselector-need-a-better-explanation/5226271#5226271
+// https://stackoverflow.com/a/8186206/2783487
+void safeDispatchSync(void (^block)(void))
+{
+    if ([NSThread isMainThread])
+    {
+        block();
+    }
+    else
+    {
+        dispatch_sync(dispatch_get_main_queue(), block);
+    }
+}
+
+
 //---------------------------
 
 // Sample code from iOS 7 Transistion Guide
@@ -1071,17 +1087,12 @@ static BOOL getOrientEnabled=false;
 +(CGRect) getKeyWindowFrame
 {
     __block CGRect rframe;
-    if ([NSThread isMainThread]) {
+    safeDispatchSync(^{
         UIWindow* window = [UIApplication sharedApplication].keyWindow;
         if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
         rframe = window.frame;
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), ^(void){
-            UIWindow* window = [UIApplication sharedApplication].keyWindow;
-            if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-            rframe = window.frame;
-        });
-    }
+    });
+    
     return rframe;
 }
 

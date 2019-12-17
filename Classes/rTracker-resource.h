@@ -39,11 +39,16 @@
 //#define kIS_LESS_THAN_IOS7 (DeviceSystemMajorVersion() < 7)
 //#define kIS_LESS_THAN_IOS8 (DeviceSystemMajorVersion() < 8)
 
+
+
 @interface rTracker_resource : NSObject {
     
 }
 
+//#define SAFE_DISPATCH_SYNC(code) if ([NSThread isMainThread]) { code } else { dispatch_sync(dispatch_get_main_queue(), ^(void){ code }); }
+void safeDispatchSync(dispatch_block_t block);
 
+//+ (void) safeDispatchSync:(dispatch_block_t) block ;
 + (NSString *) ioFilePath:(NSString*)fname access:(BOOL)access;
 + (BOOL) deleteFileAtPath:(NSString*)fp;
 + (BOOL) protectFile:(NSString*)fp;
