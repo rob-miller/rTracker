@@ -165,19 +165,14 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
-    if ([NSThread isMainThread]) {
+
+    safeDispatchSync(^{
         if ([self.nameField.text length] > 0) {
             self.tempTrackerObj.trackerName = self.nameField.text;
             DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
         }
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), ^(void){
-            if ([self.nameField.text length] > 0) {
-                self.tempTrackerObj.trackerName = self.nameField.text;
-                DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
-            }
-        });
-    }
+    });
+
 
 #if ADVERSION
     //unregister for purchase notices
