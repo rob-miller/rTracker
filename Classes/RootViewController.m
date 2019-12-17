@@ -213,7 +213,7 @@ static BOOL InstallDemos;
 
                 if (csvString)
                 {
-                    dispatch_sync(dispatch_get_main_queue(), ^(void){
+                    safeDispatchSync(^{
                         [UIApplication sharedApplication].idleTimerDisabled = YES;
                         [self doCSVLoad:csvString to:to fname:fname];
                         [UIApplication sharedApplication].idleTimerDisabled = NO;
@@ -524,7 +524,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
 
         NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
 
-        dispatch_sync(dispatch_get_main_queue(), ^(void){
+        safeDispatchSync(^{
             [UIApplication sharedApplication].idleTimerDisabled = YES;
 
             if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
@@ -542,7 +542,7 @@ if ([[file pathExtension] isEqualToString: @"csv"]) {
                 tdict = [rtdict objectForKey:@"configDict"];
                 dataDict = [rtdict objectForKey:@"dataDict"];
                  */
-        }
+            }
 
             [UIApplication sharedApplication].idleTimerDisabled = NO;
         });
@@ -612,7 +612,7 @@ BOOL loadingCsvFiles=NO;
     if (loadingCsvFiles) return;
     loadingCsvFiles=YES;
     @autoreleasepool {
-        dispatch_sync(dispatch_get_main_queue(), ^(void){
+        safeDispatchSync(^{
             [UIApplication sharedApplication].idleTimerDisabled = YES;
             [self loadTrackerCsvFiles];
             [UIApplication sharedApplication].idleTimerDisabled = NO;
