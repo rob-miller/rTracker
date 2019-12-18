@@ -80,7 +80,7 @@
                         </barButtonItem>
                     </items>
                 </toolbar>
-                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pvl-yr-pMy" userLabel="headingsContainer">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pvl-yr-pMy" userLabel="headingsContainer">
                     <rect key="frame" x="0.0" y="231" width="414" height="34"/>
                 </view>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Type" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9">
@@ -116,6 +116,7 @@
                 <constraint firstItem="8r5-Pv-PCI" firstAttribute="leading" secondItem="Zt5-Xd-ch5" secondAttribute="leading" id="pu1-vV-f27"/>
                 <constraint firstItem="Pvl-yr-pMy" firstAttribute="trailing" secondItem="Zt5-Xd-ch5" secondAttribute="trailing" id="sU3-mb-1kI"/>
                 <constraint firstItem="9" firstAttribute="baseline" secondItem="16" secondAttribute="baseline" id="yes-hd-Rvp"/>
+                <constraint firstItem="Pvl-yr-pMy" firstAttribute="leading" secondItem="Zt5-Xd-ch5" secondAttribute="leading" id="ygd-KO-061"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Zt5-Xd-ch5"/>
             <point key="canvasLocation" x="456.52173913043481" y="269.19642857142856"/>
