@@ -461,7 +461,9 @@
             //CGContextSetFillColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
             CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
             MoveTo(0.0f, currVogd.yZero);
-            AddLineTo(self.frame.size.width,currVogd.yZero);
+            safeDispatchSync(^{
+                AddLineTo(self.frame.size.width,currVogd.yZero);
+            });
             Stroke;            
         }
         
@@ -557,7 +559,9 @@
         CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
         CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);
         MoveTo(self.xMark, 0.0f);
-        AddLineTo(self.xMark,self.frame.size.height);
+        safeDispatchSync(^{
+            AddLineTo(self.xMark,self.frame.size.height);
+        });
         Stroke;
     }
     if (self.searchXpoints) {
@@ -572,7 +576,9 @@
         
         for (NSNumber *xm in self.searchXpoints) {
             MoveTo([xm floatValue], 0.0f);
-            AddLineTo([xm floatValue],self.frame.size.height);
+            safeDispatchSync(^{
+                AddLineTo([xm floatValue],self.frame.size.height);
+            });
             Stroke;
         }
         
@@ -621,12 +627,14 @@
         //CGContextSetLineWidth(context, STD_LINE_WIDTH);
         CGContextSetAlpha(context, STD_ALPHA);
         
-        
+
         // transform y to origin at lower left ( -y + height )
-        CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
-        // scale x to date range -- unfortunately buggered because line width is in user coords applied to both x and y
-        //CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
-        CGContextConcatCTM(context,tm);
+        safeDispatchSync(^{
+            CGAffineTransform tm = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
+            // scale x to date range -- unfortunately buggered because line width is in user coords applied to both x and y
+            //CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
+            CGContextConcatCTM(context,tm);
+        });
         // put the text back to normal ... why do they do this?
         //CGAffineTransform tm2 = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, 0.0f };
         //CGContextSetTextMatrix(self.context, tm2);
