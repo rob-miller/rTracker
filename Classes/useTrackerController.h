@@ -42,10 +42,12 @@
 
 #if ADVERSION && (!DISABLE_ADS)
 #import "adSupport.h"
-@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MFMailComposeViewControllerDelegate, ADBannerViewDelegate>
+@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MFMailComposeViewControllerDelegate, UIAdaptivePresentationControllerDelegate, ADBannerViewDelegate>
 #else
-@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+@interface useTrackerController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MFMailComposeViewControllerDelegate, UIAdaptivePresentationControllerDelegate>
 #endif
+
+// UIAdaptivePresentationControllerDelegate added so dpvc.presentationController.delegate can be set to trigger viewWillAppear for ios13 - hacky.
 
 /*
  {
