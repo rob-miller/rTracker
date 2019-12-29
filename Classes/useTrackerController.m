@@ -331,6 +331,7 @@
 }
 */
 
+
 - (void) viewWillAppear:(BOOL)animated {
     
     //DBGLog(@"utc: view will appear");
@@ -1579,6 +1580,11 @@ NSString *emDuplicate = @"duplicate entry to now";
 	return _dpr;
 }
 
+// not called
+//- (void)presentationControllerDidDismiss:(UIPresentationController *)dpvc {
+//    [self handleDPR];
+//}
+
 - (void) btnCurrDate {
 	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
 	
@@ -1588,6 +1594,7 @@ NSString *emDuplicate = @"duplicate entry to now";
     //CGRect f = self.view.frame;
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    self.dpvc.presentationController.delegate = self;  // need for ios 13 to access viewWillAppear as presentationControllerDidDismiss not firing
 	//
     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
         [self presentViewController:self.dpvc animated:YES completion:NULL];
