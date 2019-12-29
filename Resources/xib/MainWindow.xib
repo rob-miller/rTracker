@@ -19,7 +19,7 @@
                 <outlet property="window" destination="30" id="37"/>
             </connections>
         </customObject>
-        <navigationController toolbarHidden="NO" id="6">
+        <navigationController id="6">
             <extendedEdge key="edgesForExtendedLayout"/>
             <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
             <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="9">
@@ -35,17 +35,13 @@
                     </navigationItem>
                 </viewController>
             </viewControllers>
-            <toolbar key="toolbar" autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="7">
-                <rect key="frame" x="0.0" y="725" width="414" height="49"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </toolbar>
             <point key="canvasLocation" x="354" y="314"/>
         </navigationController>
         <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="30">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-            <point key="canvasLocation" x="496" y="364"/>
+            <point key="canvasLocation" x="435" y="404"/>
         </window>
     </objects>
 </document>
