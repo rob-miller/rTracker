@@ -467,11 +467,12 @@ static BOOL progressBarGoing=NO;
 
     //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
     activityIndicatorGoing=YES;
+
     [view addSubview:outerView];
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
-    if (! activityIndicatorGoing) return;
+    //if (! activityIndicatorGoing) return;  // race condition, may not be set yet so ignore
     
     dispatch_async(dispatch_get_main_queue(), ^(void){
         if (disable) {
