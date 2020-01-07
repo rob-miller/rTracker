@@ -29,23 +29,23 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <datePicker contentMode="scaleToFill" verticalCompressionResistancePriority="500" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ARu-3J-MtR">
-                    <rect key="frame" x="10" y="89" width="404" height="216"/>
+                    <rect key="frame" x="10" y="88.5" width="404" height="216"/>
                 </datePicker>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S5U-xH-gBz">
-                    <rect key="frame" x="10" y="315" width="54" height="20.5"/>
+                    <rect key="frame" x="10" y="309.5" width="54" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <pickerView contentMode="scaleToFill" verticalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="ZOi-vZ-ifs">
-                    <rect key="frame" x="10" y="340" width="404" height="216"/>
+                    <rect key="frame" x="10" y="335" width="404" height="216"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="NKz-2V-R4A"/>
                         <outlet property="delegate" destination="-1" id="7Ap-oy-Gjk"/>
                     </connections>
                 </pickerView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ptc-mh-Pkl">
-                    <rect key="frame" x="275" y="566" width="51" height="30"/>
+                    <rect key="frame" x="333" y="305" width="51" height="30"/>
                     <state key="normal" title="Sample">
                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </state>
@@ -73,19 +73,19 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="sxv-Cu-qT8" firstAttribute="trailing" secondItem="A2F-yv-2SR" secondAttribute="trailing" id="0Np-Hq-OMf"/>
-                <constraint firstItem="ptc-mh-Pkl" firstAttribute="top" secondItem="ZOi-vZ-ifs" secondAttribute="bottom" constant="10" id="5wh-it-KYC"/>
                 <constraint firstItem="tuu-EB-uSs" firstAttribute="leading" secondItem="A2F-yv-2SR" secondAttribute="leading" constant="10" id="KA8-jt-8TG"/>
-                <constraint firstItem="S5U-xH-gBz" firstAttribute="top" secondItem="ARu-3J-MtR" secondAttribute="bottom" constant="10" id="SVM-zr-EnG"/>
+                <constraint firstItem="S5U-xH-gBz" firstAttribute="top" secondItem="ARu-3J-MtR" secondAttribute="bottom" constant="5" id="SVM-zr-EnG"/>
                 <constraint firstItem="ARu-3J-MtR" firstAttribute="trailing" secondItem="A2F-yv-2SR" secondAttribute="trailing" id="U0m-RG-bpP"/>
                 <constraint firstItem="ZOi-vZ-ifs" firstAttribute="trailing" secondItem="A2F-yv-2SR" secondAttribute="trailing" id="UEE-JL-uJH"/>
                 <constraint firstItem="ARu-3J-MtR" firstAttribute="leading" secondItem="A2F-yv-2SR" secondAttribute="leading" constant="10" id="bMf-GC-qmx"/>
-                <constraint firstItem="A2F-yv-2SR" firstAttribute="trailing" secondItem="ptc-mh-Pkl" secondAttribute="trailing" constant="88" id="eK9-bf-ENA"/>
+                <constraint firstItem="A2F-yv-2SR" firstAttribute="trailing" secondItem="ptc-mh-Pkl" secondAttribute="trailing" constant="30" id="eK9-bf-ENA"/>
+                <constraint firstItem="S5U-xH-gBz" firstAttribute="centerY" secondItem="ptc-mh-Pkl" secondAttribute="centerY" id="eVx-mL-ErD"/>
                 <constraint firstItem="ZOi-vZ-ifs" firstAttribute="leading" secondItem="A2F-yv-2SR" secondAttribute="leading" constant="10" id="fHi-aF-tqo"/>
                 <constraint firstItem="tuu-EB-uSs" firstAttribute="top" secondItem="A2F-yv-2SR" secondAttribute="top" constant="19" id="g1D-KM-zzJ"/>
                 <constraint firstItem="S5U-xH-gBz" firstAttribute="leading" secondItem="A2F-yv-2SR" secondAttribute="leading" constant="10" id="q0a-2P-SgY"/>
                 <constraint firstAttribute="bottom" secondItem="sxv-Cu-qT8" secondAttribute="bottom" id="qFj-8C-SOq"/>
-                <constraint firstItem="ZOi-vZ-ifs" firstAttribute="top" secondItem="S5U-xH-gBz" secondAttribute="bottom" constant="4.5" id="sCp-b6-kPe"/>
-                <constraint firstItem="ARu-3J-MtR" firstAttribute="top" secondItem="tuu-EB-uSs" secondAttribute="bottom" constant="5.5" id="sY2-Le-zoI"/>
+                <constraint firstItem="ZOi-vZ-ifs" firstAttribute="top" secondItem="S5U-xH-gBz" secondAttribute="bottom" constant="5" id="sCp-b6-kPe"/>
+                <constraint firstItem="ARu-3J-MtR" firstAttribute="top" secondItem="tuu-EB-uSs" secondAttribute="bottom" constant="5" id="sY2-Le-zoI"/>
                 <constraint firstItem="sxv-Cu-qT8" firstAttribute="leading" secondItem="A2F-yv-2SR" secondAttribute="leading" id="zEu-jd-7Eu"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="A2F-yv-2SR"/>
