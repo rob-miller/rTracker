@@ -33,7 +33,7 @@
 
 @implementation notifyReminder
 
-@synthesize rid=_rid, monthDays=_monthDays, weekDays=_weekDays, everyMode=_everyMode, everyVal=_everyVal, start=_start, until=_until, times=_times, timesRandom=_timesRandom, msg=_msg, soundFileName=_soundFileName, reminderEnabled=_reminderEnabled, untilEnabled=_untilEnabled, fromLast=_fromLast, saveDate=_saveDate, localNotif=_localNotif, tid=_tid, vid=_vid;
+@synthesize rid=_rid, monthDays=_monthDays, weekDays=_weekDays, everyMode=_everyMode, everyVal=_everyVal, start=_start, until=_until, times=_times, timesRandom=_timesRandom, msg=_msg, soundFileName=_soundFileName, reminderEnabled=_reminderEnabled, untilEnabled=_untilEnabled, fromLast=_fromLast, saveDate=_saveDate, notifContent=_notifContent, tid=_tid, vid=_vid;
 
 #define UNTILFLAG   (0x01<<0)
 #define TIMESRFLAG  (0x01<<1)
@@ -43,7 +43,7 @@
 - (id)init {
 	
 	if ((self = [super init])) {
-        self.localNotif = nil;
+        self.notifContent = nil;
         self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
         self.soundFileName = nil;
 	}
@@ -375,58 +375,72 @@
 }
 
 -(void) create {
-    if (nil == self.localNotif) {
-        if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
-        //if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
+    if (nil == self.notifContent) {
+        if (nil == (self.notifContent = [UNMutableNotificationContent new])) {
             return;
         }
     }
     
     
-    self.localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    //self.notifContent.timeZone = [NSTimeZone defaultTimeZone];
     
-    self.localNotif.alertBody = self.msg;
-    self.localNotif.alertAction = NSLocalizedString(@"rTracker reminder", nil);
+    self.notifContent.body = self.msg;
+    self.notifContent.title = NSLocalizedString(@"rTracker reminder", nil);
     
-    self.localNotif.applicationIconBadgeNumber = 1;
+    self.notifContent.badge = [NSNumber numberWithInt:1];
     
     if (nil == self.soundFileName || [@"" isEqualToString:self.soundFileName]) {
-        self.localNotif.soundName = UILocalNotificationDefaultSoundName;
+        self.notifContent.sound = UNNotificationSound.defaultSound;
     } else {
-        self.localNotif.soundName = self.soundFileName;
+        self.notifContent.sound = [UNNotificationSound soundNamed:self.soundFileName];
     }
+    self.notifContent.launchImageName = [rTracker_resource getLaunchImageName];
     
     //NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.tid] forKey:@"tid"];
     NSDictionary *infoDict = @{@"tid": @(self.tid),@"rid": @(self.rid)};
-    self.localNotif.userInfo = infoDict;
+    self.notifContent.userInfo = infoDict;
     DBGLog(@"created.");
 }
 
 -(void) cancel {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if (([userInfoCurrent[@"tid"] integerValue] == self.tid)
-            && ([userInfoCurrent[@"rid"] integerValue] == self.rid))
-        {
-            [app cancelLocalNotification:oneEvent];
-        }
-    }
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    NSArray *idArr = [NSArray arrayWithObject:[NSString stringWithFormat:@"%ld", (long) self.rid]];
+    [center removePendingNotificationRequestsWithIdentifiers:idArr];
 }
 
 -(void) schedule:(NSDate*) targDate {
-    [self cancel];  // safety net -- should only happen if REMINDERDBG is set due to setReminder on 'done'
-    if (nil == self.localNotif)
+    [self cancel];  // safety net -- should only happen if REMINDERDBG is set due to setReminder on 'done' - and not necessary if overwriting with same rid
+    if (nil == self.notifContent)
         [self create];
-    if (nil == self.localNotif)
+    if (nil == self.notifContent)
         return;
     
-    self.localNotif.fireDate = targDate;
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+
+    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+      if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
+          return; // Notifications not allowed
+      }
+    }];
     
-    [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotif];
+    NSString *idStr = [NSString stringWithFormat:@"%ld", (long) self.rid];
+    
+    NSDateComponents *triggerDate = [[NSCalendar currentCalendar]
+                                     components:NSCalendarUnitYear +
+                                     NSCalendarUnitMonth + NSCalendarUnitDay +
+                                     NSCalendarUnitHour + NSCalendarUnitMinute +
+                                     NSCalendarUnitSecond fromDate:targDate];
+    
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:NO];
+
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:idStr content:self.notifContent trigger:trigger];
+
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+      if (error != nil) {
+        DBGWarn(@"error scheduling reminder %@: %@",idStr, error);
+      }
+    }];
+    
     DBGLog(@"scheduled");
 }
 
@@ -436,14 +450,32 @@
 
 /*
 -(void) present {
-    if (nil == self.localNotif)
+    if (nil == self.notifContent)
         [self create];
-    if (nil == self.localNotif)
+    if (nil == self.notifContent)
         return;
     
-    [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotif];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:self.notifContent];
     DBGLog(@"presented.");
 }
 */
+
++(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid {
+    __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        for (int i=0;
+             i<[notifications count];
+             i++)
+        {
+            UNNotification *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
+            if ([userInfoCurrent[@"tid"] integerValue] == tid) {
+                [ridArray addObject:oneEvent.request.identifier];
+            }
+        }
+    }];
+    return ridArray;
+}
+
 
 @end
