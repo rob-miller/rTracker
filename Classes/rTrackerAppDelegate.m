@@ -74,6 +74,7 @@
 - (void) registerForNotifications {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound;
+
     [center requestAuthorizationWithOptions:options
      completionHandler:^(BOOL granted, NSError * _Nullable error) {
         // don't care if not granted
@@ -98,7 +99,8 @@
                 
                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                                       handler:^(UIAlertAction * action) {
-                    [self registerForNotifications];
+                                                                        [self registerForNotifications];
+
                                                                           //[[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
                                                                       }];
                 
@@ -170,6 +172,7 @@
          [sud registerDefaults:registerableDictionary];
          [sud synchronize];
     }
+
     [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     // Override point for customization after app launch    
@@ -218,7 +221,7 @@
     //if (![rTracker_resource getAcceptLicense]) {
 
     if (! [sud boolForKey:@"acceptLicense"]) { // race relying on rvc having set
-        NSString *freeMsg= @"Copyright 2010-2016 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
+        NSString *freeMsg= @"Copyright 2010-2020 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
                                                                        message:freeMsg
@@ -232,6 +235,7 @@
                                                                   
                                                                   [self pleaseRegisterForNotifications:rootController];
                                                               }];
+
         UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) { exit(0); }];
         
@@ -241,7 +245,6 @@
         [rootController.navigationController presentViewController:alert animated:YES completion:nil];
     }
 #endif
-    
     
         
 
@@ -350,6 +353,7 @@
 }
 */
 
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
     if (0 == buttonIndex) {   // do nothing
@@ -380,6 +384,7 @@
                                         completion:nil];
 }
 
+
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
     if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
         UIAlertView *alert = [self quickAlert:title msg:msg];
@@ -395,6 +400,7 @@
         
     }
 }
+
 /*
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
@@ -413,38 +419,6 @@
   }
 */
 
-// handle notification while in foreground
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center
-        willPresentNotification:(UNNotification *)notification
-        withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-   // Update the app interface directly.
-    [self doQuickAlert:notification.request.content.title msg:notification.request.content.body delay:2];
-    // Play a sound.
-   completionHandler(UNNotificationPresentationOptionSound);
-}
-
-// handle notification while in background
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center
-          didReceiveNotificationResponse:(UNNotificationResponse *)response
-          withCompletionHandler:(void (^)(void))completionHandler {
-   if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
-       // The user dismissed the notification without taking action.
-   }
-   else if ([response.actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier]) {
-       // The user launched the app.
-
-       // left over from UILocalNotif - should only need if debugging on simulator as otherwise already set
-       // NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-       // [sud synchronize];
-       //[rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]]; //
-
-       NSDictionary *userInfo = response.notification.request.content.userInfo;
-       RootViewController *rootController = (self.navigationController.viewControllers)[0];
-       [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(userInfo)[@"tid"] waitUntilDone:NO];
-   }
- 
-   // Else handle any custom actions. . .
-}
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
