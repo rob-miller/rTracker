@@ -467,15 +467,14 @@
              i<[notifications count];
              i++)
         {
-            UNNotification *oneEvent = notifications[i];
-            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
+            UNNotificationRequest *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
             if ([userInfoCurrent[@"tid"] integerValue] == tid) {
-                [ridArray addObject:oneEvent.request.identifier];
+                [ridArray addObject:oneEvent.identifier];
             }
         }
     }];
     return ridArray;
 }
-
 
 @end
