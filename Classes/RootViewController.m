@@ -1084,9 +1084,51 @@ BOOL loadingInputFiles=NO;
 
 #endif
 
+
+// handle notification while in foreground
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+        willPresentNotification:(UNNotification *)notification
+        withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+   // Update the app interface directly.
+    [self countScheduledReminders];  // race me
+    // nice to make this work again
+    //[self doQuickAlert:notification.request.content.title msg:notification.request.content.body delay:2];
+    // Play a sound.
+   completionHandler(UNNotificationPresentationOptionSound);
+    [self.tableView reloadData];  // redundant but waiting for countScheduledReminders to complete
+    [self.view setNeedsDisplay];
+}
+
+// handle notification while in background
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+          didReceiveNotificationResponse:(UNNotificationResponse *)response
+          withCompletionHandler:(void (^)(void))completionHandler {
+    DBGLog(@"did receive notification response while in backrgound");
+   if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
+       // The user dismissed the notification without taking action.
+   }
+   else if ([response.actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier]) {
+       // The user launched the app.
+
+       // left over from UILocalNotif - should only need if debugging on simulator as otherwise already set
+       // NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+       // [sud synchronize];
+       //[rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]]; //
+
+       NSDictionary *userInfo = response.notification.request.content.userInfo;
+       RootViewController *rootController = (self.navigationController.viewControllers)[0];
+       [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(userInfo)[@"tid"] waitUntilDone:NO];
+   }
+     
+       // Else handle any custom actions. . .
+    
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+
+    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
 
 #if ADVERSION
 #if !RELEASE
