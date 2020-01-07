@@ -1840,19 +1840,24 @@ BOOL stashAnimated;
 }
 
 - (void) countScheduledReminders {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    [self.scheduledReminderCounts removeAllObjects];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        NSNumber *tid =userInfoCurrent[@"tid"];
-        int c = [(self.scheduledReminderCounts)[tid] intValue];
-        c++;
-        (self.scheduledReminderCounts)[tid] = @(c);
-    }
     
+    [self.scheduledReminderCounts removeAllObjects];
+    
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        for (int i=0;
+             i<[notifications count];
+             i++)
+        {
+            UNNotification *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
+            NSNumber *tid =userInfoCurrent[@"tid"];
+            int c = [(self.scheduledReminderCounts)[tid] intValue];
+            c++;
+            (self.scheduledReminderCounts)[tid] = @(c);
+        }
+    }];
+
 }
 
 - (NSMutableDictionary*) scheduledReminderCounts {
@@ -1990,7 +1995,7 @@ BOOL stashAnimated;
 
     int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
     int src = [(self.scheduledReminderCounts)[tid] intValue];
-    //DBGLog(@"src: %d  erc:  %d",src,erc);
+    DBGLog(@"src: %d  erc:  %d",src,erc);
     //NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
