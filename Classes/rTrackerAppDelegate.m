@@ -24,6 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
@@ -70,6 +71,19 @@
     [application registerForRemoteNotifications];
 }
 
+- (void) registerForNotifications {
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound;
+    [center requestAuthorizationWithOptions:options
+     completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        // don't care if not granted
+        //if (!granted) {
+        //    DBGLog(@"notification authorization not granted");
+        //}
+      }
+    ];
+}
+
 - (void) pleaseRegisterForNotifications:(RootViewController *)rootController {
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
@@ -84,7 +98,8 @@
                 
                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                                       handler:^(UIAlertAction * action) {
-                                                                          [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                    [self registerForNotifications];
+                                                                          //[[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
                                                                       }];
                 
                 [alert addAction:defaultAction];
@@ -231,7 +246,7 @@
         
 
 
-
+/*
     // for when actually not running, not just in background:
     UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     if (nil != notification) {
@@ -243,6 +258,7 @@
 
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
+*/
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
         UIApplicationShortcutItem *shortcutItem = [launchOptions objectForKey:UIApplicationLaunchOptionsShortcutItemKey];
@@ -379,7 +395,7 @@
         
     }
 }
-
+/*
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
     //
@@ -394,33 +410,41 @@
         RootViewController *rootController = (self.navigationController.viewControllers)[0];
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
-    //[rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
-    
-    /*
-    UIViewController *topController = [self.navigationController.viewControllers lastObject];
+  }
+*/
 
-    if (topController == rootController) {
-        //[self doQuickAlert:notification.alertAction msg:notification.alertBody delay:1];
-        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
-    }
-     */
-    /*
-    else {
-        // going to tracker actually pushes the other viewcontroller -- so don't really need to alert and ask?
-        self.pendingTid = [notification.userInfo objectForKey:@"tid"];
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"rTracker reminder"
-                              message:notification.alertBody
-                              delegate:self
-                              cancelButtonTitle:@"later"
-                              otherButtonTitles:@"go there now",nil];
-        [alert show];
-        [alert release];
-
-    }
-     */
+// handle notification while in foreground
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+        willPresentNotification:(UNNotification *)notification
+        withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+   // Update the app interface directly.
+    [self doQuickAlert:notification.request.content.title msg:notification.request.content.body delay:2];
+    // Play a sound.
+   completionHandler(UNNotificationPresentationOptionSound);
 }
 
+// handle notification while in background
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+          didReceiveNotificationResponse:(UNNotificationResponse *)response
+          withCompletionHandler:(void (^)(void))completionHandler {
+   if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
+       // The user dismissed the notification without taking action.
+   }
+   else if ([response.actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier]) {
+       // The user launched the app.
+
+       // left over from UILocalNotif - should only need if debugging on simulator as otherwise already set
+       // NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+       // [sud synchronize];
+       //[rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]]; //
+
+       NSDictionary *userInfo = response.notification.request.content.userInfo;
+       RootViewController *rootController = (self.navigationController.viewControllers)[0];
+       [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(userInfo)[@"tid"] waitUntilDone:NO];
+   }
+ 
+   // Else handle any custom actions. . .
+}
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	// Save data if appropriate
