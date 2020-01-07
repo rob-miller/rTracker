@@ -1105,6 +1105,7 @@ BOOL loadingInputFiles=NO;
     //InstallDemos = NO;
     self.refreshLock = 0;
     self.readingFile=NO;
+
     [self countScheduledReminders];
 
     //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
@@ -1849,8 +1850,8 @@ BOOL stashAnimated;
              i<[notifications count];
              i++)
         {
-            UNNotification *oneEvent = notifications[i];
-            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
+            UNNotificationRequest *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
             NSNumber *tid =userInfoCurrent[@"tid"];
             int c = [(self.scheduledReminderCounts)[tid] intValue];
             c++;
