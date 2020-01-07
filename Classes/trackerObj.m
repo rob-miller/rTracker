@@ -2012,6 +2012,9 @@ if (addVO) {
     return TRUE;
 }
 
+//
+// convert options sset in notifyReminder to single target datetime for next reminder to fire
+//
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
     NSString *sql;
 
@@ -2397,26 +2400,28 @@ if (addVO) {
  }
 
 
+//
+// remove all reminders set for this tracker.
+//
+// with change from UILocalNotification to UNNotification, could be more efficient
+// - just delete each matching notification with matching rid
+// or
+// - rely on setting notification with same ID updating previous notification
+//
+// but keeping old algorithm seems more robust against database being out of sync with previously set reminders
+// and would mean more code changes elsewhere.
+//
 - (void) clearScheduledReminders {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        UIApplication *app = [UIApplication sharedApplication];
-        NSArray *eventArray = [app scheduledLocalNotifications];
-        for (int i=0; i<[eventArray count]; i++)
-        {
-            UILocalNotification* oneEvent = eventArray[i];
-            NSDictionary *userInfoCurrent = oneEvent.userInfo;
-            if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
-                [app cancelLocalNotification:oneEvent];
-            }
-        }
-    });
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    NSMutableArray *toRemove = [notifyReminder getRidArray:center tid:self.toid];
+    [center removePendingNotificationRequestsWithIdentifiers:toRemove];
 }
 
 - (void) setReminders {
         
     // delete all reminders for this tracker
     [self clearScheduledReminders];
-    // create uiLocalNotif here with access to nr data and tracker data
+    // create unUserNotif here with access to nr data and tracker data
     NSDate *today = [[NSDate alloc] init];
     //NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];   // could use [NSCalendar currentCalendar]; ?
     NSCalendar *cal = [NSCalendar currentCalendar];
@@ -2432,18 +2437,10 @@ if (addVO) {
 }
 
 - (void) confirmReminders {
-    NSMutableSet *ridSet = [[NSMutableSet alloc] init];
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
-            [ridSet addObject:userInfoCurrent[@"rid"]];
-        }
-    }
     
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    NSMutableArray *ridSet = [notifyReminder getRidArray:center tid:self.toid];
+
     NSDate *today = [[NSDate alloc] init];
     NSCalendar *cal = [NSCalendar currentCalendar];
     
