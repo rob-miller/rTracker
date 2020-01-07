@@ -42,6 +42,7 @@
 @synthesize toolBar=_toolBar, navBar=_navBar, lasty=_lasty, saveFrame=_saveFrame, LFHeight=_LFHeight, vdlConfigVO=_vdlConfigVO;
 @synthesize activeField=_activeField, processingTfDone=_processingTfDone;
 @synthesize scroll=_scroll;
+@synthesize rDates = _rDates;
 
 //BOOL keyboardIsShown;
 
@@ -53,6 +54,7 @@
 - (id) init {
     if ((self = [super init])) {
         self.processingTfDone=NO;
+        self.rDates = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -857,101 +859,115 @@
     [self.to setReminders];
 }
 
-- (void) dbInfoBtn {
-    NSString *titleStr;
-   
-    NSString *sql = @"select count(*) from trkrData";
-    int dateEntries = [self.to toQry2Int:sql];
-    sql = @"select count(*) from voData";
-    int dataPoints = [self.to toQry2Int:sql];
-    sql = @"select count(*) from voConfig";
-    int itemCount = [self.to toQry2Int:sql];
-    
-    titleStr = [NSString stringWithFormat:@"tracker number %ld\n%d items\n%d date entries\n%d data points",
-                (long)self.to.toid, itemCount, dateEntries,dataPoints];
-   
-    sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
-    int orphanDatapoints = [self.to toQry2Int:sql];
-    
-    if (0 < orphanDatapoints) {
-        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
-    }
+- (void) displayDbInfo {
+       NSString *titleStr;
+       
+        NSString *sql = @"select count(*) from trkrData";
+        int dateEntries = [self.to toQry2Int:sql];
+        sql = @"select count(*) from voData";
+        int dataPoints = [self.to toQry2Int:sql];
+        sql = @"select count(*) from voConfig";
+        int itemCount = [self.to toQry2Int:sql];
+        
+        titleStr = [NSString stringWithFormat:@"tracker number %ld\n%d items\n%d date entries\n%d data points",
+                    (long)self.to.toid, itemCount, dateEntries,dataPoints];
+       
+        sql = @"select count(*) from (select * from voData where id not in (select id from voConfig))";
+        int orphanDatapoints = [self.to toQry2Int:sql];
+        
+        if (0 < orphanDatapoints) {
+            titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
+        }
 
-    sql = @"select count(*) from reminders";
-    int reminderCount = [self.to toQry2Int:sql];
+        sql = @"select count(*) from reminders";
+        int reminderCount = [self.to toQry2Int:sql];
 
-    NSMutableArray *rDates = [[NSMutableArray alloc] init];
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
-        for (int i=0;
-             i<[notifications count];
-             i++)
-        {
-            UNNotification *oneEvent = notifications[i];
-            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
-            if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
-                NSDate *nextTD =  [((UNCalendarNotificationTrigger*)oneEvent.request.trigger) nextTriggerDate];
-                [rDates addObject:[NSDateFormatter localizedStringFromDate:nextTD dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]];
+        int scheduledReminderCount = (int) [self.rDates count];
+        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
+        for (NSDate* date in self.rDates) {
+            titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
+                                                          [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
+        }
+      
+        if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
+            // ios 8.1 must register for notifications
+    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+            __block UIUserNotificationSettings* uns;
+            safeDispatchSync(^{
+                uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
+            });
+            if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
+                //[rTracker_resource alert:@"notifications disabled" msg:@"Please enable notifications for rTracker in System Preferences."];
+                titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
             }
+    #endif
         }
-    }];
+        
 
-    int scheduledReminderCount = (int) [rDates count];
-    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
-    for (NSDate* date in rDates) {
-        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
-                                                      [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
-    }
-  
-    if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-        // ios 8.1 must register for notifications
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        UIUserNotificationSettings* uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
-        if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
-            //[rTracker_resource alert:@"notifications disabled" msg:@"Please enable notifications for rTracker in System Preferences."];
-            titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
-        }
-#endif
-    }
-    
-
-    NSDictionary *infoDict = [NSBundle mainBundle].infoDictionary;
-                              
-    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%@ %@ [%@]",infoDict[@"CFBundleDisplayName"], infoDict[@"CFBundleShortVersionString"], infoDict[@"CFBundleVersion"]]];
-    
-//#endif
-    
-    if (0 < orphanDatapoints) {
-        if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-            UIAlertView *alert;
-            alert = [[UIAlertView alloc]
-                     initWithTitle:self.to.trackerName
-                     message:titleStr
-                     delegate:self
-                     cancelButtonTitle:@"Ok"
-                     otherButtonTitles: @"recover missing items",nil];
-            [alert show];
+        NSDictionary *infoDict = [NSBundle mainBundle].infoDictionary;
+                                  
+        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%@ %@ [%@]",infoDict[@"CFBundleDisplayName"], infoDict[@"CFBundleShortVersionString"], infoDict[@"CFBundleVersion"]]];
+        
+    //#endif
+        safeDispatchSync(^{
+        if (0 < orphanDatapoints) {
+            if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+                UIAlertView *alert;
+                alert = [[UIAlertView alloc]
+                         initWithTitle:self.to.trackerName
+                         message:titleStr
+                         delegate:self
+                         cancelButtonTitle:@"Ok"
+                         otherButtonTitles: @"recover missing items",nil];
+                [alert show];
+            } else {
+                UIAlertController* alert = [UIAlertController alertControllerWithTitle:self.to.trackerName
+                                                                               message:titleStr
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                      handler:^(UIAlertAction * action) {}];
+                UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"recover missing items" style:UIAlertActionStyleDefault
+                                                                      handler:^(UIAlertAction * action) { [self recoverValuesBtn]; }];
+                
+                [alert addAction:defaultAction];
+                [alert addAction:recoverAction];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+                
+            }
         } else {
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:self.to.trackerName
-                                                                           message:titleStr
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {}];
-            UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"recover missing items" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) { [self recoverValuesBtn]; }];
-            
-            [alert addAction:defaultAction];
-            [alert addAction:recoverAction];
-            
-            [self presentViewController:alert animated:YES completion:nil];
-            
+            //[rTracker_resource alert:self.to.trackerName str:titleStr vc:self];
+            [rTracker_resource alert:self.to.trackerName msg:titleStr vc:self];
         }
-    } else {
-        //[rTracker_resource alert:self.to.trackerName str:titleStr vc:self];
-        [rTracker_resource alert:self.to.trackerName msg:titleStr vc:self];
-    }
+        });
 }
+
+
+- (void) dbInfoBtn {
+    // wait for checking notifications, then display above
+
+    [self.rDates removeAllObjects];
+
+     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+     [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+         for (int i=0;
+              i<[notifications count];
+              i++)
+         {
+             UNNotificationRequest *oneEvent = notifications[i];
+             NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
+             //DBGLog(@"pending reminder for %ld my tid %ld", (long) [userInfoCurrent[@"tid"] integerValue], (long) self.to.toid);
+             if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
+                 NSDate *nextTD =  [((UNCalendarNotificationTrigger*)oneEvent.trigger) nextTriggerDate];
+                 //DBGLog(@"td = %@", nextTD);
+                 [self.rDates addObject:nextTD];
+             }
+         }
+         [self displayDbInfo];
+     }];
+
+ }
 
 
 //- (void) drawGeneralVoOpts 
