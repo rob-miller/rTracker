@@ -641,7 +641,7 @@ BOOL loadingCsvFiles=NO;
 
 - (void) refreshViewPart2 {
     //DBGLog(@"entry");
-	[self.tlist loadTopLayoutTable];
+    [self.tlist loadTopLayoutTable];
     dispatch_async(dispatch_get_main_queue(), ^(void){
         [self.tableView reloadData];
         [self refreshEditBtn];
@@ -1148,7 +1148,6 @@ BOOL loadingInputFiles=NO;
     self.refreshLock = 0;
     self.readingFile=NO;
 
-    [self countScheduledReminders];
 
     //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
@@ -1415,6 +1414,8 @@ BOOL loadingInputFiles=NO;
 - (void)viewWillAppear:(BOOL)animated {
     
     DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
+    [self countScheduledReminders];
+    
     //[self loadInputFiles];  // do this here as restarts are infrequent
     //[self refreshView];
     
@@ -1666,6 +1667,7 @@ BOOL stashAnimated;
                                                     object:nil];
 #endif
     
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [self pendingNotificationCount];
     [super viewWillDisappear:animated];
 }
 
@@ -1884,10 +1886,10 @@ BOOL stashAnimated;
 
 - (void) countScheduledReminders {
     
-    [self.scheduledReminderCounts removeAllObjects];
-    
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        [self.scheduledReminderCounts removeAllObjects];
+        
         for (int i=0;
              i<[notifications count];
              i++)
