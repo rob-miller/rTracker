@@ -41,9 +41,7 @@
 
 
 
-@interface rTracker_resource : NSObject {
-    
-}
+@interface rTracker_resource : NSObject 
 
 //#define SAFE_DISPATCH_SYNC(code) if ([NSThread isMainThread]) { code } else { dispatch_sync(dispatch_get_main_queue(), ^(void){ code }); }
 void safeDispatchSync(dispatch_block_t block);
