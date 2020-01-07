@@ -877,38 +877,32 @@
         titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%d missing item data points",orphanDatapoints]];
     }
 
-   sql = @"select count(*) from reminders";
+    sql = @"select count(*) from reminders";
     int reminderCount = [self.to toQry2Int:sql];
 
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    int scheduledReminderCount = 0;
-
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
-            scheduledReminderCount++;
-        }
-    }
-    
-    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
-
-    
-    //if (NO == [rTracker_resource getHideRTimes]) {
-        for (int i=0; i<[eventArray count]; i++)
+    NSMutableArray *rDates = [[NSMutableArray alloc] init];
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        for (int i=0;
+             i<[notifications count];
+             i++)
         {
-            UILocalNotification* oneEvent = eventArray[i];
-            
-            NSDictionary *userInfoCurrent = oneEvent.userInfo;
+            UNNotification *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.request.content.userInfo;
             if ([userInfoCurrent[@"tid"] integerValue] == self.to.toid) {
-                titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
-                                                              [NSDateFormatter localizedStringFromDate:[oneEvent fireDate] dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
+                NSDate *nextTD =  [((UNCalendarNotificationTrigger*)oneEvent.request.trigger) nextTriggerDate];
+                [rDates addObject:[NSDateFormatter localizedStringFromDate:nextTD dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]];
             }
         }
-    //}
+    }];
 
+    int scheduledReminderCount = (int) [rDates count];
+    titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n\n%d stored reminders\n%d scheduled reminders",reminderCount,scheduledReminderCount]];
+    for (NSDate* date in rDates) {
+        titleStr = [titleStr stringByAppendingString:[NSString stringWithFormat:@"\n%@",
+                                                      [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
+    }
+  
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
         // ios 8.1 must register for notifications
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
