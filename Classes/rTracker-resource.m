@@ -431,7 +431,13 @@ static BOOL activityIndicatorGoing=NO;
 static BOOL progressBarGoing=NO;
 
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str {
-    
+    DBGLog(@"start spinner");
+    safeDispatchSync(^{
+        if (activityIndicatorGoing)
+            return;
+        activityIndicatorGoing=YES;
+    });
+                     
     if (disable) {
         view.userInteractionEnabled = NO;
         //[navItem setHidesBackButton:YES animated:YES];
@@ -466,15 +472,18 @@ static BOOL progressBarGoing=NO;
     [outerView addSubview:captionLabel];
 
     //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
-    activityIndicatorGoing=YES;
 
     [view addSubview:outerView];
+    DBGLog(@"spinning");
+
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
+    DBGLog(@"stop spinner");
+
     //if (! activityIndicatorGoing) return;  // race condition, may not be set yet so ignore
     
-    dispatch_async(dispatch_get_main_queue(), ^(void){
+    safeDispatchSync(^(void){
         if (disable) {
             //[navItem setHidesBackButton:NO animated:YES];
             navItem.rightBarButtonItem.enabled = YES;
@@ -491,6 +500,8 @@ static BOOL progressBarGoing=NO;
         outerView = nil;
         activityIndicatorGoing=NO;
     });
+    DBGLog(@"not spinning");
+
 }
 
 static UIProgressView *progressBar=nil;
@@ -934,10 +945,10 @@ static int lastStashedTid=0;
     NSValue* boundsValue = userInfo[UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
-	CGRect viewFrame = view.frame;
-
+    CGRect viewFrame = view.frame;
     CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
-	if (boty <= topk) {
+	
+    if (boty <= topk) {
 		DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
 		DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
