@@ -318,42 +318,6 @@
         
 }
 
-
-/*
-- (void) doOpenURL:(NSURL*)url {
-    
-    //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //if (url != nil && [url isFileURL]) {
-    int tid = [rootController handleOpenFileURL:url tname:nil];
-    if (0 != tid) {
-        // get to root view controller, else get last view on stack
-        [self.navigationController popToRootViewControllerAnimated:NO];
-        [rootController openTracker:tid rejectable:YES];
-    }
-    //}
-    
-    //[rTracker_resource finishActivityIndicator:rootController.view navItem:nil disable:NO];
-    
-    //[pool drain];
-}
-
-- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    
-    DBGLog(@"openURL %@",url);
-    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //[rTracker_resource startActivityIndicator:rootController.view navItem:nil disable:NO];
-    
-    //[NSThread detachNewThreadSelector:@selector(doOpenURL:) toTarget:self withObject:url];
-    [self doOpenURL:url];
-    
-    return YES;
-    
-}
-*/
-
-
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
     if (0 == buttonIndex) {   // do nothing
