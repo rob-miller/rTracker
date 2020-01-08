@@ -411,9 +411,6 @@ DBGLog(@"btnAddValue was pressed!");
         if (8 < [self.tempTrackerObj.valObjTable count]) {
             [rTracker_resource startActivityIndicator:self.view navItem:self.navigationItem disable:YES str:@"Saving..."];
         }
-        //self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
-        //self.spinner.hidesWhenStopped = YES;
-        //[self.spinner startAnimating];
         
         [NSThread detachNewThreadSelector:@selector(btnSaveSlowPart) toTarget:self withObject:nil];
         
