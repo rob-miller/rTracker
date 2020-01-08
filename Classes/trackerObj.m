@@ -827,7 +827,7 @@ if (addVO) {
     if (0 != inVid) {
        sql = [NSString stringWithFormat:@"select count(*) from voConfig where id=%d",inVid];
         if (0 < [self toQry2Int:sql]) {
-           sql = [NSString stringWithFormat:@"update voConfig set name='%@' where id=%d",name,inVid];
+           sql = [NSString stringWithFormat:@"update voConfig set name=\"%@\" where id=%d",name,inVid];
             [self toExecSql:sql];
             return inVid;
         }
