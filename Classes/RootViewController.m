@@ -1056,14 +1056,19 @@ BOOL loadingInputFiles=NO;
     self.readingFile=NO;
 
 
+    UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
     //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    
-    UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName]];
-    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img];
-    [self.navigationController.navigationBar setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.toolbar setBackgroundImage:img forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:img];
 
+    CGSize vsize = [rTracker_resource get_visible_size:self];
+    CGFloat scal = bg.frame.size.width / vsize.width;
+
+    UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img2];
+    [self.navigationController.navigationBar setBackgroundImage:img2 forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.toolbar setBackgroundImage:img2 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+     
+    
     self.navigationItem.rightBarButtonItem = self.addBtn;
     self.navigationItem.leftBarButtonItem = self.editBtn;
     
@@ -1078,8 +1083,8 @@ BOOL loadingInputFiles=NO;
     //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
     //CGFloat statusBarHeight = statusBarFrame.size.height;
     
-    CGRect tableFrame = bg.frame;
-    tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
+    //CGRect tableFrame = bg.frame;
+    //tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
 
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
@@ -1090,6 +1095,12 @@ BOOL loadingInputFiles=NO;
     }
 #endif
 
+    CGRect tableFrame;
+    tableFrame.origin.x = 0.0;
+    tableFrame.origin.y = 0.0;
+    tableFrame.size.height = vsize.height;
+    tableFrame.size.width = vsize.width;
+
     DBGLog(@"tvf origin x %f y %f size w %f h %f",tableFrame.origin.x,tableFrame.origin.y,tableFrame.size.width,tableFrame.size.height);
     self.tableView = [[UITableView alloc]initWithFrame:tableFrame style:UITableViewStylePlain];
     
@@ -1098,6 +1109,7 @@ BOOL loadingInputFiles=NO;
     self.tableView.delegate = self;
     
     self.tableView.backgroundColor = [UIColor clearColor];
+    //self.tableView.backgroundView = bg;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     //UIView *tfv = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 10)];
