@@ -1059,11 +1059,11 @@ BOOL loadingInputFiles=NO;
     //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
     UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
     
-    //[self.navigationController.view addSubview:bg];
-    //[self.navigationController.view sendSubviewToBack:bg];
-    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    
-    // navigationbar setup
+    UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName]];
+    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img];
+    [self.navigationController.navigationBar setBackgroundImage:img forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.toolbar setBackgroundImage:img forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+
     self.navigationItem.rightBarButtonItem = self.addBtn;
     self.navigationItem.leftBarButtonItem = self.editBtn;
     
@@ -1097,7 +1097,7 @@ BOOL loadingInputFiles=NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.tableView.backgroundView = bg;
+    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     //UIView *tfv = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 10)];
@@ -1331,22 +1331,17 @@ BOOL loadingInputFiles=NO;
     //[self refreshViewPart2];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
-    
+/*
+ // issue for pre iOS 12 ?
     CGRect f = self.view.frame;
     if (f.size.width != self.tableView.frame.size.width) {
         f.origin.x = 0.0; f.origin.y = 0.0;
         self.tableView.frame = f;
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-        /*
-         [self.navigationController.toolbar setBackgroundImage: [UIImage imageNamed:[rTracker_resource getLaunchImageName]]
-         forToolbarPosition: UIToolbarPositionAny
-         barMetrics: UIBarMetricsDefault];
-         */
     }
     f = self.tableView.frame;
     f.size.height = [rTracker_resource get_visible_size:self].height;  // fix inaccessible trackers at bottom after rotate from graph view
     self.tableView.frame = f;
-
+*/
 #if ADVERSION
     
     if (![rTracker_resource getPurchased]) {
@@ -1434,22 +1429,24 @@ BOOL stashAnimated;
     [self.stashedTIDs removeLastObject];
 }
 
+/*
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     //if ( self.isViewLoaded && self.view.window ) {
     
     // viewController is visible
     //CGRect f = self.view.frame;
+    // / *
     CGRect f;
     f.origin.x = 0.0; f.origin.y = 0.0;
     f.size = size;
     self.tableView.frame = f;
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    // * /
     DBGLog(@"rotated...");
     //}
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
 }
-
+*/
 
 - (void) viewDidAppear:(BOOL)animated {
     
