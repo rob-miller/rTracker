@@ -1136,51 +1136,28 @@ static BOOL getOrientEnabled=false;
 #define CHOOSE(x,y) [mb URLForResource:x withExtension:nil] ? x : y
 +(NSString*)getLaunchImageName
 {
-    NSBundle* mb = [NSBundle mainBundle];
-    CGSize size = [[UIScreen mainScreen] bounds].size;
-    CGFloat maxDim = [self getScreenMaxDim];
-    NSString *retStr;
-    
-    //DBGLog(@"width %f  height %f",size.width, size.height);
-    /*
-     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if (UIDeviceOrientationUnknown == orientation) DBGLog(@"orientation unknown");
-    if (UIDeviceOrientationPortraitUpsideDown == orientation) DBGLog(@"orientation portrait upside down");
-    if (UIDeviceOrientationPortrait == orientation) DBGLog(@"orientation portrait");
-    */
-    
-    if ([self isDeviceiPhone])
-    {
-        if (maxDim < MAXDIM_4S) {
-            retStr = @"LaunchImage.png";                                                // non-retina iPhone
-        } else if (maxDim < MAXDIM_5) {
-            retStr = CHOOSE(@"LaunchImage-700@2x.png",@"LaunchImage@2x.png");             // iPhone 4s
-        } else if (maxDim < MAXDIM_6) {
-            retStr = CHOOSE(@"LaunchImage-700-568h@2x.png",@"LaunchImage-568h@2x.png");   // iPhone 5
-        } else if (maxDim <MAXDIM_6P) {
-            retStr = @"LaunchImage-800-667h@2x.png";                                      // iPhone 6
-        } else if (size.height < size.width) {                                          // if landscape
-            retStr = @"LaunchImage-800-Landscape-736h@3x.png";                            // iPhone 6+ or larger
-        } else {
-            retStr = @"LaunchImage-800-Portrait-736h@3x.png";                             // default: iPhone 6+ or larger, portrait
-        }
-    } else {     // iPad
-        if (size.height < size.width) {                                                 // if landscape  -- does not work at startup for ios7, orientation reports 'unknown'
-            if ([UIScreen mainScreen].scale == 1.0) {
-                retStr = CHOOSE(@"LaunchImage-700-Landscape~ipad.png", @"LaunchImage-Landscape~ipad.png");           // non-retina iPad
-            } else {
-                retStr = CHOOSE(@"LaunchImage-700-Landscape@2x~ipad.png", @"LaunchImage-Landscape@2x~ipad.png");     // retina iPad or larger
-            }
-        } else {
-            if ([UIScreen mainScreen].scale == 1.0) {
-                retStr = CHOOSE(@"LaunchImage-700-Portrait~ipad.png", @"LaunchImage-Portrait~ipad.png");           // non-retina iPad
-            } else {
-                retStr = CHOOSE(@"LaunchImage-700-Portrait@2x~ipad.png", @"LaunchImage-Portrait@2x~ipad.png");     // default: retina iPad or larger
+    return(@"LaunchScreenImg.png");
+
+    /* no longer needed with story board
+    NSArray *allPngImageNames = [[NSBundle mainBundle] pathsForResourcesOfType:@"png"
+                                            inDirectory:nil];
+
+    for (NSString *imgName in allPngImageNames){
+        DBGLog(@"imgName %@", imgName);
+        // Find launch images
+        if ([imgName containsString:@"LaunchImage"]){
+            UIImage *img = [UIImage imageNamed:imgName];
+            // Has image same scale and dimensions as our current device's screen?
+            if (img.scale == [UIScreen mainScreen].scale && CGSizeEqualToSize(img.size, [UIScreen mainScreen].bounds.size)) {
+                DBGLog(@"Found launch image for current device %@", img.description);
+                return imgName; //break;
             }
         }
     }
-    //DBGLog(@"LaunchImage: %@",retStr);
-    return(retStr);
+    
+    DBGLog(@"fail on launchimage name");
+    return(@"LaunchScreenImg.png");
+     */
 }
 
 
