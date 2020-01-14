@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -131,6 +131,15 @@
 		D43A7EC51AB62358001BEC96 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
 		D43EE368133CBF8D00737E76 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D43EE367133CBF8D00737E76 /* CSVParser.m */; };
 		D44386D213A2397F00268248 /* bkgnd-cell1-320-56.png in Resources */ = {isa = PBXBuildFile; fileRef = D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */; };
+		D4444F4D23B9FB2B00FE7479 /* bell 4.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4423B9FB2B00FE7479 /* bell 4.caf */; };
+		D4444F4E23B9FB2B00FE7479 /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4523B9FB2B00FE7479 /* ping.caf */; };
+		D4444F4F23B9FB2B00FE7479 /* bell 1.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4623B9FB2B00FE7479 /* bell 1.caf */; };
+		D4444F5023B9FB2B00FE7479 /* bell 3.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4723B9FB2B00FE7479 /* bell 3.caf */; };
+		D4444F5123B9FB2B00FE7479 /* bugle_call.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4823B9FB2B00FE7479 /* bugle_call.caf */; };
+		D4444F5223B9FB2B00FE7479 /* bugle_charge.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4923B9FB2B00FE7479 /* bugle_charge.caf */; };
+		D4444F5323B9FB2B00FE7479 /* bell 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4A23B9FB2B00FE7479 /* bell 2.caf */; };
+		D4444F5423B9FB2B00FE7479 /* fail_wah_wah_wah.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4B23B9FB2B00FE7479 /* fail_wah_wah_wah.caf */; };
+		D4444F5523B9FB2B00FE7479 /* ping 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4444F4C23B9FB2B00FE7479 /* ping 2.caf */; };
 		D44695C417D6894A00BB5A38 /* addValObjController7.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C217D6894A00BB5A38 /* addValObjController7.xib */; };
 		D44695C517D6894A00BB5A38 /* configTlistController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D44695C317D6894A00BB5A38 /* configTlistController.xib */; };
 		D44BE6B91BBAF643001FFA97 /* rTrackerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D44BE6B81BBAF643001FFA97 /* rTrackerUITests.m */; };
@@ -389,6 +398,15 @@
 		D43EE366133CBF8D00737E76 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		D43EE367133CBF8D00737E76 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
 		D44386D113A2397F00268248 /* bkgnd-cell1-320-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bkgnd-cell1-320-56.png"; path = "Resources/png/bkgnd-cell1-320-56.png"; sourceTree = "<group>"; };
+		D4444F4423B9FB2B00FE7479 /* bell 4.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 4.caf"; sourceTree = "<group>"; };
+		D4444F4523B9FB2B00FE7479 /* ping.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ping.caf; sourceTree = "<group>"; };
+		D4444F4623B9FB2B00FE7479 /* bell 1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 1.caf"; sourceTree = "<group>"; };
+		D4444F4723B9FB2B00FE7479 /* bell 3.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 3.caf"; sourceTree = "<group>"; };
+		D4444F4823B9FB2B00FE7479 /* bugle_call.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_call.caf; sourceTree = "<group>"; };
+		D4444F4923B9FB2B00FE7479 /* bugle_charge.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_charge.caf; sourceTree = "<group>"; };
+		D4444F4A23B9FB2B00FE7479 /* bell 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 2.caf"; sourceTree = "<group>"; };
+		D4444F4B23B9FB2B00FE7479 /* fail_wah_wah_wah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fail_wah_wah_wah.caf; sourceTree = "<group>"; };
+		D4444F4C23B9FB2B00FE7479 /* ping 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ping 2.caf"; sourceTree = "<group>"; };
 		D44695C217D6894A00BB5A38 /* addValObjController7.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = addValObjController7.xib; path = ../Resources/xib/addValObjController7.xib; sourceTree = "<group>"; };
 		D44695C317D6894A00BB5A38 /* configTlistController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = configTlistController.xib; path = ../Resources/xib/configTlistController.xib; sourceTree = "<group>"; };
 		D44BE6B61BBAF643001FFA97 /* rTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -788,6 +806,15 @@
 		D481089419E0550800B422A8 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				D4444F4623B9FB2B00FE7479 /* bell 1.caf */,
+				D4444F4A23B9FB2B00FE7479 /* bell 2.caf */,
+				D4444F4723B9FB2B00FE7479 /* bell 3.caf */,
+				D4444F4423B9FB2B00FE7479 /* bell 4.caf */,
+				D4444F4823B9FB2B00FE7479 /* bugle_call.caf */,
+				D4444F4923B9FB2B00FE7479 /* bugle_charge.caf */,
+				D4444F4B23B9FB2B00FE7479 /* fail_wah_wah_wah.caf */,
+				D4444F4C23B9FB2B00FE7479 /* ping 2.caf */,
+				D4444F4523B9FB2B00FE7479 /* ping.caf */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -1072,7 +1099,7 @@
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -1106,16 +1133,22 @@
 				D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */,
 				D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */,
 				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
+				D4444F5523B9FB2B00FE7479 /* ping 2.caf in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
 				D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */,
 				D464C8B81A5100450009E20B /* icon120.png in Resources */,
 				D44695C517D6894A00BB5A38 /* configTlistController.xib in Resources */,
 				D4C5210A123F9DF700554627 /* blueButton.png in Resources */,
+				D4444F5223B9FB2B00FE7479 /* bugle_charge.caf in Resources */,
+				D4444F5023B9FB2B00FE7479 /* bell 3.caf in Resources */,
 				D40607E517D7CB5A00C05A38 /* shadeview-button-7.png in Resources */,
 				D4D7DCEB125B25E00049EB93 /* checked.png in Resources */,
+				D4444F4D23B9FB2B00FE7479 /* bell 4.caf in Resources */,
 				D4D7DCED125B25F70049EB93 /* unchecked.png in Resources */,
+				D4444F5323B9FB2B00FE7479 /* bell 2.caf in Resources */,
 				D40607E617D7CB5A00C05A38 /* shadeview-button-7@2x.png in Resources */,
 				D473ED4219571F8A00B4702C /* CalendarRowBottom.png in Resources */,
+				D4444F4F23B9FB2B00FE7479 /* bell 1.caf in Resources */,
 				D487D7751260A77800298C1D /* configTVObjVC.xib in Resources */,
 				D4A9E4371A412FF300BD15B5 /* addTrackerController.xib in Resources */,
 				D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */,
@@ -1126,12 +1159,15 @@
 				D40607E817D7CB5A00C05A38 /* shadeview-button-blue-7@2x.png in Resources */,
 				D40607DF17D7CB5A00C05A38 /* closedview-button-7.png in Resources */,
 				D481089A19E056D600B422A8 /* Images.xcassets in Resources */,
+				D4444F4E23B9FB2B00FE7479 /* ping.caf in Resources */,
 				D469CEBB1A2BAC3800B8F48B /* MainWindow.xib in Resources */,
 				D44695C417D6894A00BB5A38 /* addValObjController7.xib in Resources */,
 				D40607E717D7CB5A00C05A38 /* shadeview-button-blue-7.png in Resources */,
 				D47FBB7F14A9E2D700CE0547 /* closedview-button.png in Resources */,
+				D4444F5423B9FB2B00FE7479 /* fail_wah_wah_wah.caf in Resources */,
 				D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */,
 				D473ED4119571F8A00B4702C /* CalendarRow@2x.png in Resources */,
+				D4444F5123B9FB2B00FE7479 /* bugle_call.caf in Resources */,
 				D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */,
 				D44C0DA914AE4FE100C3DEB0 /* closedview-button-blue.png in Resources */,
 				D44C0DAB14AE4FE900C3DEB0 /* fullview-button-blue.png in Resources */,
@@ -1661,7 +1697,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -1703,7 +1739,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -1859,7 +1895,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1886,7 +1926,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1914,7 +1958,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.realidata.rTrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1959,7 +2007,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
