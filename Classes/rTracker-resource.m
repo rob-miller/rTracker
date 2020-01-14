@@ -1275,6 +1275,11 @@ static BOOL getOrientEnabled=false;
         }
     }
     
+    if (@available(iOS 11.0, *)) {
+        UIEdgeInsets sai =  [[[UIApplication sharedApplication] delegate] window].safeAreaInsets;
+        result.height -= sai.bottom;
+    }
+    
     if (vc.tabBarController != nil) {
         size = vc.tabBarController.tabBar.frame.size;
         result.height -= MIN(size.width, size.height);
