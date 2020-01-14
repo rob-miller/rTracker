@@ -479,17 +479,13 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		case 0:
 			frame.size = sizeVOTLabel;
             frame.size.width += FONTSIZE;
-			//CGFloat lfs = [UIFont labelFontSize]; // 17
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
 			label.backgroundColor = [UIColor clearColor] ; //]greenColor];
             label.text = [rTracker_resource vtypeNames][row];  // (self.parentTrackerObj.votArray)[row];
-            //if (kIS_LESS_THAN_IOS7) {
-                label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
-            //} else {
-            //    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-            //}
+
+            label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		case 1:
 			frame.size.height = 1.2*COLORSIDE;
@@ -497,9 +493,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			frame.origin.x = 0.0f;
 			frame.origin.y = 0.0f;
 			label = [[UILabel alloc] initWithFrame:frame];
-			//label = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-			//[label retain];
-			//label.frame = frame;
 			label.backgroundColor = [rTracker_resource colorSet][row];
 			break;
 		case 2:
@@ -510,15 +503,11 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 			label = [[UILabel alloc] initWithFrame:frame];
 									  label.backgroundColor = [UIColor clearColor]; //greenColor];
 			label.text = (self.graphTypes)[row];
-            //if (kIS_LESS_THAN_IOS7) {
-                label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
-            //} else {
-            //    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-            //}
-
+            label.font = [UIFont boldSystemFontOfSize:FONTSIZE];
 			break;
 		default:
 			dbgNSAssert(0,@"bad component for avo picker");
+            label = [[UILabel alloc] init];  // fix analysis warning
 			break;
 	}
 	return label;
