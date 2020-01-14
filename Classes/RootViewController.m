@@ -162,10 +162,14 @@ static BOOL InstallDemos;
         NSString *tname = nil;
         NSRange inmatch;
         BOOL validMatch=NO;
+#if DEBUGLOG
         NSString *loadObj;
+#endif
         
         if ([[file pathExtension] isEqualToString: @"csv"]) {
+#if DEBUGLOG
             loadObj = @"csv";
+#endif
             inmatch = [fname rangeOfString:@"_in.csv" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             
@@ -175,8 +179,9 @@ static BOOL InstallDemos;
             
         } else if ([[file pathExtension] isEqualToString: @"rtcsv"]) {
             rtcsv=YES;
+#if DEBUGLOG
             loadObj = @"rtcsv";
-            
+#endif
             inmatch = [fname rangeOfString:@".rtcsv" options:NSBackwardsSearch|NSAnchoredSearch];
             //DBGLog(@"consider input: %@",fname);
             
@@ -306,7 +311,7 @@ static BOOL InstallDemos;
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
     int tid;
-    NSString *objName;
+    //NSString *objName;
     
     DBGLog(@"open url %@",url);
     /*
@@ -321,13 +326,13 @@ static BOOL InstallDemos;
     [privacyV jumpMaxPriv];
     if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
-        objName = @"plist";
+        //objName = @"plist";
     } else {  // else is an rtrk
         NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfURL:url];
         tname = rtdict[@"trackerName"];
         tdict = rtdict[@"configDict"];
         dataDict = rtdict[@"dataDict"];
-        objName = @"rtrk";
+        //objName = @"rtrk";
         if (loadingDemos) {
             [self.tlist deleteTrackerAllTID:[tdict objectForKey:@"tid"] name:tname];  // wipe old demo tracker otherwise starts to look ugly
         }
