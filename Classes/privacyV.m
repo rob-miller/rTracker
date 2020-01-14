@@ -96,7 +96,7 @@ static NSNumber *stashedPriv=nil;
     [self.ttv showKey:0];
     [self setPrivacyValue:MINPRIV];
 
-    if (PWNEEDPRIVOK != self.pwState) {  // 27.v.2013 don't set to query if no pw setup yet
+    if ((PWNEEDPRIVOK != self.pwState) && (PWNEEDPASS != self.pwState)) {  // 27.v.2013 don't set to query if no pw setup yet
         self.pwState = PWQUERYPASS;
     }
 
@@ -132,22 +132,17 @@ static NSNumber *stashedPriv=nil;
 	if ((self = [super initWithFrame:frame])) {
 		self.parentView = pv;
 		self.pwState = PWNEEDPRIVOK; //PWNEEDPASS;
-       // if (kIS_LESS_THAN_IOS7) {
-       //     self.backgroundColor = [UIColor darkGrayColor];
-       // } else {
-            //self.backgroundColor = [UIColor whiteColor];
-            // set graph paper background
-            // /*
-            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-            [self addSubview:bg];
-            [self sendSubviewToBack:bg];
-             // */
-            //self.backgroundColor = [UIColor greenColor];
-        //}
+        UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+
+        [self addSubview:bg];
+        [self sendSubviewToBack:bg];
+
+        self.backgroundColor = [UIColor whiteColor];
+
         self.layer.cornerRadius = 8;
 		self.showing = PVNOSHOW;
         //self.hidden = YES;
-        self.alpha = 0.0;
+        self.alpha = 1.0;
 
 		[self addSubview:self.ttv];
 		[self addSubview:self.clearBtn];
@@ -389,6 +384,7 @@ static NSTimeInterval lastShow=0;
     } else if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features        
 		_showing = PVNEEDPASS;
         [self.ppwv createPass:newState cancel:PVNOSHOW];  // recurse on input newState
+        
 		//[self.ppwv createPass:PVCONFIG cancel:PVNOSHOW]; // need more work // recurse on input newState, config on successful new pass
 
 	} else if (PVQUERY == newState) {
