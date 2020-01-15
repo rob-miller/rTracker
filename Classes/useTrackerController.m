@@ -769,9 +769,7 @@
 
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
-    CGRect frame = [rTracker_resource getKeyWindowFrame];
-    frame.size.height -= 22.0f;
-    //gt.view.frame = frame;
+    gt.modalPresentationStyle = UIModalPresentationFullScreen;  // need for iPad, this is default for 'horizontally compact environment'
     
     gt.tracker = self.tracker;
     if ([self.tracker hasData]) {
@@ -787,12 +785,8 @@
     //self.modalPresentationStyle = UIModalPresentationFullScreen;
     
     self.fwdRotations = NO;
-     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-         [self presentViewController:gt animated:YES completion:NULL];
-     //} else {
-     //    [self presentModalViewController:gt animated:YES];
-         //[self addChildViewController:self.modalViewController];
-     //}
+    [self presentViewController:gt animated:YES completion:NULL];
+
     DBGLog(@"graph up");
 }
 
