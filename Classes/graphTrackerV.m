@@ -456,9 +456,6 @@
     
     if (vo == self.gtvCurrVO) {
         if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {   // draw line at 0 if needed
-            //CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
-            //CGContextSetStrokeColorWithColor(context,[UIColor whiteColor].CGColor);
-            //CGContextSetFillColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
             CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
             MoveTo(0.0f, currVogd.yZero);
             safeDispatchSync(^{
@@ -635,21 +632,6 @@
             //CGAffineTransform tm = { ((self.bounds.size.width - 2.0f*BORDER) / (lastDate - firstDate)) , 0.0f, 0.0f, -1.0f, 0.0f, self.bounds.size.height };
             CGContextConcatCTM(context,tm);
         });
-        // put the text back to normal ... why do they do this?
-        //CGAffineTransform tm2 = { 1.0f , 0.0f, 0.0f, -1.0f, 0.0f, 0.0f };
-        //CGContextSetTextMatrix(self.context, tm2);
-        /*
-         CGContextSelectFont (self.context, 
-         "Helvetica-Bold",
-         FONTSIZE,
-         kCGEncodingMacRoman);
-         CGContextSetCharacterSpacing (self.context, 1); 
-         CGContextSetTextDrawingMode (self.context, kCGTextFill); 
-         */
-        //self.myFont = [UIFont fontWithName:[NSString stringWithUTF8String:FONTNAME] size:FONTSIZE];
-        //self.myFont = [UIFont systemFontOfSize:FONTSIZE];
-        
-        //[self drawBackground];
         [self drawGraph:context];
     }
     
