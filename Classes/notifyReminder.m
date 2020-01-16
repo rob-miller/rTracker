@@ -99,9 +99,7 @@
 }
 
 - (void)dealloc {
-	DBGLog(@"nr dealloc");
-    
-    
+	//DBGLog(@"nr dealloc");
 }
 
 - (void) save:(trackerObj*)to {
@@ -409,7 +407,7 @@
 }
 
 -(void) schedule:(NSDate*) targDate {
-    [self cancel];  // safety net -- should only happen if REMINDERDBG is set due to setReminder on 'done' - and not necessary if overwriting with same rid
+    [self cancel];  // redundant but need to change rid to UUID
     if (nil == self.notifContent)
         [self create];
     if (nil == self.notifContent)
@@ -423,6 +421,7 @@
       }
     }];
     
+    self.rid = (NSInteger) [NSUUID UUID];
     NSString *idStr = [NSString stringWithFormat:@"%ld", (long) self.rid];
     
     NSDateComponents *triggerDate = [[NSCalendar currentCalendar]
