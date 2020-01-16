@@ -138,10 +138,13 @@
     [self.topLayoutPriv addObject:@([[tObj.optDict valueForKey:@"privacy"] intValue])];
     [self.topLayoutReminderCount addObject:@([tObj enabledReminderCount])];
     
-    [self confirmTopLayoutEntry:tObj];
+    [self confirmToplevelEntry:tObj];
 }
 
-- (void) confirmTopLayoutEntry:(trackerObj *) tObj {
+/*
+ ensure there is accurate entry in db table toplevel for passed trackerObj
+ */
+- (void) confirmToplevelEntry:(trackerObj *) tObj {
 	//self.sql = @"select * from toplevel";
 	//[self toQry2Log];
     //DBGLog(@"%@ toid %d",tObj.trackerName, tObj.toid);
@@ -151,14 +154,15 @@
 	if (rank == 0) {
         DBGLog(@"rank not found");
 	} else {
-        sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%li and priv <= %i;",(long)rank,[privacyV getPrivacyValue]];
+        sql = [NSString stringWithFormat:@"select count(*) from toplevel where rank=%li;",(long)rank];
         if (1 < [self toQry2Int:sql]) {
             DBGLog(@"too many at rank %li",(long)rank);
             rank = 0;
         }
     }
 	if (rank == 0) {
-		rank = [self.topLayoutNames count];  // so put at end
+        sql = @"select max(rank) from toplevel;";   // so put at end
+        rank = [self toQry2Int:sql] +1;
         DBGLog(@"rank adjust, set to %ld",(long)rank);
     }
     
@@ -168,9 +172,6 @@
 	sql = [NSString stringWithFormat: @"insert or replace into toplevel (rank, id, name, priv, remindercount) values (%li, %li, \"%@\", %i, %i);",
 				(long)rank, (long)tObj.toid, [rTracker_resource toSqlStr:tObj.trackerName], privVal,[tObj enabledReminderCount]];
     [self toExecSql:sql];
-	//self.sql = nil;
-	
-	// call loadTopLayoutTable before using:  [topLayoutTable insertObject:name atIndex:rank];
 }
 
 - (void) reorderFromTLT {
@@ -182,7 +183,6 @@
         [self toExecSql:sql];  // better if used bind vars, but this keeps access in tObjBase
 		nrank++;
 	}
-	//self.sql = nil;
     //DBGTLIST(self);
 }
 
@@ -199,7 +199,6 @@
 		//DBGLog(@" %@ id %d to rank %d",tracker,tid,nrank);
 		sql = [NSString stringWithFormat: @"insert into toplevel (rank, id, name, priv,remindercount) values (%i, %ld, \"%@\", %ld, %ld);",nrank+1,(long)tid,[rTracker_resource toSqlStr:tracker], (long)priv,(long)rc];  // rank in db always non-0
         [self toExecSql:sql];  // better if used bind vars, but this keeps access in tObjBase
-		//self.sql = nil;
 		nrank++;
 	}
 }
@@ -215,8 +214,6 @@
         return MAXPRIV;
     }
     return [(self.topLayoutPriv)[ndx] intValue];
-    
-    //return [[self.topLayoutPriv objectAtIndex:[self.topLayoutIDs indexOfObject:[NSNumber numberWithInt:tid]]] intValue];
 }
 
 - (BOOL) checkTIDexists:(NSNumber*)tid {
@@ -300,21 +297,6 @@
     }
 }
 
-/*
- // discard for now, write each tracker as csv ile
- 
-#pragma mark -
-#pragma mark write tracker list xls file
-
-- (void) writeTListXLS:(NSFileHandle*)nsfh {
-	
-	for (id *tID in self.topLayoutIDs) {
-		trackerObj *to = [[trackerObj alloc] init:[(NSNumber*)tID intValue]];
-		[to writeTrackerXLS:nsfh];
-		[to release];
-	}
-}
-*/
 
 #pragma mark -
 #pragma mark tracker manipulation methods
@@ -418,6 +400,21 @@
         
         [rTracker_resource setProgressVal:(ndx/all)];
         ndx += 1.0;
+    }
+    
+    [privacyV restorePriv];
+}
+
+- (void) confirmToplevelTIDs {
+    [privacyV jumpMaxPriv];  // reasonable to do this now with default encryption enabled
+    
+    NSString *sql = @"select id from toplevel";  // ignore current (self) list because subject to privacy
+    NSMutableArray *idSet = [[NSMutableArray alloc] init];
+    [self toQry2AryI:idSet sql:sql];
+    
+    for (NSNumber *tid in idSet) {
+        trackerObj *to = [[trackerObj alloc] init:[tid intValue]];
+        [self confirmToplevelEntry:to];
     }
     
     [privacyV restorePriv];
@@ -578,24 +575,11 @@
                 } else {
                     [self restoreTracker:fn ndx:4];
                     didRecover = YES;
-                    /*
-                    BOOL doDel=YES;
-                    if (doDel) {
-                        DBGLog(@"deleting orphan %d file %@",ftid,fn);
-                        [rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
-                    } else {
-                        trackerObj *to = [[trackerObj alloc]init:ftid];
-                        DBGLog(@"%@ iv: %d orphan file: %@",fn, ftid, to.trackerName );
-                        [to release];
-                    }
-                     */
                 }
                 
             } else if ([fn hasPrefix:@"stash_trkr"]) {
                 [self restoreTracker:fn ndx:10];
                 didRecover=YES;
-                //DBGLog(@"deleting stashed tracker %@",fn);
-                //[rTracker_resource deleteFileAtPath:[rTracker_resource ioFilePath:fn access:DBACCESS]];
             }
         }
         NSNumber *tlTid;
