@@ -60,21 +60,10 @@
 #pragma mark core object methods and support
 
 - (void)dealloc {
-	
 	DBGLog(@"rvc dealloc");
-	//[privateBtn release]; // saved to change image
-    //self.inputURL = nil;
-    //[inputURL release];
-    
 }
 
-/*
-- (void)applicationWillTerminate:(NSNotification *)notification {
-	DBGLog(@"rvc: app will terminate");
-	// close trackerList
-	
-}
-*/
+
 
 #pragma mark -
 #pragma mark load CSV files waiting for input
@@ -108,7 +97,6 @@ static BOOL InstallDemos;
     [parser parseRowsForReceiver:to selector:@selector(receiveRecord:)]; // receiveRecord in trackerObj.m
     DBGLog(@"csv parser done %@",to.trackerName);
     
-    //[to reloadVOtable];
     [to loadConfig];
     
     if (to.csvReadFlags & (CSVCREATEDVO | CSVCONFIGVO | CSVLOADRECORD)) {
@@ -127,11 +115,11 @@ static BOOL InstallDemos;
     }
     if (to.csvReadFlags & CSVNOTIMESTAMP) {
         [rTracker_resource alert:@"No timestamp column" msg:[NSString stringWithFormat:@"The file %@ has been rejected by the CSV loader as it does not have '%@' as the first column.",fname,TIMESTAMP_LABEL] vc:self];
-        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+        //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
         return;
     } else if (to.csvReadFlags & CSVNOREADDATE) {
         [rTracker_resource alert:@"Date format problem" msg:[NSString stringWithFormat:@"Some records in the file %@ were ignored because timestamp dates like '%@' are not compatible with your device's calendar settings (%@).  Please modify the file or change your international locale preferences in System Settings and try again.",fname,to.csvProblem,[to.dateFormatter stringFromDate:[NSDate date] ]] vc:self];
-        [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+        //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
         return;
     }
     
@@ -154,7 +142,6 @@ static BOOL InstallDemos;
     
     NSString *file;
 
-    //[self jumpMaxPriv];
     [privacyV jumpMaxPriv];
     while ((file = [dirEnum nextObject])) {
         trackerObj *to = nil;
@@ -192,6 +179,7 @@ static BOOL InstallDemos;
 
         if (validMatch) {
             DBGLog(@"%@ load input: %@ as %@",loadObj,fname,tname);
+            //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading data..."];
 
             tname = [fname substringToIndex:inmatch.location];
             NSInteger tid = [self.tlist getTIDfromName:tname];
@@ -214,7 +202,7 @@ static BOOL InstallDemos;
                 NSString *target = [docsDir stringByAppendingPathComponent:file];
                 NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
                 
-                [rTracker_resource stashProgressBarMax:(int)[rTracker_resource countLines:csvString]];
+                //[rTracker_resource stashProgressBarMax:(int)[rTracker_resource countLines:csvString]];
 
                 if (csvString)
                 {
@@ -233,7 +221,6 @@ static BOOL InstallDemos;
         
     }
     
-    //[self restorePriv];
     [privacyV restorePriv];
     
     if (newRtcsvTracker) {
@@ -311,38 +298,22 @@ static BOOL InstallDemos;
     NSDictionary *tdict = nil;
     NSDictionary *dataDict = nil;
     int tid;
-    //NSString *objName;
     
     DBGLog(@"open url %@",url);
-    /*
-     // was needed when called for arbitrary url
-    if ([@"rtcsv" isEqualToString:[url pathExtension]]) {
-        [self loadTrackerCsvFiles];
-        return 0;
-    }
-    */
-    
-    //[self jumpMaxPriv];
+
     [privacyV jumpMaxPriv];
     if (nil != tname) {  // if tname set it is just a plist
         tdict = [NSDictionary dictionaryWithContentsOfURL:url];
-        //objName = @"plist";
     } else {  // else is an rtrk
         NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfURL:url];
         tname = rtdict[@"trackerName"];
         tdict = rtdict[@"configDict"];
         dataDict = rtdict[@"dataDict"];
-        //objName = @"rtrk";
         if (loadingDemos) {
             [self.tlist deleteTrackerAllTID:[tdict objectForKey:@"tid"] name:tname];  // wipe old demo tracker otherwise starts to look ugly
         }
     }
 
-    //int c = (int) [(NSArray *)tdict[@"valObjTable"] count];
-    //int c2 = (nil == dataDict ? 0 : (int) [dataDict count]);
-    //if ((c>20) || (c2>20))
-    //    [self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,objName] waitUntilDone:YES];
-    
     //DBGLog(@"ltd enter dict= %lu",(unsigned long)[tdict count]);
     tid = [self loadTrackerDict:tdict tname:tname];
 
@@ -363,15 +334,9 @@ static BOOL InstallDemos;
 
     DBGLog(@"ltd/ldd finish");
     
-    //[self.privacyObj setPrivacyValue:currPriv];                           // restore after jump to max
-    //[self restorePriv];
     [privacyV restorePriv];
     DBGLog(@"removing file %@",[url path]);
     [rTracker_resource deleteFileAtPath:[url path]];
-    //if ((c>20) || (c2>20))
-    //dispatch_async(dispatch_get_main_queue(), ^(void){
-    //    [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
-    //});
     
     return tid;
 }
@@ -399,22 +364,11 @@ static BOOL InstallDemos;
                 [filesToProcess addObject:file];
             }
         } else if ([[file pathExtension] isEqualToString: @"rtrk"]) {
-/*
-            NSRange inmatch = [fname rangeOfString:@"_out.rtrk" options:NSBackwardsSearch|NSAnchoredSearch];
-            //DBGLog(@"consider input: %@",fname);
-            if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _out.rtrk at end of file name
- 
-            } else {
-*/
-                [filesToProcess addObject:file];
-/*
-            }
-*/
+            [filesToProcess addObject:file];
         }
     }
     
     for (file in filesToProcess) {
-        //NSString *tname = nil;
         NSString *target;
         NSString *newTarget;
         __block BOOL plistFile=NO;
@@ -440,18 +394,8 @@ static BOOL InstallDemos;
             if ((inmatch.location != NSNotFound) && (inmatch.length == 9)) {  // matched all 9 chars of _in.plist at end of file name
                 rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:[fname substringToIndex:inmatch.location]];
                 plistFile = YES;
-                //TODO:need to delete stash file now!!!
-                //tname = [fname substringToIndex:inmatch.location];
-                //tdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
-                // [rTracker_resource deleteFileAtPath:newTarget];  -- done by handleOpenFileUrl
             } else {   // .rtrk file
                 rtrkTid = [self handleOpenFileURL:[NSURL fileURLWithPath:newTarget] tname:nil];
-                /*
-                NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfFile:newTarget];
-                tname = [rtdict objectForKey:@"trackerName"];
-                tdict = [rtdict objectForKey:@"configDict"];
-                dataDict = [rtdict objectForKey:@"dataDict"];
-                 */
             }
 
             [UIApplication sharedApplication].idleTimerDisabled = NO;
@@ -469,50 +413,7 @@ static BOOL InstallDemos;
         plistReadCount++;
 
     }
-/*
- old version below....
-    
-    while ((file = [dirEnum nextObject])) {
-        if ([[file pathExtension] isEqualToString: @"plist"]) {
-            NSString *fname = [file lastPathComponent];
-            NSRange inmatch = [fname rangeOfString:@"_in.plist" options:NSBackwardsSearch|NSAnchoredSearch];
-            DBGLog(@"consider input: %@",fname);
-            
-            if (inmatch.location == NSNotFound) {
-                
-            } else if (inmatch.length == 9) {  // matched all 9 chars of _in.plist at end of file name
-                NSString *tname = [fname substringToIndex:inmatch.location];
-                NSString *target = [docsDir stringByAppendingPathComponent:file];
 
-                NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:target];
-
-                // modified nov 2012 to use loadTrackerDict,
-                // behaviour change is now handle matching trackerName
-
-                [self loadTrackerDict:tdict tname:tname];
-                didSomething= YES;
-
-                [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];
-                plistReadCount++;
-
-                NSError *err;
-                // apparently cannot rename in but can delete from application's Document folder
-                // problem is during dirEnum ?
-                BOOL rslt = [localFileManager removeItemAtPath:target error:&err];
-                if (!rslt) {
-                    DBGLog(@"Error: %@", err);
-                }
-            }
-            
-        } else if ([[file pathExtension] isEqualToString: @"rtrk"]) {
-            NSString *target = [docsDir stringByAppendingPathComponent:file];            
-            NSDictionary *rtdict = [NSDictionary dictionaryWithContentsOfFile:target];
-            
-        }
-    }
- */
-      // added 13 feb 2013
-    // not the default manager [localFileManager release];
     return(rtrkTid);
 }
 
@@ -523,9 +424,9 @@ BOOL loadingCsvFiles=NO;
     loadingCsvFiles=YES;
     @autoreleasepool {
         safeDispatchSync(^{
-            [UIApplication sharedApplication].idleTimerDisabled = YES;
+    
             [self loadTrackerCsvFiles];
-            [UIApplication sharedApplication].idleTimerDisabled = NO;
+
             // file load done, enable userInteraction
             [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
             [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:NO];
@@ -542,8 +443,6 @@ BOOL loadingCsvFiles=NO;
         if (0< [self.stashedTIDs count]) {
             [self doRejectableTracker];
         }
-    
-
     }
     
     // thread finished
@@ -551,6 +450,7 @@ BOOL loadingCsvFiles=NO;
 
 - (void) refreshViewPart2 {
     //DBGLog(@"entry");
+    [self.tlist confirmToplevelTIDs];
     [self.tlist loadTopLayoutTable];
     dispatch_async(dispatch_get_main_queue(), ^(void){
         [self.tableView reloadData];
@@ -579,13 +479,20 @@ BOOL loadingInputFiles=NO;
         }
         
         if ([self loadTrackerPlistFiles]) {
-            // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change
+            // this thread now completes updating rvc display of trackerList as next step is load csv data and trackerlist won't change (unless rtrk files)
             [self.tlist loadTopLayoutTable];  // called again in refreshviewpart2, but need for re-order to set ranks
             [self.tlist reorderFromTLT];
         };
         
+        safeDispatchSync(^{
+            //[rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+            if (csvLoadCount) {
+                [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];  // finish 'loading trackers' spinner
+                [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading data..."];
+            }
+        });
         [self refreshViewPart2];
-        
+
         [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
         
         DBGLog(@"load plist thread finished, lock still on, UI still disabled");
@@ -623,14 +530,8 @@ BOOL loadingInputFiles=NO;
         csvLoadCount = [self countInputFiles:@"_in.csv"];
         plistLoadCount = [self countInputFiles:@"_in.plist"];
         int rtrkLoadCount = [self countInputFiles:@".rtrk"];
-        csvLoadCount += [self countInputFiles:@".rtcsv"];   //TODO: rtm here
+        csvLoadCount += [self countInputFiles:@".rtcsv"];
         
-        /*
-         #if RTRK_EXPORT
-         int rtrk_out = [self countInputFiles:@"_out.rtrk"];
-         rtrkLoadCount -= rtrk_out;
-         #endif
-         */
         // handle rtrks as plist + csv, just faster if only has data or only has tracker def
         csvLoadCount += rtrkLoadCount;
         plistLoadCount += rtrkLoadCount;
@@ -646,11 +547,9 @@ BOOL loadingInputFiles=NO;
         
         if ( 0 < (plistLoadCount + csvLoadCount) ) {
             [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
-            //rtmxxxx
-            [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading files..."];
-            // CGRect navframe = [[self.navigationController navigationBar] frame]; // (navframe.size.height + navframe.origin.y)
+            [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading trackers..."];
             [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:0.0f];
-            
+
             [NSThread detachNewThreadSelector:@selector(doLoadInputfiles) toTarget:self withObject:nil];
             // lock stays on, userInteraction disabled, activityIndicator spinning,   give up and doLoadInputFiles() is in charge
             
@@ -658,8 +557,10 @@ BOOL loadingInputFiles=NO;
             return;
         }
     //}
+
+    // if here (did not return above), no files to load, this thread set the lock and refresh is done now
+
     [self refreshViewPart2];
-    // if here, no files to load, this thread set the lock and refresh is done now 
     self.refreshLock = 0;
     DBGLog(@"finished, no files to load - lock off");
     
@@ -690,19 +591,6 @@ BOOL loadingInputFiles=NO;
     for (NSString *p in paths) {
         
         if (doLoad) {
-            
-            /*
-             // copy plists over version -- doesn't handle conflicts
-             NSString *fname = [p lastPathComponent];
-             NSString *dest = [docsDir stringByAppendingFormat:@"/%@",fname];
-             NSError *err = [[NSError alloc] init];
-             if (!([dfltManager copyItemAtPath:p toPath:dest error:&err])) {
-             DBGLog(@"copy failed  src= %@  dest= %@",p,docsDir);
-             DBGLog(@"err: %@ %@ ",err.domain, err.helpAnchor);
-             }
-             */
-            // /*
-
             // load now into trackerObj - needs progressBar
             NSDictionary *tdict = [NSDictionary dictionaryWithContentsOfFile:p];
             [self.tlist fixDictTID:tdict];
@@ -715,8 +603,6 @@ BOOL loadingInputFiles=NO;
             
             [rTracker_resource setProgressVal:(((float)plistReadCount)/((float)plistLoadCount))];
             plistReadCount++;
-
-            // */
             
             DBGLog(@"finished loadSample on %@",p);
         }
@@ -743,28 +629,9 @@ BOOL loadingInputFiles=NO;
     // returns count
     
     int count = [self loadSuppliedTrackers:doLoad set:SUPPLY_SAMPLES];
-    /*  // loadSuppliedTrackers does this (but that is not called for demos)
-    if (doLoad && count) {
-        NSString *sql;
-        sql = [NSString stringWithFormat:@"insert or replace into info (val, name) values (%i,'samples_version')",SAMPLES_VERSION];
-        [self.tlist toExecSql:sql];
-    }
-    */
-
+ 
     return count;
 }
-
-/*
-- (void) deleteDemos {
-     // already deleting in handleOpenFileURL, but there is a race condition ...
-    
-     NSString *tdName = @"👣rTracker demo";
-     NSNumber *tdTid = [NSNumber numberWithInteger:[self.tlist getTIDfromName:tdName]];
-     if (![tdTid isEqual:@0])
-     [self.tlist deleteTrackerAllTID:tdTid name:tdName];
-
-}
- */
 
 - (int) loadDemos:(BOOL)doLoad {
     
@@ -775,17 +642,6 @@ BOOL loadingInputFiles=NO;
     NSArray *paths = [bundle pathsForResourcesOfType:@"rtrk" inDirectory:@"demoTrackers"];
     int count=0;
     
-    /*
-     // just doesn't like touching inbox
-    if (doLoad) { // confirm Inbox exists
-        newp = [rTracker_resource ioFilePath:@"Inbox" access:YES];
-        if  (![[NSFileManager defaultManager] createDirectoryAtPath:newp withIntermediateDirectories:YES attributes:nil error:&err] ) {
-            DBGErr(@"Error creating dir : %@ error: %@", newp,  err);
-        } else {
-            DBGLog(@"created dir %@",newp);
-        }
-    }
-    */
     loadingDemos=YES;
     for (NSString *p in paths) {
         if (doLoad) {
@@ -798,8 +654,6 @@ BOOL loadingInputFiles=NO;
             } else {
                 [self handleOpenFileURL:[NSURL fileURLWithPath:newp] tname:nil];
                 //DBGLog(@"stashedTIDs= %@",self.stashedTIDs);
-
-                //[rTracker_resource rmStashedTracker:0];  // 0 means rm last stashed tracker, in this case the one stashed by handleOpenFileURL //--> 2.0.6 deleting demo tracker before load so stash fails
             }
         }
         count++;
@@ -829,7 +683,6 @@ BOOL loadingInputFiles=NO;
 
 - (void) refreshToolBar:(BOOL)animated {
     //DBGLog(@"refresh tool bar, noshow= %d",(PVNOSHOW == self.privacyObj.showing));
-    //DBGLog(@"refresh tool bar");
 	[self setToolbarItems:@[self.flexibleSpaceButtonItem,
                            self.helpBtn,
 						   //self.payBtn, 
@@ -875,9 +728,6 @@ BOOL loadingInputFiles=NO;
             longName = nil;
     }
     
-    //name= @"aiiiiiiiiiiiiiiiiiiiiii";
-    
-
     if ((nil == name)
 #if RELEASE
         || ([name isEqualToString:@"iPhone"])
@@ -931,11 +781,10 @@ BOOL loadingInputFiles=NO;
             
             CGFloat maxWidth = (bw2 - bw1)-8; //self.view.bounds.size.width - btnWidths;
             //DBGLog(@"view wid= %f bw1= %f bw2= %f",self.view.bounds.size.width ,bw1,bw2);
-            //CGSize namesize = [tn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
+
             CGSize namesize = [tn2 sizeWithAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:20.0f]}];
             CGFloat nameWidth = ceilf( namesize.width );
             
-            //CGSize lnamesize = [ltn2 sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]]; //[tname sizeWithFont:[UIFont boldSystemFontOfSize:20.0f]];
             CGSize lnamesize = [ltn2 sizeWithAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:20.0f]}];
 
             CGFloat lnameWidth = ceilf( lnamesize.width );
@@ -977,12 +826,6 @@ BOOL loadingInputFiles=NO;
     //[self.adSupport stopTimer];
     return YES;
 }
-/*
-- (void)bannerViewActionDidFinish:(ADBannerView *)banner
-{
-    //[self.adSupport startTimer];
-}
-*/
 
 - (adSupport*) adSupport
 {
@@ -1022,11 +865,6 @@ BOOL loadingInputFiles=NO;
    else if ([response.actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier]) {
        // The user launched the app.
 
-       // left over from UILocalNotif - should only need if debugging on simulator as otherwise already set
-       // NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-       // [sud synchronize];
-       //[rTracker_resource setToldAboutSwipe:[sud boolForKey:@"toldAboutSwipe"]]; //
-
        NSDictionary *userInfo = response.notification.request.content.userInfo;
        RootViewController *rootController = (self.navigationController.viewControllers)[0];
        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(userInfo)[@"tid"] waitUntilDone:NO];
@@ -1055,8 +893,7 @@ BOOL loadingInputFiles=NO;
 #endif
     
 	//DBGLog(@"rvc: viewDidLoad privacy= %d",[privacyV getPrivacyValue]);
-    //InstallSamples = NO;
-    //InstallDemos = NO;
+
     self.refreshLock = 0;
     self.readingFile=NO;
 
@@ -1082,14 +919,6 @@ BOOL loadingInputFiles=NO;
 
     // title setup
     [self initTitle];
-    
-    // tableview setup
-    
-    //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
-    //CGFloat statusBarHeight = statusBarFrame.size.height;
-    
-    //CGRect tableFrame = bg.frame;
-    //tableFrame.size.height = [rTracker_resource get_visible_size:self].height;// - ( 2 * statusBarHeight ) ;
 
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
@@ -1114,13 +943,8 @@ BOOL loadingInputFiles=NO;
     self.tableView.delegate = self;
     
     self.tableView.backgroundColor = [UIColor clearColor];
-    //self.tableView.backgroundView = bg;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
-    //UIView *tfv = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 10)];
-    //tfv.backgroundColor = [UIColor yellowColor];
-    //self.tableView.tableFooterView = tfv;
-    
     [self.view addSubview:self.tableView];
 
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
@@ -1147,18 +971,6 @@ BOOL loadingInputFiles=NO;
 
 - (void) refreshEditBtn {
 
-/*
-	if ([self.tlist.topLayoutNames count] == 0) {
-		if (self.navigationItem.backBarButtonItem != nil) {
-			self.navigationItem.backBarButtonItem = nil;
-		}
-	} else {
-		if (self.navigationItem.backBarButtonItem == nil) {
-			self.navigationItem.backBarButtonItem = self.editBtn;
-			//[editBtn release];
-		}
-	}
-*/
 	if ([self.tlist.topLayoutNames count] == 0) {
 		if (self.navigationItem.leftBarButtonItem != nil) {
 			self.navigationItem.leftBarButtonItem = nil;
@@ -1229,28 +1041,7 @@ BOOL loadingInputFiles=NO;
             InstallDemos = YES;
         }
     }
-    /*
-    if (reloadSamplesPref
-        || 
-        //(self.initialPrefsLoad && [self samplesNeeded])
-        [self samplesNeeded]
-        ) { 
-        InstallSamples = YES;
-    } else {
-        InstallSamples = NO;
-    }
-    
-    if (reloadSamplesPref
-        ||
-        //(self.initialPrefsLoad && [self demosNeeded])
-        [self demosNeeded]
-        ) {
-        InstallDemos = YES;
-    } else {
-        InstallDemos = NO;
-    }
-    */
-    
+
     DBGLog(@"InstallSamples %d  InstallDemos %d",InstallSamples,InstallDemos);
     
     if (resetPassPref)
@@ -1271,6 +1062,20 @@ BOOL loadingInputFiles=NO;
 */
 }
 
+/*
+ refreshView:
+   loadInputFiles:
+     if files to load
+        thread:
+          load demos, samples, plist files
+          refreshViewPart2
+          thread:
+            load csv files
+            if rtcsv (might add trackers)
+               refreshViewPart2
+     else
+        refreshViesPart2
+  */
 - (void) refreshView {
     
     if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
@@ -1283,34 +1088,11 @@ BOOL loadingInputFiles=NO;
 
     [self handlePrefs];
     
-    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files
+    [self loadInputFiles];  // do this here as restarts are infrequent and prv change may enable to read more files -- calls refreshViewPart2
     
     [self countScheduledReminders];
     
 }
-/*
-- (void) jumpMaxPriv {
-    if (nil == self.stashedPriv) {
-        self.stashedPriv = @([privacyV getPrivacyValue]);
-        DBGLog(@"stashed priv %@",self.stashedPriv);
-    }
-
-    [self.privacyObj setPrivacyValue:MAXPRIV];  // temporary max privacy level so see all
-    DBGLog(@"priv jump!");
-}
-- (void) restorePriv {
-    if (nil == self.stashedPriv) {
-        return;
-    }
-    //if (YES == self.openUrlLock) {
-    //    return;
-    //}
-    DBGLog(@"restore priv to %@",self.stashedPriv);
-    [self.privacyObj setPrivacyValue:[self.stashedPriv intValue]];  // return to privacy level
-    self.stashedPriv = nil;
-    
-}
-*/
 
 #if ADVERSION
 // handle rtPurchasedNotification
@@ -1340,27 +1122,11 @@ BOOL loadingInputFiles=NO;
     DBGLog(@"rvc: viewWillAppear privacy= %d", [privacyV getPrivacyValue]);
     [self countScheduledReminders];
     
-    //[self loadInputFiles];  // do this here as restarts are infrequent
-    //[self refreshView];
-    
-    //[self restorePriv];
     [privacyV restorePriv];
-    //[self refreshViewPart2];
     
     [self.navigationController setToolbarHidden:NO animated:NO];
-/*
- // issue for pre iOS 12 ?
-    CGRect f = self.view.frame;
-    if (f.size.width != self.tableView.frame.size.width) {
-        f.origin.x = 0.0; f.origin.y = 0.0;
-        self.tableView.frame = f;
-    }
-    f = self.tableView.frame;
-    f.size.height = [rTracker_resource get_visible_size:self].height;  // fix inaccessible trackers at bottom after rotate from graph view
-    self.tableView.frame = f;
-*/
+
 #if ADVERSION
-    
     if (![rTracker_resource getPurchased]) {
 #if !DISABLE_ADS
         [self.adSupport initBannerView:self];
@@ -1373,9 +1139,8 @@ BOOL loadingInputFiles=NO;
     } else if (_adSupport) {
         [self updatePurchased:nil];
     }
-    
 #endif
-    
+
     [super viewWillAppear:animated];
 }
 
@@ -1417,11 +1182,10 @@ BOOL stashAnimated;
 
 - (void) viewDidAppearRestart {
 	[self refreshView];
-    //[super viewDidAppear:stashAnimated];
+
 #if ADVERSION
     if (![rTracker_resource getPurchased]) {
 #if !DISABLE_ADS
-
         [self.adSupport layoutAnimated:self tableview:self.tableView animated:NO];
 #endif
     }
@@ -1446,34 +1210,9 @@ BOOL stashAnimated;
     [self.stashedTIDs removeLastObject];
 }
 
-/*
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    //if ( self.isViewLoaded && self.view.window ) {
-    
-    // viewController is visible
-    //CGRect f = self.view.frame;
-    // / *
-    CGRect f;
-    f.origin.x = 0.0; f.origin.y = 0.0;
-    f.size = size;
-    self.tableView.frame = f;
-    // * /
-    DBGLog(@"rotated...");
-    //}
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-
-}
-*/
-
 - (void) viewDidAppear:(BOOL)animated {
     
     //DBGLog(@"rvc: viewDidAppear privacy= %d", [privacyV getPrivacyValue]);
-    /*
-     if (self.inputURL && !self.openUrlLock) {
-     self.openUrlLock = YES;
-     [self openInputURL];
-     } else
-     */
     
     if (! self.readingFile) {
         if (0 < [self.stashedTIDs count]) {
@@ -1535,17 +1274,6 @@ BOOL stashAnimated;
     [super viewWillDisappear:animated];
 }
 
-
-/*
-#if ADVERSION
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    //[self.adSupport stopTimer];
-}
-#endif
-*/
-
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
 	
@@ -1556,78 +1284,15 @@ BOOL stashAnimated;
 
 
 }
-/*
-- (void)viewDidUnload {
-	// Release anything that can be recreated in viewDidLoad or on demand.
-	// e.g. self.myOutlet = nil;
-	
-	//DBGLog(@"rvc viewDidUnload");
-
-	self.title = nil;
-	self.navigationItem.rightBarButtonItem = nil;
-	self.navigationItem.leftBarButtonItem = nil;
-	[self setToolbarItems:nil
-				 animated:NO];
-	
-	self.tlist = nil;
-	
-	//DBGLog(@"pb rc= %d  mgb rc= %d", [self.privateBtn retainCount], [self.multiGraphBtn retainCount]);
-    
-    [super viewDidUnload];
-	
-}
-*/
-
-- (void) startRvcActivityIndicator {
-    //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO];
-    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];  // ScrollToTop so can see bars
-    //CGRect navframe = [[self.navigationController navigationBar] frame];
-    //[rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:(navframe.size.height + navframe.origin.y)];
-    [rTracker_resource startProgressBar:self.view navItem:self.navigationItem disable:YES  yloc:0.0f];
-}
-- (void) finishRvcActivityIndicator {
-    //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
-    [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
-}
-
 
 #pragma mark -
 #pragma mark button accessor getters
 
-/*
- - (UIBarButtonItem *) payBtn {
-	if (payBtn == nil) {
-		payBtn = [[UIBarButtonItem alloc]
-					  initWithTitle:@"$"
-					  style:UIBarButtonItemStylePlain
-					  target:self
-					  action:@selector(btnPay)];
-	}
-	return payBtn;
-}
-*/
-
 - (void) privBtnSetImg:(UIButton*)pbtn noshow:(BOOL)noshow {
     //BOOL shwng = (self.privacyObj.showing == PVNOSHOW); 
     BOOL minprv = ( [privacyV getPrivacyValue] > MINPRIV );
-    /*
-    NSString *btnImg = ( kIS_LESS_THAN_IOS7 ?
-                        ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
-                         : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) )
-                        :
-                        ( noshow ? ( minprv ? @"shadeview-button-7.png" : @"closedview-button-7.png" )
-                         : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
-                        )
-                        ;
-     */
-    NSString *btnImg = (/* kIS_LESS_THAN_IOS7 ?
-                        ( noshow ? ( minprv ? @"shadeview-button.png" : @"closedview-button.png" )
-                         : ( minprv ? @"shadeview-button-blue.png" : @"closedview-button-blue.png" ) )
-                        : */
-                        ( noshow ? ( minprv ? @"shadeview-button-7.png" : @"closedview-button-7.png" )
-                         : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) )
-                        )
-                        ;
+    NSString *btnImg = (( noshow ? ( minprv ? @"shadeview-button-7.png" : @"closedview-button-7.png" )
+                                 : ( minprv ? @"shadeview-button-blue-7.png" : @"closedview-button-blue-7.png" ) ));
 
     dispatch_async(dispatch_get_main_queue(), ^(void){
         [pbtn setImage:[UIImage imageNamed:btnImg] forState:UIControlStateNormal];
@@ -1637,9 +1302,8 @@ BOOL stashAnimated;
 - (UIBarButtonItem *) privateBtn {
     //
 	if (_privateBtn == nil) {
-        // /*
         UIButton *pbtn = [[UIButton alloc] init];
-        [pbtn setImage:[UIImage imageNamed:(/* kIS_LESS_THAN_IOS7 ? @"closedview-button.png" : */  @"closedview-button-7.png")]
+        [pbtn setImage:[UIImage imageNamed:(@"closedview-button-7.png")]
               forState:UIControlStateNormal];
         pbtn.frame = CGRectMake(0, 0, ( pbtn.currentImage.size.width * 1.5 ), pbtn.currentImage.size.height);
         [pbtn addTarget:self action:@selector(btnPrivate) forControlEvents:UIControlEventTouchUpInside];
@@ -1654,7 +1318,7 @@ BOOL stashAnimated;
             && (PWKNOWPASS == self.privacyObj.pwState)) {
             //DBGLog(@"unlock btn");
             [(UIButton *)_privateBtn.customView
-             setImage:[UIImage imageNamed:(/* kIS_LESS_THAN_IOS7 ? @"fullview-button-blue.png" : */ @"fullview-button-blue-7.png")]
+             setImage:[UIImage imageNamed:(@"fullview-button-blue-7.png")]
              forState:UIControlStateNormal];
         } else {
             //DBGLog(@"lock btn");
@@ -1805,16 +1469,9 @@ BOOL stashAnimated;
         return;
     }
     configTlistController *ctlc;
-    //if(kIS_LESS_THAN_IOS7) {
-    //    ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
-    //} else {
         ctlc = [[configTlistController alloc] initWithNibName:@"configTlistController" bundle:nil ];
-    //}
 	ctlc.tlist = self.tlist;
 	[self.navigationController pushViewController:ctlc animated:YES];
-    
-    //[rTracker_resource myNavPushTransition:self.navigationController vc:ctlc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
-    
 }
 	
 - (void)btnMultiGraph {
@@ -1875,18 +1532,7 @@ BOOL stashAnimated;
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 
-        //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd-cell1-320-56.png"]]; // note needs to be @2x.png for retina
-        //[cell setBackgroundView:bg];
-        //[bg release];
-
         cell.backgroundColor = [UIColor clearColor];
-        //cell.backgroundColor = [UIColor greenColor];
-        
-        //UIView* separatorLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
-        //separatorLineView.backgroundColor =[UIColor redColor];
-        //[cell.contentView addSubview:separatorLineView];
-
-        //cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
 	// Configure the cell.
@@ -1896,7 +1542,7 @@ BOOL stashAnimated;
 
     int erc = [(self.tlist.topLayoutReminderCount)[row] intValue];
     int src = [(self.scheduledReminderCounts)[tid] intValue];
-    DBGLog(@"src: %d  erc:  %d",src,erc);
+    DBGLog(@"src: %d  erc:  %d  %@ (%@)",src,erc, (self.tlist.topLayoutNames)[row], tid);
     //NSString *formatString = @"%@";
     //UIColor *bg = [UIColor clearColor];
     if (erc != src) {
@@ -1911,15 +1557,6 @@ BOOL stashAnimated;
     [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]];
     cell.textLabel.attributedText = cellLabel;
     
-	//cell.textLabel.text = [NSString stringWithFormat:formatString,(self.tlist.topLayoutNames)[row]];  // gross but simplest offset option
-    //cell.textLabel.backgroundColor = bg;
-    //cell.textLabel.backgroundColor = [UIColor clearColor];
-    /*
-     cell.textLabel.textColor = [UIColor blackColor];
-    cell.textLabel.backgroundColor = [UIColor clearColor];
-    cell.backgroundColor = [UIColor clearColor];
-    [cell.contentView addSubview:[[UIView alloc]init]];
-    */
     return cell;
 }
 
@@ -1940,9 +1577,6 @@ BOOL stashAnimated;
     return ([privacyV getPrivacyValue] < [self.tlist getPrivFromLoadedTID:tid]);
 }
 - (void)openTracker:(NSInteger)tid rejectable:(BOOL)rejectable {
-    //if (rejectable) {
-    //    [self jumpMaxPriv];
-    //}
     
     if ([self exceedsPrivacy:tid]) {
         return;
@@ -1960,7 +1594,6 @@ BOOL stashAnimated;
     trackerObj *to = [[trackerObj alloc] init:tid];
 	[to describe];
 
-	//useTrackerController *utc = [[useTrackerController alloc] initWithNibName:@"useTrackerController" bundle:nil ];
 	useTrackerController *utc = [[useTrackerController alloc] init];
     utc.tracker = to;
     utc.rejectable = rejectable;
@@ -1977,13 +1610,7 @@ BOOL stashAnimated;
 #endif
 #endif
     
-    //if (rejectable) {
-    //    [self.navigationController pushViewController:utc animated:NO];
-    //} else {
-        [self.navigationController pushViewController:utc animated:YES];
-    //}
-    //[self myNavTransition:utc animOpt:UIViewAnimationOptionTransitionFlipFromLeft];
-    
+    [self.navigationController pushViewController:utc animated:YES];
 	
 }
 
