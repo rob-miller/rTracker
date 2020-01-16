@@ -432,12 +432,14 @@ static BOOL progressBarGoing=NO;
 
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str {
     DBGLog(@"start spinner");
+    __block BOOL skip=NO;
     safeDispatchSync(^{
         if (activityIndicatorGoing)
-            return;
+            skip=YES;
         activityIndicatorGoing=YES;
     });
-                     
+    if (skip) return;
+    
     if (disable) {
         view.userInteractionEnabled = NO;
         //[navItem setHidesBackButton:YES animated:YES];
@@ -471,7 +473,7 @@ static BOOL progressBarGoing=NO;
     captionLabel.text = str;
     [outerView addSubview:captionLabel];
 
-    //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
+    //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:YES];
 
     [view addSubview:outerView];
     DBGLog(@"spinning");
@@ -582,11 +584,6 @@ static BOOL localDisable;
         localView.userInteractionEnabled = YES;
     }
     
-    /*
-     [[NSNotificationCenter defaultCenter] removeObserver:self
-     name:rtProgressBarUpdateNotification
-     object:nil];
-     */
     //[progressBar stopAnimating];
 
     [progressBar removeFromSuperview];
@@ -601,11 +598,7 @@ static BOOL localDisable;
     localView = view;
     localNavItem = navItem;
     localDisable = disable;
-    if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) {// if not 5
-        [rTracker_resource doFinishProgressBar];
-    } else {
-        [self performSelectorOnMainThread:@selector(doFinishProgressBar) withObject:nil waitUntilDone:NO];
-    }
+    [self performSelectorOnMainThread:@selector(doFinishProgressBar) withObject:nil waitUntilDone:YES];
 }
 
 //---------------------------
