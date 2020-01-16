@@ -360,7 +360,6 @@ DBGLog(@"btnAddValue was pressed!");
         [self.tempTrackerObj saveConfig];
         
         [self.tlist addToTopLayoutTable:self.tempTrackerObj];
-        //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
         [self.tlist loadTopLayoutTable];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -434,19 +433,6 @@ DBGLog(@"btnAddValue was pressed!");
 		self.tempTrackerObj.trackerName = [rTracker_resource sanitizeFileNameString:self.nameField.text];
 	}
 }
-/*
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    DBGLog(@"tf begin editing");
-    //self.activeField = textField;
-}
-*/
-/*
-- (IBAction) privFieldDone:(id)sender {
-	[sender resignFirstResponder];
-	self.tempTrackerObj.privacy = [nameField.text integerValue];
-}
-*/
 
 #pragma mark -
 #pragma mark deleteValObj methods
