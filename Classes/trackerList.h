@@ -51,7 +51,7 @@
 - (id) init;
 
 - (void)loadTopLayoutTable;
-- (void)confirmTopLayoutEntry:(trackerObj *)tObj;
+- (void)confirmToplevelTIDs;
 - (void) addToTopLayoutTable:(trackerObj *)tObj;
 - (void)reorderFromTLT;
 - (void)reloadFromTLT;
