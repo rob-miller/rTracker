@@ -307,13 +307,6 @@
         [rTracker_resource alert:@"bad URL" msg:[NSString stringWithFormat:@"URL received was %@ but should look like %s",[url absoluteString],format] vc:rootController];
     }
 
-    
-
-
-    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //rootController.inputURL=url;
-    //[self.navigationController popToRootViewControllerAnimated:NO];
-
     return YES;
         
 }
