@@ -98,12 +98,6 @@
 - (void) openTracker:(NSInteger)tid rejectable:(BOOL)rejectable;
 - (void) doOpenTracker:(NSNumber*)nsnTid;
 
-//- (void) jumpMaxPriv;
-//- (void) restorePriv;
-
-- (void) startRvcActivityIndicator;
-- (void) finishRvcActivityIndicator;
-
 - (NSInteger) pendingNotificationCount;
 
 @end
