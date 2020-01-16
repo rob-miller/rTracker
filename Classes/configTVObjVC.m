@@ -889,20 +889,13 @@
                                                           [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
         }
       
-        if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-            // ios 8.1 must register for notifications
-    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-            __block UIUserNotificationSettings* uns;
-            safeDispatchSync(^{
-                uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
-            });
-            if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
-                //[rTracker_resource alert:@"notifications disabled" msg:@"Please enable notifications for rTracker in System Preferences."];
-                titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
-            }
-    #endif
+        __block UIUserNotificationSettings* uns;
+        safeDispatchSync(^{
+            uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        });
+        if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
+            titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
         }
-        
 
         NSDictionary *infoDict = [NSBundle mainBundle].infoDictionary;
                                   
@@ -910,17 +903,7 @@
         
     //#endif
         safeDispatchSync(^{
-        if (0 < orphanDatapoints) {
-            if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-                UIAlertView *alert;
-                alert = [[UIAlertView alloc]
-                         initWithTitle:self.to.trackerName
-                         message:titleStr
-                         delegate:self
-                         cancelButtonTitle:@"Ok"
-                         otherButtonTitles: @"recover missing items",nil];
-                [alert show];
-            } else {
+            if (0 < orphanDatapoints) {
                 UIAlertController* alert = [UIAlertController alertControllerWithTitle:self.to.trackerName
                                                                                message:titleStr
                                                                         preferredStyle:UIAlertControllerStyleAlert];
@@ -934,12 +917,10 @@
                 [alert addAction:recoverAction];
                 
                 [self presentViewController:alert animated:YES completion:nil];
-                
+                    
+            } else {
+                [rTracker_resource alert:self.to.trackerName msg:titleStr vc:self];
             }
-        } else {
-            //[rTracker_resource alert:self.to.trackerName str:titleStr vc:self];
-            [rTracker_resource alert:self.to.trackerName msg:titleStr vc:self];
-        }
         });
 }
 
