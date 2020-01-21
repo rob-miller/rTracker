@@ -425,6 +425,8 @@
 	
 	dbgNSAssert(self.toid,@"tObj load toid=0");
 	
+    DBGLog(@"tObj loadConfig toid:%ld name:%@",(long)self.toid,self.trackerName);
+    
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	NSMutableArray *s2 = [[NSMutableArray alloc] init];
     NSString *sql = @"select field, val from trkrInfo;";
@@ -444,8 +446,6 @@
     
 	//self.trackerName = [self.optDict objectForKey:@"name"];
 
-    DBGLog(@"tObj loadConfig toid:%ld name:%@",(long)self.toid,self.trackerName);
-	
     CGFloat w = [(self.optDict)[@"width"] floatValue];
 	CGFloat h = [(self.optDict)[@"height"] floatValue];
 	self.maxLabel = (CGSize) {w,h};
@@ -1404,31 +1404,15 @@
             }
         }
     }
-    
-    /*  replacing data for this date, minpriv is what we saw...
-     
-   sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
-    int currMinPriv = [self toQry2Int:sql];
-    
-    if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
-        // assume not found, new entry minpriv is mp for this record
-    } else if (currMinPriv < mp) {
-        mp = currMinPriv;   // data already present and < mp
-    }
-    // default mp < currMinPriv
-    */
-    
+
     if (its != 0) {
         if (gotData) {
            sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",its,(long)mp];
             [self toExecSql:sql];
-
-            //} else {  // csv file might have fewer columns than tracker does
-        //   sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;"];
         }
     }
     
-    [rTracker_resource bumpProgressBar];
+    //[rTracker_resource bumpProgressBar];
 }
 
 #pragma mark -
@@ -1633,6 +1617,7 @@
     NSMutableArray *rids = [[NSMutableArray alloc] init];
     NSString *sql = @"select rid from reminders order by rid";
     [self toQry2AryI:rids sql:sql];
+    DBGLog(@"toid %ld has %ld reminders in db", (unsigned long) self.toid, (unsigned long) [rids count]);
     if (0 < [rids count]) {
         for (NSNumber *rid in rids) {
             notifyReminder *tnr = [[notifyReminder alloc] init:rid to:self];
@@ -1651,7 +1636,7 @@
     BOOL started=FALSE;
     for (notifyReminder *nr in self.reminders) {
         NSString *fmt = (started ? @",%d" : @"%d");
-       sql = [sql stringByAppendingFormat:fmt,nr.rid];
+        sql = [sql stringByAppendingFormat:fmt,nr.rid];
         started=TRUE;
     }
     sql = [sql stringByAppendingString:@")"];
@@ -1714,7 +1699,7 @@
 
 - (void) saveReminder:(notifyReminder*)saveNR {
     if (0 == saveNR.rid) {
-        saveNR.rid = (NSInteger) [NSUUID UUID];  // [self getUnique];
+        saveNR.rid = (NSInteger) [self getUnique];  // problem: this is only unique for this tracker, iOS UNUserNotificationCenter needs unique id for rTracker - use tid-rid
         self.reminderNdx++;
     }
     if (0 == saveNR.saveDate) {
@@ -2149,7 +2134,7 @@
     
     [nr schedule:targDate];
 
-    DBGLog(@"done");
+    DBGLog(@"done %@", targDate);
 
  }
 
@@ -2165,10 +2150,13 @@
 // but keeping old algorithm seems more robust against database being out of sync with previously set reminders
 // and would mean more code changes elsewhere.
 //
+
 - (void) clearScheduledReminders {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    NSMutableArray *toRemove = [notifyReminder getRidArray:center tid:self.toid];
-    [center removePendingNotificationRequestsWithIdentifiers:toRemove];
+    //NSMutableArray *toRemove = [notifyReminder getRidArray:center tid:self.toid];
+    [notifyReminder useRidArray:center tid:self.toid callback:^(NSMutableArray *toRemove) {
+        [center removePendingNotificationRequestsWithIdentifiers:toRemove];
+    }];
 }
 
 - (void) setReminders {
@@ -2192,18 +2180,19 @@
 - (void) confirmReminders {
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    NSMutableArray *ridSet = [notifyReminder getRidArray:center tid:self.toid];
-
-    NSDate *today = [[NSDate alloc] init];
-    NSCalendar *cal = [NSCalendar currentCalendar];
+    //NSMutableArray *ridSet = [notifyReminder getRidArray:center tid:self.toid];
+    [notifyReminder useRidArray:center tid:self.toid callback:^(NSMutableArray *ridSet){
+        NSDate *today = [[NSDate alloc] init];
+        NSCalendar *cal = [NSCalendar currentCalendar];
     
-    [self loadReminders];
-    for (notifyReminder* nr in self.reminders) {
-        if (nr.reminderEnabled && ![ridSet containsObject:@(nr.rid)]) {
-            //[self setReminder:nr today:today gregorian:gregorian];
-            [self setReminder:nr today:today gregorian:cal];
+        [self loadReminders];
+        for (notifyReminder* nr in self.reminders) {
+            if (nr.reminderEnabled && ![ridSet containsObject:@(nr.rid)]) {
+                //[self setReminder:nr today:today gregorian:gregorian];
+                [self setReminder:nr today:today gregorian:cal];
+            }
         }
-    }
+    }];
     //[gregorian release];
 }
 
@@ -2510,8 +2499,11 @@
                 [vo.vos setFnVals:(int)nextDate];
             }
         }
-
-        [rTracker_resource setProgressVal:(ndx/all)];
+        
+        //safeDispatchSync(^{
+        //dispatch_async(dispatch_get_main_queue(), ^{
+            [rTracker_resource setProgressVal:(ndx/all)];
+        //});
         ndx += 1.0;
         
     } while ((nextDate = [self postDate]));    // iterate through dates
