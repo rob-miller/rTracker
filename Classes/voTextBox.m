@@ -94,9 +94,8 @@
 	//self.devc = vc;
 	//CGRect visFrame = vc.view.frame;
     
-    
     self.textView = [[UITextView alloc] initWithFrame:[voDataEdit getInitTVF:vc] textContainer:nil] ;  // ]vc.view.frame];
-    
+
 	self.textView.textColor = [UIColor blackColor];
     self.textView.font = PrefBodyFont; // [UIFont fontWithName:@"Arial" size:18];
 	self.textView.delegate = self;
@@ -284,12 +283,16 @@
 - (IBAction) segmentChanged:(id)sender {
 	NSInteger ndx = [sender selectedSegmentIndex];
 	//DBGLog(@"segment changed: %ld",(long)ndx);
-    
-    self.pv = nil;
+
+    if (self.textView.inputView) {  // if was showing pickerview
+        [self.pv removeFromSuperview];  // remove leftover constraints if showed before
+        self.pv = nil;  // force regenerate
+    }
     
 	if (SEGKEYBOARD == ndx) {
 		self.addButton.hidden = YES;
 		self.textView.inputView = nil;
+
 	} else {
         if (SEGPEOPLE == ndx) {
             if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
@@ -316,7 +319,7 @@
 		//if (nil == self.textView.inputView) 
         self.textView.inputView = self.pv;
 	}
-	
+
 	[self.textView resignFirstResponder];
 	[self.textView becomeFirstResponder];
     

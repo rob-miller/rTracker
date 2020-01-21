@@ -77,7 +77,9 @@
 }
 
 - (UITextField*) dtf {
-    if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    safeDispatchSync(^{
+        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    });
     
     if (nil == _dtf) {
         DBGLog(@"init %@ : x=%f y=%f w=%f h=%f",self.vo.valueName,self.vosFrame.origin.x,self.vosFrame.origin.y,self.vosFrame.size.width,self.vosFrame.size.height);
@@ -197,7 +199,11 @@
         ){ 
         return instr;
     }
-    return self.dtf.text;
+    __block NSString *cpy;
+    safeDispatchSync(^{
+        cpy = [NSString stringWithString:self.dtf.text];
+    });
+    return cpy;
 }
 
 

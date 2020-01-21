@@ -69,6 +69,7 @@
 
 @property (nonatomic,unsafe_unretained) UITextField *activeField;   //just a pointer, no retain
 @property (nonatomic) BOOL processingTfDone;
+@property (nonatomic, strong) NSMutableArray *rDates;
 
 - (void) addVOFields:(NSInteger) vot;
 - (void) addTOFields;

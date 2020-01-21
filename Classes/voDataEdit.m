@@ -170,7 +170,7 @@
         keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
     }
     */
-    DBGLog(@"keyboard rect conv: %f %f %f %f",keyboardRect.origin.x,keyboardRect.origin.y,keyboardRect.size.width,keyboardRect.size.height);
+    //DBGLog(@"keyboard rect conv: %f %f %f %f",keyboardRect.origin.x,keyboardRect.origin.y,keyboardRect.size.width,keyboardRect.size.height);
     
     NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     CGRect frame = [voDataEdit getInitTVF:self];
@@ -178,7 +178,7 @@
     //UIView *iav = ((voTextBox*)self.vo.vos).textView.inputAccessoryView;
     //CGRect avframe = iav.frame;
     CGRect avframe = self.textView.inputAccessoryView.frame;
-    //DBGLog(@"acc view frame rect: %f %f %f %f",avframe.origin.x,avframe.origin.y,avframe.size.width,avframe.size.height);
+    DBGLog(@"acc view frame rect: %f %f %f %f",avframe.origin.x,avframe.origin.y,avframe.size.width,avframe.size.height);
     
     frame.size.height += avframe.size.height;
     
@@ -186,12 +186,12 @@
 
     [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
     [UIView setAnimationDuration:animationDuration];
-    
+
     self.textView.frame = frame;
     [self.textView scrollRangeToVisible:self.textView.selectedRange];
 
     [UIView commitAnimations];
-    
+
     keyboardIsShown = YES;
     
 }

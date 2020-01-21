@@ -222,6 +222,7 @@
 		*/
 		//DBGLog(@"init trackerObj New");
         self.goRecalculate=NO;
+        self.swipeEnable=YES;
         self.changedDateFrom=0;
 	}
 	
@@ -399,139 +400,14 @@
     
 }
 
-/*
- // version 0 with code duplication
- 
- if (eVO) {                                          // self has vid;
-     if ([nVname isEqualToString:eVO.valueName]) {       // name matches same vid
-         if ([self mvIfFn:eVO testVT:nVtype]) {          // move out of way if fn-data clash
-             eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
-         } else {
-             addVO=NO;     // name and VID match so we overwrite existing vo
-             [self voSetFromDict:eVO dict:voDict];
-         }
-     } else {                                           // name does not match
-         [self voUpdateVID:eVO newVID:[self getUnique]];    // shift eVO to another vid
-         [self rescanVoIds:existingVOs];                     // re-validate
-         // code duplication!!!
-         BOOL foundMatch=NO;
-         for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
-             if (! foundMatch) {                            //  (only take first match)
-                 if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
-                     foundMatch=YES;
-                     if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
-                         //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
-                     } else {                                        // did not mv due to fn-data clash - so overwrite
-                         [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
-                         [self rescanVoIds:existingVOs];                     // re-validate
-                         eVO = vo;
-                         addVO = NO;
-                         [self voSetFromDict:eVO dict:voDict];
-                     }
-                 }
-             }
-         }
-         if (! foundMatch) {
-             eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
-         }
-     }
- 
- } else {                                            // self does not have vid
-     // code duplication!
-     BOOL foundMatch=NO;
-     for (valueObj *vo in self.valObjTable) {           // now look for any existing vo with same name
-         if (! foundMatch) {                            //  (only take first match)
-             if ([nVname isEqualToString:vo.valueName]) {       // name matches different existing vid
-                 foundMatch=YES;
-                 if ([self mvIfFn:vo testVT:nVtype]) {               // move out of way if fn-data clash
-                     //eVO = [[valueObj alloc] initWithDict:self dict:voDict];  // create new vo
-                 } else {                                        // did not mv due to fn-data clash - so overwrite
-                     [self voUpdateVID:vo newVID:[nVidN integerValue]];        // change self vid to input vid
-                     [self rescanVoIds:existingVOs];                     // re-validate
-                     eVO = vo;
-                     addVO = NO;
-                     [self voSetFromDict:eVO dict:voDict];
-                 }
-             }
-         }
-     }
-     if (! foundMatch) {
-         eVO = [[valueObj alloc] initWithDict:self dict:voDict];    // also confirms uniquev >= nVid
-     }
- }
- 
-if (addVO) {
-    [self addValObj:eVO];
-    [self rescanVoIds:existingVOs];                     // re-validate
-}
- 
-*/
-
-/*
- 
- NSInteger eVid = -1;
- for (valueObj *vo in self.valObjTable) {
- if ([vo.valueName isEqualToString:nVname]) {
- if ((-1 == eVid) || (vo.vid == nVid)) {         // first matching nVname or matches nVname and nVid
- eVid = vo.vid;
- }
- }
- }
- 
- if (-1 == eVid) { // no existing valObj with this name
- 
- if ([self voVIDisUsed:nVid]) {  // handle case of existing valObj has same vid
- [self voUpdateVID:nVid new:[self getUnique]];
- }
- [self addValObj:[[valueObj alloc] initWithDict:self dict:voDict]];  // safe to add as specified
- 
- } else { // name match .. first or also vid match
- [self voUpdateVID:eVid new:nVid];  // does nothing if same already
- 
- //----: what if type changes?  what if changes to function??? need to copy voConfig yes???  do what addValObj does
- // consider updateValObj
- }
- */
-/* think done need to test !
- 
- rtm working here
- if eVid is 0 then add new valueObj
- else if eVid matches voDict vid then [problem if vtype mismatch ?]
- else if vid does not match then mess to merge ?
- */
-
-/*
- return [NSDictionary dictionaryWithObjectsAndKeys:
- [NSNumber numberWithInteger:self.vid],@"vid",
- [NSNumber numberWithInteger:self.vtype],@"vtype",
- [NSNumber numberWithInteger:self.vpriv],@"vpriv",
- self.valueName,@"valueName",
- [NSNumber numberWithInteger:self.vcolor],@"vcolor",
- [NSNumber numberWithInteger:self.vGraphType],@"vGraphType",
- self.optDict,@"optDict",
- nil];
- */
 
 - (void) dealloc {
 	DBGLog(@"dealloc tObj: %@",self.trackerName);
 	
 	self.trackerName = nil;
-	
-	
 
 	self.vc = nil;
 	self.activeControl = nil;
-	
-    
-    
-	//unregister for value updated notices
-    /* move to utc
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:rtValueUpdatedNotification
-                                                  object:nil];
-     */
-    
-    
 }
 
 - (NSMutableDictionary *) optDict
@@ -545,32 +421,12 @@ if (addVO) {
 
 #pragma mark -
 #pragma mark load/save db<->object 
-/*
- // use loadConfig instead
-- (void) reloadVOtable {
-    [self.valObjTable removeAllObjects];
-   sql = @"select count(*) from voConfig";
-    int c = [self toQry2Int:sql];
-    
-   sql =[NSString stringWithFormat:@"select id from voConfig where priv <= %i order by rank", [privacyV getPrivacyValue]];
-    NSMutableArray *vida = [[NSMutableArray alloc] initWithCapacity:c];
-    [self toQry2AryI:vida];
-    for (NSNumber *nvid in vida) {
-        valueObj *vo = [[valueObj alloc] initFromDB:self in_vid:[nvid integerValue] ];
-        [self.valObjTable addObject:(id) vo];
-        [vo release];
-    }
-    [vida release];
-}
- */
-//
-// load tracker configuration incl valObjs from self.tDb, preset self.toid
-// self.trackerName from tDb
-// 
 - (void) loadConfig {
 	
 	dbgNSAssert(self.toid,@"tObj load toid=0");
 	
+    DBGLog(@"tObj loadConfig toid:%ld name:%@",(long)self.toid,self.trackerName);
+    
 	NSMutableArray *s1 = [[NSMutableArray alloc] init];
 	NSMutableArray *s2 = [[NSMutableArray alloc] init];
     NSString *sql = @"select field, val from trkrInfo;";
@@ -590,8 +446,6 @@ if (addVO) {
     
 	//self.trackerName = [self.optDict objectForKey:@"name"];
 
-    DBGLog(@"tObj loadConfig toid:%ld name:%@",(long)self.toid,self.trackerName);
-	
     CGFloat w = [(self.optDict)[@"width"] floatValue];
 	CGFloat h = [(self.optDict)[@"height"] floatValue];
 	self.maxLabel = (CGSize) {w,h};
@@ -826,7 +680,7 @@ if (addVO) {
     if (0 != inVid) {
        sql = [NSString stringWithFormat:@"select count(*) from voConfig where id=%d",inVid];
         if (0 < [self toQry2Int:sql]) {
-           sql = [NSString stringWithFormat:@"update voConfig set name='%@' where id=%d",name,inVid];
+           sql = [NSString stringWithFormat:@"update voConfig set name=\"%@\" where id=%d",name,inVid];
             [self toExecSql:sql];
             return inVid;
         }
@@ -894,6 +748,7 @@ if (addVO) {
         [self toExecSql:sql];
     }
 }
+
 - (void) saveConfig {
 	DBGLog(@"tObj saveConfig: trackerName= %@",self.trackerName) ;
 	
@@ -925,26 +780,25 @@ if (addVO) {
     sql = @"delete from voInfo where id not in (select id from voConfig)";  // 10.xii.2013 don't delete info for hidden items
     [self toExecSql:sql];
     
-	// now save
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
-	int i=0;
-	for (valueObj *vo in self.valObjTable) {
+    safeDispatchSync(^{
+        // now save
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        int i=0;
+        for (valueObj *vo in self.valObjTable) {
+            
+            //DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
+            NSString *sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
+                        (long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
+            [self toExecSql:sql];
+            
+            [self saveVoOptdict:vo];
+        }
         
-		//DBGLog(@"  vo %@  id %ld", vo.valueName, (long)vo.vid);
-        sql = [NSString stringWithFormat:@"insert or replace into voConfig (id, rank, type, name, color, graphtype,priv) values (%ld, %d, %ld, '%@', %ld, %ld, %d);",
-					(long)vo.vid, i++, (long)vo.vtype, [rTracker_resource toSqlStr:vo.valueName], (long)vo.vcolor, (long)vo.vGraphType, [(vo.optDict)[@"privacy"] intValue]];
-		[self toExecSql:sql];
-		
-		[self saveVoOptdict:vo];
-	}
-    
-    [self reminders2db];
-    [self setReminders];
-     
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
-	
-	//self.sql = nil;
-    
+        [self reminders2db];
+        [self setReminders];
+         
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+    });
 }
 
 - (void) saveChoiceConfigs {  // for csv load, need to update vo optDict if vo is VOT_CHOICE
@@ -1260,12 +1114,6 @@ if (addVO) {
     }
 }
 
-/*
- - (void) rcvRtrk:(NSDictionary *)rTrk {
- rtm working here -- this needs to be in rvc, merge with load plist files
- }
- */
-
 #pragma mark -
 #pragma mark read & write tracker data as csv
 
@@ -1556,120 +1404,16 @@ if (addVO) {
             }
         }
     }
-    
-    /*  replacing data for this date, minpriv is what we saw...
-     
-   sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
-    int currMinPriv = [self toQry2Int:sql];
-    
-    if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
-        // assume not found, new entry minpriv is mp for this record
-    } else if (currMinPriv < mp) {
-        mp = currMinPriv;   // data already present and < mp
-    }
-    // default mp < currMinPriv
-    */
-    
+
     if (its != 0) {
         if (gotData) {
            sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%ld);",its,(long)mp];
             [self toExecSql:sql];
-
-            //} else {  // csv file might have fewer columns than tracker does
-        //   sql = [NSString stringWithFormat:@"delete from trkrData where date=%d;"];
         }
     }
     
-    [rTracker_resource bumpProgressBar];
+    //[rTracker_resource bumpProgressBar];
 }
-
-
-/* first try...
- 
-- (void)receiveRecord:(NSDictionary *)aRecord
-{
-    
-    NSDate *ts = [self strToDate:[aRecord objectForKey:TIMESTAMP_LABEL]];
-    if (nil == ts) {
-        for (NSString *key in aRecord)
-        {
-            DBGLog(@"key= %@  value=%@",key,[aRecord objectForKey:key]);
-        }
-        DBGErr(@"skipping record as failed reading %@ key",TIMESTAMP_LABEL);
-        return;
-    } else {
-        DBGLog(@"ts str: %@   ts read: %@",[aRecord objectForKey:TIMESTAMP_LABEL],ts);
-    }
-    
-    NSMutableDictionary *idDict = [[NSMutableDictionary alloc] init];
-    // NSMutableDictionary *typDict = [[NSMutableDictionary alloc] init];
-    
-    int mp = BIGPRIV;
-	for (NSString *key in aRecord)   // need min used privacy this record, collect ids
-	{
-        DBGLog(@"pass1 key= %@", key);
-        if ((! [key isEqualToString:TIMESTAMP_LABEL]) // not timestamp 
-             && (![@"" isEqualToString:[aRecord objectForKey:key]]) ) {   // only fields with data
-            
-            //self.sql = [NSString stringWithFormat:@"select id, priv from voConfig where name='%@';",key];
-            //int valobjID,valobjPriv;
-            //[self toQry2IntInt:&valobjID i2:&valobjPriv];
-            //DBGLog(@"name=%@ val=%@ id=%d priv=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv);
-
-           sql = [NSString stringWithFormat:@"select id, priv, type from voConfig where name='%@';",key];
-            int valobjID,valobjPriv,valobjTyp;
-            [self toQry2IntIntInt:&valobjID i2:&valobjPriv i3:&valobjTyp];
-            DBGLog(@"name=%@ val=%@ id=%d priv=%d typ=%d",key,[aRecord objectForKey:key], valobjID,valobjPriv,valobjTyp);
-            
-            [idDict setObject:[NSNumber numberWithInt:valobjID] forKey:key];
-            //[typDict setObject:[NSNumber numberWithInt:valobjTyp] forKey:key];
-            if (valobjPriv < mp)
-                mp = valobjPriv;
-        }
-    }
-    
-    
-    int its = [ts timeIntervalSince1970];
-    //NSNumber *vtf = [NSNumber numberWithInt:VOT_FUNC];
-    
-	for (NSString *key in aRecord)
-	{
-        DBGLog(@"pass2 key= %@", key);
-        if ((! [key isEqualToString:TIMESTAMP_LABEL]) //{ // not timestamp 
-            // && ( ! ((nil != [typDict objectForKey:key]) && [vtf isEqualToNumber:[typDict objectForKey:key]]))  // ignore calculated function value 
-            ) { 
-            //&& (nil != [aRecord objectForKey:key])) {    // accept fields without data if updating
-
-            // update value data
-           sql = [NSString stringWithFormat:@"insert or replace into voData (id, date, val) values (%d,%d,'%@');",
-                        [[idDict objectForKey:key] intValue],its,[rTracker_resource toSqlStr:[aRecord objectForKey:key]]];
-            [self toExecSql:sql];
-            
-            // update trkrData - date easy, need minpriv
-           sql = [NSString stringWithFormat:@"select minpriv from trkrData where date = %d;",its];
-            int currMinPriv = [self toQry2Int:sql];
-            
-            if (0 == currMinPriv) { // so minpriv starts at 1, else don't know if this is minpriv or not found
-                // assume not found, new entry minpriv is mp for this record
-            } else if (currMinPriv < mp) {
-                mp = currMinPriv;   // data already present and < mp
-            }
-            // default mp < currMinPriv
-            
-           sql = [NSString stringWithFormat:@"insert or replace into trkrData (date, minpriv) values (%d,%d);",its,mp];  
-            [self toExecSql:sql];
-            
-           //sql = [NSString stringWithFormat:@"select date from trkrData where minpriv <= %d order by date desc limit 1;",(int) [privacyV getPrivacyValue]];
-           // int rslt= (NSInteger) [self toQry2Int:sql];
-            
-        }
-        
-	}
-    [idDict release];
-    //[typDict release];
-    
-}
-*/
 
 #pragma mark -
 #pragma save / load / remove temp tracker data file
@@ -1873,6 +1617,7 @@ if (addVO) {
     NSMutableArray *rids = [[NSMutableArray alloc] init];
     NSString *sql = @"select rid from reminders order by rid";
     [self toQry2AryI:rids sql:sql];
+    DBGLog(@"toid %ld has %ld reminders in db", (unsigned long) self.toid, (unsigned long) [rids count]);
     if (0 < [rids count]) {
         for (NSNumber *rid in rids) {
             notifyReminder *tnr = [[notifyReminder alloc] init:rid to:self];
@@ -1891,7 +1636,7 @@ if (addVO) {
     BOOL started=FALSE;
     for (notifyReminder *nr in self.reminders) {
         NSString *fmt = (started ? @",%d" : @"%d");
-       sql = [sql stringByAppendingFormat:fmt,nr.rid];
+        sql = [sql stringByAppendingFormat:fmt,nr.rid];
         started=TRUE;
     }
     sql = [sql stringByAppendingString:@")"];
@@ -1954,7 +1699,7 @@ if (addVO) {
 
 - (void) saveReminder:(notifyReminder*)saveNR {
     if (0 == saveNR.rid) {
-        saveNR.rid = [self getUnique];
+        saveNR.rid = (NSInteger) [self getUnique];  // problem: this is only unique for this tracker, iOS UNUserNotificationCenter needs unique id for rTracker - use tid-rid
         self.reminderNdx++;
     }
     if (0 == saveNR.saveDate) {
@@ -1966,25 +1711,23 @@ if (addVO) {
     [self.reminders setObject:saveNR atIndexedSubscript:self.reminderNdx];
     
     
-    //*
-    // for debug
 #if REMINDERDBG
     NSDate *today = [[NSDate alloc] init];
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
     [self setReminder:saveNR today:today gregorian:gregorian];
 #endif
-    //*/
     
 }
 
 - (void) initReminderTable {
-    NSString *sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, unique(rid) on conflict replace)";
+    NSString *sql = @"create table if not exists reminders (rid int, monthDays int, weekDays int, everyMode int, everyVal int, start int, until int, flags int, times int, msg text, tid int, vid int, saveDate int, soundFileName text, unique(rid) on conflict replace)";
     [self toExecSql:sql];
-    sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr:sql];
-    sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
-    [self toExecSqlIgnErr:sql];
+    // assume all old databsese updated by now.
+    //sql = @"alter table reminders add column saveDate int";  // because versions released before reminders enabled but this was still called
+    //[self toExecSqlIgnErr:sql];
+    //sql = @"alter table reminders add column soundFileName text";  // because versions released before reminders enabled but this was still called
+    //[self toExecSqlIgnErr:sql];
   //sql = nil;
 }
 
@@ -2008,6 +1751,9 @@ if (addVO) {
     return TRUE;
 }
 
+//
+// convert options sset in notifyReminder to single target datetime for next reminder to fire
+//
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
     NSString *sql;
 
@@ -2388,29 +2134,36 @@ if (addVO) {
     
     [nr schedule:targDate];
 
-    DBGLog(@"done");
+    DBGLog(@"done %@", targDate);
 
  }
 
 
+//
+// remove all reminders set for this tracker.
+//
+// with change from UILocalNotification to UNNotification, could be more efficient
+// - just delete each matching notification with matching rid
+// or
+// - rely on setting notification with same ID updating previous notification
+//
+// but keeping old algorithm seems more robust against database being out of sync with previously set reminders
+// and would mean more code changes elsewhere.
+//
+
 - (void) clearScheduledReminders {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
-            [app cancelLocalNotification:oneEvent];
-        }
-    }
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    //NSMutableArray *toRemove = [notifyReminder getRidArray:center tid:self.toid];
+    [notifyReminder useRidArray:center tid:self.toid callback:^(NSMutableArray *toRemove) {
+        [center removePendingNotificationRequestsWithIdentifiers:toRemove];
+    }];
 }
 
 - (void) setReminders {
         
     // delete all reminders for this tracker
     [self clearScheduledReminders];
-    // create uiLocalNotif here with access to nr data and tracker data
+    // create unUserNotif here with access to nr data and tracker data
     NSDate *today = [[NSDate alloc] init];
     //NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];   // could use [NSCalendar currentCalendar]; ?
     NSCalendar *cal = [NSCalendar currentCalendar];
@@ -2418,7 +2171,6 @@ if (addVO) {
     [self loadReminders];
     for (notifyReminder* nr in self.reminders) {
         if (nr.reminderEnabled) {
-            //[self setReminder:nr today:today gregorian:gregorian];
             [self setReminder:nr today:today gregorian:cal];
         }
     }
@@ -2426,28 +2178,21 @@ if (addVO) {
 }
 
 - (void) confirmReminders {
-    NSMutableSet *ridSet = [[NSMutableSet alloc] init];
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if ([userInfoCurrent[@"tid"] integerValue] == self.toid) {
-            [ridSet addObject:userInfoCurrent[@"rid"]];
-        }
-    }
     
-    NSDate *today = [[NSDate alloc] init];
-    NSCalendar *cal = [NSCalendar currentCalendar];
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    //NSMutableArray *ridSet = [notifyReminder getRidArray:center tid:self.toid];
+    [notifyReminder useRidArray:center tid:self.toid callback:^(NSMutableArray *ridSet){
+        NSDate *today = [[NSDate alloc] init];
+        NSCalendar *cal = [NSCalendar currentCalendar];
     
-    [self loadReminders];
-    for (notifyReminder* nr in self.reminders) {
-        if (nr.reminderEnabled && ![ridSet containsObject:@(nr.rid)]) {
-            //[self setReminder:nr today:today gregorian:gregorian];
-            [self setReminder:nr today:today gregorian:cal];
+        [self loadReminders];
+        for (notifyReminder* nr in self.reminders) {
+            if (nr.reminderEnabled && ![ridSet containsObject:@(nr.rid)]) {
+                //[self setReminder:nr today:today gregorian:gregorian];
+                [self setReminder:nr today:today gregorian:cal];
+            }
         }
-    }
+    }];
     //[gregorian release];
 }
 
@@ -2754,8 +2499,11 @@ if (addVO) {
                 [vo.vos setFnVals:(int)nextDate];
             }
         }
-
-        [rTracker_resource setProgressVal:(ndx/all)];
+        
+        //safeDispatchSync(^{
+        //dispatch_async(dispatch_get_main_queue(), ^{
+            [rTracker_resource setProgressVal:(ndx/all)];
+        //});
         ndx += 1.0;
         
     } while ((nextDate = [self postDate]));    // iterate through dates
@@ -2780,22 +2528,11 @@ if (addVO) {
 
     [rTracker_resource setProgressVal:0.0f];
     [self setFnVals];
-    
-    /*
-     // old, loop in valobj way
-	for (valueObj *vo in self.valObjTable) {
-        if (self.goRecalculate && (VOT_FUNC == vo.vtype)) {
-            [rTracker_resource setProgressVal:0.0f];
-            [vo.vos recalculate];
-        }
-	}
-     */
-    
+
     if (self.goRecalculate) {
         [self.optDict removeObjectForKey:@"dirtyFns"];
         NSString *sql = @"delete from trkrInfo where field='dirtyFns';";
         [self toExecSql:sql];
-        //self.sql = nil;
         
         self.goRecalculate = NO;
     }
@@ -2810,35 +2547,6 @@ if (addVO) {
 		_nextColor=0;
 	return rv;
 }
-
-/*
-- (NSArray *) colorSet {
-	if (colorSet == nil) {
-		colorSet = [[NSArray alloc] initWithObjects:
-					[UIColor redColor], [UIColor greenColor], [UIColor blueColor],
-					[UIColor cyanColor], [UIColor yellowColor], [UIColor magentaColor],
-					[UIColor orangeColor], [UIColor purpleColor], [UIColor brownColor], 
-					[UIColor whiteColor], [UIColor lightGrayColor], [UIColor darkGrayColor], nil];
-		
-	}
-	return colorSet;
-}
-*/
-
-// TODO: dump plist, votArray could be encoded as colorSet above (?)
-// done!
-/*
-- (NSArray *) votArray {
-	if (_votArray == nil) {
-		NSBundle *bundle = [NSBundle mainBundle];
-		NSString *plistPath= [bundle pathForResource:@"rt-types" ofType:@"plist"];
-		_votArray = [[NSArray alloc] initWithContentsOfFile:plistPath];
-
-	}
-	
-	return _votArray;
-}
-*/
 
 - (void) setTOGD:(CGRect)inRect {  // note TOGD not Togd -- so self.togd still automatically retained/released
     id ttogd = [[togd alloc] initWithData:self rect:inRect];

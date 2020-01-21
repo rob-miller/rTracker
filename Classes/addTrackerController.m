@@ -165,14 +165,15 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     DBGLog(@"atc: viewWillDisappear, tracker name = %@",self.tempTrackerObj.trackerName);
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-    
+
+    safeDispatchSync(^{
         if ([self.nameField.text length] > 0) {
             self.tempTrackerObj.trackerName = self.nameField.text;
             DBGLog(@"adding val, save tf: %@ = %@",self.tempTrackerObj.trackerName,self.nameField.text);
         }
     });
-    
+
+
 #if ADVERSION
     //unregister for purchase notices
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -322,9 +323,9 @@ static int editMode;
 	}
 	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
-	
-	[self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-	
+	dispatch_async(dispatch_get_main_queue(), ^(void){
+        [self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+    });
 }
 
 
@@ -359,11 +360,10 @@ DBGLog(@"btnAddValue was pressed!");
         [self.tempTrackerObj saveConfig];
         
         [self.tlist addToTopLayoutTable:self.tempTrackerObj];
-        //[self.tlist confirmTopLayoutEntry:tempTrackerObj];
         [self.tlist loadTopLayoutTable];
         
-        [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:YES];
             [self.navigationController popViewControllerAnimated:YES];
         });
         //[rTracker_resource myNavPopTransition:self.navigationController animOpt:UIViewAnimationOptionTransitionCurlDown];
@@ -410,9 +410,6 @@ DBGLog(@"btnAddValue was pressed!");
         if (8 < [self.tempTrackerObj.valObjTable count]) {
             [rTracker_resource startActivityIndicator:self.view navItem:self.navigationItem disable:YES str:@"Saving..."];
         }
-        //self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
-        //self.spinner.hidesWhenStopped = YES;
-        //[self.spinner startAnimating];
         
         [NSThread detachNewThreadSelector:@selector(btnSaveSlowPart) toTarget:self withObject:nil];
         
@@ -436,19 +433,6 @@ DBGLog(@"btnAddValue was pressed!");
 		self.tempTrackerObj.trackerName = [rTracker_resource sanitizeFileNameString:self.nameField.text];
 	}
 }
-/*
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    DBGLog(@"tf begin editing");
-    //self.activeField = textField;
-}
-*/
-/*
-- (IBAction) privFieldDone:(id)sender {
-	[sender resignFirstResponder];
-	self.tempTrackerObj.privacy = [nameField.text integerValue];
-}
-*/
 
 #pragma mark -
 #pragma mark deleteValObj methods

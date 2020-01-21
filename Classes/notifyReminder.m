@@ -33,7 +33,7 @@
 
 @implementation notifyReminder
 
-@synthesize rid=_rid, monthDays=_monthDays, weekDays=_weekDays, everyMode=_everyMode, everyVal=_everyVal, start=_start, until=_until, times=_times, timesRandom=_timesRandom, msg=_msg, soundFileName=_soundFileName, reminderEnabled=_reminderEnabled, untilEnabled=_untilEnabled, fromLast=_fromLast, saveDate=_saveDate, localNotif=_localNotif, tid=_tid, vid=_vid;
+@synthesize rid=_rid, monthDays=_monthDays, weekDays=_weekDays, everyMode=_everyMode, everyVal=_everyVal, start=_start, until=_until, times=_times, timesRandom=_timesRandom, msg=_msg, soundFileName=_soundFileName, reminderEnabled=_reminderEnabled, untilEnabled=_untilEnabled, fromLast=_fromLast, saveDate=_saveDate, notifContent=_notifContent, tid=_tid, vid=_vid;
 
 #define UNTILFLAG   (0x01<<0)
 #define TIMESRFLAG  (0x01<<1)
@@ -43,7 +43,7 @@
 - (id)init {
 	
 	if ((self = [super init])) {
-        self.localNotif = nil;
+        self.notifContent = nil;
         self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
         self.soundFileName = nil;
 	}
@@ -66,7 +66,7 @@
 	if ((self = [self init])) {
 		//DBGLog(@"init trackerObj id: %d",tid);
         //[self initReminderTable];
-        [self loadRid:[NSString stringWithFormat:@"rid=%d",[inRid intValue]] to:to];
+        [self loadRid:[NSString stringWithFormat:@"rid=%d and tid=%ld",[inRid intValue], (long)to.toid] to:to];
 	}
     DBGLog(@"%@",self);
 	return self;
@@ -99,9 +99,7 @@
 }
 
 - (void)dealloc {
-	DBGLog(@"nr dealloc");
-    
-    
+	//DBGLog(@"nr dealloc");
 }
 
 - (void) save:(trackerObj*)to {
@@ -169,7 +167,7 @@
             self.soundFileName=nil;
         }
         
-} else {
+    } else {
         [self clearNR];
         self.rid = 0;
         self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
@@ -201,41 +199,7 @@
             @"saveDate": @(self.saveDate)
             };
 }
-/*
-- (void) neighbourRid:(char)test {
 
-    [self loadRid:[NSString stringWithFormat:@"rid %c %d order by rid limit 1", test, self.rid]];
-    
-    //self.to.sql = @"select count(*) from reminders;";
-    //int c = [self.to toQry2Int:sql];
-    //DBGLog(@"c= %d",c);
-
-}
-
-- (void) nextRid {
-    return [self neighbourRid:'>'];
-}
-
-- (void) prevRid { // rtm here xxx needs to get last one if rid is 0
-    if (self.rid) return [self neighbourRid:'<'];
-    return [self neighbourRid:'>'];  // if curr rid = 0 (empty nr) then any
-}
-
-- (BOOL) neighbourTest:(char)test {
-   sql = [NSString stringWithFormat:@"select count(*) from reminders where rid %c %d",test,self.rid];
-    int rslt = [self.to toQry2Int:sql];
-   sql=nil;
-    return (rslt>0);
-}
-
-- (BOOL) haveNextReminder {
-    return [self neighbourTest:'>'];
-}
-- (BOOL) havePrevReminder {
-    if (self.rid) return [self neighbourTest:'<'];
-    return [self neighbourTest:'>'];
-}
-*/
 
 - (void) clearNR {
     //self.rid=0; // need to keep if set
@@ -375,75 +339,97 @@
 }
 
 -(void) create {
-    if (nil == self.localNotif) {
-        if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
-        //if (nil == (self.localNotif = [[UILocalNotification alloc] init])) {
+    if (nil == self.notifContent) {
+        if (nil == (self.notifContent = [UNMutableNotificationContent new])) {
             return;
         }
     }
     
     
-    self.localNotif.timeZone = [NSTimeZone defaultTimeZone];
+    //self.notifContent.timeZone = [NSTimeZone defaultTimeZone];
     
-    self.localNotif.alertBody = self.msg;
-    self.localNotif.alertAction = NSLocalizedString(@"rTracker reminder", nil);
+    self.notifContent.body = self.msg;
+    self.notifContent.title = NSLocalizedString(@"rTracker reminder", nil);
     
-    self.localNotif.applicationIconBadgeNumber = 1;
+    self.notifContent.badge = [NSNumber numberWithInt:1];
     
     if (nil == self.soundFileName || [@"" isEqualToString:self.soundFileName]) {
-        self.localNotif.soundName = UILocalNotificationDefaultSoundName;
+        self.notifContent.sound = UNNotificationSound.defaultSound;
     } else {
-        self.localNotif.soundName = self.soundFileName;
+        self.notifContent.sound = [UNNotificationSound soundNamed:self.soundFileName];
     }
+    self.notifContent.launchImageName = [rTracker_resource getLaunchImageName];
     
     //NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:self.tid] forKey:@"tid"];
     NSDictionary *infoDict = @{@"tid": @(self.tid),@"rid": @(self.rid)};
-    self.localNotif.userInfo = infoDict;
+    self.notifContent.userInfo = infoDict;
     DBGLog(@"created.");
 }
 
--(void) cancel {
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    for (int i=0; i<[eventArray count]; i++)
-    {
-        UILocalNotification* oneEvent = eventArray[i];
-        NSDictionary *userInfoCurrent = oneEvent.userInfo;
-        if (([userInfoCurrent[@"tid"] integerValue] == self.tid)
-            && ([userInfoCurrent[@"rid"] integerValue] == self.rid))
-        {
-            [app cancelLocalNotification:oneEvent];
-        }
-    }
+-(void) cancelOld {
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    NSArray *idArr = [NSArray arrayWithObject:[NSString stringWithFormat:@"%ld", (long) self.rid]];
+    [center removePendingNotificationRequestsWithIdentifiers:idArr];
 }
 
 -(void) schedule:(NSDate*) targDate {
-    [self cancel];  // safety net -- should only happen if REMINDERDBG is set due to setReminder on 'done'
-    if (nil == self.localNotif)
+    [self cancelOld];  // remove any notifications set with rid instead of tid-rid
+    if (nil == self.notifContent)
         [self create];
-    if (nil == self.localNotif)
+    if (nil == self.notifContent)
         return;
     
-    self.localNotif.fireDate = targDate;
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+
+    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+      if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
+          return; // Notifications not allowed
+      }
+    }];
     
-    [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotif];
-    DBGLog(@"scheduled");
+    NSString *idStr = [NSString stringWithFormat:@"%ld-%ld", (long) self.tid, (long) self.rid];
+    
+    NSDateComponents *triggerDate = [[NSCalendar currentCalendar]
+                                     components:NSCalendarUnitYear +
+                                     NSCalendarUnitMonth + NSCalendarUnitDay +
+                                     NSCalendarUnitHour + NSCalendarUnitMinute +
+                                     NSCalendarUnitSecond fromDate:targDate];
+    
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:NO];
+
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:idStr content:self.notifContent trigger:trigger];
+
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+      if (error != nil) {
+        DBGWarn(@"error scheduling reminder %@: %@",idStr, error);
+      }
+    }];
+    
+    DBGLog(@"scheduled %@", idStr);
 }
 
 -(void) playSound {
     [rTracker_resource playSound:self.soundFileName];
 }
 
-/*
--(void) present {
-    if (nil == self.localNotif)
-        [self create];
-    if (nil == self.localNotif)
-        return;
+
++(void) useRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid callback:(void (^)(NSMutableArray *)) callback {
+    __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        for (int i=0;
+             i<[notifications count];
+             i++)
+        {
+            UNNotificationRequest *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
+            if ([userInfoCurrent[@"tid"] integerValue] == tid) {
+                NSArray *tidRid = [oneEvent.identifier componentsSeparatedByString:@"-"];
+                [ridArray addObject:tidRid[1]];  // just add rid
+            }
+        }
+        callback(ridArray);
+    }];
     
-    [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotif];
-    DBGLog(@"presented.");
 }
-*/
 
 @end

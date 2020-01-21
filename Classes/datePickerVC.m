@@ -117,6 +117,9 @@ datePicker=_datePicker;
 	self.dpr.action = DPA_NEW;
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0"))
+        [(UIViewController*) self.presentationController.delegate viewWillAppear:FALSE];
 }
 - (IBAction) dateSetBtnAction
 {
@@ -124,6 +127,8 @@ datePicker=_datePicker;
 	self.dpr.action = DPA_SET;
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0"))
+        [(UIViewController*) self.presentationController.delegate viewWillAppear:FALSE];
 }
 - (IBAction) dateGotoBtnAction
 {
@@ -131,6 +136,8 @@ datePicker=_datePicker;
 	self.dpr.action = DPA_GOTO;
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0"))
+        [(UIViewController*) self.presentationController.delegate viewWillAppear:FALSE];
 }
 
 /*

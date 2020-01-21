@@ -247,7 +247,9 @@ NSInteger choiceCompare(id ndx0, id ndx1, void *context)
     
     //[[self.vogd myGraphColor] set];  dictionaryWithObjects
     if (self.vogd) { // can get here with no graph data if only vot_info entries
-        [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName: [self.vogd myGraphColor]}];
+        safeDispatchSync(^{
+            [self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withAttributes:@{NSFontAttributeName:self.myFont,NSForegroundColorAttributeName: [self.vogd myGraphColor]}];
+        });
     }
     //[self.vogd.vo.valueName drawAtPoint:(CGPoint) {SPACE5,(self.frame.size.height - BORDER)} withFont:self.myFont];
     [[UIColor whiteColor] set];

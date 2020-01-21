@@ -29,6 +29,7 @@
 #import "gfx.h"
 #import "privDefs.h"
 #import "dbg-defs.h"
+#import "rTracker-resource.h"
 
 @implementation tictacV
 
@@ -80,8 +81,10 @@ static unsigned int theKey;
 
 - (void) drawTicTac {
 	int i;
-	self.vborder = TTBF * self.frame.size.height;
-	self.hborder = TTBF * self.frame.size.width;
+    safeDispatchSync(^{
+        self.vborder = TTBF * self.frame.size.height;
+        self.hborder = TTBF * self.frame.size.width;
+    });
 	self.vlen = self.bounds.size.height - (CGFloat) (2*self.vborder);
 	self.hlen = self.bounds.size.width - (CGFloat) (2*self.hborder);
 	self.vstep = self.bounds.size.height * TTSF;

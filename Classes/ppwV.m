@@ -44,34 +44,22 @@
 // CGRect saveFrame;
 
 - (id) initWithParentView:(UIView*)pv {
-	CGRect frame = pv.frame;
+
+    __block CGRect frame;
+    safeDispatchSync(^{
+        frame = pv.frame;
+    });
 	DBGLog(@"ppwV parent: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
-    /*
-    frame.origin.y = frame.size.height;// - 10.0f;
-	if (kIS_LESS_THAN_IOS7) {
-        frame.size.height *=0.25f;
-        frame.origin.x = frame.size.width * 0.2f;
-        frame.size.width *= 0.8f;
-	} else {
-        frame.size.height *=0.35f;
-    }
-    */
+
     frame.origin.x=0.0; frame.origin.y = 372.0; frame.size.width=320.0; frame.size.height=130.0;
 	DBGLog(@"ppwV: x=%f y=%f w=%f h=%f",frame.origin.x,frame.origin.y,frame.size.width, frame.size.height);
 	
     if ((self = [super initWithFrame:frame])) {
-        if (kIS_LESS_THAN_IOS7) {
-            self.backgroundColor = [UIColor darkGrayColor];
-        } else {
-            //self.backgroundColor = [UIColor whiteColor];
-            // set graph paper background
-            ///*
-            UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-            [self addSubview:bg];
-            [self sendSubviewToBack:bg];
-            // */
-            //self.backgroundColor = [UIColor redColor];
-        }
+        UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        [self addSubview:bg];
+        [self sendSubviewToBack:bg];
+       self.backgroundColor = [UIColor redColor];
+
         self.layer.cornerRadius=8;
 		self.parentView = pv;
 		
@@ -103,7 +91,7 @@
 BOOL ObservingKeyboardNotification=false;
 
 - (void) toggleKeyboardNotifications:(BOOL)newState {
-    if (resigningActive) newState=NO;  // regardless of input we should not be watching notification if resigningActive
+    //if (resigningActive) newState=NO;  // regardless of input we should not be watching notification if resigningActive - except this happens on initial app start because initWithParentView called way early
     if (newState == ObservingKeyboardNotification) return;
     if (newState) {
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -115,6 +103,8 @@ BOOL ObservingKeyboardNotification=false;
                                                      name:UIKeyboardWillHideNotification
                                                    object:self.window];
         ObservingKeyboardNotification=true;
+        DBGLog(@"*** watching keyboard notifications");
+
     } else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIKeyboardWillShowNotification
@@ -124,7 +114,8 @@ BOOL ObservingKeyboardNotification=false;
                                                         name:UIKeyboardWillHideNotification
                                                       object:self.window];
         ObservingKeyboardNotification=false;
-    }
+        DBGLog(@"*** STOP watching keyboard notifications");
+   }
 }
 
 #pragma mark -
@@ -166,7 +157,8 @@ BOOL ObservingKeyboardNotification=false;
     //CGRect f = self.topTF.frame;
     //CGRect f2 = self.frame;
 
-    CGFloat boty = self.topTF.frame.origin.y + ( self.topTF.frame.size.height) + MARGIN - ( self.frame.size.height);
+    CGFloat boty;
+    boty = self.topTF.frame.origin.y + ( self.topTF.frame.size.height) + MARGIN - ( self.frame.size.height);
 
     [rTracker_resource willShowKeyboard:n view:self boty:boty];
 
@@ -221,26 +213,24 @@ BOOL ObservingKeyboardNotification=false;
 	[self.topTF becomeFirstResponder];  //prints warning: @setting the first responder view of the table but we don't know its type (cell/header/footer)@
 	[UIView commitAnimations];
 }
+
 - (void) checkPass:(unsigned int)okState cancel:(unsigned int)cancelState {
 	//DBGLog(@"ppwv check pass");
 	[self setUpPass:okState cancel:cancelState];
 	self.topLabel.text = @"Please enter password:";
-    if (kIS_LESS_THAN_IOS7) {
-        self.topLabel.textColor = [UIColor whiteColor];
-    }
 	[self.topTF addTarget:self action:@selector(testp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
 	[self showPassRqstr];
 }
+
+#define SetPassTxt @"Please set a password:"
+
 - (void) createPass:(unsigned int)okState cancel:(unsigned int)cancelState {
-	//DBGLog(@"ppwv create pass");
+	DBGLog(@"ppwv create pass");
 	[self setUpPass:okState cancel:cancelState];
 
-	self.topLabel.text = @"Please set a password:";
-    if (kIS_LESS_THAN_IOS7) {
-        self.topLabel.textColor = [UIColor whiteColor];
-    }
+	self.topLabel.text = SetPassTxt;
 	[self.topTF addTarget:self action:@selector(setp) forControlEvents:UIControlEventEditingDidEnd];
 	[self.cancelBtn addTarget:self action:@selector(cancelp) forControlEvents:UIControlEventTouchDown];
 	
@@ -259,13 +249,11 @@ BOOL ObservingKeyboardNotification=false;
 - (void) changePAction {
 	//[self.topTF resignFirstResponder];
 	//DBGLog(@"change p to .%@.",self.topTF.text);
-	if (! [self.topTF.text isEqualToString:@""]) {  // no empty passwords
-        if (! [self dbTestPass:self.topTF.text]) {  // skip if the same (spurious editingdidend event on start)
-            [self setp];
-            self.topLabel.text = @"password changed";
-            [self performSelector:@selector(cpSetTopLabel) withObject:nil afterDelay:1.0];
-        }
-	}
+    if (! [self dbTestPass:self.topTF.text]) {  // skip if the same (spurious editingdidend event on start)
+        [self setp];
+        self.topLabel.text = @"password changed";
+        [self performSelector:@selector(cpSetTopLabel) withObject:nil afterDelay:1.0];
+    }
 }
 
 - (void) changePass:(unsigned int)okState cancel:(unsigned int)cancelState {
@@ -294,7 +282,7 @@ BOOL ObservingKeyboardNotification=false;
 		return TRUE;
 	} else {
         DBGLog(@"password does not exist");
-	sql = @"create table if not exists priv1 (key integer primary key, lvl integer unique);";
+        sql = @"create table if not exists priv1 (key integer primary key, lvl integer unique);";
 		[self.tob toExecSql:sql];
 		
 		return FALSE;
@@ -303,6 +291,14 @@ BOOL ObservingKeyboardNotification=false;
 
 - (BOOL) dbTestPass:(NSString*)try {
 	NSString *sql = @"select val from priv0 where key=0;";
+    // no empty or whitespace only passwords
+    if (!([try stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0))
+        return FALSE;
+    
+    NSString *dbPass = [rTracker_resource fromSqlStr:[self.tob toQry2Str:sql]];
+    if ([dbPass isEqualToString:@""])
+        return FALSE;  // if here then dbquery failed
+
     if ([try isEqualToString:[rTracker_resource fromSqlStr:[self.tob toQry2Str:sql]]])
 		return TRUE;
 	else 
@@ -310,6 +306,9 @@ BOOL ObservingKeyboardNotification=false;
 }
 
 - (void) dbSetPass:(NSString*)pass {
+    if (!([pass stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0))
+        return;  // no empty or whitespace-only passwords
+    
 	NSString *sql = [NSString stringWithFormat:@"insert or replace into priv0 (key,val) values (0,'%@');",[rTracker_resource toSqlStr:pass]];
 	[self.tob toExecSql:sql];
 }
@@ -322,14 +321,16 @@ BOOL ObservingKeyboardNotification=false;
 # pragma mark button Actions
 
 - (void) setp {
-    DBGLog(@"enter");
-    if ([@"" isEqualToString:self.topTF.text]) {  // "" not valid password, or cancel
+    DBGLog(@"enter tf= .%@.", self.topTF.text);
+    if (!([self.topTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0)) {  // "" not valid password, or cancel
         self.next = self.cancel;
     } else {
         [self dbSetPass:self.topTF.text];
         self.next = self.ok;
     }
-	if (![self.topLabel.text isEqualToString:ChangePassTxt]) {
+	if ((![self.topLabel.text isEqualToString:ChangePassTxt])
+        && (![self.topLabel.text isEqualToString:SetPassTxt])
+         ) {
 		[self hide];
 	}
 
@@ -346,12 +347,13 @@ BOOL ObservingKeyboardNotification=false;
 
 - (void) testp {
 	//DBGLog(@"testp: %@",self.topTF.text);
-	if ([self dbTestPass:self.topTF.text]) {
-		self.next = self.ok;
-	} else {
-		self.next = self.cancel;
-		[self hide];
-	}
+    if ([self dbTestPass:self.topTF.text]) {
+        self.next = self.ok;
+    } else {
+        self.next = self.cancel;
+        [self hide];
+    }
+
 	[self.topTF resignFirstResponder];  // ???
 
 	//[self.parent performSelector:self.parentAction];
@@ -375,11 +377,11 @@ BOOL ObservingKeyboardNotification=false;
 
 - (UILabel*) topLabel {
 	if (nil == _topLabel) {
-        if (kIS_LESS_THAN_IOS7) {
-            _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
-        } else {
+        //if (kIS_LESS_THAN_IOS7) {
+        //    _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.05f]];
+        //} else {
             _topLabel = [[UILabel alloc] initWithFrame:[self genFrame:0.15f]];
-        }
+        //}
 		//[topLabel setHidden:TRUE];
 		_topLabel.backgroundColor = [UIColor clearColor];
 		[self addSubview:_topLabel];
@@ -451,65 +453,6 @@ BOOL ObservingKeyboardNotification=false;
 	return YES;
 }
 
-/*
-- (void)keyboardWillShow:(NSNotification *)n
-{
-    DBGLog(@"ppwV keyboardwillshow");
-    
-    if (keyboardIsShown) { // need bit more logic to handle additional scrolling for another textfield
-        return;
-    }
-	
-	DBGLog(@"handling keyboard will show: %@",[n object]);
-	saveFrame = self.frame;
-	
-    NSDictionary* userInfo = [n userInfo];
-	
-    // get the size of the keyboard
-    NSValue* boundsValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey 
-	// convertRect accounts for size of toolbar at top
-	CGRect kbdFrame = [self.parentView convertRect:[boundsValue CGRectValue] fromView:nil];
-	
-	CGRect viewFrame = self.frame;
-	CGFloat boty= viewFrame.origin.y + viewFrame.size.height;
-	CGFloat topk = kbdFrame.origin.y; 
-	DBGLog(@"kybd frame: x: %f  y: %f  w: %f  h: %f",kbdFrame.origin.x,kbdFrame.origin.y,kbdFrame.size.width,kbdFrame.size.height);
-	DBGLog(@"ppwv frame: x: %f  y: %f  w: %f  h: %f",viewFrame.origin.x,viewFrame.origin.y,viewFrame.size.width,viewFrame.size.height);
-	if (boty <= topk) {
-		//DBGLog(@"ppwv visible, do nothing  boty= %f  topk= %f",boty,topk);
-	} else {
-		//DBGLog(@"ppwv hidden, scroll up  boty= %f  topk= %f",boty,topk);
-		DBGLog(@"new ppwv y = %f", viewFrame.origin.y - (boty - topk));
-		
-		viewFrame.origin.y -= (boty - topk + 10.0f);
-		
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationBeginsFromCurrentState:YES];
-		[UIView setAnimationDuration:kAnimationDuration];
-		
-		[self setFrame:viewFrame];
-		
-		[UIView commitAnimations];
-	}
-	
-    keyboardIsShown = YES;
-	
-}
-- (void)keyboardWillHide:(NSNotification *)n
-{
-	DBGLog(@"handling keyboard will hide");
-	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:kAnimationDuration];
-	
-	[self setFrame:saveFrame];
-	
-	[UIView commitAnimations];
-	
-    keyboardIsShown = NO;	
-}
-*/
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 #if DEBUGLOG

@@ -24,6 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
@@ -70,6 +71,20 @@
     [application registerForRemoteNotifications];
 }
 
+- (void) registerForNotifications {
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound;
+
+    [center requestAuthorizationWithOptions:options
+     completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        // don't care if not granted
+        //if (!granted) {
+        //    DBGLog(@"notification authorization not granted");
+        //}
+      }
+    ];
+}
+
 - (void) pleaseRegisterForNotifications:(RootViewController *)rootController {
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
@@ -84,7 +99,9 @@
                 
                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                                       handler:^(UIAlertAction * action) {
-                                                                          [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                                                                        [self registerForNotifications];
+
+                                                                          //[[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
                                                                       }];
                 
                 [alert addAction:defaultAction];
@@ -155,6 +172,7 @@
          [sud registerDefaults:registerableDictionary];
          [sud synchronize];
     }
+
     [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     // Override point for customization after app launch    
@@ -203,7 +221,7 @@
     //if (![rTracker_resource getAcceptLicense]) {
 
     if (! [sud boolForKey:@"acceptLicense"]) { // race relying on rvc having set
-        NSString *freeMsg= @"Copyright 2010-2016 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
+        NSString *freeMsg= @"Copyright 2010-2020 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
                                                                        message:freeMsg
@@ -217,6 +235,7 @@
                                                                   
                                                                   [self pleaseRegisterForNotifications:rootController];
                                                               }];
+
         UIAlertAction* recoverAction = [UIAlertAction actionWithTitle:@"Reject" style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction * action) { exit(0); }];
         
@@ -227,11 +246,10 @@
     }
 #endif
     
-    
         
 
 
-
+/*
     // for when actually not running, not just in background:
     UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     if (nil != notification) {
@@ -243,6 +261,7 @@
 
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
+*/
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
         UIApplicationShortcutItem *shortcutItem = [launchOptions objectForKey:UIApplicationLaunchOptionsShortcutItemKey];
@@ -288,51 +307,9 @@
         [rTracker_resource alert:@"bad URL" msg:[NSString stringWithFormat:@"URL received was %@ but should look like %s",[url absoluteString],format] vc:rootController];
     }
 
-    
-
-
-    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //rootController.inputURL=url;
-    //[self.navigationController popToRootViewControllerAnimated:NO];
-
     return YES;
         
 }
-
-
-/*
-- (void) doOpenURL:(NSURL*)url {
-    
-    //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //if (url != nil && [url isFileURL]) {
-    int tid = [rootController handleOpenFileURL:url tname:nil];
-    if (0 != tid) {
-        // get to root view controller, else get last view on stack
-        [self.navigationController popToRootViewControllerAnimated:NO];
-        [rootController openTracker:tid rejectable:YES];
-    }
-    //}
-    
-    //[rTracker_resource finishActivityIndicator:rootController.view navItem:nil disable:NO];
-    
-    //[pool drain];
-}
-
-- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    
-    DBGLog(@"openURL %@",url);
-    //RootViewController *rootController = (RootViewController *) [navigationController.viewControllers objectAtIndex:0];
-    //[rTracker_resource startActivityIndicator:rootController.view navItem:nil disable:NO];
-    
-    //[NSThread detachNewThreadSelector:@selector(doOpenURL:) toTarget:self withObject:url];
-    [self doOpenURL:url];
-    
-    return YES;
-    
-}
-*/
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
@@ -364,6 +341,7 @@
                                         completion:nil];
 }
 
+
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
     if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
         UIAlertView *alert = [self quickAlert:title msg:msg];
@@ -380,6 +358,7 @@
     }
 }
 
+/*
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
     //
@@ -394,32 +373,8 @@
         RootViewController *rootController = (self.navigationController.viewControllers)[0];
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:(notification.userInfo)[@"tid"] waitUntilDone:NO];
     }
-    //[rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
-    
-    /*
-    UIViewController *topController = [self.navigationController.viewControllers lastObject];
-
-    if (topController == rootController) {
-        //[self doQuickAlert:notification.alertAction msg:notification.alertBody delay:1];
-        [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:[notification.userInfo objectForKey:@"tid"] waitUntilDone:NO];
-    }
-     */
-    /*
-    else {
-        // going to tracker actually pushes the other viewcontroller -- so don't really need to alert and ask?
-        self.pendingTid = [notification.userInfo objectForKey:@"tid"];
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"rTracker reminder"
-                              message:notification.alertBody
-                              delegate:self
-                              cancelButtonTitle:@"later"
-                              otherButtonTitles:@"go there now",nil];
-        [alert show];
-        [alert release];
-
-    }
-     */
-}
+  }
+*/
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {

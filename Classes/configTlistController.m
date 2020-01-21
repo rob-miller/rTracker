@@ -442,10 +442,9 @@ static int selSegNdx=SegmentEdit;
 		trackerObj *oTO = [[trackerObj alloc] init:toid];
 		trackerObj *nTO = [self.tlist copyToConfig:oTO];
 		[self.tlist addToTopLayoutTable:nTO];
-        //[self.tlist confirmTopLayoutEntry:nTO];
 		//[self.tlist loadTopLayoutTable];
          dispatch_async(dispatch_get_main_queue(), ^(void){
-		[self.table reloadData];
+             [self.table reloadData];
          });
 
 	} else if (selSegNdx == SegmentMoveDelete) {

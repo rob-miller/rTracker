@@ -331,12 +331,13 @@
 }
 */
 
+
 - (void) viewWillAppear:(BOOL)animated {
     
     //DBGLog(@"utc: view will appear");
     
     self.viewDisappearing=NO;
-    
+
     CGRect f = [rTracker_resource getKeyWindowFrame];
     
     if (f.size.width > f.size.height) {  // already in landscape view
@@ -768,9 +769,7 @@
 
 	graphTrackerVC *gt;
     gt = [[graphTrackerVC alloc] init];
-    CGRect frame = [rTracker_resource getKeyWindowFrame];
-    frame.size.height -= 22.0f;
-    //gt.view.frame = frame;
+    gt.modalPresentationStyle = UIModalPresentationFullScreen;  // need for iPad, this is default for 'horizontally compact environment'
     
     gt.tracker = self.tracker;
     if ([self.tracker hasData]) {
@@ -786,12 +785,8 @@
     //self.modalPresentationStyle = UIModalPresentationFullScreen;
     
     self.fwdRotations = NO;
-     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-         [self presentViewController:gt animated:YES completion:NULL];
-     //} else {
-     //    [self presentModalViewController:gt animated:YES];
-         //[self addChildViewController:self.modalViewController];
-     //}
+    [self presentViewController:gt animated:YES completion:NULL];
+
     DBGLog(@"graph up");
 }
 
@@ -887,7 +882,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
     DBGLog(@"self frame: %f %f %f %f",vf.origin.x,vf.origin.y,vf.size.width,vf.size.height);
     
 #endif
-    
+    /*
     if (kIS_LESS_THAN_IOS7) {
         boty = self.tracker.activeControl.superview.superview.frame.origin.y - coff.y;
         // activeField.superview.superview.frame.origin.y - coff.y ;
@@ -896,8 +891,9 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
         boty = self.tracker.activeControl.superview.superview.superview.frame.origin.y - coff.y;
         boty += self.tracker.activeControl.superview.superview.superview.frame.size.height;
     } else {  // ios 8 and above
+     */
         boty = self.tracker.activeControl.superview.superview.frame.origin.y + self.tracker.activeControl.superview.superview.frame.size.height - coff.y;
-    }
+    //}
 
     DBGLog(@"dispatching to wsk, boty= %f kis=%d",boty,keyboardIsShown);
     [rTracker_resource willShowKeyboard:n view:self.view boty:boty];
@@ -1413,7 +1409,9 @@ else do btnCancel/btnSave
     //DBGLog(@"start export");
     
         [self.tracker saveToItunes];
-        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        safeDispatchSync(^{
+            [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        });
         [rTracker_resource alert:@"Tracker saved" msg:[NSString stringWithFormat:@"%@_out.csv and _out.plist files have been saved to the rTracker Documents directory on this device.  Access them through iTunes on your PC/Mac, or with a program like iExplorer from Macroplant.com.  Import by changing the names to _in.csv and _in.plist, and read about .rtcsv file import capabilities in the help pages.",self.tracker.trackerName] vc:self];
 
     }
@@ -1537,6 +1535,8 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
+    if (!self.tracker.swipeEnable)
+        return;
 	int targD = (int)[self.tracker prevDate];
 	if (targD == 0) {
 		targD = -1;
@@ -1548,6 +1548,8 @@ NSString *emDuplicate = @"duplicate entry to now";
 }
 
 - (void)handleViewSwipeLeft:(UISwipeGestureRecognizer *)gesture {
+    if (!self.tracker.swipeEnable)
+        return;
     int targD = (int)[self.tracker postDate];
 	[self setTrackerDate:targD];
     if (targD >0)
@@ -1574,6 +1576,11 @@ NSString *emDuplicate = @"duplicate entry to now";
 	return _dpr;
 }
 
+// not called
+//- (void)presentationControllerDidDismiss:(UIPresentationController *)dpvc {
+//    [self handleDPR];
+//}
+
 - (void) btnCurrDate {
 	//DBGLog(@"pressed date becuz its a button, should pop up a date picker....");
 	
@@ -1583,6 +1590,7 @@ NSString *emDuplicate = @"duplicate entry to now";
     //CGRect f = self.view.frame;
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    self.dpvc.presentationController.delegate = self;  // need for ios 13 to access viewWillAppear as presentationControllerDidDismiss not firing
 	//
     //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
         [self presentViewController:self.dpvc animated:YES completion:NULL];

@@ -103,7 +103,7 @@
 
 - (UIButton*) checkButton {
     CGRect frame = self.vosFrame;
-    frame.size.height *= 1.1;
+
     frame.origin.x = (frame.origin.x + frame.size.width) - (frame.size.height);
     frame.size.width = frame.size.height ;
     

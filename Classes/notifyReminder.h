@@ -25,6 +25,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
 
 //#import "trackerObj.h"
 
@@ -91,8 +92,8 @@
     
     int saveDate;
     
-    UILocalNotification *localNotif;
-    
+    UNMutableNotificationContent *notifContent;
+ 
     //trackerObj *to;
 }*/
 
@@ -120,7 +121,9 @@
 @property (nonatomic) BOOL fromLast;
 @property (nonatomic) NSInteger saveDate;
 
-@property (nonatomic,strong) UILocalNotification *localNotif;
+@property (nonatomic,strong) UNMutableNotificationContent *notifContent;
+@property (nonatomic,strong) NSString *UNid;
+
 
 //@property (nonatomic,retain) trackerObj *to;
 
@@ -146,15 +149,7 @@
 -(void) schedule:(NSDate*) targDate;
 -(void) playSound;
 
-//-(void) present;
-
-
-/*
--(void) nextRid;
--(void) prevRid;
-
-- (BOOL) haveNextReminder;
-- (BOOL) havePrevReminder;
-*/
+//+(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid;
++(void) useRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid callback:(void (^)(NSMutableArray *)) callback;
 
 @end

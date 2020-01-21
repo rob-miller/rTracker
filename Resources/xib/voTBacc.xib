@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <deployment version="4640" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="voTextBox">
@@ -19,113 +22,68 @@
             <rect key="frame" x="0.0" y="0.0" width="680" height="43"/>
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G3w-Pa-7ey" userLabel="hspacer1">
-                    <rect key="frame" x="0.0" y="0.0" width="83" height="43"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="bar" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="3">
-                    <rect key="frame" x="82" y="7" width="105" height="29"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="105" id="JC5-r0-py7"/>
-                    </constraints>
-                    <segments>
-                        <segment title="👥"/>
-                        <segment title="📖"/>
-                        <segment title="⌨"/>
-                    </segments>
-                    <connections>
-                        <action selector="segmentChanged:" destination="-1" eventType="valueChanged" id="8"/>
-                    </connections>
-                </segmentedControl>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wst-Xo-aq8" userLabel="hspacer2">
-                    <rect key="frame" x="187" y="0.0" width="83" height="43"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="addButton">
-                    <rect key="frame" x="269" y="10" width="22" height="22"/>
-                    <accessibility key="accessibilityConfiguration" label="add"/>
-                    <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
-                    <state key="normal">
-                        <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <state key="highlighted">
-                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="addPickerData:" destination="-1" eventType="touchUpInside" id="7"/>
-                    </connections>
-                </button>
-                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7gu-q7-rKz" userLabel="hspacer3">
-                    <rect key="frame" x="291" y="0.0" width="83" height="43"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="rtt-km-OBv">
-                    <rect key="frame" x="374" y="7" width="70" height="29"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="70" id="dYB-U4-NwX"/>
-                    </constraints>
-                    <segments>
-                        <segment title="✔︎"/>
-                        <segment title="🔍"/>
-                    </segments>
-                    <connections>
-                        <action selector="setSearchSegChanged:" destination="-1" eventType="valueChanged" id="Eed-uq-QmP"/>
-                    </connections>
-                </segmentedControl>
-                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LrU-aK-ifa" userLabel="hspacer4">
-                    <rect key="frame" x="444" y="0.0" width="83" height="43"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="8tm-RL-791">
-                    <rect key="frame" x="527" y="8" width="70" height="29"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="70" id="OQF-ek-TMx"/>
-                    </constraints>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="cOj-Iq-ImY">
+                    <rect key="frame" x="0.0" y="6" width="599" height="31"/>
+                    <subviews>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="bar" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                            <rect key="frame" x="0.0" y="0.0" width="113" height="32"/>
+                            <segments>
+                                <segment title="👥"/>
+                                <segment title="📖"/>
+                                <segment title="⌨"/>
+                            </segments>
+                            <connections>
+                                <action selector="segmentChanged:" destination="-1" eventType="valueChanged" id="8"/>
+                            </connections>
+                        </segmentedControl>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="addButton">
+                            <rect key="frame" x="306" y="3.5" width="25" height="24"/>
+                            <accessibility key="accessibilityConfiguration" label="add"/>
+                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
+                            <state key="normal">
+                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <state key="highlighted">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="addPickerData:" destination="-1" eventType="touchUpInside" id="7"/>
+                            </connections>
+                        </button>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="rtt-km-OBv">
+                            <rect key="frame" x="524" y="0.0" width="75" height="32"/>
+                            <segments>
+                                <segment title="✔︎"/>
+                                <segment title="🔍"/>
+                            </segments>
+                            <connections>
+                                <action selector="setSearchSegChanged:" destination="-1" eventType="valueChanged" id="Eed-uq-QmP"/>
+                            </connections>
+                        </segmentedControl>
+                    </subviews>
+                </stackView>
+                <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="999" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="8tm-RL-791">
+                    <rect key="frame" x="609" y="5" width="51" height="32"/>
                     <segments>
                         <segment title="∪"/>
                         <segment title="∩"/>
                     </segments>
                 </segmentedControl>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="51L-RO-STe" userLabel="hspacer5">
-                    <rect key="frame" x="597" y="0.0" width="83" height="43"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="centerY" secondItem="G3w-Pa-7ey" secondAttribute="centerY" id="0bq-jB-nFk"/>
-                <constraint firstItem="Wst-Xo-aq8" firstAttribute="leading" secondItem="3" secondAttribute="trailing" id="1mf-Kx-PUC"/>
-                <constraint firstItem="G3w-Pa-7ey" firstAttribute="height" secondItem="Wst-Xo-aq8" secondAttribute="height" id="3J0-9B-4ke"/>
-                <constraint firstItem="G3w-Pa-7ey" firstAttribute="width" secondItem="Wst-Xo-aq8" secondAttribute="width" id="5R6-xY-FEw"/>
-                <constraint firstItem="8tm-RL-791" firstAttribute="leading" secondItem="LrU-aK-ifa" secondAttribute="trailing" id="5ST-3Q-XrS"/>
-                <constraint firstItem="51L-RO-STe" firstAttribute="height" secondItem="G3w-Pa-7ey" secondAttribute="height" id="6vM-g3-o4n"/>
-                <constraint firstItem="7gu-q7-rKz" firstAttribute="width" secondItem="G3w-Pa-7ey" secondAttribute="width" id="8a5-4E-jkB"/>
-                <constraint firstAttribute="centerY" secondItem="7gu-q7-rKz" secondAttribute="centerY" id="Bem-GE-AiI"/>
-                <constraint firstItem="51L-RO-STe" firstAttribute="width" secondItem="G3w-Pa-7ey" secondAttribute="width" id="F67-44-yjz"/>
-                <constraint firstAttribute="centerY" secondItem="3" secondAttribute="centerY" id="GBh-CB-1aw"/>
-                <constraint firstAttribute="centerY" secondItem="4" secondAttribute="centerY" id="Hpq-Y7-wiY"/>
-                <constraint firstItem="7gu-q7-rKz" firstAttribute="height" secondItem="G3w-Pa-7ey" secondAttribute="height" id="JXH-6e-nxD"/>
-                <constraint firstItem="LrU-aK-ifa" firstAttribute="height" secondItem="G3w-Pa-7ey" secondAttribute="height" id="MQZ-Sn-ERL"/>
-                <constraint firstItem="LrU-aK-ifa" firstAttribute="leading" secondItem="rtt-km-OBv" secondAttribute="trailing" id="P49-wG-IgI"/>
-                <constraint firstItem="3" firstAttribute="leading" secondItem="G3w-Pa-7ey" secondAttribute="trailing" id="PrQ-wC-CFy"/>
-                <constraint firstAttribute="centerY" secondItem="LrU-aK-ifa" secondAttribute="centerY" id="QVy-F9-rOO"/>
-                <constraint firstItem="7gu-q7-rKz" firstAttribute="leading" secondItem="4" secondAttribute="trailing" id="RCo-nc-fjl"/>
-                <constraint firstAttribute="trailing" secondItem="51L-RO-STe" secondAttribute="trailing" id="SI4-DX-2dM"/>
-                <constraint firstItem="4" firstAttribute="leading" secondItem="Wst-Xo-aq8" secondAttribute="trailing" id="aGg-xc-oDT"/>
-                <constraint firstAttribute="centerY" secondItem="51L-RO-STe" secondAttribute="centerY" id="bOQ-xl-lcI"/>
-                <constraint firstItem="G3w-Pa-7ey" firstAttribute="top" secondItem="1" secondAttribute="top" id="dfU-iy-Aa7"/>
-                <constraint firstItem="rtt-km-OBv" firstAttribute="leading" secondItem="7gu-q7-rKz" secondAttribute="trailing" id="fuI-hW-t2H"/>
-                <constraint firstAttribute="centerY" secondItem="8tm-RL-791" secondAttribute="centerY" id="jL3-O6-ht3"/>
-                <constraint firstItem="G3w-Pa-7ey" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="jf3-6F-fcR"/>
-                <constraint firstAttribute="centerY" secondItem="rtt-km-OBv" secondAttribute="centerY" id="kiA-Cl-GJ5"/>
-                <constraint firstAttribute="centerY" secondItem="Wst-Xo-aq8" secondAttribute="centerY" id="nED-cx-uSM"/>
-                <constraint firstItem="51L-RO-STe" firstAttribute="leading" secondItem="8tm-RL-791" secondAttribute="trailing" id="puz-UV-GWb"/>
-                <constraint firstItem="LrU-aK-ifa" firstAttribute="width" secondItem="G3w-Pa-7ey" secondAttribute="width" id="sRo-TV-Ekl"/>
+                <constraint firstAttribute="bottom" secondItem="cOj-Iq-ImY" secondAttribute="bottom" constant="6" id="4AY-vT-8Kl"/>
+                <constraint firstItem="cOj-Iq-ImY" firstAttribute="top" secondItem="1" secondAttribute="top" constant="6" id="6sp-ms-KKA"/>
+                <constraint firstAttribute="trailing" secondItem="8tm-RL-791" secondAttribute="trailing" constant="20" id="RRa-I4-ZEb"/>
+                <constraint firstItem="cOj-Iq-ImY" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="Vjd-bo-b6I"/>
+                <constraint firstAttribute="bottom" secondItem="8tm-RL-791" secondAttribute="bottom" constant="7" id="fpf-71-FKv"/>
+                <constraint firstItem="8tm-RL-791" firstAttribute="leading" secondItem="cOj-Iq-ImY" secondAttribute="trailing" constant="10" id="gBR-iM-K6I"/>
+                <constraint firstItem="8tm-RL-791" firstAttribute="top" secondItem="1" secondAttribute="top" constant="5" id="pPu-XK-WHn"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="260.75" y="302.5"/>
+            <point key="canvasLocation" x="377.89855072463769" y="202.56696428571428"/>
         </view>
         <customObject id="5" customClass="voTextBox"/>
     </objects>

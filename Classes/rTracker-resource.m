@@ -41,6 +41,22 @@ UIView *currKeyboardView=nil;
 CGRect currKeyboardSaveFrame;
 BOOL resigningActive=NO;
 
+// found syntax for this here :
+// https://stackoverflow.com/questions/5225130/grand-central-dispatch-gcd-vs-performselector-need-a-better-explanation/5226271#5226271
+// https://stackoverflow.com/a/8186206/2783487
+void safeDispatchSync(void (^block)(void))
+{
+    if ([NSThread isMainThread])
+    {
+        block();
+    }
+    else
+    {
+        dispatch_sync(dispatch_get_main_queue(), block);
+    }
+}
+
+
 //---------------------------
 
 // Sample code from iOS 7 Transistion Guide
@@ -169,34 +185,30 @@ BOOL hasAmPm=NO;
 #pragma mark generic alert
 //---------------------------
 + (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:title message:msg
-                              delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil];
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+    __block UIAlertController* alert;
+    __block UIViewController *vcCpy = vc;
+    safeDispatchSync(^{
+        alert = [UIAlertController alertControllerWithTitle:title
                                                                        message:msg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        
-        if (nil == vc) {
-            UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            w.rootViewController = [UIViewController new];
-            w.windowLevel = UIWindowLevelAlert +1;
-            [w makeKeyAndVisible];
-            vc = w.rootViewController;
-        }
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [vc presentViewController:alert animated:YES completion:nil];
-        });
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    
+    if (nil == vcCpy) {
+        UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        w.rootViewController = [UIViewController new];
+        w.windowLevel = UIWindowLevelAlert +1;
+        [w makeKeyAndVisible];
+        vcCpy = w.rootViewController;
     }
+    //dispatch_async(dispatch_get_main_queue(), ^(void){
+        [vcCpy presentViewController:alert animated:YES completion:nil];
+    //});
+    });
+
 }
 
 #pragma mark -
@@ -415,6 +427,14 @@ static BOOL activityIndicatorGoing=NO;
 static BOOL progressBarGoing=NO;
 
 + (void) startActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable str:(NSString*)str {
+    DBGLog(@"start spinner");
+    __block BOOL skip=NO;
+    safeDispatchSync(^{
+        if (activityIndicatorGoing)
+            skip=YES;
+        activityIndicatorGoing=YES;
+    });
+    if (skip) return;
     
     if (disable) {
         view.userInteractionEnabled = NO;
@@ -449,15 +469,19 @@ static BOOL progressBarGoing=NO;
     captionLabel.text = str;
     [outerView addSubview:captionLabel];
 
-    //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:NO];
-    activityIndicatorGoing=YES;
+    //[activityIndicator performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:YES];
+
     [view addSubview:outerView];
+    DBGLog(@"spinning");
+
 }
 
 + (void) finishActivityIndicator:(UIView*)view navItem:(UINavigationItem*)navItem disable:(BOOL)disable {
-    if (! activityIndicatorGoing) return;
+    DBGLog(@"stop spinner");
+
+    //if (! activityIndicatorGoing) return;  // race condition, may not be set yet so ignore
     
-    dispatch_async(dispatch_get_main_queue(), ^(void){
+    safeDispatchSync(^(void){
         if (disable) {
             //[navItem setHidesBackButton:NO animated:YES];
             navItem.rightBarButtonItem.enabled = YES;
@@ -474,6 +498,8 @@ static BOOL progressBarGoing=NO;
         outerView = nil;
         activityIndicatorGoing=NO;
     });
+    DBGLog(@"not spinning");
+
 }
 
 static UIProgressView *progressBar=nil;
@@ -554,11 +580,6 @@ static BOOL localDisable;
         localView.userInteractionEnabled = YES;
     }
     
-    /*
-     [[NSNotificationCenter defaultCenter] removeObserver:self
-     name:rtProgressBarUpdateNotification
-     object:nil];
-     */
     //[progressBar stopAnimating];
 
     [progressBar removeFromSuperview];
@@ -573,11 +594,7 @@ static BOOL localDisable;
     localView = view;
     localNavItem = navItem;
     localDisable = disable;
-    if ( SYSTEM_VERSION_LESS_THAN(@"5.0") ) {// if not 5
-        [rTracker_resource doFinishProgressBar];
-    } else {
-        [self performSelectorOnMainThread:@selector(doFinishProgressBar) withObject:nil waitUntilDone:NO];
-    }
+    [self performSelectorOnMainThread:@selector(doFinishProgressBar) withObject:nil waitUntilDone:YES];
 }
 
 //---------------------------
@@ -917,10 +934,10 @@ static int lastStashedTid=0;
     NSValue* boundsValue = userInfo[UIKeyboardFrameEndUserInfoKey];  //FrameBeginUserInfoKey
     CGSize keyboardSize = [boundsValue CGRectValue].size;
 	
-	CGRect viewFrame = view.frame;
-
+    CGRect viewFrame = view.frame;
     CGFloat topk = viewFrame.size.height - keyboardSize.height;  // - viewFrame.origin.y;
-	if (boty <= topk) {
+	
+    if (boty <= topk) {
 		DBGLog(@"activeField visible, do nothing  boty= %f  topk= %f",boty,topk);
 	} else {
 		DBGLog(@"activeField hidden, scroll up  boty= %f  topk= %f",boty,topk);
@@ -1070,9 +1087,14 @@ static BOOL getOrientEnabled=false;
 
 +(CGRect) getKeyWindowFrame
 {
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    return window.frame;
+    __block CGRect rframe;
+    safeDispatchSync(^{
+        UIWindow* window = [UIApplication sharedApplication].keyWindow;
+        if (!window) window = [[UIApplication sharedApplication].windows objectAtIndex:0];
+        rframe = window.frame;
+    });
+    
+    return rframe;
 }
 
 +(UIDeviceOrientation) getOrientationFromWindow
@@ -1103,51 +1125,28 @@ static BOOL getOrientEnabled=false;
 #define CHOOSE(x,y) [mb URLForResource:x withExtension:nil] ? x : y
 +(NSString*)getLaunchImageName
 {
-    NSBundle* mb = [NSBundle mainBundle];
-    CGSize size = [[UIScreen mainScreen] bounds].size;
-    CGFloat maxDim = [self getScreenMaxDim];
-    NSString *retStr;
-    
-    //DBGLog(@"width %f  height %f",size.width, size.height);
-    /*
-     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if (UIDeviceOrientationUnknown == orientation) DBGLog(@"orientation unknown");
-    if (UIDeviceOrientationPortraitUpsideDown == orientation) DBGLog(@"orientation portrait upside down");
-    if (UIDeviceOrientationPortrait == orientation) DBGLog(@"orientation portrait");
-    */
-    
-    if ([self isDeviceiPhone])
-    {
-        if (maxDim < MAXDIM_4S) {
-            retStr = @"LaunchImage.png";                                                // non-retina iPhone
-        } else if (maxDim < MAXDIM_5) {
-            retStr = CHOOSE(@"LaunchImage-700@2x.png",@"LaunchImage@2x.png");             // iPhone 4s
-        } else if (maxDim < MAXDIM_6) {
-            retStr = CHOOSE(@"LaunchImage-700-568h@2x.png",@"LaunchImage-568h@2x.png");   // iPhone 5
-        } else if (maxDim <MAXDIM_6P) {
-            retStr = @"LaunchImage-800-667h@2x.png";                                      // iPhone 6
-        } else if (size.height < size.width) {                                          // if landscape
-            retStr = @"LaunchImage-800-Landscape-736h@3x.png";                            // iPhone 6+ or larger
-        } else {
-            retStr = @"LaunchImage-800-Portrait-736h@3x.png";                             // default: iPhone 6+ or larger, portrait
-        }
-    } else {     // iPad
-        if (size.height < size.width) {                                                 // if landscape  -- does not work at startup for ios7, orientation reports 'unknown'
-            if ([UIScreen mainScreen].scale == 1.0) {
-                retStr = CHOOSE(@"LaunchImage-700-Landscape~ipad.png", @"LaunchImage-Landscape~ipad.png");           // non-retina iPad
-            } else {
-                retStr = CHOOSE(@"LaunchImage-700-Landscape@2x~ipad.png", @"LaunchImage-Landscape@2x~ipad.png");     // retina iPad or larger
-            }
-        } else {
-            if ([UIScreen mainScreen].scale == 1.0) {
-                retStr = CHOOSE(@"LaunchImage-700-Portrait~ipad.png", @"LaunchImage-Portrait~ipad.png");           // non-retina iPad
-            } else {
-                retStr = CHOOSE(@"LaunchImage-700-Portrait@2x~ipad.png", @"LaunchImage-Portrait@2x~ipad.png");     // default: retina iPad or larger
+    return(@"LaunchScreenImg.png");
+
+    /* no longer needed with story board
+    NSArray *allPngImageNames = [[NSBundle mainBundle] pathsForResourcesOfType:@"png"
+                                            inDirectory:nil];
+
+    for (NSString *imgName in allPngImageNames){
+        DBGLog(@"imgName %@", imgName);
+        // Find launch images
+        if ([imgName containsString:@"LaunchImage"]){
+            UIImage *img = [UIImage imageNamed:imgName];
+            // Has image same scale and dimensions as our current device's screen?
+            if (img.scale == [UIScreen mainScreen].scale && CGSizeEqualToSize(img.size, [UIScreen mainScreen].bounds.size)) {
+                DBGLog(@"Found launch image for current device %@", img.description);
+                return imgName; //break;
             }
         }
     }
-    //DBGLog(@"LaunchImage: %@",retStr);
-    return(retStr);
+    
+    DBGLog(@"fail on launchimage name");
+    return(@"LaunchScreenImg.png");
+     */
 }
 
 
@@ -1263,6 +1262,11 @@ static BOOL getOrientEnabled=false;
             result.height -= MIN(size.width, size.height);
             //DBGLog(@"toolbar h= %f curr height= %f",size.height,result.height);
         }
+    }
+    
+    if (@available(iOS 11.0, *)) {
+        UIEdgeInsets sai =  [[[UIApplication sharedApplication] delegate] window].safeAreaInsets;
+        result.height -= sai.bottom;
     }
     
     if (vc.tabBarController != nil) {

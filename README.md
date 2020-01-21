@@ -52,7 +52,7 @@ rTracker-test is a separate build target for distribution to testers through Fab
 
 ## License
 
-Copyright 2010-2016 Robert T. Miller
+Copyright 2010-2020 Robert T. Miller
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use these files except in compliance with the License.

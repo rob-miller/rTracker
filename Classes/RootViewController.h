@@ -41,9 +41,9 @@
 
 #if ADVERSION
 #import "adSupport.h"
-@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, ADBannerViewDelegate>
+@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UNUserNotificationCenterDelegate, ADBannerViewDelegate>
 #else
-@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface RootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UNUserNotificationCenterDelegate>
 #endif
 /*
  {
@@ -97,12 +97,6 @@
 - (BOOL) exceedsPrivacy:(NSInteger)tid;
 - (void) openTracker:(NSInteger)tid rejectable:(BOOL)rejectable;
 - (void) doOpenTracker:(NSNumber*)nsnTid;
-
-//- (void) jumpMaxPriv;
-//- (void) restorePriv;
-
-- (void) startRvcActivityIndicator;
-- (void) finishRvcActivityIndicator;
 
 - (NSInteger) pendingNotificationCount;
 

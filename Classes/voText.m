@@ -26,6 +26,7 @@
 #import "voText.h"
 #import "dbg-defs.h"
 #import "rTracker-constants.h"
+#import "rTracker-resource.h"
 
 @implementation voText
 
@@ -68,7 +69,9 @@
 
 
 - (UITextField*) dtf {
-    if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    safeDispatchSync(^{
+        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    });
     
     if (nil == _dtf) {
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
@@ -115,11 +118,11 @@
 	self.vosFrame = bounds;
 
 	if (![self.vo.value isEqualToString:self.dtf.text]) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-		self.dtf.text = self.vo.value;
+        safeDispatchSync(^{
+            self.dtf.text = self.vo.value;
         });
         DBGLog(@"dtf: vo val= %@ dtf txt= %@", self.vo.value, self.dtf.text);
-	}
+    }
 	
     DBGLog(@"textfield voDisplay: %@", self.dtf.text);
 	return self.dtf;
@@ -133,7 +136,11 @@
         ){ 
         return instr;
     }
-    return self.dtf.text;
+    __block NSString *cpy;
+    safeDispatchSync(^{
+        cpy = [NSString stringWithString:self.dtf.text];
+    });
+    return cpy;
 }
 
 #pragma mark -
