@@ -69,7 +69,9 @@
 
 
 - (UITextField*) dtf {
-    if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    safeDispatchSync(^{
+        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+    });
     
     if (nil == _dtf) {
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
@@ -134,7 +136,11 @@
         ){ 
         return instr;
     }
-    return self.dtf.text;
+    __block NSString *cpy;
+    safeDispatchSync(^{
+        cpy = [NSString stringWithString:self.dtf.text];
+    });
+    return cpy;
 }
 
 #pragma mark -
