@@ -283,6 +283,8 @@
     }
     trackerObj *to = [[trackerObj alloc] init:old];
     [to clearScheduledReminders];  // remove any reminders with old tid
+    [to closeTDb];
+    to = nil;
     
     // rename file
     NSString *oldFname= [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)old];
@@ -303,6 +305,7 @@
     to = [[trackerObj alloc] init:new];
     [to toExecSql:upReminders];
     [to setReminders];
+    [to closeTDb];
 }
 
 
