@@ -56,8 +56,9 @@ static int selSegNdx=SegmentEdit;
 - (void) startExport {
     @autoreleasepool {
         [self.tlist exportAll];
-        
-        [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        safeDispatchSync(^{
+            [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
+        });
     
     }
 }
