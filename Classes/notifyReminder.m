@@ -66,7 +66,7 @@
 	if ((self = [self init])) {
 		//DBGLog(@"init trackerObj id: %d",tid);
         //[self initReminderTable];
-        [self loadRid:[NSString stringWithFormat:@"rid=%d",[inRid intValue]] to:to];
+        [self loadRid:[NSString stringWithFormat:@"rid=%d and tid=%ld",[inRid intValue], (long)to.toid] to:to];
 	}
     DBGLog(@"%@",self);
 	return self;
@@ -167,7 +167,7 @@
             self.soundFileName=nil;
         }
         
-} else {
+    } else {
         [self clearNR];
         self.rid = 0;
         self.saveDate = (int) [[NSDate date] timeIntervalSince1970];
@@ -199,41 +199,7 @@
             @"saveDate": @(self.saveDate)
             };
 }
-/*
-- (void) neighbourRid:(char)test {
 
-    [self loadRid:[NSString stringWithFormat:@"rid %c %d order by rid limit 1", test, self.rid]];
-    
-    //self.to.sql = @"select count(*) from reminders;";
-    //int c = [self.to toQry2Int:sql];
-    //DBGLog(@"c= %d",c);
-
-}
-
-- (void) nextRid {
-    return [self neighbourRid:'>'];
-}
-
-- (void) prevRid { // rtm here xxx needs to get last one if rid is 0
-    if (self.rid) return [self neighbourRid:'<'];
-    return [self neighbourRid:'>'];  // if curr rid = 0 (empty nr) then any
-}
-
-- (BOOL) neighbourTest:(char)test {
-   sql = [NSString stringWithFormat:@"select count(*) from reminders where rid %c %d",test,self.rid];
-    int rslt = [self.to toQry2Int:sql];
-   sql=nil;
-    return (rslt>0);
-}
-
-- (BOOL) haveNextReminder {
-    return [self neighbourTest:'>'];
-}
-- (BOOL) havePrevReminder {
-    if (self.rid) return [self neighbourTest:'<'];
-    return [self neighbourTest:'>'];
-}
-*/
 
 - (void) clearNR {
     //self.rid=0; // need to keep if set
@@ -400,14 +366,14 @@
     DBGLog(@"created.");
 }
 
--(void) cancel {
+-(void) cancelOld {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     NSArray *idArr = [NSArray arrayWithObject:[NSString stringWithFormat:@"%ld", (long) self.rid]];
     [center removePendingNotificationRequestsWithIdentifiers:idArr];
 }
 
 -(void) schedule:(NSDate*) targDate {
-    [self cancel];  // redundant but need to change rid to UUID
+    [self cancelOld];  // remove any notifications set with rid instead of tid-rid
     if (nil == self.notifContent)
         [self create];
     if (nil == self.notifContent)
@@ -421,8 +387,7 @@
       }
     }];
     
-    self.rid = (NSInteger) [NSUUID UUID];
-    NSString *idStr = [NSString stringWithFormat:@"%ld", (long) self.rid];
+    NSString *idStr = [NSString stringWithFormat:@"%ld-%ld", (long) self.tid, (long) self.rid];
     
     NSDateComponents *triggerDate = [[NSCalendar currentCalendar]
                                      components:NSCalendarUnitYear +
@@ -440,7 +405,7 @@
       }
     }];
     
-    DBGLog(@"scheduled");
+    DBGLog(@"scheduled %@", idStr);
 }
 
 -(void) playSound {
@@ -459,6 +424,7 @@
 }
 */
 
+/*
 +(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid {
     __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
     [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
@@ -469,11 +435,34 @@
             UNNotificationRequest *oneEvent = notifications[i];
             NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
             if ([userInfoCurrent[@"tid"] integerValue] == tid) {
-                [ridArray addObject:oneEvent.identifier];
+                NSArray *tidRid = [oneEvent.identifier componentsSeparatedByString:@"-"];
+                [ridArray addObject:tidRid[1]];  // just add rid
             }
         }
     }];
     return ridArray;
+}
+ 
+ void safeDispatchSync(void (^block)(void))
+*/
+
++(void) useRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid callback:(void (^)(NSMutableArray *)) callback {
+    __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
+        for (int i=0;
+             i<[notifications count];
+             i++)
+        {
+            UNNotificationRequest *oneEvent = notifications[i];
+            NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
+            if ([userInfoCurrent[@"tid"] integerValue] == tid) {
+                NSArray *tidRid = [oneEvent.identifier componentsSeparatedByString:@"-"];
+                [ridArray addObject:tidRid[1]];  // just add rid
+            }
+        }
+        callback(ridArray);
+    }];
+    
 }
 
 @end
