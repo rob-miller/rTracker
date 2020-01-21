@@ -412,39 +412,6 @@
     [rTracker_resource playSound:self.soundFileName];
 }
 
-/*
--(void) present {
-    if (nil == self.notifContent)
-        [self create];
-    if (nil == self.notifContent)
-        return;
-    
-    [[UIApplication sharedApplication] presentLocalNotificationNow:self.notifContent];
-    DBGLog(@"presented.");
-}
-*/
-
-/*
-+(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid {
-    __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
-    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray *notifications) {
-        for (int i=0;
-             i<[notifications count];
-             i++)
-        {
-            UNNotificationRequest *oneEvent = notifications[i];
-            NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
-            if ([userInfoCurrent[@"tid"] integerValue] == tid) {
-                NSArray *tidRid = [oneEvent.identifier componentsSeparatedByString:@"-"];
-                [ridArray addObject:tidRid[1]];  // just add rid
-            }
-        }
-    }];
-    return ridArray;
-}
- 
- void safeDispatchSync(void (^block)(void))
-*/
 
 +(void) useRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid callback:(void (^)(NSMutableArray *)) callback {
     __block NSMutableArray *ridArray = [[NSMutableArray alloc] init];
