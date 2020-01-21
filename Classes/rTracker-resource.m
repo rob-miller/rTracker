@@ -185,34 +185,30 @@ BOOL hasAmPm=NO;
 #pragma mark generic alert
 //---------------------------
 + (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:title message:msg
-                              delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil];
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+    __block UIAlertController* alert;
+    __block UIViewController *vcCpy = vc;
+    safeDispatchSync(^{
+        alert = [UIAlertController alertControllerWithTitle:title
                                                                        message:msg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction * action) {}];
-        
-        [alert addAction:defaultAction];
-        
-        if (nil == vc) {
-            UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            w.rootViewController = [UIViewController new];
-            w.windowLevel = UIWindowLevelAlert +1;
-            [w makeKeyAndVisible];
-            vc = w.rootViewController;
-        }
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [vc presentViewController:alert animated:YES completion:nil];
-        });
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    
+    if (nil == vcCpy) {
+        UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        w.rootViewController = [UIViewController new];
+        w.windowLevel = UIWindowLevelAlert +1;
+        [w makeKeyAndVisible];
+        vcCpy = w.rootViewController;
     }
+    //dispatch_async(dispatch_get_main_queue(), ^(void){
+        [vcCpy presentViewController:alert animated:YES completion:nil];
+    //});
+    });
+
 }
 
 #pragma mark -
