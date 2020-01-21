@@ -29,14 +29,9 @@
 #import "voState.h"
 #import "voDataEdit.h"
 
-@interface voImage : voState <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-/*{
-	UIImageView *imageView;
-	UIButton *takePhotoButton;
-	UIButton *selectFromCameraRollButton;
-	UIButton *pickFromLibraryButton;
-	voDataEdit *devc;
-}*/
+
+//@interface voImage : voState <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface voImage : voState <UINavigationControllerDelegate>  // placeholder
 
 @property (nonatomic,strong) UIImageView *imageView;
 @property (nonatomic,strong) UIButton *takePhotoButton;
