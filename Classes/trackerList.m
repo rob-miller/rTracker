@@ -281,7 +281,9 @@
     if ([self checkTIDexists:@(new)]) {
         [self updateTID:new new:[self getUnique]];
     }
-
+    trackerObj *to = [[trackerObj alloc] init:old];
+    [to clearScheduledReminders];  // remove any reminders with old tid
+    
     // rename file
     NSString *oldFname= [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)old];
     NSString *newFname= [NSString stringWithFormat:@"trkr%ld.sqlite3",(long)new];
@@ -295,6 +297,12 @@
         // update toplevel if file rename went ok;
         [self updateTLtid:old new:new];
     }
+    
+    NSString *upReminders = [NSString stringWithFormat:@"update reminders set tid=%ld", (long) new];
+
+    to = [[trackerObj alloc] init:new];
+    [to toExecSql:upReminders];
+    [to setReminders];
 }
 
 
