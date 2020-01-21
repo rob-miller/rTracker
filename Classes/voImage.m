@@ -52,8 +52,6 @@
 }
 
 - (UIView*) voDisplay:(CGRect)bounds {
-	
-	
 	UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	imageButton.frame = bounds; //CGRectZero;
 	imageButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -71,6 +69,7 @@
 #pragma mark voSDataEdit support -- get image
 
 - (void) getCameraPhoto:(id)sender {
+    /*
 	UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 	picker.delegate = self;
 	picker.allowsEditing = YES;
@@ -78,9 +77,11 @@
 		(sender == self.takePhotoButton) ? UIImagePickerControllerSourceTypeCamera :	UIImagePickerControllerSourceTypeSavedPhotosAlbum;
 	//[self.devc presentModalViewController:picker animated:YES];
     [self.devc presentViewController:picker animated:YES completion:NULL];
+     */
 }
 
 - (void) getExistingPhoto:(id)sender {
+    /*
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
 		UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 		picker.delegate = self;
@@ -90,9 +91,11 @@
 	} else {
         [rTracker_resource alert:@"Error accessing photo library" msg:@"Device does not support a photo library" vc:nil];
 	}
+     */
 }
 
 - (void) dataEditVDidLoad:(UIViewController*)vc {
+    /*
 	self.imageView = [[UIImageView alloc] initWithFrame:vc.view.frame];
 	if (![self.vo.value isEqualToString:@""]) {
 		self.imageView.image = [UIImage imageWithContentsOfFile:self.vo.value];
@@ -130,9 +133,7 @@
 	
 	[self.devc.view addSubview:self.pickFromLibraryButton];
 	self.pickFromLibraryButton = nil;
-	
-	
-	
+	*/
 }
 - (void) dataEditVWAppear:(UIViewController*)vc {
 }
@@ -156,6 +157,7 @@
 //		 didFinishPickingImage:(UIImage*)image
 //				   editingInfo:(NSDictionary*)editingInfo {
 
+/*
 - (void) imagePickerController:(UIImagePickerController *)picker
 		 didFinishPickingMediaWithInfo:(NSDictionary *)mediaInfo {
 	self.imageView.image = mediaInfo[UIImagePickerControllerOriginalImage];  // TODO: needs more work could be edited or video
@@ -167,6 +169,7 @@
 	//[picker dismissModalViewControllerAnimated:YES];
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
+*/
 
 
 #pragma mark -
