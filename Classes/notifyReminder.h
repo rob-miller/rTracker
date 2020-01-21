@@ -149,17 +149,7 @@
 -(void) schedule:(NSDate*) targDate;
 -(void) playSound;
 
-+(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid;
-
-//-(void) present;
-
-
-/*
--(void) nextRid;
--(void) prevRid;
-
-- (BOOL) haveNextReminder;
-- (BOOL) havePrevReminder;
-*/
+//+(NSMutableArray *) getRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid;
++(void) useRidArray:(UNUserNotificationCenter*) center tid:(NSInteger) tid callback:(void (^)(NSMutableArray *)) callback;
 
 @end
