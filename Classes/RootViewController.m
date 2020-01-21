@@ -122,8 +122,9 @@ static BOOL InstallDemos;
         //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
         return;
     }
-    
+
     [rTracker_resource setProgressVal:(((float)csvReadCount)/((float)csvLoadCount))];
+
     csvReadCount++;
     
     
@@ -178,10 +179,13 @@ static BOOL InstallDemos;
         }
 
         if (validMatch) {
+            tname = [fname substringToIndex:inmatch.location];
             DBGLog(@"%@ load input: %@ as %@",loadObj,fname,tname);
             //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading data..."];
-
-            tname = [fname substringToIndex:inmatch.location];
+            //safeDispatchSync(^{
+            //    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@...", tname]];
+            //});
+            
             NSInteger tid = [self.tlist getTIDfromName:tname];
             if (tid) {
                 to = [[trackerObj alloc]init:tid];
@@ -197,7 +201,9 @@ static BOOL InstallDemos;
             }
 
             if (nil != to) {
-                //[self performSelectorOnMainThread:@selector(startLoadActivityIndicator:) withObject:[NSString stringWithFormat:@"loading %@ %@",tname,loadObj] waitUntilDone:YES];
+                safeDispatchSync(^{
+                    [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:[NSString stringWithFormat:@"loading %@...", tname]];
+                });
 
                 NSString *target = [docsDir stringByAppendingPathComponent:file];
                 NSString *csvString = [NSString stringWithContentsOfFile:target encoding:NSUTF8StringEncoding error:NULL];
@@ -214,7 +220,9 @@ static BOOL InstallDemos;
                     [rTracker_resource deleteFileAtPath:target];
                 }
                 
-                //[rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+                safeDispatchSync(^{
+                    [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];
+                });
             }
             
         }
@@ -423,11 +431,10 @@ BOOL loadingCsvFiles=NO;
     if (loadingCsvFiles) return;
     loadingCsvFiles=YES;
     @autoreleasepool {
-        safeDispatchSync(^{
     
-            [self loadTrackerCsvFiles];
-
-            // file load done, enable userInteraction
+        [self loadTrackerCsvFiles];
+        safeDispatchSync(^{
+            // csv file load done, close activity indicators
             [rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
             [rTracker_resource finishActivityIndicator:self.view navItem:self.navigationItem disable:NO];
         });
@@ -438,7 +445,7 @@ BOOL loadingCsvFiles=NO;
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [self refreshToolBar:YES];
         });
-        DBGLog(@"csv data loaded, UI enabled, lock off stashedTIDs= %@",self.stashedTIDs);
+        DBGLog(@"csv data loaded, UI enabled, CSV lock off stashedTIDs= %@",self.stashedTIDs);
         
         if (0< [self.stashedTIDs count]) {
             [self doRejectableTracker];
@@ -488,15 +495,15 @@ BOOL loadingInputFiles=NO;
             //[rTracker_resource finishProgressBar:self.view navItem:self.navigationItem disable:YES];
             if (csvLoadCount) {
                 [rTracker_resource finishActivityIndicator:self.view navItem:nil disable:NO];  // finish 'loading trackers' spinner
-                [rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading data..."];
+                //[rTracker_resource startActivityIndicator:self.view navItem:nil disable:NO str:@"loading data..."];
             }
         });
         [self refreshViewPart2];
 
         [NSThread detachNewThreadSelector:@selector(doLoadCsvFiles) toTarget:self withObject:nil];
         
-        DBGLog(@"load plist thread finished, lock still on, UI still disabled");
         loadingInputFiles=NO;
+        DBGLog(@"load plist thread finished, lock off, UI enabled, dispatched CSV load");
     }
     // end of this thread, refreshLock still on, userInteraction disabled, activityIndicator still spinning and doLoadCsvFiles is in charge
 }
@@ -1424,6 +1431,7 @@ BOOL stashAnimated;
         {
             UNNotificationRequest *oneEvent = notifications[i];
             NSDictionary *userInfoCurrent = oneEvent.content.userInfo;
+            DBGLog(@"%d uic: %@",i,userInfoCurrent);
             NSNumber *tid =userInfoCurrent[@"tid"];
             int c = [(self.scheduledReminderCounts)[tid] intValue];
             c++;
