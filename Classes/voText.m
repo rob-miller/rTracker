@@ -52,7 +52,7 @@
 	//DBGLog(@"tf end editing");
     if (! [self.startStr isEqualToString:textField.text]) {
         [self.vo.value setString:textField.text];
-        textField.textColor = [UIColor blackColor];
+        //textField.textColor = [UIColor blackColor];
         [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
         self.startStr=nil;
     }
@@ -76,10 +76,16 @@
     if (nil == _dtf) {
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
+        if (@available(iOS 13.0, *)) {
+            _dtf.textColor = [UIColor labelColor];
+            _dtf.backgroundColor = [UIColor secondarySystemBackgroundColor];
+        } else {
+            _dtf.textColor = [UIColor blackColor];
+            _dtf.backgroundColor = [UIColor whiteColor];
+        }
+        
         _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-        _dtf.textColor = [UIColor blackColor];
         _dtf.font = PrefBodyFont;  //[UIFont systemFontOfSize:17.0];
-        _dtf.backgroundColor = [UIColor whiteColor];
         _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
         _dtf.keyboardType = UIKeyboardTypeDefault;	// use the full keyboard
