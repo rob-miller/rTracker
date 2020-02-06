@@ -577,7 +577,9 @@
             NSString *msg = [NSString stringWithFormat:@"Setting a privacy level below %d is disallowed.",PRIVDFLT];
             [rTracker_resource alert:@"Privacy setting too low" msg:msg vc:self];
         }
-        
+    } else if ( tf == (self.wDict)[@"gyTF"] ) {
+        okey = @"yline1";
+        nkey = nil;
 	} else if ( tf == (self.wDict)[@"gmdTF"] ) {
 		okey = @"graphMaxDays";
 		nkey = nil;
