@@ -311,12 +311,14 @@
 	label.tag=kViewTag;
 	//label.font = [UIFont boldSystemFontOfSize:18.0];
     label.font = PrefBodyFont;
+    bool darkMode = NO;
     if (@available(iOS 13.0, *)) {
-         label.textColor = [UIColor labelColor];
-         label.backgroundColor = [UIColor systemBackgroundColor];
+        label.textColor = [UIColor labelColor];
+        darkMode = (self.vc.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
      } else {
-         label.textColor = [UIColor blackColor];
-         label.backgroundColor = [UIColor clearColor];
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor clearColor];
      }
 
     label.alpha = 1.0;
@@ -340,7 +342,7 @@
         label.font = PrefBodyFont;
         if (@available(iOS 13.0, *)) {
              label.textColor = [UIColor labelColor];
-             label.backgroundColor = [UIColor systemBackgroundColor];
+             label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
          } else {
              label.textColor = [UIColor blackColor];
              label.backgroundColor = [UIColor clearColor];
@@ -461,7 +463,8 @@
     label.font = PrefBodyFont;
     if (@available(iOS 13.0, *)) {
         label.textColor = [UIColor labelColor];
-        label.backgroundColor = [UIColor systemBackgroundColor];
+        bool darkMode = (self.vc.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
     } else {
         label.textColor = [UIColor blackColor];
         label.backgroundColor = [UIColor clearColor];
