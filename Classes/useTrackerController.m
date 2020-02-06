@@ -255,7 +255,19 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.tableView.backgroundView = bg;
+    bool darkMode = false;
+
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+    
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    } else {
+        self.tableView.backgroundView = bg;
+    }
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     //self.tableView.separatorColor = [UIColor clearColor];
     [self.view addSubview:self.tableView];
@@ -347,7 +359,19 @@
         if (f.size.width != self.tableView.frame.size.width) {
             f.origin.x = 0.0; f.origin.y = 0.0;
             self.tableView.frame = f;
-            self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+
+            bool darkMode = false;
+
+            if (@available(iOS 13.0, *)) {
+                darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            }
+            if (darkMode) {
+                if (@available(iOS 13.0, *)) {
+                    self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+                }
+            } else {
+                self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+            }
             [self.tracker rescanMaxLabel];
             [self.tableView reloadData];
         }
@@ -1592,16 +1616,11 @@ NSString *emDuplicate = @"duplicate entry to now";
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     self.dpvc.presentationController.delegate = self;  // need for ios 13 to access viewWillAppear as presentationControllerDidDismiss not firing
-	//
-    //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-        [self presentViewController:self.dpvc animated:YES completion:NULL];
-    //} else {
-    //    [self presentModalViewController:self.dpvc animated:YES];
-    //}
-	/*
+    [self presentViewController:self.dpvc animated:YES completion:NULL];
+
+    /*
 	
-	
-	CGRect viewFrame = self.view.frame;
+    CGRect viewFrame = self.view.frame;
 	
 	UIView *haveView = [self.view viewWithTag:kViewTag2];
 
