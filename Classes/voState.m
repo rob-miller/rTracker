@@ -192,6 +192,28 @@
 					   text:(self.vo.optDict)[@"privacy"]
 					  addsv:YES ];
 	
+    //------
+    
+    frame.origin.x = MARGIN;
+    frame.origin.y += MARGIN + frame.size.height;
+    
+    labframe = [ctvovc configLabel:@"Line at Y=" frame:frame key:@"gyLab" addsv:YES];
+    frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+
+    tfWidth = [@"9999999.99" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
+    frame.size.width = tfWidth;
+    frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+    
+    [ctvovc configTextField:frame
+                        key:@"gyTF"
+                     target:nil
+                     action:nil
+                        num:YES
+                      place:@"0"
+                       text:(self.vo.optDict)[@"yline1"]
+                      addsv:YES ];
+    
+    //------
     
     frame.origin.x = MARGIN;
     frame.origin.y += MARGIN + frame.size.height;
@@ -200,6 +222,9 @@
     self.vc = ctvovc;
     frame = [ctvovc configActionBtn:frame key:nil label:@"long title" target:self action:@selector(longTitleBtn)];
     */
+
+    
+    //------
     
     ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
     ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
