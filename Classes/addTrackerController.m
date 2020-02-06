@@ -106,15 +106,32 @@
     self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    //self.table.backgroundView = bg;
-    //self.toolbar.backgroundColor = [UIColor clearColor];
-    
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
-    self.view.backgroundColor=nil;
-    [self.view addSubview:bg];
-    [self.view sendSubviewToBack:bg];
 
+    bool darkMode = false;
+
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.view.backgroundColor = [UIColor systemBackgroundColor];
+            self.table.backgroundColor = [UIColor secondarySystemBackgroundColor];
+        }
+    } else {
+        CGSize vsize = [rTracker_resource get_visible_size:self];
+        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
+        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
+        CGFloat scal = bg0.frame.size.width / vsize.width;
+        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+
+        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
+        self.view.backgroundColor=nil;
+        [self.view addSubview:bg];
+        [self.view sendSubviewToBack:bg];
+    }
+    
 	self.saving=FALSE;
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
@@ -571,13 +588,17 @@ DBGLog(@"btnAddValue was pressed!");
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         self.nameField.font = PrefBodyFont;
         self.nameField.text = self.tempTrackerObj.trackerName;
-        self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
-#if !RELEASE
-        // debug layout:
-        //self.nameField.backgroundColor=[UIColor redColor];
-#else
-        self.nameField.backgroundColor=[UIColor whiteColor];
-#endif
+        
+        if (@available(iOS 13.0, *)) {
+             self.nameField.textColor = [UIColor labelColor];
+             self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor labelColor]}];  // @"Name this Tracker"
+             self.nameField.backgroundColor=[UIColor systemBackgroundColor];
+        } else {
+            self.nameField.textColor = [UIColor blackColor];
+            self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
+            self.nameField.backgroundColor=[UIColor whiteColor];
+        }
+        
         [self.view bringSubviewToFront:self.nameField];
             // no help! self.nameField.layer.zPosition=10;
         //DBGLog(@"loaded section 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
@@ -614,11 +635,6 @@ DBGLog(@"btnAddValue was pressed!");
 			cell = [[UITableViewCell alloc]
 					 initWithStyle:UITableViewCellStyleSubtitle
 					 reuseIdentifier: valCellID];
-            //cell.backgroundColor=nil;
-#if !RELEASE
-            // debug layout:
-            //cell.backgroundColor = [UIColor greenColor];
-#endif
 		}
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
@@ -652,6 +668,13 @@ DBGLog(@"btnAddValue was pressed!");
                                              (vo.vos.voGraphSet)[vo.vGraphType],
                                              [rTracker_resource colorNames][vo.vcolor]];
 		}
+
+        cell.backgroundColor = [UIColor clearColor];
+        if (@available(iOS 13.0, *)) {
+            cell.textLabel.textColor = [UIColor labelColor];
+            cell.detailTextLabel.textColor = [UIColor labelColor];
+        }
+        
         //DBGLog(@"loaded section 1 row %i : .%@. : .%@.",row, cell.textLabel.text, cell.detailTextLabel.text);
     }
 	
