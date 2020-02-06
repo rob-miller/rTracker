@@ -904,19 +904,26 @@ BOOL loadingInputFiles=NO;
     self.refreshLock = 0;
     self.readingFile=NO;
 
+    bool darkMode = false;
 
-    UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
-    //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-    UIImageView *bg = [[UIImageView alloc] initWithImage:img];
-
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+    
     CGSize vsize = [rTracker_resource get_visible_size:self];
-    CGFloat scal = bg.frame.size.width / vsize.width;
 
-    UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
-    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img2];
-    [self.navigationController.navigationBar setBackgroundImage:img2 forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.toolbar setBackgroundImage:img2 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-     
+    if (darkMode) {
+    } else {
+        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
+        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+        UIImageView *bg = [[UIImageView alloc] initWithImage:img];
+        CGFloat scal = bg.frame.size.width / vsize.width;
+
+        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+        self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img2];
+        [self.navigationController.navigationBar setBackgroundImage:img2 forBarMetrics:UIBarMetricsDefault];
+        [self.navigationController.toolbar setBackgroundImage:img2 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    }
     
     self.navigationItem.rightBarButtonItem = self.addBtn;
     self.navigationItem.leftBarButtonItem = self.editBtn;
@@ -949,7 +956,13 @@ BOOL loadingInputFiles=NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.tableView.backgroundColor = [UIColor clearColor];
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    } else {
+        self.tableView.backgroundColor = [UIColor clearColor];
+    }
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [self.view addSubview:self.tableView];
@@ -1540,7 +1553,7 @@ BOOL stashAnimated;
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 
-        cell.backgroundColor = [UIColor clearColor];
+        cell.backgroundColor = [UIColor clearColor];  // clear here so table background shows through
     }
     
 	// Configure the cell.
@@ -1562,7 +1575,10 @@ BOOL stashAnimated;
         
     }
     //DBGLog(@"erc= %d  src= %d",erc,src);
-    [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]];
+    //[cellLabel appendAttributedString:
+    // [[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row] attributes:@{NSForegroundColorAttributeName: [UIColor blackColor]}]] ;
+    [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]] ;
+    
     cell.textLabel.attributedText = cellLabel;
     
     return cell;
