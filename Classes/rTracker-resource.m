@@ -159,7 +159,11 @@ BOOL hasAmPm=NO;
     
     //[_checkButton setTitle:@"\u2714" forState:UIControlStateNormal];
     [_checkButton setTitle:@"" forState:UIControlStateNormal];
-    [_checkButton setBackgroundColor:[UIColor whiteColor]];
+    if (@available(iOS 13.0, *)) {
+        [_checkButton setBackgroundColor:[UIColor tertiarySystemBackgroundColor]];
+    } else {
+        [_checkButton setBackgroundColor:[UIColor whiteColor]];
+    }
     _checkButton.titleLabel.font = PrefBodyFont;
     _checkButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _checkButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter; //Center;;  // UIControlContentHorizontalAlignmentRight; //Center;
