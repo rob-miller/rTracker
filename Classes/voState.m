@@ -157,13 +157,11 @@
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
-	
 	CGRect labframe = [ctvovc configLabel:@"Draw graph:" frame:frame key:@"ggLab" addsv:YES];
-	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	//-- draw graphs button
-	
+
 	[ctvovc configCheckButton:frame 
                           key:@"ggBtn" 
                         state:(![(self.vo.optDict)[@"graph"] isEqualToString:@"0"])  // default = @"1"
@@ -313,10 +311,15 @@
 	label.tag=kViewTag;
 	//label.font = [UIFont boldSystemFontOfSize:18.0];
     label.font = PrefBodyFont;
-    label.textColor = [UIColor blackColor];
+    if (@available(iOS 13.0, *)) {
+         label.textColor = [UIColor labelColor];
+         label.backgroundColor = [UIColor systemBackgroundColor];
+     } else {
+         label.textColor = [UIColor blackColor];
+         label.backgroundColor = [UIColor clearColor];
+     }
+
     label.alpha = 1.0;
-    label.backgroundColor = [UIColor clearColor];
-    //label.textColor = [UIColor blackColor];
     
     label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
 	//don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
@@ -335,10 +338,15 @@
         label.tag=kViewTag;
         //label.font = [UIFont boldSystemFontOfSize:18.0];
         label.font = PrefBodyFont;
-        label.textColor = [UIColor blackColor];
+        if (@available(iOS 13.0, *)) {
+             label.textColor = [UIColor labelColor];
+             label.backgroundColor = [UIColor systemBackgroundColor];
+         } else {
+             label.textColor = [UIColor blackColor];
+             label.backgroundColor = [UIColor clearColor];
+         }
+
         label.alpha = 1.0;
-        label.backgroundColor = [UIColor clearColor];
-        //label.textColor = [UIColor blackColor];
         
         label.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentLeft;
         // don't use - see above -- label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
@@ -451,10 +459,14 @@
     UILabel *label = [[UILabel alloc] initWithFrame:bounds];
     label.tag=kViewTag;
     label.font = PrefBodyFont;
-    label.textColor = [UIColor blackColor];
+    if (@available(iOS 13.0, *)) {
+        label.textColor = [UIColor labelColor];
+        label.backgroundColor = [UIColor systemBackgroundColor];
+    } else {
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor clearColor];
+    }
     label.alpha = 1.0;
-    label.backgroundColor = [UIColor clearColor];
-    
     label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
     
     //don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
