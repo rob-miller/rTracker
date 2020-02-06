@@ -976,6 +976,11 @@ BOOL loadingInputFiles=NO;
     
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.tableView setNeedsDisplay];
+    [self.view setNeedsDisplay];
+}
+
 - (trackerList *) tlist {
     if (nil == _tlist) {
         trackerList *tmptlist = [[trackerList alloc] init];
