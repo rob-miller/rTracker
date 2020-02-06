@@ -128,15 +128,27 @@ static int selSegNdx=SegmentEdit;
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self.navigationItem setRightBarButtonItem:[self getExportBtn] animated:NO];
 
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    self.table.backgroundColor = [UIColor clearColor];
+    bool darkMode = false;
+
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+    
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.table.backgroundColor = [UIColor systemBackgroundColor];
+            self.view.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    } else {
+        UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+        self.table.backgroundColor = [UIColor clearColor];
+        // set graph paper background
+        [self.view addSubview:bg];
+        [self.view sendSubviewToBack:bg];
+    }
     self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.table.separatorColor = [UIColor clearColor];
     
-    // set graph paper background
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
-    [self.view addSubview:bg];
-    [self.view sendSubviewToBack:bg];
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -328,7 +340,11 @@ static int selSegNdx=SegmentEdit;
 	// Configure the cell.
 	NSUInteger row = [indexPath row];
 	cell.textLabel.text = (self.tlist.topLayoutNames)[row];
-	
+    if (@available(iOS 13.0, *)) {
+        cell.textLabel.textColor = [UIColor labelColor];
+    } else {
+        cell.textLabel.textColor = [UIColor blackColor];
+    }
     return cell;
 
 }
