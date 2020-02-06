@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment version="4640" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,6 +12,7 @@
             <connections>
                 <outlet property="accessoryView" destination="1" id="6"/>
                 <outlet property="addButton" destination="4" id="9"/>
+                <outlet property="clearButton" destination="ThY-Ze-kSL" id="asU-PR-Cd3"/>
                 <outlet property="orAndSeg" destination="8tm-RL-791" id="vS9-8K-8ih"/>
                 <outlet property="segControl" destination="3" id="10"/>
                 <outlet property="setSearchSeg" destination="rtt-km-OBv" id="90e-xS-812"/>
@@ -23,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="cOj-Iq-ImY">
-                    <rect key="frame" x="0.0" y="6" width="599" height="31"/>
+                    <rect key="frame" x="0.0" y="6" width="600" height="31"/>
                     <subviews>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="bar" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                             <rect key="frame" x="0.0" y="0.0" width="113" height="32"/>
@@ -37,7 +38,7 @@
                             </connections>
                         </segmentedControl>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="addButton">
-                            <rect key="frame" x="306" y="3.5" width="25" height="24"/>
+                            <rect key="frame" x="306.5" y="3.5" width="25" height="24"/>
                             <accessibility key="accessibilityConfiguration" label="add"/>
                             <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
                             <state key="normal">
@@ -52,7 +53,7 @@
                             </connections>
                         </button>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="rtt-km-OBv">
-                            <rect key="frame" x="524" y="0.0" width="75" height="32"/>
+                            <rect key="frame" x="525" y="0.0" width="75" height="32"/>
                             <segments>
                                 <segment title="✔︎"/>
                                 <segment title="🔍"/>
@@ -64,22 +65,37 @@
                     </subviews>
                 </stackView>
                 <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="999" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="8tm-RL-791">
-                    <rect key="frame" x="609" y="5" width="51" height="32"/>
+                    <rect key="frame" x="610" y="5" width="51" height="32"/>
                     <segments>
                         <segment title="∪"/>
                         <segment title="∩"/>
                     </segments>
                 </segmentedControl>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ThY-Ze-kSL">
+                    <rect key="frame" x="620" y="7" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="ThY-Ze-kSL" secondAttribute="height" multiplier="1:1" id="51F-Qd-bDI"/>
+                        <constraint firstAttribute="width" constant="30" id="Vn1-ha-dhP"/>
+                        <constraint firstAttribute="height" constant="30" id="wWf-KQ-Cq4"/>
+                    </constraints>
+                    <state key="normal" title="❌"/>
+                    <connections>
+                        <action selector="clearTextBox:" destination="-1" eventType="touchUpInside" id="dbJ-4Y-Xco"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="cOj-Iq-ImY" secondAttribute="bottom" constant="6" id="4AY-vT-8Kl"/>
                 <constraint firstItem="cOj-Iq-ImY" firstAttribute="top" secondItem="1" secondAttribute="top" constant="6" id="6sp-ms-KKA"/>
-                <constraint firstAttribute="trailing" secondItem="8tm-RL-791" secondAttribute="trailing" constant="20" id="RRa-I4-ZEb"/>
+                <constraint firstAttribute="trailing" secondItem="ThY-Ze-kSL" secondAttribute="trailing" constant="30" id="GVu-98-NOs"/>
+                <constraint firstItem="ThY-Ze-kSL" firstAttribute="leading" secondItem="cOj-Iq-ImY" secondAttribute="trailing" constant="20" id="NVn-mz-zVR"/>
                 <constraint firstItem="cOj-Iq-ImY" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="Vjd-bo-b6I"/>
                 <constraint firstAttribute="bottom" secondItem="8tm-RL-791" secondAttribute="bottom" constant="7" id="fpf-71-FKv"/>
                 <constraint firstItem="8tm-RL-791" firstAttribute="leading" secondItem="cOj-Iq-ImY" secondAttribute="trailing" constant="10" id="gBR-iM-K6I"/>
+                <constraint firstAttribute="bottom" secondItem="ThY-Ze-kSL" secondAttribute="bottom" constant="6" id="koL-HB-hEt"/>
                 <constraint firstItem="8tm-RL-791" firstAttribute="top" secondItem="1" secondAttribute="top" constant="5" id="pPu-XK-WHn"/>
+                <constraint firstItem="ThY-Ze-kSL" firstAttribute="top" secondItem="1" secondAttribute="top" constant="7" id="raM-cY-43m"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
