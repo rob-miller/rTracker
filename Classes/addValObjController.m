@@ -137,7 +137,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		//self.graphTypes = nil;
 		self.graphTypes = [voState voGraphSetNum];  //[valueObj graphsForVOT:VOT_NUMBER];
 		//[self updateScrollView:(NSInteger)VOT_NUMBER];
-		[self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
+        safeDispatchSync(^{
+                           [self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
+                           });
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
         if (0>self.tempValObj.vcolor) self.tempValObj.vcolor=0;  // paranoid in case switched from vot_info or vot_choice
@@ -177,13 +179,31 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//	forControlEvents:UIControlEventEditingDidEndOnExit];
 //	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
-// set graph paper background
-    //*
-    self.view.backgroundColor=nil;
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    [self.view addSubview:bg];
-    [self.view sendSubviewToBack:bg];
-     //*/
+    bool darkMode = false;
+
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+    
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.view.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    } else {
+        // set graph paper background
+        
+        self.view.backgroundColor=nil;
+        
+        CGSize vsize = [rTracker_resource get_visible_size:self];
+        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
+        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
+        CGFloat scal = bg0.frame.size.width / vsize.width;
+        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
+        [self.view addSubview:bg];
+        [self.view sendSubviewToBack:bg];
+    }
     
     //[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]]];
     self.toolbar.hidden = NO;
