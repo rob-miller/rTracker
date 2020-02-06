@@ -315,6 +315,15 @@
 		D4B8D0051BAC1500002E94CD /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B8D0041BAC1500002E94CD /* libsqlite3.tbd */; };
 		D4BBB58012672C94000F8467 /* datePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BBB57E12672C94000F8467 /* datePickerVC.m */; };
 		D4BBB58112672C94000F8467 /* datePickerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BBB57F12672C94000F8467 /* datePickerVC.xib */; };
+		D4C0B3DC23E9C3BB00304511 /* bell 3.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D323E9C3BA00304511 /* bell 3.caf */; };
+		D4C0B3DD23E9C3BB00304511 /* bugle_charge.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D423E9C3BA00304511 /* bugle_charge.caf */; };
+		D4C0B3DE23E9C3BB00304511 /* bell 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D523E9C3BA00304511 /* bell 2.caf */; };
+		D4C0B3DF23E9C3BB00304511 /* fail_wah_wah_wah.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D623E9C3BA00304511 /* fail_wah_wah_wah.caf */; };
+		D4C0B3E023E9C3BB00304511 /* bell 1.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D723E9C3BA00304511 /* bell 1.caf */; };
+		D4C0B3E123E9C3BB00304511 /* ping.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D823E9C3BB00304511 /* ping.caf */; };
+		D4C0B3E223E9C3BB00304511 /* bell 4.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3D923E9C3BB00304511 /* bell 4.caf */; };
+		D4C0B3E323E9C3BB00304511 /* bugle_call.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3DA23E9C3BB00304511 /* bugle_call.caf */; };
+		D4C0B3E423E9C3BB00304511 /* ping 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3DB23E9C3BB00304511 /* ping 2.caf */; };
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
 		D4CB672F18B3FF7100096490 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
@@ -500,6 +509,15 @@
 		D4BBB57D12672C94000F8467 /* datePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datePickerVC.h; sourceTree = "<group>"; };
 		D4BBB57E12672C94000F8467 /* datePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = datePickerVC.m; sourceTree = "<group>"; };
 		D4BBB57F12672C94000F8467 /* datePickerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = datePickerVC.xib; path = ../Resources/xib/datePickerVC.xib; sourceTree = "<group>"; };
+		D4C0B3D323E9C3BA00304511 /* bell 3.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 3.caf"; sourceTree = "<group>"; };
+		D4C0B3D423E9C3BA00304511 /* bugle_charge.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_charge.caf; sourceTree = "<group>"; };
+		D4C0B3D523E9C3BA00304511 /* bell 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 2.caf"; sourceTree = "<group>"; };
+		D4C0B3D623E9C3BA00304511 /* fail_wah_wah_wah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fail_wah_wah_wah.caf; sourceTree = "<group>"; };
+		D4C0B3D723E9C3BA00304511 /* bell 1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 1.caf"; sourceTree = "<group>"; };
+		D4C0B3D823E9C3BB00304511 /* ping.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ping.caf; sourceTree = "<group>"; };
+		D4C0B3D923E9C3BB00304511 /* bell 4.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bell 4.caf"; sourceTree = "<group>"; };
+		D4C0B3DA23E9C3BB00304511 /* bugle_call.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bugle_call.caf; sourceTree = "<group>"; };
+		D4C0B3DB23E9C3BB00304511 /* ping 2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ping 2.caf"; sourceTree = "<group>"; };
 		D4C1873D128A971000A612C4 /* voDataEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voDataEdit.h; sourceTree = "<group>"; };
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
@@ -788,6 +806,15 @@
 		D481089419E0550800B422A8 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				D4C0B3D723E9C3BA00304511 /* bell 1.caf */,
+				D4C0B3D523E9C3BA00304511 /* bell 2.caf */,
+				D4C0B3D323E9C3BA00304511 /* bell 3.caf */,
+				D4C0B3D923E9C3BB00304511 /* bell 4.caf */,
+				D4C0B3DA23E9C3BB00304511 /* bugle_call.caf */,
+				D4C0B3D423E9C3BA00304511 /* bugle_charge.caf */,
+				D4C0B3D623E9C3BA00304511 /* fail_wah_wah_wah.caf */,
+				D4C0B3DB23E9C3BB00304511 /* ping 2.caf */,
+				D4C0B3D823E9C3BB00304511 /* ping.caf */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -1098,13 +1125,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4C0B3E123E9C3BB00304511 /* ping.caf in Resources */,
 				D473ED4719571F8A00B4702C /* CalendarTodaysDate@2x.png in Resources */,
+				D4C0B3DC23E9C3BB00304511 /* bell 3.caf in Resources */,
 				D473ED4319571F8A00B4702C /* CalendarRowBottom@2x.png in Resources */,
 				D40607E217D7CB5A00C05A38 /* closedview-button-blue-7@2x.png in Resources */,
 				D40607E317D7CB5A00C05A38 /* fullview-button-blue-7.png in Resources */,
 				D473ED3F19571F8A00B4702C /* CalendarPreviousMonth@2x.png in Resources */,
+				D4C0B3E423E9C3BB00304511 /* ping 2.caf in Resources */,
+				D4C0B3DD23E9C3BB00304511 /* bugle_charge.caf in Resources */,
+				D4C0B3E323E9C3BB00304511 /* bugle_call.caf in Resources */,
+				D4C0B3E223E9C3BB00304511 /* bell 4.caf in Resources */,
 				D464C8B61A50FDB40009E20B /* Icon512x512.png in Resources */,
 				D473ED4419571F8A00B4702C /* CalendarSelectedDate.png in Resources */,
+				D4C0B3DF23E9C3BB00304511 /* fail_wah_wah_wah.caf in Resources */,
 				D47D168E19028F2C006563B9 /* notifyReminderVC2.xib in Resources */,
 				D473ED3E19571F8A00B4702C /* CalendarPreviousMonth.png in Resources */,
 				D464C8B81A5100450009E20B /* icon120.png in Resources */,
@@ -1142,7 +1176,9 @@
 				D40607E417D7CB5A00C05A38 /* fullview-button-blue-7@2x.png in Resources */,
 				D4B634B917B1C3B500E96BC1 /* notifyReminderViewController.xib in Resources */,
 				D4D555111BAC84C600064968 /* LaunchScreenImg.png in Resources */,
+				D4C0B3E023E9C3BB00304511 /* bell 1.caf in Resources */,
 				D473ED4019571F8A00B4702C /* CalendarRow.png in Resources */,
+				D4C0B3DE23E9C3BB00304511 /* bell 2.caf in Resources */,
 				D473ED4519571F8A00B4702C /* CalendarSelectedDate@2x.png in Resources */,
 				D4D5550E1BAC7C8900064968 /* Launch Screen.storyboard in Resources */,
 				D473ED4619571F8A00B4702C /* CalendarTodaysDate.png in Resources */,
