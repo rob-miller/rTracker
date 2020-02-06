@@ -245,11 +245,16 @@
 - (IBAction)setSearchSegChanged:(id)sender {
     if (0 == [self.setSearchSeg selectedSegmentIndex]) {
         self.orAndSeg.hidden = YES;
+        self.clearButton.hidden = NO;
     } else {
         self.orAndSeg.hidden = NO;
+        self.clearButton.hidden = YES;
     }
 }
 
+- (IBAction)clearTextBox:(id)sender {
+    self.textView.text = @"";
+}
 
 - (IBAction) addPickerData:(id)sender {
 	NSInteger row = 0;
