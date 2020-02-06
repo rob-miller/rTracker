@@ -94,7 +94,11 @@
         }
 	} else {
 		[self.vo.value setString:@""];
-        [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
+        if (@available(iOS 13.0, *)) {
+            [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor tertiarySystemBackgroundColor]];
+        } else {
+            [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
+        }
 	}
 
 	//self.vo.display = nil; // so will redraw this cell only
@@ -121,7 +125,11 @@
     self.vosFrame = bounds;
 
     if ([self.vo.value isEqualToString:@""]) {
-        [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
+        if (@available(iOS 13.0, *)) {
+            [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor tertiarySystemBackgroundColor]];
+        } else {
+            [rTracker_resource clrCheckButton:self.checkButton colr:[UIColor whiteColor]];
+        }
     } else {
         [rTracker_resource setCheckButton:self.checkButton colr:[rTracker_resource colorSet][[(self.vo.optDict)[@"btnColr"] integerValue] ]];
     }
