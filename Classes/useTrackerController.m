@@ -95,9 +95,10 @@
         }
         n++;
 	}
-    // n.b. we hardcode we hardcode number of sections in a tracker tableview here
-    [self.tableView reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
-    
+    // n.b. we hardcode number of sections in a tracker tableview here
+    if (self.isViewLoaded && self.view.window)
+        [self.tableView reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
+
 }
 
 #if ADVERSION
