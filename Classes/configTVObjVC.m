@@ -192,10 +192,29 @@
 		self.toolBar.items = @[doneBtn];
 	}
 
-    // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    [self.view addSubview:bg];
-    [self.view sendSubviewToBack:bg];
+    bool darkMode = false;
+
+    if (@available(iOS 13.0, *)) {
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+    }
+    
+    if (darkMode) {
+        if (@available(iOS 13.0, *)) {
+            self.view.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    } else {
+        // set graph paper background
+        CGSize vsize = [rTracker_resource get_visible_size:self];
+
+        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
+        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
+        CGFloat scal = bg0.frame.size.width / vsize.width;
+        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+
+        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
+        [self.view addSubview:bg];
+        [self.view sendSubviewToBack:bg];
+    }
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
