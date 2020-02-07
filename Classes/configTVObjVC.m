@@ -223,6 +223,11 @@
     
     [super viewDidLoad];
 }
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.view setNeedsDisplay];
+}
+
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
     [self btnDone:nil];
 }
