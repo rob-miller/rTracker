@@ -41,7 +41,7 @@
 
 @synthesize tlist=_tlist;
 @synthesize tempTrackerObj=_tempTrackerObj;
-@synthesize table=_table;
+@synthesize tableView=_tableView;
 @synthesize nameField=_nameField;
 @synthesize infoBtn=_infoBtn;
 @synthesize itemCopyBtn=_itemCopyBtn;
@@ -101,9 +101,9 @@
 	        self.toolbar.hidden = NO;
     }
 	
-	[self.table setEditing:YES animated:YES];
-	self.table.allowsSelection = NO;  
-    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
+	[self.tableView setEditing:YES animated:YES];
+	self.tableView.allowsSelection = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     // set graph paper background
 
@@ -116,7 +116,7 @@
     if (darkMode) {
         if (@available(iOS 13.0, *)) {
             self.view.backgroundColor = [UIColor systemBackgroundColor];
-            self.table.backgroundColor = [UIColor secondarySystemBackgroundColor];
+            self.tableView.backgroundColor = [UIColor secondarySystemBackgroundColor];
         }
     } else {
         CGSize vsize = [rTracker_resource get_visible_size:self];
@@ -142,7 +142,7 @@
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    [self.table setNeedsDisplay];
+    [self.tableView setNeedsDisplay];
     [self.view setNeedsDisplay];
 }
 
@@ -157,7 +157,7 @@
 	
 	DBGLog(@"atc: viewWillAppear, valObjTable count= %lu", (unsigned long)[self.tempTrackerObj.valObjTable count]);
 	
-	[self.table reloadData];
+	[self.tableView reloadData];
     [self toggleEdit:self.segcEditTrackerEditItems];
 
 #if ADVERSION
@@ -237,7 +237,7 @@
     valueObj *newVO = [[valueObj alloc] initWithDict:self.tempTrackerObj dict:[lastVO dictFromVO]];
     newVO.vid = [self.tempTrackerObj getUnique];
     [self.tempTrackerObj addValObj:newVO];
-    [self.table reloadData];
+    [self.tableView reloadData];
     
 }
 /*
@@ -337,16 +337,16 @@ static int editMode;
 	editMode = (int) [sender selectedSegmentIndex];
 	//[table reloadData];
 	if (editMode == 0) {
-		[self.table setEditing:YES animated:YES];
+		[self.tableView setEditing:YES animated:YES];
         self.itemCopyBtn.enabled = YES;
 	} else {
-		[self.table setEditing:NO animated:YES];
+		[self.tableView setEditing:NO animated:YES];
         self.itemCopyBtn.enabled = NO;
 	}
 	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
 	dispatch_async(dispatch_get_main_queue(), ^(void){
-        [self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
     });
 }
 
@@ -462,7 +462,7 @@ DBGLog(@"btnAddValue was pressed!");
 - (void) delVOlocal:(NSUInteger) row
 {
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
-	[self.table deleteRowsAtIndexPaths:@[self.deleteIndexPath]
+	[self.tableView deleteRowsAtIndexPaths:@[self.deleteIndexPath]
 						   withRowAnimation:UITableViewRowAnimationFade];
 }
 
@@ -485,7 +485,7 @@ DBGLog(@"btnAddValue was pressed!");
         [self delVOlocal:row];
     } else {
         //DBGLog(@"check valobjdelete cancelled");
-        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     }
     self.deleteIndexPath=nil;
     
@@ -717,7 +717,7 @@ DBGLog(@"btnAddValue was pressed!");
 	[self.tempTrackerObj.valObjTable insertObject:vo atIndex:toRow];
 	
 	// fail
-    [self.table reloadData];
+    [self.tableView reloadData];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableview editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
