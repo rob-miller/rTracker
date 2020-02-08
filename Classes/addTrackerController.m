@@ -62,6 +62,20 @@
 
 //#define TEMPFILE @"tempTrackerObj_plist"
 
+- (void) setViewMode {
+    [rTracker_resource setViewMode:self];
+
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            // if darkMode
+            self.tableView.backgroundColor = [UIColor secondarySystemBackgroundColor];
+            return;
+        }
+    }
+    
+    self.tableView.backgroundColor = [UIColor clearColor];
+}
+
 - (void) viewDidLoad {
 
 	DBGLog(@"atc: vdl tlist dbname= %@",_tlist.dbName); // use backing ivar because don't want dbg msg to instantiate
@@ -105,33 +119,15 @@
 	self.tableView.allowsSelection = NO;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    // set graph paper background
+    // set graph paper background - not seen if darkMode, but still there
+ 
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
 
-    bool darkMode = false;
+    [self setViewMode];
 
-    if (@available(iOS 13.0, *)) {
-        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-    }
-
-    if (darkMode) {
-        if (@available(iOS 13.0, *)) {
-            self.view.backgroundColor = [UIColor systemBackgroundColor];
-            self.tableView.backgroundColor = [UIColor secondarySystemBackgroundColor];
-        }
-    } else {
-        CGSize vsize = [rTracker_resource get_visible_size:self];
-        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
-        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
-        CGFloat scal = bg0.frame.size.width / vsize.width;
-        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
-
-        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
-        self.view.backgroundColor=nil;
-        [self.view addSubview:bg];
-        [self.view sendSubviewToBack:bg];
-    }
-    
 	self.saving=FALSE;
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
@@ -142,6 +138,7 @@
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self setViewMode];
     [self.tableView setNeedsDisplay];
     [self.view setNeedsDisplay];
 }
