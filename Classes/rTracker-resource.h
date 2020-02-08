@@ -32,6 +32,9 @@
 
 #define DBLRANDOM ((double)arc4random() / 0x100000000)
 
+// tag for background view to un/hide
+#define BGTAG 99
+
 
 // Sample code from iOS 7 Transistion Guide
 // Loading Resources Conditionally
@@ -139,9 +142,14 @@ void safeDispatchSync(dispatch_block_t block);
 +(CGFloat) getScreenMaxDim;
 + (NSString*)getLaunchImageName;
 
-+ (CGSize)get_visible_size:(UIViewController*)uvc;
++ (CGSize)get_visible_size:(UIViewController*)vc;
++ (CGSize)get_screen_size:(UIViewController*)vc;
 
 + (NSString *)sanitizeFileNameString:(NSString *)fileName;
+
++ (void) setViewMode:(UIViewController *)vc;
++ (UIColor *) get_background_color:(UIViewController *) vc;
++ (UIImage*) get_background_image:(UIViewController*) vc;
 
 @end
 
