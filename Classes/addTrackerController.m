@@ -141,6 +141,11 @@
 	[super viewDidLoad];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.table setNeedsDisplay];
+    [self.view setNeedsDisplay];
+}
+
 #if ADVERSION
 // handle rtPurchasedNotification
 - (void) updatePurchased:(NSNotification*)n {
