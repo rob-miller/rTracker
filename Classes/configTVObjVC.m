@@ -116,7 +116,6 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"]];
 }
 
-
 - (void)viewDidLoad {
 	
 	NSString *name;
@@ -192,29 +191,14 @@
 		self.toolBar.items = @[doneBtn];
 	}
 
-    bool darkMode = false;
+    // set graph paper background
 
-    if (@available(iOS 13.0, *)) {
-        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
     
-    if (darkMode) {
-        if (@available(iOS 13.0, *)) {
-            self.view.backgroundColor = [UIColor systemBackgroundColor];
-        }
-    } else {
-        // set graph paper background
-        CGSize vsize = [rTracker_resource get_visible_size:self];
-
-        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
-        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
-        CGFloat scal = bg0.frame.size.width / vsize.width;
-        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
-
-        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
-        [self.view addSubview:bg];
-        [self.view sendSubviewToBack:bg];
-    }
+    [rTracker_resource setViewMode:self];
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -225,6 +209,7 @@
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [rTracker_resource setViewMode:self];
     [self.view setNeedsDisplay];
 }
 
