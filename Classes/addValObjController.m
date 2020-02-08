@@ -83,8 +83,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 //#define SCROLLVIEW_CONTENT_HEIGHT 720
 //#define SCROLLVIEW_CONTENT_WIDTH  320
 
-
-
 - (void)viewDidLoad {
 	
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
@@ -166,11 +164,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	}
 
 	self.title = @"Configure Item";
-	//if (kIS_LESS_THAN_IOS7) {
-    //    self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-    //} else {
-        self.labelField.font = PrefBodyFont;
-    //}
+    self.labelField.font = PrefBodyFont;
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
@@ -179,31 +173,14 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//	forControlEvents:UIControlEventEditingDidEndOnExit];
 //	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
-    bool darkMode = false;
+    // set graph paper background, unseen but still there if darkMode
 
-    if (@available(iOS 13.0, *)) {
-        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
     
-    if (darkMode) {
-        if (@available(iOS 13.0, *)) {
-            self.view.backgroundColor = [UIColor systemBackgroundColor];
-        }
-    } else {
-        // set graph paper background
-        
-        self.view.backgroundColor=nil;
-        
-        CGSize vsize = [rTracker_resource get_visible_size:self];
-        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
-        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-        UIImageView *bg0 = [[UIImageView alloc] initWithImage:img];
-        CGFloat scal = bg0.frame.size.width / vsize.width;
-        UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
-        UIImageView *bg = [[UIImageView alloc] initWithImage:img2];
-        [self.view addSubview:bg];
-        [self.view sendSubviewToBack:bg];
-    }
+    [rTracker_resource setViewMode:self];
     
     //[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]]];
     self.toolbar.hidden = NO;
@@ -218,6 +195,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [rTracker_resource setViewMode:self];
     [self.view setNeedsDisplay];
 }
 
