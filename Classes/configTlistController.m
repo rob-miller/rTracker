@@ -168,6 +168,12 @@ static int selSegNdx=SegmentEdit;
 	// Release any cached data, images, etc that aren't in use.
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.table setNeedsDisplay];
+    [self.view setNeedsDisplay];
+}
+
+
 /*
 - (void)viewDidUnload {
 	
