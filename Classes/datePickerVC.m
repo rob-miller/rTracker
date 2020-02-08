@@ -48,7 +48,7 @@ datePicker=_datePicker;
     //CGRect f = self.view.frame;
     //f.size.width = [rTracker_resource getKeyWindowWidth];
     //self.view.frame = f;
-    
+    /*
     if (@available(iOS 13.0, *)) {
         bool darkMode = false;
 
@@ -57,7 +57,7 @@ datePicker=_datePicker;
             self.view.backgroundColor = [UIColor systemBackgroundColor];
         }
     }
-
+     */
      
     /*
      // does not resize well -- need more work on xib
