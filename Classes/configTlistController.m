@@ -128,27 +128,15 @@ static int selSegNdx=SegmentEdit;
     [self.navigationController setToolbarHidden:YES animated:NO];
     [self.navigationItem setRightBarButtonItem:[self getExportBtn] animated:NO];
 
-    bool darkMode = false;
-
-    if (@available(iOS 13.0, *)) {
-        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-    }
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+    [rTracker_resource setViewMode:self];
     
-    if (darkMode) {
-        if (@available(iOS 13.0, *)) {
-            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
-            self.view.backgroundColor = [UIColor systemBackgroundColor];
-        }
-    } else {
-        UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-        self.tableView.backgroundColor = [UIColor clearColor];
-        // set graph paper background
-        [self.view addSubview:bg];
-        [self.view sendSubviewToBack:bg];
-    }
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.separatorColor = [UIColor clearColor];
-    
+    self.tableView.backgroundColor = [UIColor clearColor];
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -169,6 +157,7 @@ static int selSegNdx=SegmentEdit;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [rTracker_resource setViewMode:self];
     [self.tableView setNeedsDisplay];
     [self.view setNeedsDisplay];
 }
@@ -340,7 +329,7 @@ static int selSegNdx=SegmentEdit;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.backgroundColor=nil;
+        cell.backgroundColor=[UIColor clearColor];
     }
     
 	// Configure the cell.
