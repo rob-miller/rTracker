@@ -151,6 +151,10 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.view setNeedsDisplay];
+}
+
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
     [self btnDone:nil];
 }
