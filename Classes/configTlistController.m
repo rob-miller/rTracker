@@ -36,7 +36,7 @@
 @implementation configTlistController
 
 @synthesize tlist=_tlist;
-@synthesize table=_table;
+@synthesize tableView=_tableView;
 @synthesize deleteIndexPath=_deleteIndexPath;
 
 static int selSegNdx=SegmentEdit;
@@ -136,18 +136,18 @@ static int selSegNdx=SegmentEdit;
     
     if (darkMode) {
         if (@available(iOS 13.0, *)) {
-            self.table.backgroundColor = [UIColor systemBackgroundColor];
+            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
             self.view.backgroundColor = [UIColor systemBackgroundColor];
         }
     } else {
         UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-        self.table.backgroundColor = [UIColor clearColor];
+        self.tableView.backgroundColor = [UIColor clearColor];
         // set graph paper background
         [self.view addSubview:bg];
         [self.view sendSubviewToBack:bg];
     }
-    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.table.separatorColor = [UIColor clearColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.separatorColor = [UIColor clearColor];
     
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
@@ -169,7 +169,7 @@ static int selSegNdx=SegmentEdit;
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    [self.table setNeedsDisplay];
+    [self.tableView setNeedsDisplay];
     [self.view setNeedsDisplay];
 }
 
@@ -184,7 +184,7 @@ static int selSegNdx=SegmentEdit;
 
 	self.title = nil;
 	self.tlist = nil;
-	self.table = nil;
+	self.tableView = nil;
 	self.toolbarItems = nil;
 
 	[super viewDidLoad];
@@ -206,7 +206,7 @@ static int selSegNdx=SegmentEdit;
     DBGLog(@"ctlc: viewWillAppear");
     [self.navigationController setToolbarHidden:YES animated:NO];
     
-    [self.table reloadData];
+    [self.tableView reloadData];
     selSegNdx=SegmentEdit;  // because mode select starts with default 'modify' selected
     
 #if ADVERSION
@@ -247,15 +247,15 @@ static int selSegNdx=SegmentEdit;
 	switch (selSegNdx = (int) [sender selectedSegmentIndex]) {
 		case SegmentEdit :
 			//DBGLog(@"ctlc: set edit mode");
-			[self.table setEditing:NO animated:YES];
+			[self.tableView setEditing:NO animated:YES];
 			break;
 		case SegmentCopy :
 			//DBGLog(@"ctlc: set copy mode");
-			[self.table setEditing:NO animated:YES];
+			[self.tableView setEditing:NO animated:YES];
 			break;
 		case SegmentMoveDelete :
 			//DBGLog(@"ctlc: set move/delete mode");
-			[self.table setEditing:YES animated:YES];
+			[self.tableView setEditing:YES animated:YES];
 			break;
 		default:
 			dbgNSAssert(0,@"ctlc: segment index not handled");
@@ -275,7 +275,7 @@ static int selSegNdx=SegmentEdit;
 	[self.tlist deleteTrackerAllRow:row];
 	//[self.deleteTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.deleteIndexPath]
 	//					   withRowAnimation:UITableViewRowAnimationFade];
-	[self.table deleteRowsAtIndexPaths:@[self.deleteIndexPath]
+	[self.tableView deleteRowsAtIndexPaths:@[self.deleteIndexPath]
                                 withRowAnimation:UITableViewRowAnimationFade];
 	[self.tlist reloadFromTLT];
 }
@@ -292,12 +292,12 @@ static int selSegNdx=SegmentEdit;
 	
 	if (choice == 0) {
         DBGLog(@"cancelled tracker delete");
-        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     } else if (choice == 1) {
 		[self delTracker];
 	} else {
         [self delTrackerRecords];
-        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     }
 
     self.deleteIndexPath = nil;
@@ -467,7 +467,7 @@ static int selSegNdx=SegmentEdit;
 		[self.tlist addToTopLayoutTable:nTO];
 		//[self.tlist loadTopLayoutTable];
          dispatch_async(dispatch_get_main_queue(), ^(void){
-             [self.table reloadData];
+             [self.tableView reloadData];
          });
 
 	} else if (selSegNdx == SegmentMoveDelete) {
