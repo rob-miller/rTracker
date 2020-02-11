@@ -41,7 +41,7 @@
 
 @synthesize tlist=_tlist;
 @synthesize tempTrackerObj=_tempTrackerObj;
-@synthesize table=_table;
+@synthesize tableView=_tableView;
 @synthesize nameField=_nameField;
 @synthesize infoBtn=_infoBtn;
 @synthesize itemCopyBtn=_itemCopyBtn;
@@ -61,6 +61,20 @@
 # pragma mark view support
 
 //#define TEMPFILE @"tempTrackerObj_plist"
+
+- (void) setViewMode {
+    [rTracker_resource setViewMode:self];
+
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            // if darkMode
+            self.tableView.backgroundColor = [UIColor secondarySystemBackgroundColor];
+            return;
+        }
+    }
+    
+    self.tableView.backgroundColor = [UIColor clearColor];
+}
 
 - (void) viewDidLoad {
 
@@ -101,19 +115,18 @@
 	        self.toolbar.hidden = NO;
     }
 	
-	[self.table setEditing:YES animated:YES];
-	self.table.allowsSelection = NO;  
-    self.table.separatorStyle = UITableViewCellSeparatorStyleNone;
+	[self.tableView setEditing:YES animated:YES];
+	self.tableView.allowsSelection = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-    //self.table.backgroundView = bg;
-    //self.toolbar.backgroundColor = [UIColor clearColor];
-    
-    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bkgnd2-320-460.png"]];
-    self.view.backgroundColor=nil;
+    // set graph paper background - not seen if darkMode, but still there
+ 
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
+
+    [self setViewMode];
 
 	self.saving=FALSE;
     
@@ -122,6 +135,12 @@
     [self.view addGestureRecognizer:swipe];
     
 	[super viewDidLoad];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self setViewMode];
+    [self.tableView setNeedsDisplay];
+    [self.view setNeedsDisplay];
 }
 
 #if ADVERSION
@@ -135,7 +154,7 @@
 	
 	DBGLog(@"atc: viewWillAppear, valObjTable count= %lu", (unsigned long)[self.tempTrackerObj.valObjTable count]);
 	
-	[self.table reloadData];
+	[self.tableView reloadData];
     [self toggleEdit:self.segcEditTrackerEditItems];
 
 #if ADVERSION
@@ -215,7 +234,7 @@
     valueObj *newVO = [[valueObj alloc] initWithDict:self.tempTrackerObj dict:[lastVO dictFromVO]];
     newVO.vid = [self.tempTrackerObj getUnique];
     [self.tempTrackerObj addValObj:newVO];
-    [self.table reloadData];
+    [self.tableView reloadData];
     
 }
 /*
@@ -315,16 +334,16 @@ static int editMode;
 	editMode = (int) [sender selectedSegmentIndex];
 	//[table reloadData];
 	if (editMode == 0) {
-		[self.table setEditing:YES animated:YES];
+		[self.tableView setEditing:YES animated:YES];
         self.itemCopyBtn.enabled = YES;
 	} else {
-		[self.table setEditing:NO animated:YES];
+		[self.tableView setEditing:NO animated:YES];
         self.itemCopyBtn.enabled = NO;
 	}
 	
 	//[table reloadRowsAtIndexPaths:[table indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationFade];
 	dispatch_async(dispatch_get_main_queue(), ^(void){
-        [self.table reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
     });
 }
 
@@ -440,7 +459,7 @@ DBGLog(@"btnAddValue was pressed!");
 - (void) delVOlocal:(NSUInteger) row
 {
 	[self.tempTrackerObj.valObjTable removeObjectAtIndex:row];
-	[self.table deleteRowsAtIndexPaths:@[self.deleteIndexPath]
+	[self.tableView deleteRowsAtIndexPaths:@[self.deleteIndexPath]
 						   withRowAnimation:UITableViewRowAnimationFade];
 }
 
@@ -463,7 +482,7 @@ DBGLog(@"btnAddValue was pressed!");
         [self delVOlocal:row];
     } else {
         //DBGLog(@"check valobjdelete cancelled");
-        [self.table reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadRowsAtIndexPaths:@[self.deleteIndexPath] withRowAnimation:UITableViewRowAnimationRight];
     }
     self.deleteIndexPath=nil;
     
@@ -571,13 +590,17 @@ DBGLog(@"btnAddValue was pressed!");
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         self.nameField.font = PrefBodyFont;
         self.nameField.text = self.tempTrackerObj.trackerName;
-        self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
-#if !RELEASE
-        // debug layout:
-        //self.nameField.backgroundColor=[UIColor redColor];
-#else
-        self.nameField.backgroundColor=[UIColor whiteColor];
-#endif
+        
+        if (@available(iOS 13.0, *)) {
+             self.nameField.textColor = [UIColor labelColor];
+             self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor labelColor]}];  // @"Name this Tracker"
+             self.nameField.backgroundColor=[UIColor systemBackgroundColor];
+        } else {
+            self.nameField.textColor = [UIColor blackColor];
+            self.nameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Name this Tracker" attributes:@{NSForegroundColorAttributeName : [UIColor darkGrayColor]}];  // @"Name this Tracker"
+            self.nameField.backgroundColor=[UIColor whiteColor];
+        }
+        
         [self.view bringSubviewToFront:self.nameField];
             // no help! self.nameField.layer.zPosition=10;
         //DBGLog(@"loaded section 0, %@ = %@",self.nameField.text , self.tempTrackerObj.trackerName);
@@ -614,11 +637,6 @@ DBGLog(@"btnAddValue was pressed!");
 			cell = [[UITableViewCell alloc]
 					 initWithStyle:UITableViewCellStyleSubtitle
 					 reuseIdentifier: valCellID];
-            //cell.backgroundColor=nil;
-#if !RELEASE
-            // debug layout:
-            //cell.backgroundColor = [UIColor greenColor];
-#endif
 		}
 		NSInteger row = [indexPath row];
 		if (row == [self.tempTrackerObj.valObjTable count] ) {
@@ -652,6 +670,13 @@ DBGLog(@"btnAddValue was pressed!");
                                              (vo.vos.voGraphSet)[vo.vGraphType],
                                              [rTracker_resource colorNames][vo.vcolor]];
 		}
+
+        cell.backgroundColor = [UIColor clearColor];
+        if (@available(iOS 13.0, *)) {
+            cell.textLabel.textColor = [UIColor labelColor];
+            cell.detailTextLabel.textColor = [UIColor labelColor];
+        }
+        
         //DBGLog(@"loaded section 1 row %i : .%@. : .%@.",row, cell.textLabel.text, cell.detailTextLabel.text);
     }
 	
@@ -689,7 +714,7 @@ DBGLog(@"btnAddValue was pressed!");
 	[self.tempTrackerObj.valObjTable insertObject:vo atIndex:toRow];
 	
 	// fail
-    [self.table reloadData];
+    [self.tableView reloadData];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableview editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -159,7 +159,11 @@ BOOL hasAmPm=NO;
     
     //[_checkButton setTitle:@"\u2714" forState:UIControlStateNormal];
     [_checkButton setTitle:@"" forState:UIControlStateNormal];
-    [_checkButton setBackgroundColor:[UIColor whiteColor]];
+    if (@available(iOS 13.0, *)) {
+        [_checkButton setBackgroundColor:[UIColor tertiarySystemBackgroundColor]];
+    } else {
+        [_checkButton setBackgroundColor:[UIColor whiteColor]];
+    }
     _checkButton.titleLabel.font = PrefBodyFont;
     _checkButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _checkButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter; //Center;;  // UIControlContentHorizontalAlignmentRight; //Center;
@@ -1280,9 +1284,84 @@ static BOOL getOrientEnabled=false;
     return result;
 }
 
++ (CGSize)get_screen_size:(UIViewController*)vc
+{
+    CGSize result;
+    
+    CGSize size = [[UIScreen mainScreen] bounds].size;
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
+    //if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
+        result.width = size.height;
+        result.height = size.width;
+    }
+    else {
+        result.width = size.width;
+        result.height = size.height;
+    }
+    
+    return result;
+}
+
 + (NSString *)sanitizeFileNameString:(NSString *)fileName {
     NSCharacterSet* illegalFileNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
     return [[fileName componentsSeparatedByCharactersInSet:illegalFileNameCharacters] componentsJoinedByString:@""];
+}
+
+
++ (void) setViewMode:(UIViewController *)vc {
+
+    UIView *bgView;
+    
+    for(UIView *subview in [vc.view subviews]) {
+        if(BGTAG == subview.tag) {
+            bgView = subview;
+            break;
+        }
+    }
+    
+    if (@available(iOS 13.0, *)) {
+        if (vc.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            vc.view.backgroundColor = [UIColor systemBackgroundColor];
+            [bgView setHidden:YES];
+            vc.navigationController.view.backgroundColor = nil;
+            [vc.navigationController.navigationBar setBackgroundColor:[UIColor tertiarySystemBackgroundColor]];
+            [vc.navigationController.toolbar setBackgroundColor:[UIColor tertiarySystemBackgroundColor]];
+            [vc.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+            [vc.navigationController.toolbar setBackgroundImage:nil forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+return;
+        }
+    }
+
+    [bgView setHidden:NO];
+    vc.view.backgroundColor=[UIColor clearColor];
+    UIImage *img2 = [rTracker_resource get_background_image:vc];
+    vc.navigationController.view.backgroundColor = [rTracker_resource get_background_color:vc]; // [UIColor colorWithPatternImage:img2];
+    [vc.navigationController.navigationBar setBackgroundImage:img2 forBarMetrics:UIBarMetricsDefault];
+    [vc.navigationController.toolbar setBackgroundImage:img2 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+}
+
+static UIColor* bgColor=nil;
+
++ (UIColor *) get_background_color:(UIViewController *) vc {
+    if (!bgColor)
+        bgColor = [UIColor colorWithPatternImage:[rTracker_resource get_background_image:vc]];
+    return bgColor;
+}
+
+static UIImage* bgImage=nil;
+
++ (UIImage*) get_background_image:(UIViewController*) vc {
+    if(!bgImage) {
+        CGSize vsize = [rTracker_resource get_screen_size:vc];
+        UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
+        //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
+        UIImageView *bg = [[UIImageView alloc] initWithImage:img];
+        CGFloat scal = bg.frame.size.height / vsize.height;
+        bgImage = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
+    }
+    return bgImage;
 }
 
 @end

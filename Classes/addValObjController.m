@@ -83,8 +83,6 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 //#define SCROLLVIEW_CONTENT_HEIGHT 720
 //#define SCROLLVIEW_CONTENT_WIDTH  320
 
-
-
 - (void)viewDidLoad {
 	
 	UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc]
@@ -137,7 +135,9 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 		//self.graphTypes = nil;
 		self.graphTypes = [voState voGraphSetNum];  //[valueObj graphsForVOT:VOT_NUMBER];
 		//[self updateScrollView:(NSInteger)VOT_NUMBER];
-		[self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
+        safeDispatchSync(^{
+                           [self.votPicker selectRow:self.parentTrackerObj.nextColor inComponent:1 animated:NO];
+                           });
 	} else {
 		self.labelField.text = self.tempValObj.valueName;
         if (0>self.tempValObj.vcolor) self.tempValObj.vcolor=0;  // paranoid in case switched from vot_info or vot_choice
@@ -164,11 +164,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	}
 
 	self.title = @"Configure Item";
-	//if (kIS_LESS_THAN_IOS7) {
-    //    self.labelField.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-    //} else {
-        self.labelField.font = PrefBodyFont;
-    //}
+    self.labelField.font = PrefBodyFont;
 	self.labelField.clearsOnBeginEditing = NO;
 	[self.labelField setDelegate:self];
 	self.labelField.returnKeyType = UIReturnKeyDone;
@@ -177,13 +173,14 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	//	forControlEvents:UIControlEventEditingDidEndOnExit];
 //	DBGLog(@"frame: %f %f %f %f",self.labelField.frame.origin.x, self.labelField.frame.origin.y, self.labelField.frame.size.width, self.labelField.frame.size.height);
 	
-// set graph paper background
-    //*
-    self.view.backgroundColor=nil;
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    // set graph paper background, unseen but still there if darkMode
+
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
-     //*/
+    
+    [rTracker_resource setViewMode:self];
     
     //[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]]];
     self.toolbar.hidden = NO;
@@ -197,6 +194,10 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	[super viewDidLoad];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [rTracker_resource setViewMode:self];
+    [self.view setNeedsDisplay];
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.

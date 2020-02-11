@@ -95,9 +95,10 @@
         }
         n++;
 	}
-    // n.b. we hardcode we hardcode number of sections in a tracker tableview here
-    [self.tableView reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
-    
+    // n.b. we hardcode number of sections in a tracker tableview here
+    if (self.isViewLoaded && self.view.window)
+        [self.tableView reloadRowsAtIndexPaths:iparr withRowAnimation:UITableViewRowAnimationNone];
+
 }
 
 #if ADVERSION
@@ -229,8 +230,9 @@
     self.title = self.tracker.trackerName;
 
     // tableview setup
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
-
+    //UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    
     //CGRect statusBarFrame = [self.navigationController.view.window convertRect:UIApplication.sharedApplication.statusBarFrame toView:self.navigationController.view];
     //CGFloat statusBarHeight = statusBarFrame.size.height;
     
@@ -254,7 +256,13 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.tableView.backgroundView = bg;
+    
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+
+    [self setViewMode];
+    
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     //self.tableView.separatorColor = [UIColor clearColor];
     [self.view addSubview:self.tableView];
@@ -288,6 +296,13 @@
     }
     
 }
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self setViewMode];
+    [self.tableView setNeedsDisplay];
+    [self.view setNeedsDisplay];
+}
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -331,6 +346,20 @@
 }
 */
 
+- (void) setViewMode {
+    [rTracker_resource setViewMode:self];
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            // if darkMode
+            self.tableView.backgroundView = nil;
+            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+            return;
+        }
+     }
+
+    self.tableView.backgroundColor = [UIColor clearColor];
+
+}
 
 - (void) viewWillAppear:(BOOL)animated {
     
@@ -346,7 +375,7 @@
         if (f.size.width != self.tableView.frame.size.width) {
             f.origin.x = 0.0; f.origin.y = 0.0;
             self.tableView.frame = f;
-            self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+            [self setViewMode];
             [self.tracker rescanMaxLabel];
             [self.tableView reloadData];
         }
@@ -1591,16 +1620,11 @@ NSString *emDuplicate = @"duplicate entry to now";
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     self.dpvc.presentationController.delegate = self;  // need for ios 13 to access viewWillAppear as presentationControllerDidDismiss not firing
-	//
-    //if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"6.0") ) {
-        [self presentViewController:self.dpvc animated:YES completion:NULL];
-    //} else {
-    //    [self presentModalViewController:self.dpvc animated:YES];
-    //}
-	/*
+    [self presentViewController:self.dpvc animated:YES completion:NULL];
+
+    /*
 	
-	
-	CGRect viewFrame = self.view.frame;
+    CGRect viewFrame = self.view.frame;
 	
 	UIView *haveView = [self.view viewWithTag:kViewTag2];
 

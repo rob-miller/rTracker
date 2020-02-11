@@ -202,6 +202,10 @@
 //    self.timer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(scroll) userInfo:nil repeats:YES];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self.view setNeedsDisplay];
+}
+
 - (void)viewWillDisappear:(BOOL)animated;
 {
     [self.timer invalidate];

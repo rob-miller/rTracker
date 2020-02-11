@@ -455,13 +455,27 @@
     vogd *currVogd = (vogd*) vo.vogd;
     
     if (vo == self.gtvCurrVO) {
-        if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {   // draw line at 0 if needed
-            CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
-            MoveTo(0.0f, currVogd.yZero);
-            safeDispatchSync(^{
-                AddLineTo(self.frame.size.width,currVogd.yZero);
-            });
-            Stroke;            
+        NSString * ylineS = [vo.optDict objectForKey:@"yline1"];
+        if (ylineS && ![ylineS isEqualToString:@""]) {
+            CGFloat ylineF = (CGFloat) [ylineS floatValue];
+            if ((currVogd.minVal < ylineF) && (currVogd.maxVal > ylineF)) {   // draw line at yline if visible
+                CGFloat yline = (ylineF * currVogd.vScale) + currVogd.yZero;
+                CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.90 alpha:0.8].CGColor);
+                MoveTo(0.0f, yline);
+                safeDispatchSync(^{
+                    AddLineTo(self.frame.size.width,yline);
+                });
+                Stroke;
+            }
+        } else {  // draw zero line if no Y line spcified
+            if ((currVogd.minVal < 0.0) && (currVogd.maxVal > 0.0)) {   // draw line at 0 if needed
+                 CGContextSetStrokeColorWithColor(context,[UIColor colorWithWhite:0.75 alpha:0.5].CGColor);
+                 MoveTo(0.0f, currVogd.yZero);
+                 safeDispatchSync(^{
+                     AddLineTo(self.frame.size.width,currVogd.yZero);
+                 });
+                 Stroke;
+             }
         }
         
         CGContextSetLineWidth(context, DBL_LINE_WIDTH);

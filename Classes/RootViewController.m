@@ -881,10 +881,22 @@ BOOL loadingInputFiles=NO;
     
 }
 
+- (void) setViewMode {
+    [rTracker_resource setViewMode:self];
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            // if darkMode
+            self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+            return;
+        }
+    }
+    
+    self.tableView.backgroundColor = [UIColor clearColor];
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-
     [UNUserNotificationCenter currentNotificationCenter].delegate = self;
 
 #if ADVERSION
@@ -904,21 +916,9 @@ BOOL loadingInputFiles=NO;
     self.refreshLock = 0;
     self.readingFile=NO;
 
-
-    UIImage *img = [UIImage imageNamed:[rTracker_resource getLaunchImageName] ];
-    //DBGLog(@"set backround image to %@",[rTracker_resource getLaunchImageName]);
-    UIImageView *bg = [[UIImageView alloc] initWithImage:img];
-
     CGSize vsize = [rTracker_resource get_visible_size:self];
-    CGFloat scal = bg.frame.size.width / vsize.width;
 
-    UIImage *img2 = [UIImage imageWithCGImage:img.CGImage scale:scal orientation:UIImageOrientationUp];
-    self.navigationController.view.backgroundColor = [UIColor colorWithPatternImage:img2];
-    [self.navigationController.navigationBar setBackgroundImage:img2 forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.toolbar setBackgroundImage:img2 forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-     
-    
-    self.navigationItem.rightBarButtonItem = self.addBtn;
+     self.navigationItem.rightBarButtonItem = self.addBtn;
     self.navigationItem.leftBarButtonItem = self.editBtn;
     
     // toolbar setup
@@ -949,9 +949,14 @@ BOOL loadingInputFiles=NO;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
+    [self.view addSubview:bg];
+    [self.view sendSubviewToBack:bg];
+
+    [self setViewMode];
     [self.view addSubview:self.tableView];
 
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
@@ -961,6 +966,12 @@ BOOL loadingInputFiles=NO;
         }
     }
     
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [self setViewMode];
+    [self.tableView setNeedsDisplay];
+    [self.view setNeedsDisplay];
 }
 
 - (trackerList *) tlist {
@@ -1540,7 +1551,7 @@ BOOL stashAnimated;
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 
-        cell.backgroundColor = [UIColor clearColor];
+        cell.backgroundColor = [UIColor clearColor];  // clear here so table background shows through
     }
     
 	// Configure the cell.
@@ -1562,7 +1573,10 @@ BOOL stashAnimated;
         
     }
     //DBGLog(@"erc= %d  src= %d",erc,src);
-    [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]];
+    //[cellLabel appendAttributedString:
+    // [[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row] attributes:@{NSForegroundColorAttributeName: [UIColor blackColor]}]] ;
+    [cellLabel appendAttributedString:[[NSAttributedString alloc]initWithString:(self.tlist.topLayoutNames)[row]]] ;
+    
     cell.textLabel.attributedText = cellLabel;
     
     return cell;

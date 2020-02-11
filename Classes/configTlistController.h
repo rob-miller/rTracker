@@ -44,7 +44,7 @@
 @property (nonatomic, strong) trackerList *tlist;
 
 // UI element properties 
-@property (nonatomic, strong) IBOutlet UITableView *table;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 @property (nonatomic,strong) NSIndexPath *deleteIndexPath; // remember row to delete if user confirms in checkTrackerDelete alert
 

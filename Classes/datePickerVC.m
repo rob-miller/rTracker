@@ -48,7 +48,17 @@ datePicker=_datePicker;
     //CGRect f = self.view.frame;
     //f.size.width = [rTracker_resource getKeyWindowWidth];
     //self.view.frame = f;
-    
+    /*
+    if (@available(iOS 13.0, *)) {
+        bool darkMode = false;
+
+        darkMode = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        if (darkMode) {
+            self.view.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    }
+     */
+     
     /*
      // does not resize well -- need more work on xib
     self.dateSetBtn.titleLabel.font = PrefBodyFont;
@@ -73,6 +83,7 @@ datePicker=_datePicker;
 	//self.datePicker.locale = [NSLocale currentLocale];
 	self.datePicker.maximumDate = [NSDate date];
 	self.datePicker.date = self.dpr.date;
+    
 	//self.datePicker.minuteInterval = 2;
 	
 }

@@ -37,7 +37,7 @@
 @property (nonatomic) BOOL saving;
 
 // UI element properties 
-@property (nonatomic, strong) IBOutlet UITableView *table;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIButton *infoBtn;
 @property (nonatomic, strong) IBOutlet UITextField *nameField;
 @property (nonatomic, strong) IBOutlet UIButton *itemCopyBtn;

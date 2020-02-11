@@ -49,8 +49,8 @@
 
     if (! [self.startStr isEqualToString:textField.text]) {
         [self.vo.value setString:textField.text];
-        textField.textColor = [UIColor blackColor];
-        textField.backgroundColor = [UIColor whiteColor];
+        //textField.textColor = [UIColor blackColor];
+        //textField.backgroundColor = [UIColor whiteColor];
         [[NSNotificationCenter defaultCenter] postNotificationName:rtValueUpdatedNotification object:self];
         self.startStr=nil;
     }
@@ -85,10 +85,16 @@
         DBGLog(@"init %@ : x=%f y=%f w=%f h=%f",self.vo.valueName,self.vosFrame.origin.x,self.vosFrame.origin.y,self.vosFrame.size.width,self.vosFrame.size.height);
         _dtf = [[UITextField alloc] initWithFrame:self.vosFrame];
         
+        if (@available(iOS 13.0, *)) {
+            _dtf.textColor = [UIColor labelColor];
+            _dtf.backgroundColor = [UIColor secondarySystemBackgroundColor];
+        } else {
+            _dtf.textColor = [UIColor blackColor];
+            _dtf.backgroundColor = [UIColor whiteColor];
+        }
+        
         _dtf.borderStyle = UITextBorderStyleRoundedRect;  //Bezel;
-        _dtf.textColor = [UIColor blackColor];
         _dtf.font = PrefBodyFont; // [UIFont systemFontOfSize:17.0];
-        _dtf.backgroundColor = [UIColor whiteColor];
         _dtf.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
         
         _dtf.placeholder = @"<enter number>";
@@ -166,11 +172,7 @@
                    sql = [NSString stringWithFormat:@"select val from voData where id=%ld and date<%d order by date desc limit 1;",
                               (long)self.vo.vid,(int)[to.trackerDate timeIntervalSince1970]];
                     NSString *r = [to toQry2Str:sql];
-                    if (SYSTEM_VERSION_LESS_THAN(@"5.0")) {
-                        self.dtf.textColor = [UIColor lightGrayColor];
-                    } else {
-                        self.dtf.textColor = [UIColor yellowColor]; //[UIColor lightGrayColor];
-                    }
+                    self.dtf.textColor = [UIColor lightGrayColor];
                     self.dtf.backgroundColor = [UIColor darkGrayColor];
                     self.dtf.text = r;
                 }
@@ -180,8 +182,14 @@
                 //DBGLog(@"reset dtf.txt to empty");
             }
         } else {
-            self.dtf.backgroundColor = [UIColor whiteColor];
-            self.dtf.textColor = [UIColor blackColor];
+
+            if (@available(iOS 13.0, *)) {
+                self.dtf.backgroundColor = [UIColor secondarySystemBackgroundColor];
+                self.dtf.textColor = [UIColor labelColor];
+            } else {
+                self.dtf.backgroundColor = [UIColor whiteColor];
+                self.dtf.textColor = [UIColor blackColor];
+            }
             self.dtf.text = self.vo.value;
         }
         

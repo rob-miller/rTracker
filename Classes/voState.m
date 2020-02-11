@@ -157,13 +157,11 @@
 
 - (void) voDrawOptions:(configTVObjVC*)ctvovc {
 	CGRect frame = {MARGIN,ctvovc.lasty,0.0,0.0};
-	
 	CGRect labframe = [ctvovc configLabel:@"Draw graph:" frame:frame key:@"ggLab" addsv:YES];
-	
 	frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
 	
 	//-- draw graphs button
-	
+
 	[ctvovc configCheckButton:frame 
                           key:@"ggBtn" 
                         state:(![(self.vo.optDict)[@"graph"] isEqualToString:@"0"])  // default = @"1"
@@ -192,6 +190,28 @@
 					   text:(self.vo.optDict)[@"privacy"]
 					  addsv:YES ];
 	
+    //------
+    
+    frame.origin.x = MARGIN;
+    frame.origin.y += MARGIN + frame.size.height;
+    
+    labframe = [ctvovc configLabel:@"Line at Y=" frame:frame key:@"gyLab" addsv:YES];
+    frame = (CGRect) {labframe.size.width+MARGIN+SPACE, frame.origin.y,labframe.size.height,labframe.size.height};
+
+    tfWidth = [@"9999999.99" sizeWithAttributes:@{NSFontAttributeName:PrefBodyFont}].width;
+    frame.size.width = tfWidth;
+    frame.size.height = ctvovc.LFHeight; // self.labelField.frame.size.height; // lab.frame.size.height;
+    
+    [ctvovc configTextField:frame
+                        key:@"gyTF"
+                     target:nil
+                     action:nil
+                        num:YES
+                      place:@"0"
+                       text:(self.vo.optDict)[@"yline1"]
+                      addsv:YES ];
+    
+    //------
     
     frame.origin.x = MARGIN;
     frame.origin.y += MARGIN + frame.size.height;
@@ -200,6 +220,9 @@
     self.vc = ctvovc;
     frame = [ctvovc configActionBtn:frame key:nil label:@"long title" target:self action:@selector(longTitleBtn)];
     */
+
+    
+    //------
     
     ctvovc.lasty = frame.origin.y + frame.size.height + MARGIN;
     ctvovc.lastx = (ctvovc.lastx < frame.origin.x + frame.size.width + MARGIN ? frame.origin.x + frame.size.width + MARGIN : ctvovc.lastx);
@@ -288,10 +311,17 @@
 	label.tag=kViewTag;
 	//label.font = [UIFont boldSystemFontOfSize:18.0];
     label.font = PrefBodyFont;
-    label.textColor = [UIColor blackColor];
+    bool darkMode = NO;
+    if (@available(iOS 13.0, *)) {
+        label.textColor = [UIColor labelColor];
+        darkMode = (self.vc.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
+     } else {
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor clearColor];
+     }
+
     label.alpha = 1.0;
-    label.backgroundColor = [UIColor clearColor];
-    //label.textColor = [UIColor blackColor];
     
     label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
 	//don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;
@@ -310,10 +340,15 @@
         label.tag=kViewTag;
         //label.font = [UIFont boldSystemFontOfSize:18.0];
         label.font = PrefBodyFont;
-        label.textColor = [UIColor blackColor];
+        if (@available(iOS 13.0, *)) {
+             label.textColor = [UIColor labelColor];
+             label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
+         } else {
+             label.textColor = [UIColor blackColor];
+             label.backgroundColor = [UIColor clearColor];
+         }
+
         label.alpha = 1.0;
-        label.backgroundColor = [UIColor clearColor];
-        //label.textColor = [UIColor blackColor];
         
         label.textAlignment = NSTextAlignmentRight;  // ios6 UITextAlignmentLeft;
         // don't use - see above -- label.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin; // | UIViewAutoresizingFlexibleHeight;
@@ -426,10 +461,15 @@
     UILabel *label = [[UILabel alloc] initWithFrame:bounds];
     label.tag=kViewTag;
     label.font = PrefBodyFont;
-    label.textColor = [UIColor blackColor];
+    if (@available(iOS 13.0, *)) {
+        label.textColor = [UIColor labelColor];
+        bool darkMode = (self.vc.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        label.backgroundColor = (darkMode ? [UIColor systemBackgroundColor] : [UIColor clearColor]);
+    } else {
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor clearColor];
+    }
     label.alpha = 1.0;
-    label.backgroundColor = [UIColor clearColor];
-    
     label.textAlignment = NSTextAlignmentLeft;  // ios6 UITextAlignmentLeft;
     
     //don't use - messes up for loarger displays -- label.autoresizingMask = UIViewAutoresizingFlexibleRightMargin; // | UIViewAutoresizingFlexibleHeight;

@@ -61,6 +61,7 @@
 @property (nonatomic,strong) UITextView *textView;
 @property (nonatomic,unsafe_unretained) IBOutlet UIView *accessoryView;
 @property (nonatomic,strong) IBOutlet UIButton *addButton;
+@property (nonatomic,strong) IBOutlet UIButton *clearButton;
 
 @property (nonatomic,weak) IBOutlet UISegmentedControl *segControl;
 @property (nonatomic,strong) UIPickerView *pv;
@@ -88,6 +89,8 @@
 
 - (IBAction) addPickerData:(id)sender;
 - (IBAction) segmentChanged:(id)sender;
+- (IBAction)clearTextBox:(id)sender;
+
 /*
 - (void)keyboardWillShow:(NSNotification *)aNotification;
 - (void)keyboardWillHide:(NSNotification *)aNotification;

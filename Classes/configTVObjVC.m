@@ -116,7 +116,6 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"]];
 }
 
-
 - (void)viewDidLoad {
 	
 	NSString *name;
@@ -193,9 +192,13 @@
 	}
 
     // set graph paper background
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[rTracker_resource getLaunchImageName]]];
+
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[rTracker_resource get_background_image:self]];
+    bg.tag = BGTAG;
     [self.view addSubview:bg];
     [self.view sendSubviewToBack:bg];
+    
+    [rTracker_resource setViewMode:self];
 
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleViewSwipeRight:)];
     [swipe setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -204,6 +207,12 @@
     
     [super viewDidLoad];
 }
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [rTracker_resource setViewMode:self];
+    [self.view setNeedsDisplay];
+}
+
 - (void)handleViewSwipeRight:(UISwipeGestureRecognizer *)gesture {
     [self btnDone:nil];
 }
@@ -577,7 +586,9 @@
             NSString *msg = [NSString stringWithFormat:@"Setting a privacy level below %d is disallowed.",PRIVDFLT];
             [rTracker_resource alert:@"Privacy setting too low" msg:msg vc:self];
         }
-        
+    } else if ( tf == (self.wDict)[@"gyTF"] ) {
+        okey = @"yline1";
+        nkey = nil;
 	} else if ( tf == (self.wDict)[@"gmdTF"] ) {
 		okey = @"graphMaxDays";
 		nkey = nil;
