@@ -172,10 +172,12 @@
 */
 
 -(void) viewWillAppear:(BOOL)animated {
+    /*  // must have view loaded for this or iOS complains
     self.SpecDate=true;
     DBGLog(@"showing tsqcal seldate= %@",self.dpr.date);
     ((TSQCalendarView*)self.view).selectedDate = self.dpr.date;
     self.SpecDate=false;
+     */
     [super viewWillAppear:animated];
 }
 
@@ -196,6 +198,11 @@
 
 - (void)viewDidAppear:(BOOL)animated;
 {
+    self.SpecDate=true;
+    DBGLog(@"showing tsqcal seldate= %@",self.dpr.date);
+    ((TSQCalendarView*)self.view).selectedDate = self.dpr.date;
+    self.SpecDate=false;
+
     [super viewDidAppear:animated];
     
     // Uncomment this to test scrolling performance of your custom drawing
@@ -232,6 +239,8 @@
 	self.dpr.action = DPA_GOTO_POST;
 	//[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:NULL];
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0"))
+        [(UIViewController*) self.presentationController.delegate viewWillAppear:FALSE];
 }
 - (BOOL)calendarView:(TSQCalendarView *)calendarView shouldSelectDate:(NSDate *)date {
     if (nil != [self.dateSelDict objectForKey:date]) {
