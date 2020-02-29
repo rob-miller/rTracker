@@ -1723,6 +1723,7 @@ NSString *emDuplicate = @"duplicate entry to now";
     self.tsCalVC.dpr = self.dpr;
     self.tsCalVC.tracker = self.tracker;
     self.tsCalVC.parentUTC = self;
+    self.tsCalVC.presentationController.delegate = self;  // need for ios 13 to access viewWillAppear as presentationControllerDidDismiss not firing
     
 	self.tsCalVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 	//
