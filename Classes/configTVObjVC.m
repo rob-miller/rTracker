@@ -109,11 +109,11 @@
 */
 
 - (void) btnChoiceHelp {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/choices.html"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/choices.html"] options:@{} completionHandler:nil];
 }
 
 - (void) btnInfoHelp {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"] options:@{} completionHandler:nil];
 }
 
 - (void)viewDidLoad {

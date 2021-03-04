@@ -2075,13 +2075,24 @@ NSString *emDuplicate = @"duplicate entry to now";
                 url = [@"http://" stringByAppendingString:url];
             }
             DBGLog(@"vot_info: selected -> fire url: %@",url);
-            if (! [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]] ) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success) {
+                    if (!success) {
+                        if ([url localizedCaseInsensitiveContainsString:@"http://"] || [url localizedCaseInsensitiveContainsString:@"https://"]) {
+                            [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - network problem?",url] vc:self];
+                        } else {
+                            [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - perhaps the supporting app is not installed??",url] vc:self];
+                        }
+                    }
+                }];
+            /* openurl deprecated ios 9.0
+            if (! [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] ]) {
                 if ([url localizedCaseInsensitiveContainsString:@"http://"] || [url localizedCaseInsensitiveContainsString:@"https://"]) {
                     [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - network problem?",url] vc:self];
                 } else {
                     [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - perhaps the supporting app is not installed??",url] vc:self];
                 }
             }
+             */
         }
     }
     
