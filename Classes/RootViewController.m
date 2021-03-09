@@ -1194,10 +1194,11 @@ BOOL stashAnimated;
     [self viewDidAppearRestart];
     
 }
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     [self fixFileProblem:buttonIndex];
 }
-
+*/
 - (void) viewDidAppearRestart {
 	[self refreshView];
 

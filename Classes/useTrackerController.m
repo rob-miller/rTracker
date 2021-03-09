@@ -1262,6 +1262,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
     
 }
 
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.title hasSuffix:@"modified"]) {          // tracker modified and trying to leave without save
         [self dispatchHandleModifiedTracker:buttonIndex];
@@ -1271,6 +1272,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
         [self handleExportTracker:[alertView buttonTitleAtIndex:buttonIndex]];
     }
 }
+ */
 /*
 xxx stuck here - how to get back to setTrackerDate or btnCancel ?
 
@@ -1286,32 +1288,19 @@ else do btnCancel/btnSave
     NSString *btn1 = @"Save";
     NSString *btn2 = @"Discard";
     
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:btn0
-                              otherButtonTitles: btn1,btn2,nil];
-
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:0]; }];
-        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:1]; }];
-        UIAlertAction* discardAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:2]; }];
-        
-        [alert addAction:saveAction];
-        [alert addAction:discardAction];
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
-    }
-
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:0]; }];
+    UIAlertAction* saveAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:1]; }];
+    UIAlertAction* discardAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:2]; }];
+    
+    [alert addAction:saveAction];
+    [alert addAction:discardAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 /*
@@ -1470,41 +1459,30 @@ NSString *emDuplicate = @"duplicate entry to now";
     
     NSString *title = [NSString stringWithFormat:@"%@ tracker",self.tracker.trackerName];
     NSString *msg = nil;
-    NSString *btn5 = (postD != 0 || (lastD == currD)) ? emDuplicate : nil;
+    // NSString *btn5 = (postD != 0 || (lastD == currD)) ? emDuplicate : nil;
 
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:emCancel
-                              otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,btn5,nil];
-        
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* ecsvAction = [UIAlertAction actionWithTitle:emEmailCsv style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailCsv]; }];
-        UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
-        UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
-        UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
-        
-        [alert addAction:ecsvAction];
-        [alert addAction:etAction];
-        [alert addAction:etdAction];
-        [alert addAction:iteAction];
-        if (postD != 0 || (lastD == currD)) {
-            UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
-            [alert addAction:dupAction];
-        }
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ecsvAction = [UIAlertAction actionWithTitle:emEmailCsv style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailCsv]; }];
+    UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
+    UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
+    UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
+    
+    [alert addAction:ecsvAction];
+    [alert addAction:etAction];
+    [alert addAction:etdAction];
+    [alert addAction:iteAction];
+    if (postD != 0 || (lastD == currD)) {
+        UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
+        [alert addAction:dupAction];
     }
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    
     
 }
 
@@ -1680,29 +1658,18 @@ NSString *emDuplicate = @"duplicate entry to now";
     NSString *btn0 = @"Cancel";
     NSString *btn1 = @"Yes, delete";
     
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:btn0
-                              otherButtonTitles:btn1,nil];
-        
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:0]; }];
-        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:1]; }];
-        
-        [alert addAction:deleteAction];
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
-    }
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:0]; }];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:1]; }];
+    
+    [alert addAction:deleteAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+
 }
 
 

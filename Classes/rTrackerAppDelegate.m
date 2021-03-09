@@ -24,7 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <UserNotifications/UserNotifications.h>
+// #import <UserNotifications/UserNotifications.h>
 
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
@@ -67,10 +67,11 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
+/*
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     [application registerForRemoteNotifications];
 }
-
+*/
 - (void) registerForNotifications {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound;
@@ -274,6 +275,8 @@
     return YES;
 }
 
+
+ 
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     NSString *bdn = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
@@ -311,6 +314,7 @@
         
 }
 
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
     if (0 == buttonIndex) {   // do nothing
@@ -319,20 +323,27 @@
     }
 }
 
-
+/*
 - (void)dismissAlertView:(UIAlertView *)alertView{
     [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
-
-- (UIAlertView*) quickAlert:(NSString*)title msg:(NSString*)msg {
+*/
+- (UIAlertController*) quickAlert:(NSString*)title msg:(NSString*)msg {
     //DBGLog(@"qalert title: %@ msg: %@",title,msg);
+    /* deprecated ios 9.0
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:title message:msg
                           delegate:nil
                           cancelButtonTitle:nil
                           otherButtonTitles:nil];
-    [alert show];
-    //[alert release];
+     [alert show];
+     */
+    UIAlertController * alert = [UIAlertController
+                    alertControllerWithTitle:title
+                                     message:msg
+                              preferredStyle:UIAlertControllerStyleAlert];
+
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
     return alert;
 }
 
@@ -343,19 +354,12 @@
 
 
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView *alert = [self quickAlert:title msg:msg];
-        [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
-        [self performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
-        
-        
-        
-    }
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+    [self performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
+
 }
 
 /*

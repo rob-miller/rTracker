@@ -858,13 +858,13 @@
     
 }
 
-
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (0 != buttonIndex) {
         [self recoverValuesBtn];
     }
 }
-
+*/
 - (void) setRemindersBtn {
     [self.to reminders2db];
     [self.to setReminders];
