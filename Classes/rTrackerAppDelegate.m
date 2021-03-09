@@ -275,7 +275,7 @@
     return YES;
 }
 
-
+/* no longer support responding to notifications / open as url
  
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
@@ -322,6 +322,7 @@
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:self.pendingTid waitUntilDone:NO];
     }
 }
+*/
 
 /*
 - (void)dismissAlertView:(UIAlertView *)alertView{
