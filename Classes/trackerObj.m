@@ -26,7 +26,9 @@
 #import <string.h>
 //#import <stdlib.h>
 //#import <NSNotification.h>
-#import <libkern/OSAtomic.h>
+
+//#import <libkern/OSAtomic.h>  // deprecated ios 10
+#import <stdatomic.h>
 
 #import "trackerObj.h"
 #import "valueObj.h"
@@ -50,7 +52,9 @@
 @synthesize activeControl=_activeControl,vc=_vc, dateFormatter=_dateFormatter, dateOnlyFormatter=_dateOnlyFormatter, csvReadFlags=_cvsReadFlags, csvProblem=_cvsProblem, togd=_togd, goRecalculate=_goRecalculate, changedDateFrom=_changedDateFrom, csvHeaderDict=_csvHeaderDict; // prevTID  //
 
 @synthesize maxLabel=_maxLabel;
-@synthesize recalcFnLock=_recalcFnLock;
+
+//_Atomic int32_t _recalcFnLock;
+@synthesize recalcFnLock= _recalcFnLock;
 
 #define f(x) ((CGFloat) (x))
 
@@ -2519,7 +2523,8 @@
 }
 
 - (void) recalculateFns {
-    if (0 != OSAtomicTestAndSet(0, &(_recalcFnLock))) {
+    // deprecated ios10 if (0 != OSAtomicTestAndSet(0, &(_recalcFnLock))) {
+    if (0 != atomic_fetch_or_explicit(&(_recalcFnLock), 0, memory_order_relaxed)) {
         // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
         return;
     }

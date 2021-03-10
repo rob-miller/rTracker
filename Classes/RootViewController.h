@@ -65,7 +65,7 @@
 
 @property (nonatomic,strong) trackerList *tlist;
 @property (nonatomic, strong) privacyV *privacyObj;
-@property (atomic) int32_t refreshLock;
+@property (atomic) _Atomic int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
 //@property (nonatomic) BOOL openUrlLock;
 //@property (nonatomic,retain) NSURL *inputURL;

@@ -23,7 +23,8 @@
 //  Copyright Robert T. Miller 2010. All rights reserved.
 //
 
-#import <libkern/OSAtomic.h>
+// deprecaed ios 10  #import <libkern/OSAtomic.h>
+#import <stdatomic.h>
 
 #import "RootViewController.h"
 #import "rTrackerAppDelegate.h"
@@ -1096,7 +1097,8 @@ BOOL loadingInputFiles=NO;
   */
 - (void) refreshView {
     
-    if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
+    // deprecated ios 10 - if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
+    if (0 != atomic_fetch_or_explicit(&(_refreshLock), 0, memory_order_relaxed)) {
         // wasn't 0 before, so we didn't get lock, so leave because refresh already in process
         return;
     }
