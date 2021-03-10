@@ -70,7 +70,7 @@
 
 - (UITextField*) dtf {
     safeDispatchSync(^{
-        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+        if (self->_dtf && self->_dtf.frame.size.width != self.vosFrame.size.width) self->_dtf=nil;  // first time around thinks size is 320, handle larger devices
     });
     
     if (nil == _dtf) {
