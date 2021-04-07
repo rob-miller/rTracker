@@ -62,6 +62,7 @@ void safeDispatchSync(dispatch_block_t block);
 + (void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc;
++ (void) alert_mt:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc;
 #if ADVERSION
 + (void) handleUpgradeOptions:(NSInteger)choice;
 + (void) buy_rTrackerAlert;
