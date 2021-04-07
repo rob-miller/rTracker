@@ -24,6 +24,7 @@
 //
 
 #import <AddressBook/AddressBook.h>
+#import <Contacts/Contacts.h>
 
 #import "voTextBox.h"
 #import "voDataEdit.h"
@@ -93,7 +94,7 @@
 - (void) dataEditVDidLoad:(UIViewController*)vc {
 	//self.devc = vc;
 	//CGRect visFrame = vc.view.frame;
-    
+
     self.textView = [[UITextView alloc] initWithFrame:[voDataEdit getInitTVF:vc] textContainer:nil] ;  // ]vc.view.frame];
 
 	self.textView.textColor = [UIColor blackColor];
@@ -269,7 +270,8 @@
         if (0 == [self.namesArray count]) {
             [rTracker_resource alert:@"No Contacts" msg:@"Add some names to your Address Book, then find them here" vc:nil];
         } else if (self.accessAddressBook) {
-            str = [NSString stringWithFormat:@"%@\n",(NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])))];
+            // ios 9 deprecation str = [NSString stringWithFormat:@"%@\n",(NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])))];
+            str = [NSString stringWithFormat:@"%@\n",(NSString*) self.namesArray[row]];
         }
 	} else {
         if (0 == [self.historyArray count]) {
@@ -300,6 +302,13 @@
 
 	} else {
         if (SEGPEOPLE == ndx) {
+            [self checkContactsAccess];
+            /* checkContactsAccess does the alert
+            if (! self.accessAddressBook) {
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
+            }
+            */
+            /* ABAddressBook deprecated ios 9
             if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
                 [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
                 self.addButton.hidden = YES;
@@ -308,6 +317,7 @@
                 self.addButton.hidden = NO;
                 self.accessAddressBook = YES;
             }
+            */
         } else {
             self.addButton.hidden = NO;
         }
@@ -316,20 +326,25 @@
 			|| 
             ((SEGHISTORY == ndx) && ([(NSString*) (self.vo.optDict)[@"tbhi"] isEqualToString:@"1"]))
 			) {
-				self.showNdx = YES;
+                self.showNdx = YES;
 			} else {
 				self.showNdx = NO;
 			}
 		
 		//if (nil == self.textView.inputView) 
         self.textView.inputView = self.pv;
+        //[rTracker_resource alert_mt:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:self.pv.inputViewController];
+
 	}
 
-	[self.textView resignFirstResponder];
-	[self.textView becomeFirstResponder];
-    
+    [self.textView resignFirstResponder];
+    [self.textView becomeFirstResponder];
+
     [self.textView scrollRangeToVisible:self.textView.selectedRange];
-	
+    //if (!self.accessAddressBook && SEGPEOPLE == ndx) {
+    //    [rTracker_resource alert_mt:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:[UIApplication sharedApplication].keyWindow.rootViewController];
+    //}
+
 }
 
 
@@ -423,6 +438,193 @@
     return YES;
 }
 
+#pragma mark -
+#pragma mark get contacts
+
+// largely copied from https://gist.github.com/willthink/024f1394474e70904728
+// and https://stackoverflow.com/questions/36859991/cncontact-display-name-objective-c-swift
+
+- (void) checkContactsAccess {
+    CNEntityType entityType = CNEntityTypeContacts;
+    CNAuthorizationStatus stat = [CNContactStore authorizationStatusForEntityType:entityType];
+    
+    if ( CNAuthorizationStatusAuthorized == stat ) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            self.addButton.hidden = NO;
+        });
+        self.accessAddressBook = YES;
+    } else if (CNAuthorizationStatusNotDetermined == stat) {
+        //safeDispatchSync(^{
+            CNContactStore * contactStore = [[CNContactStore alloc] init];
+            [contactStore requestAccessForEntityType:entityType completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                if (granted) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        self.addButton.hidden = NO;
+                    });
+                    self.accessAddressBook = YES;
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        self.addButton.hidden = YES;
+                        // [rTracker_resource alert_mt:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:[UIApplication sharedApplication].keyWindow.rootViewController];
+                    });
+                    self.accessAddressBook = NO;
+                }
+            }];
+        // });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            self.addButton.hidden = YES;
+            // [rTracker_resource alert_mt:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:[UIApplication sharedApplication].keyWindow.rootViewController];
+        });
+        self.accessAddressBook = NO;
+    }
+    
+    if (!self.accessAddressBook) {
+        [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:[UIApplication sharedApplication].keyWindow.rootViewController];
+    }
+    
+}
+
+-(void) getNames {
+
+
+}
+
+- (NSArray*) namesArray {
+    [self checkContactsAccess];
+    if (! self.accessAddressBook) {
+        //[rTracker_resource alert_mt:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:[UIApplication sharedApplication].keyWindow.rootViewController];
+        return nil;
+    }
+    if (nil == _namesArray) {
+        
+        // https://stackoverflow.com/questions/36859991/cncontact-display-name-objective-c-swift
+        NSMutableArray *contacts = [NSMutableArray array];
+        CNContactStore * contactStore = [[CNContactStore alloc] init];
+        
+        NSError *fetchError;
+        CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:@[CNContactIdentifierKey, [CNContactFormatter descriptorForRequiredKeysForStyle:CNContactFormatterStyleFullName]]];
+
+        BOOL success = [contactStore enumerateContactsWithFetchRequest:request error:&fetchError usingBlock:^(CNContact *contact, BOOL *stop) {
+            [contacts addObject:contact];
+        }];
+
+        if (success) {
+            CNContactFormatter *formatter = [[CNContactFormatter alloc] init];
+            NSMutableArray *mutableNamesArr = [[NSMutableArray alloc] init];
+            
+            for (CNContact *contact in contacts) {
+                NSString *string = [formatter stringFromContact:contact];
+                DBGLog(@"contact = %@", string);
+                [mutableNamesArr addObject:string];
+            }
+            _namesArray = [[NSArray alloc] initWithArray:(mutableNamesArr)];
+        } else {
+            DBGLog(@"error fetching contacts = %@", fetchError);
+        }
+    }
+    return _namesArray;
+        
+        /* ios 9 deprecates ABAddressBook, processContactsAuthStatus should take care of access permissions
+        if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
+            //    [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
+            //CFRelease(addressBook);
+            return nil;
+        }
+        
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);
+        // ios6  ABAddressBookRef addressBook = ABAddressBookCreate();
+        __block BOOL accessGranted = NO;
+        
+        if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
+            if (&ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
+                dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+                ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);  // ios6 ABAddressBookCreate();
+                ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+                    accessGranted = granted;
+                    dispatch_semaphore_signal(sema);
+                });
+                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+                // not needed with ios6 arc :  dispatch_release(sema);
+                CFRelease(addressBook);
+            }
+            
+            if (! accessGranted) {
+                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
+            }
+        }
+        
+        CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
+        //
+        CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
+                                                                   kCFAllocatorDefault,
+                                                                   CFArrayGetCount(people),
+                                                                   people
+                                                                   );
+        
+        CFArraySortValues(
+                          peopleMutable,
+                          CFRangeMake(0, CFArrayGetCount(peopleMutable)),
+                          (CFComparatorFunction) ABPersonComparePeopleByName,
+                          (void*)(unsigned long) ABPersonGetSortOrdering()
+                          );
+
+        _namesArray = [[NSArray alloc] initWithArray:(__bridge NSArray*)peopleMutable];
+        
+        CFRelease(addressBook);
+        CFRelease(people);
+        CFRelease(peopleMutable);
+    }
+    return _namesArray;
+         */
+}
+
+/* addressbook deprecated ios 9, cncontacts gives in default sort order so don't need
+
+- (ABPropertyID) getABSortTok {
+    if (CNContactSortOrderGivenName == [[CNContactsUserDefaults sharedDefaults] sortOrder]) {
+        return CNContactGivenNameKey;
+    }
+    return CNContactFamilyNameKey;
+    
+        if (kABPersonSortByFirstName == ABPersonGetSortOrdering()) {
+            return kABPersonFirstNameProperty;
+        }
+        return kABPersonLastNameProperty;
+}
+*/
+
+- (NSArray*) namesNdx {
+    // with addressbook deprecation, just take first letter and ignore user sort order
+    if (nil == _namesNdx) {
+        NSInteger ndx=0;
+        //ABPropertyID abSortOrderProp = [self getABSortTok];
+        NSNumber *notSet = @-1;
+        NSMutableArray *tmpNamesNdx = [self getNSMA:notSet];
+
+        for (NSString *name in self.namesArray) {
+            /*
+            NSString *name = (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)abrr, abSortOrderProp));
+            if (nil == name) {
+                name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)(abrr)));
+            }
+            */
+            unichar firstc = [name characterAtIndex:0];
+
+            [self enterNSMA:tmpNamesNdx c:firstc dflt:notSet ndx:ndx];
+            
+            ndx++;
+        }
+        
+        // now set any unfilled indices to 'start of next section' or last item
+        [self fillNSMA:tmpNamesNdx dflt:notSet];
+        
+        _namesNdx = [[NSArray alloc] initWithArray:tmpNamesNdx];
+    }
+    
+    return _namesNdx;
+}
+
 
 #pragma mark -
 #pragma mark voState display
@@ -512,7 +714,7 @@
                         addsv:YES
      ];
 	
-    // need index picker for contacts else unuseable
+    // need index picker for contacts else unusable
 	 
 	frame.origin.x = MARGIN;
 	frame.origin.y += MARGIN + frame.size.height;
@@ -574,62 +776,6 @@
 }
 
 
-- (NSArray*) namesArray {
-    if (! self.accessAddressBook) return nil;
-	if (nil == _namesArray) {
-
-        if (kABAuthorizationStatusDenied == ABAddressBookGetAuthorizationStatus()) {
-            //    [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature."];
-            //CFRelease(addressBook);
-            return nil;
-        }
-        
-        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);
-        // ios6  ABAddressBookRef addressBook = ABAddressBookCreate();
-        __block BOOL accessGranted = NO;
-        
-        if (kABAuthorizationStatusNotDetermined == ABAddressBookGetAuthorizationStatus()) {
-            if (&ABAddressBookRequestAccessWithCompletion != NULL) { // we're on iOS 6
-                dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-                ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL,NULL);  // ios6 ABAddressBookCreate();
-                ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
-                    accessGranted = granted;
-                    dispatch_semaphore_signal(sema);
-                });
-                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-                // not needed with ios6 arc :  dispatch_release(sema);
-                CFRelease(addressBook);
-            }
-            
-            if (! accessGranted) {
-                [rTracker_resource alert:@"Need Contacts access" msg:@"Please go to System Settings -> Privacy -> Contacts and enable access for rTracker to use this feature." vc:nil];
-            }
-        }
-        
-        
-		CFArrayRef people = ABAddressBookCopyArrayOfAllPeople(addressBook);
-		// /*
-		CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
-																   kCFAllocatorDefault,
-																   CFArrayGetCount(people),
-																   people
-																   );
-		
-		CFArraySortValues(
-						  peopleMutable,
-						  CFRangeMake(0, CFArrayGetCount(peopleMutable)),
-						  (CFComparatorFunction) ABPersonComparePeopleByName,
-						  (void*)(unsigned long) ABPersonGetSortOrdering()
-						  );
-
-		_namesArray = [[NSArray alloc] initWithArray:(__bridge NSArray*)peopleMutable];
-		
-		CFRelease(addressBook);
-		CFRelease(people);
-		CFRelease(peopleMutable);
-	}
-	return _namesArray;
-}
 
 - (NSArray*) historyArray {
     NSString *sql;
@@ -665,12 +811,6 @@
 	return _historyArray;
 }
 
-- (ABPropertyID) getABSortTok {
-        if (kABPersonSortByFirstName == ABPersonGetSortOrdering()) {
-            return kABPersonFirstNameProperty;
-        } 
-        return kABPersonLastNameProperty;
-}
 
 - (NSMutableArray *) getNSMA:(id)dflt {
     int i;
@@ -707,33 +847,6 @@
     }
 }
 
-- (NSArray*) namesNdx {
-    if (nil == _namesNdx) {
-        NSInteger ndx=0;
-        ABPropertyID abSortOrderProp = [self getABSortTok];
-        NSNumber *notSet = @-1;
-        NSMutableArray *tmpNamesNdx = [self getNSMA:notSet];
-
-        for (id abrr in self.namesArray) {
-            NSString *name = (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)abrr, abSortOrderProp));
-            if (nil == name) {
-                name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)(abrr))); 
-            }
-            unichar firstc = [name characterAtIndex:0];
-
-            [self enterNSMA:tmpNamesNdx c:firstc dflt:notSet ndx:ndx];
-            
-            ndx++;
-        }
-        
-        // now set any unfilled indices to 'start of next section' or last item
-        [self fillNSMA:tmpNamesNdx dflt:notSet];
-        
-        _namesNdx = [[NSArray alloc] initWithArray:tmpNamesNdx];
-    }
-    
-    return _namesNdx;
-}
 
 - (NSArray*) historyNdx {
     if (nil == _historyNdx) {
@@ -785,7 +898,7 @@
 		return (self.alphaArray)[row];
 	} else {
 		if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
-			if (self.accessAddressBook) return (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])));
+            if (self.accessAddressBook) return self.namesArray[row];  // deprecated ios 9 (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)((self.namesArray)[row])));
             else return @"";
 		} else {
 			return (self.historyArray)[row];
@@ -812,12 +925,14 @@
             otherComponent = 0;
             if (SEGPEOPLE == self.segControl.selectedSegmentIndex) {
                 if (!self.accessAddressBook) return;
-                ABPropertyID abSortOrderProp = [self getABSortTok];
+                // deprecated ios 9 ABPropertyID abSortOrderProp = [self getABSortTok];
                 if (0 == [self.namesArray count]) return;
-                NSString *name =  (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)(self.namesArray)[row], abSortOrderProp));
-                if (nil == name) {
+                NSString *name = self.namesArray[row];  // deprecated ios 9  (NSString*) CFBridgingRelease(ABRecordCopyValue((__bridge ABRecordRef)(self.namesArray)[row], abSortOrderProp));
+                /* deprecated ios9
+                 if (nil == name) {
                     name = (NSString*) CFBridgingRelease(ABRecordCopyCompositeName((__bridge ABRecordRef)(self.namesArray)[row])); 
                 }
+                */
                 //unichar firstc = [name characterAtIndex:0];
                 targRow = [self.alphaArray indexOfObject:[NSString stringWithFormat:@"%c",toupper([name characterAtIndex:0])]];
                 if (NSNotFound == targRow)
