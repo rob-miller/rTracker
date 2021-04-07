@@ -107,7 +107,8 @@
         _dtf.keyboardType = UIKeyboardTypeDecimalPad; //number pad with decimal point but no done button 	// use the number input only
         // no done button for number pad // _dtf.returnKeyType = UIReturnKeyDone;
         // need this from http://stackoverflow.com/questions/584538/how-to-show-done-button-on-iphone-number-pad Michael Laszlo
-        float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        // .applicationFrame deprecated ios9
+        float appWidth = CGRectGetWidth([UIScreen mainScreen].bounds);
         UIToolbar *accessoryView = [[UIToolbar alloc]
                                     initWithFrame:CGRectMake(0, 0, appWidth, 0.1 * appWidth)];
         UIBarButtonItem *space = [[UIBarButtonItem alloc]
