@@ -24,7 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-// #import <UserNotifications/UserNotifications.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "rTrackerAppDelegate.h"
 #import "RootViewController.h"
@@ -89,7 +89,7 @@
 - (void) pleaseRegisterForNotifications:(RootViewController *)rootController {
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-        if (! [rTracker_resource notificationsEnabled]) {
+        if (! [rTracker_resource getNotificationsEnabled]) {
             
             
             if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
@@ -173,7 +173,7 @@
          [sud registerDefaults:registerableDictionary];
          [sud synchronize];
     }
-
+    [rTracker_resource setNotificationsEnabled];
     [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     // Override point for customization after app launch    
@@ -388,12 +388,34 @@
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
-- (BOOL)checkNotificationType:(UIUserNotificationType)type
+/*
+ // UIUserNotification deprecated iOS 10, see if we can just proceed without checking and silently fail?
+ 
+- (BOOL)checkNotificationTypeX:(UIUserNotificationType)type
 {
     UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
     
     return (currentSettings.types & type);
 }
+
+- (BOOL)checkNotificationType:(UNAuthorizationOptions)type
+{
+    BOOL retval = FALSE;
+    // https://useyourloaf.com/blog/local-notifications-with-ios-10
+    UNUserNotificationCenter *uncenter = [UNUserNotificationCenter currentNotificationCenter];
+    [uncenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+      if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
+        // Notifications not allowed
+      }
+    }];
+    //[uncenter getNotificationSettingsWithCompletionHandler:(^{
+        
+    //})]
+    UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    //[UNUserNotificationCenter getNotificationSettingsWithCompletionHandler:] and -[UNUserNotificationCenter getNotificationCategoriesWithCompletionHandler:]
+    return (currentSettings.types & type);
+}
+*/
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     resigningActive=YES;
@@ -413,9 +435,10 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
-    if ([self checkNotificationType:UIUserNotificationTypeBadge]) {  // minimum version is iOS 8 currently (14.iv.2016)
-        application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
-    }
+    //if ([self checkNotificationType:UIUserNotificationTypeBadge]) {  // minimum version is iOS 8 currently (14.iv.2016)
+    // iOS >= 10 just silently fail?
+    application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
+    //}
     //[rTracker_resource disableOrientationData];
     resigningActive=NO;
 }

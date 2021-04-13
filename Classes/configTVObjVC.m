@@ -872,7 +872,7 @@
 
 - (void) displayDbInfo {
        NSString *titleStr;
-       
+    [rTracker_resource setNotificationsEnabled];
         NSString *sql = @"select count(*) from trkrData";
         int dateEntries = [self.to toQry2Int:sql];
         sql = @"select count(*) from voData";
@@ -900,11 +900,14 @@
                                                           [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
         }
       
+        /*
         __block UIUserNotificationSettings* uns;
         safeDispatchSync(^{
             uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
         });
         if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
+        */
+    if (! [rTracker_resource getNotificationsEnabled]) {
             titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
         }
 

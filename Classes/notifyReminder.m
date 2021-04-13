@@ -380,12 +380,16 @@
         return;
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-
+    /*
     [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
       if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
           return; // Notifications not allowed
       }
     }];
+    */
+    if (![rTracker_resource getNotificationsEnabled]) {
+        return; // Notifications not allowed
+    }
     
     NSString *idStr = [NSString stringWithFormat:@"%ld-%ld", (long) self.tid, (long) self.rid];
     

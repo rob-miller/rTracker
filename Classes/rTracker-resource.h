@@ -110,7 +110,8 @@ void safeDispatchSync(dispatch_block_t block);
 + (BOOL)getToldAboutNotifications;
 + (void)setToldAboutNotifications:(BOOL)toldNotifications;
 
-+ (BOOL)notificationsEnabled;
++ (BOOL)getNotificationsEnabled;
++ (void)setNotificationsEnabled;
 
 
 #if ADVERSION

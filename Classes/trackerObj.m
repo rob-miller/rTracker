@@ -1760,7 +1760,8 @@
 //
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
     NSString *sql;
-
+    [rTracker_resource setNotificationsEnabled];
+    
     NSDateComponents *todayComponents =
     [gregorian components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitWeekday) fromDate:today];
     //NSDateComponents *everyStartComponents = NULL;

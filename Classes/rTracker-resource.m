@@ -34,6 +34,8 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreText/CTTypesetter.h>
 
+@import UserNotifications;
+
 @implementation rTracker_resource
 
 BOOL keyboardIsShown=NO;
@@ -727,14 +729,29 @@ static BOOL toldAboutNotifications=false;
     DBGLog(@"updateToldAboutNotifications:%d",toldAboutNotifications);
 }
 
-+ (BOOL)notificationsEnabled {
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
-        UIUserNotificationType types = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
-        return (types & UIUserNotificationTypeAlert);
-    }
-    else {
-        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
-    }
+static BOOL notificationsEnabled=false;
+
++ (void)setNotificationsEnabled {
+    // if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
+    //safeDispatchSync(^{
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+          if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+              notificationsEnabled = TRUE;
+          }
+        }];
+        // UIUserNotificationType types = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
+        // return (types & UIUserNotificationTypeAlert);
+    // }
+    // else {
+        // iOS 14 minimum now
+    //    return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+    // }
+    //});
+}
+
++ (BOOL) getNotificationsEnabled {
+    return notificationsEnabled;
 }
 
 #if ADVERSION
