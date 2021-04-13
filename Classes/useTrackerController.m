@@ -1071,20 +1071,23 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
                        target:self
                        action:@selector(btnAccept)];
             _menuBtn.tintColor=[UIColor greenColor];
-        } else if ([MFMailComposeViewController canSendMail]) {
+        } else {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                        //initWithTitle:@"menuBtn"
                        //style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(btnMenu)];
-        } else {
+        } /*
+           // can export or duplicate last to now
+           else {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Export"
                        style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(iTunesExport)];
         }
+           */
     }
 
     return  _menuBtn;
@@ -1470,10 +1473,11 @@ NSString *emDuplicate = @"duplicate entry to now";
     UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
     UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
-    
-    [alert addAction:ecsvAction];
-    [alert addAction:etAction];
-    [alert addAction:etdAction];
+    if ([MFMailComposeViewController canSendMail]) {
+        [alert addAction:ecsvAction];
+        [alert addAction:etAction];
+        [alert addAction:etdAction];
+    }
     [alert addAction:iteAction];
     if (postD != 0 || (lastD == currD)) {
         UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
