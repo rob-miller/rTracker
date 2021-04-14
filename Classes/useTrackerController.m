@@ -702,13 +702,13 @@
                  break;
              case UIInterfaceOrientationLandscapeLeft:
                  DBGLog(@"utc will rotate to interface orientation landscape left");
-                 [self.tracker.activeControl resignFirstResponder];
-                 [self doGT];
+                 //[self.tracker.activeControl resignFirstResponder];
+                 //[self doGT];
                  break;
              case UIInterfaceOrientationLandscapeRight:
                  DBGLog(@"utc will rotate to interface orientation landscape right");
-                 [self.tracker.activeControl resignFirstResponder];
-                 [self doGT];
+                 //[self.tracker.activeControl resignFirstResponder];
+                 //[self doGT];
                  break;
              default:
                  DBGWarn(@"utc will rotate but can't tell to where");
@@ -729,9 +729,13 @@
                  break;
              case UIInterfaceOrientationLandscapeLeft:
                  DBGLog(@"utc did rotate to interface orientation landscape left");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
                  break;
              case UIInterfaceOrientationLandscapeRight:
                  DBGLog(@"utc did rotate to interface orientation landscape right");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
                  break;
              default:
                  DBGWarn(@"utc did rotate but can't tell to where");
@@ -739,7 +743,9 @@
          }
      }];
     }
+
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
 }
 /*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
