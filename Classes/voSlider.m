@@ -1,6 +1,6 @@
 /***************
  voSlider.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.

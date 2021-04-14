@@ -1,6 +1,6 @@
 /***************
  rTrackerAppDelegate.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -222,7 +222,7 @@
     //if (![rTracker_resource getAcceptLicense]) {
 
     if (! [sud boolForKey:@"acceptLicense"]) { // race relying on rvc having set
-        NSString *freeMsg= @"Copyright 2010-2020 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
+        NSString *freeMsg= @"Copyright 2010-2021 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
                                                                        message:freeMsg
