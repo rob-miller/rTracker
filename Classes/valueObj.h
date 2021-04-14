@@ -47,8 +47,10 @@
 // #define VOT_IMAGE	7
 
 // max number of choices for VOT_CHOICE
-#define CHOICES 6
-#define CHOICEARR @[ @(0), @(1), @(2), @(3), @(4), @(5) ]
+//#define CHOICES 6
+//#define CHOICEARR @[ @(0), @(1), @(2), @(3), @(4), @(5) ]
+#define CHOICES 8
+#define CHOICEARR @[ @(0), @(1), @(2), @(3), @(4), @(5), @(6), @(7) ]
 
 // supported graphs ; tied to valueObj:mapGraphType
 #define VOG_DOTS		0
