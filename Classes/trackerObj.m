@@ -841,7 +841,7 @@
 - (BOOL) loadData: (NSInteger) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
-    DBGLog(@"trackerObj loadData for date %@",qDate);
+    // DBGLog(@"trackerObj loadData for date %@",qDate);
     // don't leave thread, need values reset here: dispatch_async(dispatch_get_main_queue(), ^(void){
     [self resetData];
     NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
