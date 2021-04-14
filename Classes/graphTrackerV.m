@@ -96,10 +96,10 @@
 
 // note same name call in gtYAxV
 - (void) vtChoiceSetColor:(vogd*)vogd context:(CGContextRef)context val:(CGFloat)val{
-    DBGLog(@"vtChoiceSetColor input %f",val);
+    // DBGLog(@"vtChoiceSetColor input %f",val);
     val /= vogd.vScale;
     val += vogd.minVal;
-    DBGLog(@"vtChoiceSetColor transformed %f",val);
+    // DBGLog(@"vtChoiceSetColor transformed %f",val);
     int choice = [vogd.vo getChoiceIndexForValue:[NSString stringWithFormat:@"%f",val]];
     NSString *cc = [NSString stringWithFormat:@"cc%d",choice];
     NSInteger col = [(vogd.vo.optDict)[cc] integerValue];
@@ -536,6 +536,7 @@
 
 - (void) drawGraph:(CGContextRef)context
 {
+    //DBGLog(@"drawGraph");
     int barCount=0;
 	for (valueObj *vo in self.tracker.valObjTable) {
 		if (![(vo.optDict)[@"graph"] isEqualToString:@"0"]) {
