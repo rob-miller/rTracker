@@ -114,15 +114,17 @@
                 self.minVal = d(1);
                 self.maxVal = d(CHOICES);
             }
-
+#if GRAPHDBG
             DBGLog(@"minVal= %lf maxVal= %lf",self.minVal,self.maxVal);
+#endif
             
             double step = (self.maxVal - self.minVal) / c;  //  CHOICES;
             self.minVal -= step ; //( d( YTICKS - CHOICES ) /2.0 ) * step;   // YTICKS=7, CHOICES=6, so need blank positions at top and bottom
             self.maxVal += step * d(YTICKS - c) ;  // step ; //( d( YTICKS - CHOICES ) /2.0 ) * step;
+#if GRAPHDBG
             DBGLog(@"minVal= %lf maxVal= %lf",self.minVal,self.maxVal);
-            DBGLog(@"Foo");
-            
+            //DBGLog(@"Foo");
+#endif
             
         } else {  // number or function with autoscale
             
@@ -152,7 +154,9 @@
             if (nil == (self.vo.optDict)[@"gmin"])
                 self.minVal -= yScaleExpand;
         }
+#if GRAPHDBG
         DBGLog(@"%@ minval= %f  maxval= %f",self.vo.valueName, self.minVal,self.maxVal);
+#endif
         
         //double vscale = d(self.bounds.size.height - (2.0f*BORDER)) / (maxVal - minVal);
         self.vScale = d(myTOGD.rect.size.height) / (self.maxVal - self.minVal);
@@ -169,7 +173,9 @@
         //myTracker.sql = [NSString stringWithFormat:@"select date,val from voData where id=%d and val != '' order by date;",self.vo.vid];
         // 6.ii.2013 implement maxGraphDays
         NSString *sql = [NSString stringWithFormat:@"select date,val from voData where id=%ld and val != '' and date >= %d and date <= %d order by date;",(long)self.vo.vid,myTOGD.firstDate,myTOGD.lastDate];
+#if GRAPHDBG
         DBGLog(@"graph points sql: %@",sql);
+#endif
         [myTracker toQry2AryID:i1 d1:d1 sql:sql];
       //sql = nil;
         
@@ -179,7 +185,9 @@
             
             NSNumber *nv = [e nextObject];
             
+#if GRAPHDBG
             DBGLog(@"i: %@  f: %@",ni,nv);
+#endif
             double d = [ni doubleValue];		// date as int secs cast to float
             double v = [nv doubleValue] ;		// val as float
             

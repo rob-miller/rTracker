@@ -26,7 +26,7 @@
 
 #define RELEASE     1
 
-#define DEBUGLOG    0
+#define DEBUGLOG    1
 #define DEBUGWARN   1
 #define DEBUGERR    1
 
@@ -34,6 +34,7 @@
 #define SQLDEBUG    0
 #define FUNCTIONDBG 0
 #define REMINDERDBG 0
+#define GRAPHDBG    0
 
 
 // enable advertising code -- controlled in Xcode build settings (Apple LLVM -> Preprocessing -> Preprocessor macros) for rTrackerA

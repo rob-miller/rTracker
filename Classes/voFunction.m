@@ -903,14 +903,17 @@ BOOL FnErr=NO;
 	self.currFnNdx=0;
 	
 	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
+#if FUNCTIONDBG
     DBGLog(@"fn update val= %@",val);
+#endif
     if (val != nil) {
         NSNumber *nddp = (self.vo.optDict)[@"fnddp"];
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
         return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
     }
+#if FUNCTIONDBG
     DBGLog(@"fn update returning: %@",instr);
-    
+#endif
     return instr;
 }
 
