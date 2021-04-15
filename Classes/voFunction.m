@@ -1,6 +1,6 @@
 /***************
  voFunction.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -903,14 +903,17 @@ BOOL FnErr=NO;
 	self.currFnNdx=0;
 	
 	NSNumber *val = [self calcFunctionValueWithCurrent:ep0date];
+#if FUNCTIONDBG
     DBGLog(@"fn update val= %@",val);
+#endif
     if (val != nil) {
         NSNumber *nddp = (self.vo.optDict)[@"fnddp"];
         int ddp = ( nddp == nil ? FDDPDFLT : [nddp intValue] );
         return [NSString stringWithFormat:[NSString stringWithFormat:@"%%0.%df",ddp],[val floatValue]];
     }
+#if FUNCTIONDBG
     DBGLog(@"fn update returning: %@",instr);
-    
+#endif
     return instr;
 }
 
@@ -1486,13 +1489,13 @@ BOOL FnErr=NO;
 - (void) btnHelp {
     switch (self.fnSegNdx) {
         case FNSEGNDX_OVERVIEW:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#overview"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#overview"] options:@{} completionHandler:nil];
             break;
         case FNSEGNDX_RANGEBLD:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#range"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#range"] options:@{} completionHandler:nil ];
             break;
         case FNSEGNDX_FUNCTBLD:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#operators"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/addFunction.html#operators"] options:@{} completionHandler:nil ];
             break;
         default:
             dbgNSAssert(0,@"fnSegmentAction bad index!");

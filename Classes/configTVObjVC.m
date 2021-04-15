@@ -1,6 +1,6 @@
 /***************
  configTVObjVC.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -109,11 +109,11 @@
 */
 
 - (void) btnChoiceHelp {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/choices.html"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/choices.html"] options:@{} completionHandler:nil];
 }
 
 - (void) btnInfoHelp {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/QandA/info.html"] options:@{} completionHandler:nil];
 }
 
 - (void)viewDidLoad {
@@ -858,13 +858,13 @@
     
 }
 
-
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (0 != buttonIndex) {
         [self recoverValuesBtn];
     }
 }
-
+*/
 - (void) setRemindersBtn {
     [self.to reminders2db];
     [self.to setReminders];
@@ -872,7 +872,7 @@
 
 - (void) displayDbInfo {
        NSString *titleStr;
-       
+    [rTracker_resource setNotificationsEnabled];
         NSString *sql = @"select count(*) from trkrData";
         int dateEntries = [self.to toQry2Int:sql];
         sql = @"select count(*) from voData";
@@ -900,11 +900,14 @@
                                                           [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterShortStyle]]];
         }
       
+        /*
         __block UIUserNotificationSettings* uns;
         safeDispatchSync(^{
             uns = [[UIApplication sharedApplication] currentUserNotificationSettings];
         });
         if (! ([uns types] & (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge))) {
+        */
+    if (! [rTracker_resource getNotificationsEnabled]) {
             titleStr = [titleStr stringByAppendingString:@"\n\n- Notifications Disabled -\nEnable in System Preferences."];
         }
 

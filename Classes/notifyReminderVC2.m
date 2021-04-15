@@ -1,6 +1,6 @@
 /***************
  notifyReminderVC2.m
- Copyright 2014-2016 Robert T. Miller
+ Copyright 2014-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.

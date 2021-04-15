@@ -1,6 +1,6 @@
 /***************
  trackerObj.h
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -186,7 +186,7 @@
 //- (NSDictionary *) genRtrk:(BOOL)withData;
 
 - (void) loadDataDict:(NSDictionary*)dataDict;
-@property (atomic)     int32_t recalcFnLock;
+@property (atomic)     _Atomic int32_t recalcFnLock;
 
 //- (void)applicationWillTerminate:(NSNotification *)notification;
 

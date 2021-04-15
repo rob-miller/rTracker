@@ -1,6 +1,6 @@
 /***************
  rTracker-resource.m
- Copyright 2011-2016 Robert T. Miller
+ Copyright 2011-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreText/CTTypesetter.h>
+
+@import UserNotifications;
 
 @implementation rTracker_resource
 
@@ -188,10 +190,10 @@ BOOL hasAmPm=NO;
 #pragma mark -
 #pragma mark generic alert
 //---------------------------
-+ (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
++ (void) alert_mt:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
     __block UIAlertController* alert;
     __block UIViewController *vcCpy = vc;
-    safeDispatchSync(^{
+    // safeDispatchSync(^{
         alert = [UIAlertController alertControllerWithTitle:title
                                                                        message:msg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -211,6 +213,36 @@ BOOL hasAmPm=NO;
     //dispatch_async(dispatch_get_main_queue(), ^(void){
         [vcCpy presentViewController:alert animated:YES completion:nil];
     //});
+    //});
+
+}
+
++ (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc {
+    __block UIAlertController* alert;
+    __block UIViewController *vcCpy = vc;
+    safeDispatchSync(^{
+        //[rTracker_resource alert_mt:title msg:msg vc:vc];
+        
+        alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    
+    if (nil == vcCpy) {
+        UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        w.rootViewController = [UIViewController new];
+        w.windowLevel = UIWindowLevelAlert +1;
+        [w makeKeyAndVisible];
+        vcCpy = w.rootViewController;
+    }
+    //dispatch_async(dispatch_get_main_queue(), ^(void){
+        [vcCpy presentViewController:alert animated:YES completion:nil];
+    //});
+         
     });
 
 }
@@ -697,14 +729,29 @@ static BOOL toldAboutNotifications=false;
     DBGLog(@"updateToldAboutNotifications:%d",toldAboutNotifications);
 }
 
-+ (BOOL)notificationsEnabled {
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
-        UIUserNotificationType types = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
-        return (types & UIUserNotificationTypeAlert);
-    }
-    else {
-        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
-    }
+static BOOL notificationsEnabled=false;
+
++ (void)setNotificationsEnabled {
+    // if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
+    //safeDispatchSync(^{
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+          if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+              notificationsEnabled = TRUE;
+          }
+        }];
+        // UIUserNotificationType types = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
+        // return (types & UIUserNotificationTypeAlert);
+    // }
+    // else {
+        // iOS 14 minimum now
+    //    return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+    // }
+    //});
+}
+
++ (BOOL) getNotificationsEnabled {
+    return notificationsEnabled;
 }
 
 #if ADVERSION
@@ -858,7 +905,8 @@ static int lastStashedTid=0;
         rtf.keyboardType = UIKeyboardTypeDecimalPad; //number pad with decimal point but no done button 	// use the number input only
         // no done button for number pad // _dtf.returnKeyType = UIReturnKeyDone;
         // need this from http://stackoverflow.com/questions/584538/how-to-show-done-button-on-iphone-number-pad Michael Laszlo
-        float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        // application frame deprecated ios9 float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        float appWidth = CGRectGetWidth([UIScreen mainScreen].bounds);
         UIToolbar *accessoryView = [[UIToolbar alloc]
                                     initWithFrame:CGRectMake(0, 0, appWidth, 0.1 * appWidth)];
         UIBarButtonItem *space = [[UIBarButtonItem alloc]

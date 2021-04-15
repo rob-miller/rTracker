@@ -1,6 +1,6 @@
 /***************
  rTracker-resource.h
- Copyright 2011-2016 Robert T. Miller
+ Copyright 2011-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ void safeDispatchSync(dispatch_block_t block);
 + (void) clrCheckButton:(UIButton*)cb colr:(UIColor*)colr;
 
 + (void) alert:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc;
++ (void) alert_mt:(NSString*)title msg:(NSString*)msg vc:(UIViewController*)vc;
 #if ADVERSION
 + (void) handleUpgradeOptions:(NSInteger)choice;
 + (void) buy_rTrackerAlert;
@@ -109,7 +110,8 @@ void safeDispatchSync(dispatch_block_t block);
 + (BOOL)getToldAboutNotifications;
 + (void)setToldAboutNotifications:(BOOL)toldNotifications;
 
-+ (BOOL)notificationsEnabled;
++ (BOOL)getNotificationsEnabled;
++ (void)setNotificationsEnabled;
 
 
 #if ADVERSION

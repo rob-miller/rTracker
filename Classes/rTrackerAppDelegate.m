@@ -1,6 +1,6 @@
 /***************
  rTrackerAppDelegate.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -67,10 +67,11 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
+/*
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     [application registerForRemoteNotifications];
 }
-
+*/
 - (void) registerForNotifications {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionBadge + UNAuthorizationOptionSound;
@@ -88,7 +89,7 @@
 - (void) pleaseRegisterForNotifications:(RootViewController *)rootController {
     // ios 8.1 must register for notifications
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") ) {
-        if (! [rTracker_resource notificationsEnabled]) {
+        if (! [rTracker_resource getNotificationsEnabled]) {
             
             
             if (![rTracker_resource getToldAboutNotifications]) { // if not yet told
@@ -172,7 +173,7 @@
          [sud registerDefaults:registerableDictionary];
          [sud synchronize];
     }
-
+    [rTracker_resource setNotificationsEnabled];
     [rTracker_resource setToldAboutNotifications:[sud boolForKey:@"toldAboutNotifications"]];
     
     // Override point for customization after app launch    
@@ -221,7 +222,7 @@
     //if (![rTracker_resource getAcceptLicense]) {
 
     if (! [sud boolForKey:@"acceptLicense"]) { // race relying on rvc having set
-        NSString *freeMsg= @"Copyright 2010-2020 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
+        NSString *freeMsg= @"Copyright 2010-2021 Robert T. Miller\n\nrTracker is free and open source software, distributed under the Apache License, Version 2.0.\n\nrTracker is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\nrTracker source code is available at https://github.com/rob-miller/rTracker\n\nThe full Apache License is available at http://www.apache.org/licenses/LICENSE-2.0";
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is free software.\n"
                                                                        message:freeMsg
@@ -274,6 +275,8 @@
     return YES;
 }
 
+/* no longer support responding to notifications / open as url
+ 
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     NSString *bdn = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
@@ -311,6 +314,7 @@
         
 }
 
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     UIViewController *rootController = (self.navigationController.viewControllers)[0];
     if (0 == buttonIndex) {   // do nothing
@@ -318,21 +322,29 @@
         [rootController performSelectorOnMainThread:@selector(doOpenTracker:) withObject:self.pendingTid waitUntilDone:NO];
     }
 }
+*/
 
-
+/*
 - (void)dismissAlertView:(UIAlertView *)alertView{
     [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
-
-- (UIAlertView*) quickAlert:(NSString*)title msg:(NSString*)msg {
+*/
+- (UIAlertController*) quickAlert:(NSString*)title msg:(NSString*)msg {
     //DBGLog(@"qalert title: %@ msg: %@",title,msg);
+    /* deprecated ios 9.0
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:title message:msg
                           delegate:nil
                           cancelButtonTitle:nil
                           otherButtonTitles:nil];
-    [alert show];
-    //[alert release];
+     [alert show];
+     */
+    UIAlertController * alert = [UIAlertController
+                    alertControllerWithTitle:title
+                                     message:msg
+                              preferredStyle:UIAlertControllerStyleAlert];
+
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
     return alert;
 }
 
@@ -343,19 +355,12 @@
 
 
 -(void) doQuickAlert:(NSString*)title msg:(NSString*)msg delay:(int) delay {
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView *alert = [self quickAlert:title msg:msg];
-        [self performSelector:@selector(dismissAlertView:) withObject:alert afterDelay:delay];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
-        [self performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
-        
-        
-        
-    }
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+    [self performSelector:@selector(dismissAlertController:) withObject:alert afterDelay:delay];
+
 }
 
 /*
@@ -383,12 +388,34 @@
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
-- (BOOL)checkNotificationType:(UIUserNotificationType)type
+/*
+ // UIUserNotification deprecated iOS 10, see if we can just proceed without checking and silently fail?
+ 
+- (BOOL)checkNotificationTypeX:(UIUserNotificationType)type
 {
     UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
     
     return (currentSettings.types & type);
 }
+
+- (BOOL)checkNotificationType:(UNAuthorizationOptions)type
+{
+    BOOL retval = FALSE;
+    // https://useyourloaf.com/blog/local-notifications-with-ios-10
+    UNUserNotificationCenter *uncenter = [UNUserNotificationCenter currentNotificationCenter];
+    [uncenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+      if (settings.authorizationStatus != UNAuthorizationStatusAuthorized) {
+        // Notifications not allowed
+      }
+    }];
+    //[uncenter getNotificationSettingsWithCompletionHandler:(^{
+        
+    //})]
+    UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    //[UNUserNotificationCenter getNotificationSettingsWithCompletionHandler:] and -[UNUserNotificationCenter getNotificationCategoriesWithCompletionHandler:]
+    return (currentSettings.types & type);
+}
+*/
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     resigningActive=YES;
@@ -408,9 +435,10 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
-    if ([self checkNotificationType:UIUserNotificationTypeBadge]) {  // minimum version is iOS 8 currently (14.iv.2016)
-        application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
-    }
+    //if ([self checkNotificationType:UIUserNotificationTypeBadge]) {  // minimum version is iOS 8 currently (14.iv.2016)
+    // iOS >= 10 just silently fail?
+    application.applicationIconBadgeNumber = [(RootViewController *)rootController pendingNotificationCount];
+    //}
     //[rTracker_resource disableOrientationData];
     resigningActive=NO;
 }

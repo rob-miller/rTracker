@@ -1,6 +1,6 @@
 /***************
  addTrackerController.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -487,11 +487,11 @@ DBGLog(@"btnAddValue was pressed!");
     self.deleteIndexPath=nil;
     
 }
-
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     [self handleCheckValObjDelete:buttonIndex];
 }
-
+*/
 
 # pragma mark -
 # pragma mark Table View Data Source Methods
@@ -753,29 +753,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             NSString *btn0 = @"Cancel";
             NSString *btn1 = @"Yes, delete";
             
-            if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-                UIAlertView* alert = [[UIAlertView alloc]
-                                      initWithTitle:title
-                                      message:msg
-                                      delegate:self
-                                      cancelButtonTitle:btn0
-                                      otherButtonTitles: btn1,nil];
-                
-                [alert show];
-            } else {
-                UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                               message:msg
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                
-                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:0]; }];
-                UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:1]; }];
-                
-                [alert addAction:cancelAction];
-                [alert addAction:deleteAction];
-                
-                [self presentViewController:alert animated:YES completion:nil];
-                
-            }
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                           message:msg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:0]; }];
+            UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleCheckValObjDelete:1]; }];
+            
+            [alert addAction:cancelAction];
+            [alert addAction:deleteAction];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+            
+        
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		DBGLog(@"atc: insert row %lu ",(unsigned long)row);

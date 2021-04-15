@@ -1,6 +1,6 @@
 /***************
  graphTRackerVC.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -87,16 +87,19 @@
     //srect.origin.y -= 50;
     
     DBGLog(@"gtvc srect: %f %f %f %f",srect.origin.x,srect.origin.y,srect.size.width,srect.size.height);
-    
+
+    /*
     CGFloat tw = srect.size.width;   // swap because landscape only implementation and view not loaded yet
     CGFloat th = srect.size.height;
-    
+
     if ( SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         th = srect.size.width;   // swap back because fixed!
         tw = srect.size.height;
     }
+    
     srect.size.width = th;
     srect.size.height = tw;
+    */
     
     // add views for title, axes and labels
     
@@ -232,6 +235,7 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+    //DBGLog(@".");
     /*
     CGRect frame = self.view.frame;
     frame.size.height -= 22.0f;
@@ -246,6 +250,7 @@
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    //DBGLog(@".");
     [super viewWillAppear:animated];
     
     if (DPA_GOTO == self.dpr.action) {
@@ -257,7 +262,7 @@
         [self fireRecalculateFns];
     }
     [self fireRegenSearchMatches];
-    
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -456,7 +461,7 @@
             //[self doGT];
 			break;
 		default:
-			DBGWarn(@"utc rotation query but can't tell to where?");
+			DBGWarn(@"gt rotation query but can't tell to where?");
 			break;			
 	}
 	
@@ -491,7 +496,7 @@
                  self.gtv.doDrawGraph=TRUE;
                  break;
              default:
-                 DBGWarn(@"utc will rotate but can't tell to where");
+                 DBGWarn(@"gt will rotate but can't tell to where");
                  break;
          }
          
@@ -510,7 +515,7 @@
                  //[self.parentUTC returnFromGraph];
                  break;
              case UIInterfaceOrientationLandscapeLeft:
-                 DBGLog(@"utc did rotate to interface orientation landscape left");
+                 DBGLog(@"gt did rotate to interface orientation landscape left");
                  break;
              case UIInterfaceOrientationLandscapeRight:
                  DBGLog(@"gt did rotate to interface orientation landscape right");

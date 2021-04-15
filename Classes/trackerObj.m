@@ -1,6 +1,6 @@
 /***************
  trackerObj.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -26,7 +26,9 @@
 #import <string.h>
 //#import <stdlib.h>
 //#import <NSNotification.h>
-#import <libkern/OSAtomic.h>
+
+//#import <libkern/OSAtomic.h>  // deprecated ios 10
+#import <stdatomic.h>
 
 #import "trackerObj.h"
 #import "valueObj.h"
@@ -50,7 +52,9 @@
 @synthesize activeControl=_activeControl,vc=_vc, dateFormatter=_dateFormatter, dateOnlyFormatter=_dateOnlyFormatter, csvReadFlags=_cvsReadFlags, csvProblem=_cvsProblem, togd=_togd, goRecalculate=_goRecalculate, changedDateFrom=_changedDateFrom, csvHeaderDict=_csvHeaderDict; // prevTID  //
 
 @synthesize maxLabel=_maxLabel;
-@synthesize recalcFnLock=_recalcFnLock;
+
+//_Atomic int32_t _recalcFnLock;
+@synthesize recalcFnLock= _recalcFnLock;
 
 #define f(x) ((CGFloat) (x))
 
@@ -837,7 +841,7 @@
 - (BOOL) loadData: (NSInteger) iDate {
 	
 	NSDate *qDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval) iDate];
-    DBGLog(@"trackerObj loadData for date %@",qDate);
+    // DBGLog(@"trackerObj loadData for date %@",qDate);
     // don't leave thread, need values reset here: dispatch_async(dispatch_get_main_queue(), ^(void){
     [self resetData];
     NSString *sql = [NSString stringWithFormat:@"select count(*) from trkrData where date = %ld and minpriv <= %d;",(long)iDate, [privacyV getPrivacyValue]];
@@ -1756,7 +1760,8 @@
 //
 - (void) setReminder:(notifyReminder*)nr today:(NSDate*)today gregorian:(NSCalendar*)gregorian {
     NSString *sql;
-
+    [rTracker_resource setNotificationsEnabled];
+    
     NSDateComponents *todayComponents =
     [gregorian components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitWeekday) fromDate:today];
     //NSDateComponents *everyStartComponents = NULL;
@@ -2519,7 +2524,8 @@
 }
 
 - (void) recalculateFns {
-    if (0 != OSAtomicTestAndSet(0, &(_recalcFnLock))) {
+    // deprecated ios10 if (0 != OSAtomicTestAndSet(0, &(_recalcFnLock))) {
+    if (0 != atomic_fetch_or_explicit(&(_recalcFnLock), 0, memory_order_relaxed)) {
         // wasn't 0 before, so we didn't get lock, so leave because shake handling already in process
         return;
     }

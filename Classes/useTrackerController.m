@@ -1,6 +1,6 @@
 /***************
  useTrackerController.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -702,13 +702,13 @@
                  break;
              case UIInterfaceOrientationLandscapeLeft:
                  DBGLog(@"utc will rotate to interface orientation landscape left");
-                 [self.tracker.activeControl resignFirstResponder];
-                 [self doGT];
+                 //[self.tracker.activeControl resignFirstResponder];
+                 //[self doGT];
                  break;
              case UIInterfaceOrientationLandscapeRight:
                  DBGLog(@"utc will rotate to interface orientation landscape right");
-                 [self.tracker.activeControl resignFirstResponder];
-                 [self doGT];
+                 //[self.tracker.activeControl resignFirstResponder];
+                 //[self doGT];
                  break;
              default:
                  DBGWarn(@"utc will rotate but can't tell to where");
@@ -729,9 +729,13 @@
                  break;
              case UIInterfaceOrientationLandscapeLeft:
                  DBGLog(@"utc did rotate to interface orientation landscape left");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
                  break;
              case UIInterfaceOrientationLandscapeRight:
                  DBGLog(@"utc did rotate to interface orientation landscape right");
+                 [self.tracker.activeControl resignFirstResponder];
+                 [self doGT];
                  break;
              default:
                  DBGWarn(@"utc did rotate but can't tell to where");
@@ -739,7 +743,9 @@
          }
      }];
     }
+
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
 }
 /*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -1071,20 +1077,23 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
                        target:self
                        action:@selector(btnAccept)];
             _menuBtn.tintColor=[UIColor greenColor];
-        } else if ([MFMailComposeViewController canSendMail]) {
+        } else {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                        //initWithTitle:@"menuBtn"
                        //style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(btnMenu)];
-        } else {
+        } /*
+           // can export or duplicate last to now
+           else {
             _menuBtn = [[UIBarButtonItem alloc]
                        initWithTitle:@"Export"
                        style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(iTunesExport)];
         }
+           */
     }
 
     return  _menuBtn;
@@ -1262,6 +1271,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
     
 }
 
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.title hasSuffix:@"modified"]) {          // tracker modified and trying to leave without save
         [self dispatchHandleModifiedTracker:buttonIndex];
@@ -1271,6 +1281,7 @@ BOOL alreadyReturning=NO;    // graphTrackerVC viewWillTransitionToSize() called
         [self handleExportTracker:[alertView buttonTitleAtIndex:buttonIndex]];
     }
 }
+ */
 /*
 xxx stuck here - how to get back to setTrackerDate or btnCancel ?
 
@@ -1286,32 +1297,19 @@ else do btnCancel/btnSave
     NSString *btn1 = @"Save";
     NSString *btn2 = @"Discard";
     
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:btn0
-                              otherButtonTitles: btn1,btn2,nil];
-
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:0]; }];
-        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:1]; }];
-        UIAlertAction* discardAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:2]; }];
-        
-        [alert addAction:saveAction];
-        [alert addAction:discardAction];
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
-    }
-
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:0]; }];
+    UIAlertAction* saveAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:1]; }];
+    UIAlertAction* discardAction = [UIAlertAction actionWithTitle:btn2 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self dispatchHandleModifiedTracker:2]; }];
+    
+    [alert addAction:saveAction];
+    [alert addAction:discardAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 /*
@@ -1470,41 +1468,31 @@ NSString *emDuplicate = @"duplicate entry to now";
     
     NSString *title = [NSString stringWithFormat:@"%@ tracker",self.tracker.trackerName];
     NSString *msg = nil;
-    NSString *btn5 = (postD != 0 || (lastD == currD)) ? emDuplicate : nil;
+    // NSString *btn5 = (postD != 0 || (lastD == currD)) ? emDuplicate : nil;
 
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:emCancel
-                              otherButtonTitles:emEmailCsv,emEmailTracker,emEmailTrackerData,emItunesExport,btn5,nil];
-        
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* ecsvAction = [UIAlertAction actionWithTitle:emEmailCsv style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailCsv]; }];
-        UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
-        UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
-        UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
-        
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ecsvAction = [UIAlertAction actionWithTitle:emEmailCsv style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailCsv]; }];
+    UIAlertAction* etAction = [UIAlertAction actionWithTitle:emEmailTracker style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTracker]; }];
+    UIAlertAction* etdAction = [UIAlertAction actionWithTitle:emEmailTrackerData style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emEmailTrackerData]; }];
+    UIAlertAction* iteAction = [UIAlertAction actionWithTitle:emItunesExport style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emItunesExport]; }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:emCancel style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emCancel]; }];
+    if ([MFMailComposeViewController canSendMail]) {
         [alert addAction:ecsvAction];
         [alert addAction:etAction];
         [alert addAction:etdAction];
-        [alert addAction:iteAction];
-        if (postD != 0 || (lastD == currD)) {
-            UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
-            [alert addAction:dupAction];
-        }
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
     }
+    [alert addAction:iteAction];
+    if (postD != 0 || (lastD == currD)) {
+        UIAlertAction* dupAction = [UIAlertAction actionWithTitle:emDuplicate style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleExportTracker:emDuplicate]; }];
+        [alert addAction:dupAction];
+    }
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    
     
 }
 
@@ -1680,29 +1668,18 @@ NSString *emDuplicate = @"duplicate entry to now";
     NSString *btn0 = @"Cancel";
     NSString *btn1 = @"Yes, delete";
     
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        UIAlertView* alert = [[UIAlertView alloc]
-                              initWithTitle:title
-                              message:msg
-                              delegate:self
-                              cancelButtonTitle:btn0
-                              otherButtonTitles:btn1,nil];
-        
-        [alert show];
-    } else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:msg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:0]; }];
-        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:1]; }];
-        
-        [alert addAction:deleteAction];
-        [alert addAction:cancelAction];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        
-    }
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:0]; }];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) { [self handleDeleteEntry:1]; }];
+    
+    [alert addAction:deleteAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+
 }
 
 
@@ -2075,13 +2052,24 @@ NSString *emDuplicate = @"duplicate entry to now";
                 url = [@"http://" stringByAppendingString:url];
             }
             DBGLog(@"vot_info: selected -> fire url: %@",url);
-            if (! [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]] ) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success) {
+                    if (!success) {
+                        if ([url localizedCaseInsensitiveContainsString:@"http://"] || [url localizedCaseInsensitiveContainsString:@"https://"]) {
+                            [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - network problem?",url] vc:self];
+                        } else {
+                            [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - perhaps the supporting app is not installed??",url] vc:self];
+                        }
+                    }
+                }];
+            /* openurl deprecated ios 9.0
+            if (! [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] ]) {
                 if ([url localizedCaseInsensitiveContainsString:@"http://"] || [url localizedCaseInsensitiveContainsString:@"https://"]) {
                     [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - network problem?",url] vc:self];
                 } else {
                     [rTracker_resource alert:@"Failed to open URL" msg:[NSString stringWithFormat:@"Failed to open the URL %@ - perhaps the supporting app is not installed??",url] vc:self];
                 }
             }
+             */
         }
     }
     

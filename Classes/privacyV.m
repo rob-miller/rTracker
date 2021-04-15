@@ -1,6 +1,6 @@
 /***************
  privacyV.m
- Copyright 2011-2016 Robert T. Miller
+ Copyright 2011-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -311,7 +311,7 @@ static NSTimeInterval lastShow=0;
 }
 
 // alert to inform privacy limits and use
-
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (0 == buttonIndex) {
         self.pwState = PWNEEDPASS;
@@ -319,7 +319,7 @@ static NSTimeInterval lastShow=0;
         self.showing = PVQUERY;
     }
 }
-
+*/
 // state control for what's showing
 - (void) setShowing:(unsigned int)newState {
 	DBGLog(@"priv: setShowing %d -> %d  curr priv= %d",_showing,newState,[privacyV getPrivacyValue]);
@@ -337,49 +337,41 @@ static NSTimeInterval lastShow=0;
         NSString *btn0 = @"Let's go";
         NSString *btn1 = @"Skip for now";
         
-        if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:msg
-                                                           delegate:self 
-                                                  cancelButtonTitle:btn0
-                                                  otherButtonTitles:btn1,nil];
-            [alert show];
-        } else {
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-                                                                           message:msg
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {
-                                                                      self.pwState = PWNEEDPASS;
-                                                                      //self.showing = PVSTARTUP;
-                                                                      self.showing = PVQUERY;
-                                                                  }];
-            
-            UIAlertAction* skipAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {}];
-            
-            [alert addAction:defaultAction];
-            [alert addAction:skipAction];
-            
-            /*
-            UIViewController *vc;
-            UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            w.rootViewController = [UIViewController new];
-            w.windowLevel = UIWindowLevelAlert +1;
-            [w makeKeyAndVisible];
-            vc = w.rootViewController;
-            //vc.modalPresentationStyle = UIModalPresentationFormSheet;
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:btn0 style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                                  self.pwState = PWNEEDPASS;
+                                                                  //self.showing = PVSTARTUP;
+                                                                  self.showing = PVQUERY;
+                                                              }];
+        
+        UIAlertAction* skipAction = [UIAlertAction actionWithTitle:btn1 style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [alert addAction:skipAction];
+        
+        /*
+        UIViewController *vc;
+        UIWindow *w = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        w.rootViewController = [UIViewController new];
+        w.windowLevel = UIWindowLevelAlert +1;
+        [w makeKeyAndVisible];
+        vc = w.rootViewController;
+        //vc.modalPresentationStyle = UIModalPresentationFormSheet;
+
+        [vc presentViewController:alert animated:YES completion:nil];
+        */
+        
+        UIViewController *vc = [UIApplication sharedApplication].keyWindow.rootViewController;
+        [vc presentViewController:alert animated:YES completion:nil];
+        
     
-            [vc presentViewController:alert animated:YES completion:nil];
-            */
-            
-            UIViewController *vc = [UIApplication sharedApplication].keyWindow.rootViewController;
-            [vc presentViewController:alert animated:YES completion:nil];
-            
-        }
-        
-        
+    
+    
                 
     } else if (PVNOSHOW != newState && PWNEEDPASS == self.pwState) {  // must set an initial password to use privacy features        
 		_showing = PVNEEDPASS;

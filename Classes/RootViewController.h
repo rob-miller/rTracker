@@ -1,6 +1,6 @@
 /***************
  RootViewController.h
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@
 
 @property (nonatomic,strong) trackerList *tlist;
 @property (nonatomic, strong) privacyV *privacyObj;
-@property (atomic) int32_t refreshLock;
+@property (atomic) _Atomic int32_t refreshLock;
 @property (nonatomic) BOOL initialPrefsLoad;
 //@property (nonatomic) BOOL openUrlLock;
 //@property (nonatomic,retain) NSURL *inputURL;

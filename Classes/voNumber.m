@@ -1,6 +1,6 @@
 /***************
  voNumber.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@
 
 - (UITextField*) dtf {
     safeDispatchSync(^{
-        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+        if (self->_dtf && self->_dtf.frame.size.width != self.vosFrame.size.width) self->_dtf=nil;  // first time around thinks size is 320, handle larger devices
     });
     
     if (nil == _dtf) {
@@ -107,7 +107,8 @@
         _dtf.keyboardType = UIKeyboardTypeDecimalPad; //number pad with decimal point but no done button 	// use the number input only
         // no done button for number pad // _dtf.returnKeyType = UIReturnKeyDone;
         // need this from http://stackoverflow.com/questions/584538/how-to-show-done-button-on-iphone-number-pad Michael Laszlo
-        float appWidth = CGRectGetWidth([UIScreen mainScreen].applicationFrame);
+        // .applicationFrame deprecated ios9
+        float appWidth = CGRectGetWidth([UIScreen mainScreen].bounds);
         UIToolbar *accessoryView = [[UIToolbar alloc]
                                     initWithFrame:CGRectMake(0, 0, appWidth, 0.1 * appWidth)];
         UIBarButtonItem *space = [[UIBarButtonItem alloc]

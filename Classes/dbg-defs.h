@@ -1,6 +1,6 @@
 /***************
  dbg-defs.h
- Copyright 2011-2016 Robert T. Miller
+ Copyright 2011-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@
 #define SQLDEBUG    0
 #define FUNCTIONDBG 0
 #define REMINDERDBG 0
+#define GRAPHDBG    0
 
 
 // enable advertising code -- controlled in Xcode build settings (Apple LLVM -> Preprocessing -> Preprocessor macros) for rTrackerA

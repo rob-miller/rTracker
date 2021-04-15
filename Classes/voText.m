@@ -1,6 +1,6 @@
 /***************
  voText.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@
 
 - (UITextField*) dtf {
     safeDispatchSync(^{
-        if (_dtf && _dtf.frame.size.width != self.vosFrame.size.width) _dtf=nil;  // first time around thinks size is 320, handle larger devices
+        if (self->_dtf && self->_dtf.frame.size.width != self.vosFrame.size.width) self->_dtf=nil;  // first time around thinks size is 320, handle larger devices
     });
     
     if (nil == _dtf) {

@@ -1,6 +1,6 @@
 /***************
  RootViewController.m
- Copyright 2010-2016 Robert T. Miller
+ Copyright 2010-2021 Robert T. Miller
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@
 //  Copyright Robert T. Miller 2010. All rights reserved.
 //
 
-#import <libkern/OSAtomic.h>
+// deprecaed ios 10  #import <libkern/OSAtomic.h>
+#import <stdatomic.h>
 
 #import "RootViewController.h"
 #import "rTrackerAppDelegate.h"
@@ -1096,7 +1097,8 @@ BOOL loadingInputFiles=NO;
   */
 - (void) refreshView {
     
-    if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
+    // deprecated ios 10 - if (0 != OSAtomicTestAndSet(0, &(_refreshLock))) {
+    if (0 != atomic_fetch_or_explicit(&(_refreshLock), 0, memory_order_relaxed)) {
         // wasn't 0 before, so we didn't get lock, so leave because refresh already in process
         return;
     }
@@ -1194,10 +1196,11 @@ BOOL stashAnimated;
     [self viewDidAppearRestart];
     
 }
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     [self fixFileProblem:buttonIndex];
 }
-
+*/
 - (void) viewDidAppearRestart {
 	[self refreshView];
 
@@ -1508,7 +1511,8 @@ BOOL stashAnimated;
 #if ADVERSION
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/replace_rTrackerA.html"]];
 #else
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/userGuide/"]];
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/userGuide/"]];  // deprecated ios 9
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://rob-miller.github.io/rTracker/rTracker/iPhone/userGuide/"] options:@{} completionHandler:nil];
 #endif
 }
 
