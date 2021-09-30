@@ -1561,14 +1561,14 @@ BOOL FnErr=NO;
 	self.fnSegNdx = [sender selectedSegmentIndex];
 	//DBGLog(@"fnSegmentAction: selected segment = %d", self.fnSegNdx);
 	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:kAnimationDuration];
-	
-	[self.ctvovcp removeSVFields];
-	[self drawSelectedPage];
-	
-	[UIView commitAnimations];
+	//[UIView beginAnimations:nil context:NULL];
+	//[UIView setAnimationBeginsFromCurrentState:YES];
+	//[UIView setAnimationDuration:kAnimationDuration];
+    [UIView animateWithDuration:0.2 animations:^{
+        [self.ctvovcp removeSVFields];
+        [self drawSelectedPage];
+    }];
+	//[UIView commitAnimations];
 }
 
 #pragma mark protocol: voDrawOptions page 

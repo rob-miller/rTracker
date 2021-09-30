@@ -690,7 +690,11 @@
 
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         //UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        UIWindow *firstWindow = [[[UIApplication sharedApplication] windows] firstObject];
+        UIWindowScene *windowScene = firstWindow.windowScene;
+        UIInterfaceOrientation orientation = windowScene.interfaceOrientation;
+
          // do whatever  -- willRotateTo
          
          switch (orientation) {
@@ -718,7 +722,11 @@
      }
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+         //UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        UIWindow *firstWindow = [[[UIApplication sharedApplication] windows] firstObject];
+        UIWindowScene *windowScene = firstWindow.windowScene;
+        UIInterfaceOrientation orientation = windowScene.interfaceOrientation;
+
          // do whatever -- didRotateTo
          switch (orientation) {
              case UIInterfaceOrientationPortrait:

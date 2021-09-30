@@ -128,7 +128,7 @@ NSInteger colorCount;  // count of entries to show in center color picker spinne
 	
 	colorCount = [[rTracker_resource colorSet] count];
 
-    self.votPicker.showsSelectionIndicator = YES;
+    // no effect after ios7 self.votPicker.showsSelectionIndicator = YES;
     
 	if (self.tempValObj == nil) {
         self.tempValObj = [[valueObj alloc] initWithParentOnly:self.parentTrackerObj];

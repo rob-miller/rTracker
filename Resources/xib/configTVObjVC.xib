@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment version="4640" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,6 +34,7 @@
                     <rect key="frame" x="0.0" y="66" width="414" height="769"/>
                 </scrollView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="7DB-NI-bqF"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="9" firstAttribute="leading" secondItem="7DB-NI-bqF" secondAttribute="leading" id="7ZK-uv-HXP"/>
@@ -49,7 +49,6 @@
                 <constraint firstItem="9" firstAttribute="bottom" secondItem="7DB-NI-bqF" secondAttribute="bottom" constant="22" id="vM0-oq-P2j"/>
                 <constraint firstAttribute="trailing" secondItem="6" secondAttribute="trailing" id="znq-4n-4sg"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="7DB-NI-bqF"/>
             <variation key="default">
                 <mask key="constraints">
                     <exclude reference="znq-4n-4sg"/>

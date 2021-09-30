@@ -701,7 +701,7 @@
     //frame.size.height -= (frame.size.height/4);
     
 	myPickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	myPickerView.showsSelectionIndicator = YES;	// note this is default to NO
+	// no effect after ios7 myPickerView.showsSelectionIndicator = YES;	// note this is default to NO
 	
 	// this view controller is the data source and delegate
 	myPickerView.delegate = caller;
@@ -717,35 +717,42 @@
 
 - (void) removeGraphMinMax 
 {
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:kAnimationDuration];
+	// [UIView beginAnimations:nil context:NULL];
+	// [UIView setAnimationBeginsFromCurrentState:YES];
+	// [UIView setAnimationDuration:kAnimationDuration];
 	
-	[(self.wDict)[@"nminLab"] removeFromSuperview];
-	[(self.wDict)[@"nminTF"] removeFromSuperview];
-	[(self.wDict)[@"nmaxLab"] removeFromSuperview];
-	[(self.wDict)[@"nmaxTF"] removeFromSuperview];
-	
-	[UIView commitAnimations];
+    [UIView animateWithDuration:0.2 animations:^{
+        [(self.wDict)[@"nminLab"] removeFromSuperview];
+        [(self.wDict)[@"nminTF"] removeFromSuperview];
+        [(self.wDict)[@"nmaxLab"] removeFromSuperview];
+        [(self.wDict)[@"nmaxTF"] removeFromSuperview];
+    }];
+    
+	// [UIView commitAnimations];
 }
 
 - (void) addGraphMinMax 
 {
+    /*
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:kAnimationDuration];
+     */
 	/*
 	[self.view addSubview:(self.wDict)[@"nminLab"]];
 	[self.view addSubview:(self.wDict)[@"nminTF"]];
 	[self.view addSubview:(self.wDict)[@"nmaxLab"]];
 	[self.view addSubview:(self.wDict)[@"nmaxTF"]];
 	*/
-    [self.scroll addSubview:(self.wDict)[@"nminLab"]];
-    [self.scroll addSubview:(self.wDict)[@"nminTF"]];
-    [self.scroll addSubview:(self.wDict)[@"nmaxLab"]];
-    [self.scroll addSubview:(self.wDict)[@"nmaxTF"]];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [self.scroll addSubview:(self.wDict)[@"nminLab"]];
+        [self.scroll addSubview:(self.wDict)[@"nminTF"]];
+        [self.scroll addSubview:(self.wDict)[@"nmaxLab"]];
+        [self.scroll addSubview:(self.wDict)[@"nmaxTF"]];
+    }];
 
-	[UIView commitAnimations];
+	//[UIView commitAnimations];
 }
 
 - (CGRect) yAutoscale:(CGRect)frame {

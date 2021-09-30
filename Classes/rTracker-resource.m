@@ -485,7 +485,7 @@ static BOOL progressBarGoing=NO;
     outerView.layer.cornerRadius = 10.0;
 
     
-    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge ];
+    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge ];
     //activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray ];
     //activityIndicator.frame = CGRectMake(0.0, 0.0, 60.0, 60.0);
     activityIndicator.frame = CGRectMake(65, 40, activityIndicator.bounds.size.width, activityIndicator.bounds.size.height);
@@ -997,20 +997,21 @@ static int lastStashedTid=0;
 
 		//viewFrame.size.height -= self.navigationController.toolbar.frame.size.height;
 		
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationBeginsFromCurrentState:YES];
-		[UIView setAnimationDuration:kAnimationDuration];
+		//[UIView beginAnimations:nil context:NULL];
+		//[UIView setAnimationBeginsFromCurrentState:YES];
+		//[UIView setAnimationDuration:kAnimationDuration];
+        [UIView animateWithDuration:0.2 animations:^{
+            if ([view respondsToSelector:@selector(flashScrollIndicators)]) {  // if is scrollview
+                UIScrollView *sv = (UIScrollView*) view;
+                CGPoint scrollPos = [sv contentOffset];
+                scrollPos.y += (boty - topk);
+                [sv setContentOffset:scrollPos];
+            } else {
+                [view setFrame:viewFrame];
+            }
+        }];
         
-        if ([view respondsToSelector:@selector(flashScrollIndicators)]) {  // if is scrollview
-            UIScrollView *sv = (UIScrollView*) view;
-            CGPoint scrollPos = [sv contentOffset];
-            scrollPos.y += (boty - topk);
-            [sv setContentOffset:scrollPos];
-        } else {
-            [view setFrame:viewFrame];
-        }
-        
-		[UIView commitAnimations];
+		//[UIView commitAnimations];
 	}
 	
     keyboardIsShown = YES;
@@ -1018,13 +1019,13 @@ static int lastStashedTid=0;
 }
 
 + (void) willHideKeyboard {
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:kAnimationDuration];
-	
-	[currKeyboardView setFrame:currKeyboardSaveFrame];
-	
-	[UIView commitAnimations];
+	//[UIView beginAnimations:nil context:NULL];
+	//[UIView setAnimationBeginsFromCurrentState:YES];
+	//[UIView setAnimationDuration:kAnimationDuration];
+    [UIView animateWithDuration:0.2 animations:^{
+        [currKeyboardView setFrame:currKeyboardSaveFrame];
+    }];
+    //[UIView commitAnimations];
 	
     keyboardIsShown = NO;
     currKeyboardView = nil;
@@ -1089,7 +1090,9 @@ static BOOL getOrientEnabled=false;
 */
 +(BOOL)isDeviceiPhone
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    //if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
     {
         return TRUE;
     }
@@ -1280,8 +1283,11 @@ static BOOL getOrientEnabled=false;
     CGSize result;
     
     CGSize size = [[UIScreen mainScreen] bounds].size;
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
+    // UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    UIWindow *firstWindow = [[[UIApplication sharedApplication] windows] firstObject];
+    UIWindowScene *windowScene = firstWindow.windowScene;
+    UIInterfaceOrientation orientation = windowScene.interfaceOrientation;
+
     //if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
     if (UIInterfaceOrientationIsLandscape(orientation)) {
         result.width = size.height;
@@ -1297,7 +1303,12 @@ static BOOL getOrientEnabled=false;
     UIViewController *rvc= (vc.navigationController.viewControllers)[0];
     
     if (vc == rvc) {
-        size = [[UIApplication sharedApplication] statusBarFrame].size;
+        UIWindow *firstWindow = [[[UIApplication sharedApplication] windows] firstObject];
+        UIWindowScene *windowScene = firstWindow.windowScene;
+        UIStatusBarManager *uisbm = [windowScene statusBarManager];
+        
+        //size = [[UIApplication sharedApplication] statusBarFrame].size;
+        size = uisbm.statusBarFrame.size;
         result.height -= MIN(size.width, size.height);
     
         //DBGLog(@"statusbar h= %f curr height= %f",size.height,result.height);
@@ -1337,8 +1348,11 @@ static BOOL getOrientEnabled=false;
     CGSize result;
     
     CGSize size = [[UIScreen mainScreen] bounds].size;
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
+    //UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    UIWindow *firstWindow = [[[UIApplication sharedApplication] windows] firstObject];
+    UIWindowScene *windowScene = firstWindow.windowScene;
+    UIInterfaceOrientation orientation = windowScene.interfaceOrientation;
+
     //if (UIInterfaceOrientationIsLandscape(vc.interfaceOrientation)) {
     if (UIInterfaceOrientationIsLandscape(orientation)) {
         result.width = size.height;
