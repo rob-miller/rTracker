@@ -754,6 +754,17 @@ static BOOL notificationsEnabled=false;
     return notificationsEnabled;
 }
 
+static BOOL maintainerRqst=false;
+
++ (BOOL)getMaintainerRqst {
+    return maintainerRqst;
+}
+
++ (void)setMaintainerRqst:(BOOL)inMaintainerRqst {
+    maintainerRqst = inMaintainerRqst;
+    DBGLog(@"update maintainerRqst:%d",maintainerRqst);
+}
+
 #if ADVERSION
 
 static BOOL purchased=false;

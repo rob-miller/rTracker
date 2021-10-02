@@ -476,6 +476,8 @@
         [self showSaveBtn];
         [self updateTrackerTableView];  // need to force redisplay and set sliders, so reload in viewdidappear not so noticeable
         
+        self.navigationController.toolbar.backgroundColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
         [self.navigationController setToolbarHidden:NO animated:NO];
         
         [self updateToolBar];
@@ -1612,6 +1614,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 	self.dpvc.myTitle = [NSString stringWithFormat:@"Date for %@", self.tracker.trackerName];
 	self.dpr.date = self.tracker.trackerDate;
     self.dpvc.dpr = self.dpr;
+
     //CGRect f = self.view.frame;
     
 	self.dpvc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -1773,6 +1776,7 @@ NSString *emDuplicate = @"duplicate entry to now";
 					   style:UIBarButtonItemStylePlain
 					   target:self
 					   action:@selector(btnCurrDate)];
+
 	}
 	
 	return _currDateBtn;
