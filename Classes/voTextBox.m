@@ -755,7 +755,7 @@
 	if (nil == _pv) {
 		_pv = [[UIPickerView alloc] initWithFrame:CGRectZero];
 		_pv.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		_pv.showsSelectionIndicator = YES;	// note this is default to NO
+		// no effect after ios7 _pv.showsSelectionIndicator = YES;	// note this is default to NO
 		// this view controller is the data source and delegate
 		_pv.delegate = self;
 		_pv.dataSource = self;

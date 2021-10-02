@@ -172,7 +172,7 @@
     */
     //DBGLog(@"keyboard rect conv: %f %f %f %f",keyboardRect.origin.x,keyboardRect.origin.y,keyboardRect.size.width,keyboardRect.size.height);
     
-    NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    //NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     CGRect frame = [voDataEdit getInitTVF:self];
     frame.size.height -= keyboardRect.size.height;
     //UIView *iav = ((voTextBox*)self.vo.vos).textView.inputAccessoryView;
@@ -184,13 +184,14 @@
     
     DBGLog(@"keyboard TVF: %f %f %f %f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height);
 
-    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-    [UIView setAnimationDuration:animationDuration];
+    //[UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    //[UIView setAnimationDuration:animationDuration];
 
-    self.textView.frame = frame;
-    [self.textView scrollRangeToVisible:self.textView.selectedRange];
-
-    [UIView commitAnimations];
+    [UIView animateWithDuration:0.2 animations:^{
+        self.textView.frame = frame;
+        [self.textView scrollRangeToVisible:self.textView.selectedRange];
+    }];
+    //[UIView commitAnimations];
 
     keyboardIsShown = YES;
     
@@ -202,13 +203,15 @@
     
     // the keyboard is hiding reset the table's height
     //CGRect keyboardRect = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    //NSTimeInterval animationDuration = [[aNotification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     //CGRect frame = self.devc.view.frame;
     //frame.size.height += keyboardRect.size.height;
-    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    self.textView.frame = [voDataEdit getInitTVF:self];
-    [UIView commitAnimations];
+    //[UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    //[UIView setAnimationDuration:animationDuration];
+    [UIView animateWithDuration:0.2 animations:^{
+        self.textView.frame = [voDataEdit getInitTVF:self];
+    }];
+    //[UIView commitAnimations];
     
     
     keyboardIsShown = NO;

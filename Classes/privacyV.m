@@ -389,18 +389,19 @@ static NSTimeInterval lastShow=0;
             // crash[(RootViewController*) self.parentView refreshToolBar:YES];
             //self.showing = PVCONFIG;
 		} else {
-            [UIView beginAnimations:nil context:NULL];
-            [UIView setAnimationDuration:kAnimationDuration];
+            //[UIView beginAnimations:nil context:NULL];
+            //[UIView setAnimationDuration:kAnimationDuration];
 			
-            if (PVCONFIG == _showing) {
-                [self.ppwv hidePPWVAnimated:FALSE];
-                [self hideConfigBtns:TRUE];
-                [self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
-            } else {  // only PVNOSHOW possible ?
-                [self showPVQ:TRUE];
-            }
-			
-            [UIView commitAnimations];	
+            [UIView animateWithDuration:0.2 animations:^{
+                if (PVCONFIG == self->_showing) {
+                    [self.ppwv hidePPWVAnimated:FALSE];
+                    [self hideConfigBtns:TRUE];
+                    [self.configBtn setTitle:CFGBTNCONFIG forState:UIControlStateNormal];
+                } else {  // only PVNOSHOW possible ?
+                    [self showPVQ:TRUE];
+                }
+            }];
+            //[UIView commitAnimations];
 		}
         if (PVNEEDPASS == _showing) {
             _showing = PVQUERY;
@@ -410,28 +411,29 @@ static NSTimeInterval lastShow=0;
         _showing = PVQUERY;
 
 	} else if (PVNOSHOW == newState) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:kAnimationDuration];
-		
-		if (PVNEEDPASS == _showing) { // if set pass is up, cancelled out of create
-            DBGLog(@"cancelled out of create pass");
-			[self.ppwv hidePPWVAnimated:FALSE];
-            [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
-		} else {
+		//[UIView beginAnimations:nil context:NULL];
+		//[UIView setAnimationDuration:kAnimationDuration];
+        [UIView animateWithDuration:0.2 animations:^{
+            if (PVNEEDPASS == self->_showing) { // if set pass is up, cancelled out of create
+                DBGLog(@"cancelled out of create pass");
+                [self.ppwv hidePPWVAnimated:FALSE];
+                [self.parentView setNeedsDisplay];  //  privateBtn.title = @"private";
+            } else {
 
-			[self setPrivacyValue:(MINPRIV + [self dbTestKey:self.ttv.key])]; // 14.ix.2011 privacy not 0
-			
-			if (PVCONFIG == _showing) {
-				[self.ppwv hidePPWVAnimated:FALSE];
-				[self hideConfigBtns:TRUE];
-			}
-			[self showPVQ:FALSE];
+                [self setPrivacyValue:(MINPRIV + [self dbTestKey:self.ttv.key])]; // 14.ix.2011 privacy not 0
+                
+                if (PVCONFIG == self->_showing) {
+                    [self.ppwv hidePPWVAnimated:FALSE];
+                    [self hideConfigBtns:TRUE];
+                }
+                [self showPVQ:FALSE];
 
-		}
+            }
 
-        //self.hidden = YES;
-        self.alpha = 0.0;
-		[UIView commitAnimations];
+            //self.hidden = YES;
+            self.alpha = 0.0;
+        }];
+		//[UIView commitAnimations];
         
 		_showing = PVNOSHOW;
 		
@@ -446,14 +448,16 @@ static NSTimeInterval lastShow=0;
 			//	//[self.ppwv hidePPWVAnimated:FALSE];
 			} //else {
 				[self hideConfigBtns:FALSE];
-				[UIView beginAnimations:nil context:NULL];
-				[UIView setAnimationDuration:kAnimationDuration];
+				//[UIView beginAnimations:nil context:NULL];
+				//[UIView setAnimationDuration:kAnimationDuration];
 			//}
-
-			[self.ppwv changePass:PVCONFIG cancel:PVCONFIG];
-			[self.configBtn setTitle:CFGBTNLOCK forState:UIControlStateNormal];
-            [self setTTV];
-			[UIView commitAnimations];
+            [UIView animateWithDuration:0.2 animations:^{
+                [self.ppwv changePass:PVCONFIG cancel:PVCONFIG];
+                [self.configBtn setTitle:CFGBTNLOCK forState:UIControlStateNormal];
+                [self setTTV];
+            }];
+			
+            //[UIView commitAnimations];
 			_showing = PVCONFIG;
             [self.parent refreshToolBar:YES];
 

@@ -174,19 +174,23 @@ BOOL ObservingKeyboardNotification=false;
 - (void) hidePPWVAnimated:(BOOL)animated {
 	//DBGLog(@"hide ppwv anim=%d",animated);
 	if (animated) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:kAnimationDuration];
-	}
+		//[UIView beginAnimations:nil context:NULL];
+		//[UIView setAnimationDuration:kAnimationDuration];
+        [UIView animateWithDuration:0.2 animations:^{
+            [self hide];
+            [self.topTF resignFirstResponder];
+        }];
+    } else {
 	
-	[self hide];
+        [self hide];
 
 //	[self.topLabel setHidden:TRUE];
 //	[self.topTF setHidden:TRUE];
-	[self.topTF resignFirstResponder];
-		
-	if (animated) {
-		[UIView commitAnimations];
-	}
+        [self.topTF resignFirstResponder];
+    }
+	//if (animated) {
+	//	[UIView commitAnimations];
+	//}
 
     //self.hidden = YES;
 }
@@ -205,13 +209,15 @@ BOOL ObservingKeyboardNotification=false;
 
 - (void) showPassRqstr {
     
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:kAnimationDuration];
+	//[UIView beginAnimations:nil context:NULL];
+	//[UIView setAnimationDuration:kAnimationDuration];
 
-	[self show];
+    [UIView animateWithDuration:0.2 animations:^{
+        [self show];
 
-	[self.topTF becomeFirstResponder];  //prints warning: @setting the first responder view of the table but we don't know its type (cell/header/footer)@
-	[UIView commitAnimations];
+        [self.topTF becomeFirstResponder];  //prints warning: @setting the first responder view of the table but we don't know its type (cell/header/footer)@
+    }];
+	//[UIView commitAnimations];
 }
 
 - (void) checkPass:(unsigned int)okState cancel:(unsigned int)cancelState {
@@ -263,11 +269,12 @@ BOOL ObservingKeyboardNotification=false;
 	[self.topTF removeTarget:self action:nil forControlEvents:UIControlEventEditingDidEnd];
 	[self.topTF addTarget:self action:@selector(changePAction) forControlEvents:UIControlEventEditingDidEnd];
 	
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:kAnimationDuration];
-	[self show];
-
-	[UIView commitAnimations];
+	//[UIView beginAnimations:nil context:NULL];
+	//[UIView setAnimationDuration:kAnimationDuration];
+    [UIView animateWithDuration:0.2 animations:^{
+        [self show];
+    }];
+	//[UIView commitAnimations];
 }
 
 #pragma mark -

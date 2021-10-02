@@ -28,6 +28,8 @@
 		D4099F681BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = D4099F601BAFC5270026CA36 /* PSPDFUIKitMainThreadGuard.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D40DC290133BEC3F00023D5D /* rTracker-resource.m in Sources */ = {isa = PBXBuildFile; fileRef = D40DC28F133BEC3600023D5D /* rTracker-resource.m */; };
 		D427446A1438B8090011EFE6 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D42744691438B8090011EFE6 /* iTunesArtwork */; };
+		D43216B225F2444100B2E582 /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43216B025F2444100B2E582 /* ContactsUI.framework */; };
+		D43216B325F2444100B2E582 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43216B125F2444100B2E582 /* Contacts.framework */; };
 		D43A7E511AB62358001BEC96 /* CalendarTodaysDate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3D19571F8A00B4702C /* CalendarTodaysDate@2x.png */; };
 		D43A7E521AB62358001BEC96 /* CalendarRowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D473ED3919571F8A00B4702C /* CalendarRowBottom@2x.png */; };
 		D43A7E541AB62358001BEC96 /* closedview-button-blue-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D40607D817D7CB5A00C05A38 /* closedview-button-blue-7@2x.png */; };
@@ -280,8 +282,6 @@
 		D47FBB8114A9E2E300CE0547 /* fullview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8014A9E2E300CE0547 /* fullview-button.png */; };
 		D47FBB8314A9E2F100CE0547 /* shadeview-button.png in Resources */ = {isa = PBXBuildFile; fileRef = D47FBB8214A9E2F100CE0547 /* shadeview-button.png */; };
 		D47FD4EE128C016600EFE8A7 /* voTBacc.xib in Resources */ = {isa = PBXBuildFile; fileRef = D47FD4ED128C016600EFE8A7 /* voTBacc.xib */; };
-		D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5D0128C22DC00EFE8A7 /* AddressBook.framework */; };
-		D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47FD5E1128C230700EFE8A7 /* AddressBookUI.framework */; };
 		D481089A19E056D600B422A8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D481089919E056D600B422A8 /* Images.xcassets */; };
 		D482D272114FEB5E00CE6BC8 /* trackerList.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D271114FEB5E00CE6BC8 /* trackerList.m */; };
 		D482D276114FEB7500CE6BC8 /* trackerObj.m in Sources */ = {isa = PBXBuildFile; fileRef = D482D275114FEB7500CE6BC8 /* trackerObj.m */; };
@@ -326,6 +326,7 @@
 		D4C0B3E423E9C3BB00304511 /* ping 2.caf in Resources */ = {isa = PBXBuildFile; fileRef = D4C0B3DB23E9C3BB00304511 /* ping 2.caf */; };
 		D4C18740128A971000A612C4 /* voDataEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = D4C1873E128A971000A612C4 /* voDataEdit.m */; };
 		D4C5210A123F9DF700554627 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D4C52109123F9DF700554627 /* blueButton.png */; };
+		D4C6B88026247FB200345F2A /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C6B87F26247FB100345F2A /* UserNotifications.framework */; };
 		D4CB672F18B3FF7100096490 /* voInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CB672E18B3FF7100096490 /* voInfo.m */; };
 		D4CCF43319422F3300BD2ECD /* TSQCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */; };
 		D4CCF43419422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D4CCF43019422F3300BD2ECD /* TSQCalendarMonthHeaderCell.m */; };
@@ -392,6 +393,8 @@
 		D40DC28F133BEC3600023D5D /* rTracker-resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "rTracker-resource.m"; sourceTree = "<group>"; };
 		D42744691438B8090011EFE6 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/png/iTunesArtwork; sourceTree = "<group>"; };
 		D427FD3F126C78D100A8ED9A /* rTracker-constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "rTracker-constants.h"; path = "Classes/rTracker-constants.h"; sourceTree = "<group>"; };
+		D43216B025F2444100B2E582 /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+		D43216B125F2444100B2E582 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		D43A7ECA1AB62358001BEC96 /* rTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43A7ECB1AB62359001BEC96 /* rTrackerA-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "rTrackerA-Info.plist"; sourceTree = "<group>"; };
 		D43C494412FA129000B95AB7 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfx.h; sourceTree = "<group>"; };
@@ -521,6 +524,7 @@
 		D4C1873D128A971000A612C4 /* voDataEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voDataEdit.h; sourceTree = "<group>"; };
 		D4C1873E128A971000A612C4 /* voDataEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voDataEdit.m; sourceTree = "<group>"; };
 		D4C52109123F9DF700554627 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueButton.png; path = Resources/png/blueButton.png; sourceTree = "<group>"; };
+		D4C6B87F26247FB100345F2A /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		D4CB672D18B3FF7100096490 /* voInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voInfo.h; sourceTree = "<group>"; };
 		D4CB672E18B3FF7100096490 /* voInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = voInfo.m; sourceTree = "<group>"; };
 		D4CCF42F19422F3300BD2ECD /* TSQCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSQCalendarCell.m; sourceTree = "<group>"; };
@@ -569,13 +573,14 @@
 				D473F25A19050136000B0FC8 /* AudioToolbox.framework in Frameworks */,
 				D4FE66C9178617720056B463 /* MessageUI.framework in Frameworks */,
 				D40518B713787B5500F001BA /* QuartzCore.framework in Frameworks */,
+				D4C6B88026247FB200345F2A /* UserNotifications.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
+				D43216B225F2444100B2E582 /* ContactsUI.framework in Frameworks */,
 				D46E56AD1B73A10F0023CE55 /* SystemConfiguration.framework in Frameworks */,
 				D46E56AB1B73A10F0023CE55 /* Security.framework in Frameworks */,
-				D47FD5D1128C22DC00EFE8A7 /* AddressBook.framework in Frameworks */,
-				D47FD5E2128C230700EFE8A7 /* AddressBookUI.framework in Frameworks */,
+				D43216B325F2444100B2E582 /* Contacts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,6 +723,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4C6B87F26247FB100345F2A /* UserNotifications.framework */,
+				D43216B125F2444100B2E582 /* Contacts.framework */,
+				D43216B025F2444100B2E582 /* ContactsUI.framework */,
 				D4B8D0041BAC1500002E94CD /* libsqlite3.tbd */,
 				D4B8D0021BAC14F0002E94CD /* libc++.tbd */,
 				D4B8CFFF1BAC148B002E94CD /* libz.tbd */,
@@ -1067,7 +1075,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0600;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Robert T. Miller";
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
@@ -1099,14 +1107,14 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "rTracker" */;
 			compatibilityVersion = "Xcode 11.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
 				en,
+				ja,
+				fr,
+				Base,
+				de,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -1603,12 +1611,12 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 3.2.1;
+				MARKETING_VERSION = 3.3.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
@@ -1648,12 +1656,12 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 3.2.1;
+				MARKETING_VERSION = 3.3.0;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
@@ -1673,6 +1681,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -1683,7 +1692,9 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1703,7 +1714,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -1715,6 +1726,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -1725,7 +1737,9 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1744,7 +1758,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -1776,7 +1790,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "rTrackerA-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1817,7 +1831,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "rTrackerA-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1858,7 +1872,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "rTrackerA-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1899,7 +1913,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1930,7 +1944,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1962,7 +1976,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = rTrackerUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1982,6 +1996,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -1992,7 +2007,9 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2011,7 +2028,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040100";
 				SDKROOT = iphoneos;
@@ -2043,12 +2060,12 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 3.2.1;
+				MARKETING_VERSION = 3.3.0;
 				OTHER_CFLAGS = "";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "";
@@ -2089,7 +2106,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2130,7 +2147,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2171,7 +2188,7 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "$(SRCROOT)/rTracker-test-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

@@ -102,7 +102,10 @@
                                                                       handler:^(UIAlertAction * action) {
                                                                         [self registerForNotifications];
 
-                                                                          //[[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                                                                        [rTracker_resource setToldAboutNotifications:true];
+                                                                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutNotifications"];
+                                                                        [[NSUserDefaults standardUserDefaults] synchronize];
+                                                                        [self newMaintainer];
                                                                       }];
                 
                 [alert addAction:defaultAction];
@@ -110,9 +113,6 @@
                 
                 
                 
-                [rTracker_resource setToldAboutNotifications:true];
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"toldAboutNotifications"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
             }
         }
         
@@ -122,7 +122,31 @@
     
 }
 
+- (void) newMaintainer {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    if (![sud boolForKey:@"maintainerRqst"]) { // if not yet told
+        RootViewController *rootController = (RootViewController *) (self.navigationController.viewControllers)[0];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"rTracker is 10!"
+                                                                       message:@"rTracker is 10 years old and needs a new maintainer."
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                                [rTracker_resource setMaintainerRqst:true];
+                                                                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"maintainerRqst"];
+                                                                [[NSUserDefaults standardUserDefaults] synchronize];
 
+                                                              }];
+        
+        [alert addAction:defaultAction];
+        [rootController.navigationController presentViewController:alert animated:YES completion:nil];
+        
+        
+        
+     }
+}
+
+    
 //- (void)applicationDidFinishLaunching:(UIApplication *)application {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -244,11 +268,10 @@
         [alert addAction:recoverAction];
         
         [rootController.navigationController presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self newMaintainer];
     }
 #endif
-    
-        
-
 
 /*
     // for when actually not running, not just in background:
@@ -450,6 +473,12 @@
     [self.navigationController.visibleViewController viewWillAppear:YES];
 }
 */
+
+/*
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+}
+*/
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	// rootViewController needs to possibly load files
     // useTrackerController needs to detect if displaying a private tracker
@@ -459,6 +488,8 @@
     //[(RootViewController *) [self.navigationController.viewControllers objectAtIndex:0] viewDidAppear:YES];
 
     //[rTracker_resource enableOrientationData];
+    
+    [self newMaintainer];
 
     [self.navigationController.visibleViewController viewDidAppear:YES];
 }

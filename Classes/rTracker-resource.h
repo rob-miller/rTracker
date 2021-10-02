@@ -113,6 +113,8 @@ void safeDispatchSync(dispatch_block_t block);
 + (BOOL)getNotificationsEnabled;
 + (void)setNotificationsEnabled;
 
++ (BOOL)getMaintainerRqst;
++ (void)setMaintainerRqst:(BOOL)inMaintainerRqst;
 
 #if ADVERSION
 + (BOOL)getPurchased;
