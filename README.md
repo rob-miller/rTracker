@@ -1,3 +1,5 @@
+**Please note this repository is no longer maintained.  Go to [rTracker-swift](https://github.com/rob-miller/rTracker-swift) for the current version.**
+
 # rTracker
 
 **Please note this repository is no longer maintained.  Go to [rTracker-swift](https://github.com/rob-miller/rTracker-swift) for the current version.**
