@@ -1,6 +1,6 @@
 # rTracker
 
-**Please note this repository is now archived.  Go to [rTracker-swift](https://github.com/rob-miller/rTracker-swift) for the current version.**
+**Please note this repository is no longer maintained.  Go to [rTracker-swift](https://github.com/rob-miller/rTracker-swift) for the current version.**
 
 [rTracker](http://rob-miller.github.io/rTracker/rTracker/iPhone/pages/rTracker-main.html) is a complete iOS application for creating local on-device databases ('trackers') to log data with timestamps.
 
