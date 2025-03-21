@@ -1981,7 +1981,8 @@
 
         
         if (nr.timesRandom) {
-            int delta = (int) ((DBLRANDOM * d(intervalStep)) - d(intervalStep)/2.0);  // startInt += rand * (+/- (0.5 * step))
+            double rnd = DBLRANDOM;
+            int delta = (int) ((rnd * d(intervalStep)) - d(intervalStep)/2.0);  // startInt += rand * (+/- (0.5 * step))
 
             if ((eventIsToday && (nowInt < (startInt+delta))) || !eventIsToday) {     // randomise startInt unless that pushes it into past
                 startInt += delta;

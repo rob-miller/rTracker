@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment version="4608" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="addTrackerController">
+            <connections>
+                <outlet property="infoBtn" destination="kEQ-7V-i6C" id="xGi-Qg-2An"/>
+                <outlet property="itemCopyBtn" destination="nx8-xo-d9x" id="GTb-gQ-wwv"/>
+                <outlet property="segcEditTrackerEditItems" destination="DhU-EG-a8M" id="N9d-dj-0IW"/>
+                <outlet property="table" destination="0iX-Di-6MG" id="Yyi-sv-PW8"/>
+                <outlet property="toolbar" destination="bbp-An-je1" id="eQb-Bz-sZd"/>
+                <outlet property="view" destination="iN0-l3-epB" id="i1S-sk-CTi"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="0iX-Di-6MG">
+                    <rect key="frame" x="0.0" y="44" width="414" height="774"/>
+                    <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="sectionIndexBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="eXs-XX-he5"/>
+                        <outlet property="delegate" destination="-1" id="38o-tO-uhL"/>
+                    </connections>
+                </tableView>
+                <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bbp-An-je1">
+                    <rect key="frame" x="10" y="818" width="414" height="44"/>
+                    <items>
+                        <barButtonItem style="plain" id="0Ne-YN-lUj">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kEQ-7V-i6C">
+                                <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="⚙">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnSetup:" destination="-1" eventType="touchUpInside" id="k9b-xp-pkc"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="LIr-Pk-ics"/>
+                        <barButtonItem style="plain" id="q3f-Df-ahD">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="DhU-EG-a8M">
+                                <rect key="frame" x="113.5" y="6" width="187" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Edit Tracker"/>
+                                    <segment title="Edit Items"/>
+                                </segments>
+                                <connections>
+                                    <action selector="toggleEdit:" destination="-1" eventType="valueChanged" id="QMV-aN-n41"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="sb5-pF-fyy"/>
+                        <barButtonItem style="plain" id="Apx-RX-c3D">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="nx8-xo-d9x">
+                                <rect key="frame" x="358" y="7" width="36" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Copy">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnCopy:" destination="-1" eventType="touchUpInside" id="Lrv-Z7-Yxi"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </items>
+                </toolbar>
+            </subviews>
+            <constraints>
+                <constraint firstItem="0iX-Di-6MG" firstAttribute="centerX" secondItem="Png-j4-wFj" secondAttribute="centerX" id="15R-bO-ekf"/>
+                <constraint firstItem="0iX-Di-6MG" firstAttribute="top" secondItem="Png-j4-wFj" secondAttribute="top" id="9NJ-rP-5nA"/>
+                <constraint firstItem="0iX-Di-6MG" firstAttribute="leading" secondItem="Png-j4-wFj" secondAttribute="leading" id="AmH-Et-wvJ"/>
+                <constraint firstItem="bbp-An-je1" firstAttribute="leading" secondItem="Png-j4-wFj" secondAttribute="leading" constant="10" id="W91-UE-Eeg"/>
+                <constraint firstItem="bbp-An-je1" firstAttribute="top" secondItem="0iX-Di-6MG" secondAttribute="bottom" id="aWv-8e-BNX"/>
+                <constraint firstItem="bbp-An-je1" firstAttribute="bottom" secondItem="Png-j4-wFj" secondAttribute="bottom" id="lwI-Jb-Avn"/>
+                <constraint firstItem="bbp-An-je1" firstAttribute="trailing" secondItem="Png-j4-wFj" secondAttribute="trailing" constant="10" id="smX-Vu-50q"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Png-j4-wFj"/>
+            <point key="canvasLocation" x="417.39130434782612" y="260.49107142857144"/>
+        </view>
+    </objects>
+</document>

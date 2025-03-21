@@ -24,9 +24,9 @@
 //
 
 
-#define RELEASE     1
+#define RELEASE     0
 
-#define DEBUGLOG    0
+#define DEBUGLOG    1
 #define DEBUGWARN   1
 #define DEBUGERR    1
 

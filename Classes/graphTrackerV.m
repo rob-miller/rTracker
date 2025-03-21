@@ -574,6 +574,7 @@
         safeDispatchSync(^{
             AddLineTo(self.xMark,self.frame.size.height);
         });
+        DBGLog(@"xmark %f %f",self.xMark,self.frame.size.height);
         Stroke;
     }
     if (self.searchXpoints) {
